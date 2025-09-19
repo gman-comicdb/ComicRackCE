@@ -3,21 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static cYo.Common.Windows.Forms.FolderTreeView;
-using static System.Windows.Forms.AxHost;
 
 namespace cYo.Common.Windows.Forms.ColorScheme
 {
     public static class ColorSchemeExtensions
     {
+
+        public static Func<bool> UseDarkModeSetting { get; set; } = () => false;
+
+        public static bool IsDarkModeEnabled => UseDarkModeSetting?.Invoke() ?? false;
 
         internal static class NativeMethods
         {
@@ -43,6 +41,53 @@ namespace cYo.Common.Windows.Forms.ColorScheme
 
             [DllImport("user32.dll")]
             public static extern int SendMessage(HandleRef hWnd, uint msg, IntPtr wParam, HandleRef lParam);
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
+
+            public struct RECT
+            {
+                public int left;
+
+                public int top;
+
+                public int right;
+
+                public int bottom;
+            }
+
+            public enum ComboBoxButtonState
+            {
+                STATE_SYSTEM_NONE = 0,
+                STATE_SYSTEM_INVISIBLE = 0x8000,
+                STATE_SYSTEM_PRESSED = 8
+            }
+
+            public struct COMBOBOXINFO
+            {
+                public int cbSize;
+
+                public RECT rcItem;
+
+                public RECT rcButton;
+
+                public ComboBoxButtonState buttonState;
+
+                public IntPtr hwndCombo;
+
+                public IntPtr hwndEdit;
+
+                public IntPtr hwndList;
+            }
+
+            public const int ECM_FIRST = 5376;
+
+            public const int EM_SETCUEBANNER = 5377;
+
+            [DllImport("user32.dll")]
+            public static extern bool GetComboBoxInfo(IntPtr hwnd, ref COMBOBOXINFO pcbi);
+
+            public static readonly int DWMWA_USE_IMMERSIVE_DARK_MODE = GetDwmDarkModeAttribute();
         }
 
         // make the following ajustments to strict inversion:
@@ -64,7 +109,8 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             {"Control", Color.FromArgb(38,38,38)},
             {"ControlDark", Color.FromArgb(117,117,117)},
             {"ControlDarkDark", Color.FromArgb(162,162,162)},
-            {"ControlLight", Color.FromArgb(53,53,53)},
+            //{"ControlLight", Color.FromArgb(53,53,53)},         // why isn't this between Control and ControlLightLight?
+            {"ControlLight", Color.FromArgb(27,27,27)},
             {"ControlLightLight", Color.FromArgb(15,15,15)},
             {"ControlText", Color.FromArgb(240,240,240)},
             {"Desktop", Color.FromArgb(240,240,240)},
@@ -73,21 +119,20 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             {"GrayText", Color.FromArgb(159,159,159)},
             //{"Highlight", Color.FromArgb(40,160,255)},
             {"Highlight", Color.FromArgb(200,200,200)},           // replace blue with grey, ala Windows Dark Mode
-            //{"HighlightText", Color.FromArgb(15,15,15)},
-            {"HighlightText", Color.FromArgb(150,15,15)},         // testing
+            {"HighlightText", Color.FromArgb(15,15,15)},
             {"HotTrack", Color.FromArgb(51,153,255)},
             {"InactiveBorder", Color.FromArgb(3,6,11)},
             {"InactiveCaption", Color.FromArgb(36,50,64)},
             {"InactiveCaptionText", Color.FromArgb(240,240,240)},
-            {"Info", Color.FromArgb(240,120,0)},                  // ~straight inversion: (30,30,0)
+            {"Info", Color.FromArgb(240,120,0)},                  // ~straight inversion = (30,30,0)
             {"InfoText", Color.FromArgb(240,240,240)},
             {"Menu", Color.FromArgb(38,38,38)},
             {"MenuBar", Color.FromArgb(38,38,38)},
             {"MenuHighlight", Color.FromArgb(0,102,204)},
             {"MenuText", Color.FromArgb(240,240,240)},
             {"ScrollBar", Color.FromArgb(80,80,80)},
-            {"Window", Color.FromArgb(15,15,15)},
-            //{"Window", Color.FromArgb(95,95,95)},                 // testing
+            //{"Window", Color.FromArgb(15,15,15)},
+            {"Window", Color.FromArgb(27,27,27)},                 // testing
             {"WindowFrame", Color.FromArgb(166,166,166)},
             {"WindowText", Color.FromArgb(240,240,240)}
         };
@@ -106,7 +151,28 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             }
         }
 
-        private static void ThemeControl (Button button)
+        private static void ThemeControl(StatusStrip statusStrip)
+        {
+            statusStrip.BackColor = GetDarkSystemColor("ControlLightLight");
+            statusStrip.ForeColor = GetDarkSystemColor("ControlText");
+            foreach (ToolStripStatusLabel tsLabel in statusStrip.Items)
+            {
+                if (tsLabel.BorderStyle.Equals(Border3DStyle.SunkenOuter))
+                {
+                    tsLabel.BorderSides = ToolStripStatusLabelBorderSides.None;
+                    tsLabel.Paint += (sender, e) =>
+                    {
+                        using (var pen = new Pen(Color.FromArgb(100, 100, 100), 1))
+                        {
+                            e.Graphics.DrawRectangle(pen, 0, 0, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
+                        }
+                    };
+                }
+
+            }
+        }
+
+        private static void ThemeControl(Button button)
         {
             if (button.Image == null)
             {
@@ -133,7 +199,7 @@ namespace cYo.Common.Windows.Forms.ColorScheme
 
         private static void ThemeControl(CheckBox checkBox)
         {
-            
+
             if (checkBox.Appearance == Appearance.Button)
             {
                 if (checkBox.Image == null)
@@ -202,12 +268,20 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             }
         }
 
+        private static int GetDwmDarkModeAttribute()
+        {
+            Version v = Environment.OSVersion.Version;
+            return (v.Build >= 18985) ? 20 : 19;
+        }
+
         private static void ThemeControl(TextBox textBox)
         {
             // TextBoxEx did not like BorderStyle being set 
+            if (!(textBox is TextBoxEx))
+                textBox.BorderStyle = BorderStyle.FixedSingle;
+
             textBox.BackColor = Color.FromArgb(56, 56, 56);
             textBox.ForeColor = GetDarkSystemColor("ControlText");
-            textBox.BorderStyle = BorderStyle.FixedSingle;
             textBox.MouseLeave += (sender, e) =>
             {
                 if (!(sender as TextBox).Focused)
@@ -230,9 +304,37 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             };
         }
 
-        public static void SetColorScheme(this Control control, bool darkMode = false)
+        private static void ThemeControl(ComboBox comboBox)
         {
-            if (!darkMode) return;
+            comboBox.BackColor = Color.FromArgb(56, 56, 56);
+            comboBox.ForeColor = GetDarkSystemColor("ControlText");
+
+            if (comboBox.Handle == null) return;
+
+            NativeMethods.COMBOBOXINFO pcbi = default(NativeMethods.COMBOBOXINFO);
+            pcbi.cbSize = Marshal.SizeOf((object)pcbi);
+            NativeMethods.GetComboBoxInfo(comboBox.Handle, ref pcbi);
+            IntPtr textHandle = pcbi.hwndEdit;
+            IntPtr listHandle = pcbi.hwndList;
+            if (textHandle != IntPtr.Zero)
+            {
+                NativeMethods.SendMessage(textHandle, NativeMethods.EM_SETCUEBANNER, IntPtr.Zero, "");
+            }
+            if (listHandle != IntPtr.Zero)
+            {
+                NativeMethods.SetWindowTheme(listHandle, "DarkMode_Explorer", null);
+
+                int useDark = 1;
+                NativeMethods.DwmSetWindowAttribute(listHandle, NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDark, sizeof(int));
+
+                //const int WM_THEMECHANGED = 0x031A;
+                //NativeMethods.SendMessage(listHandle, WM_THEMECHANGED, IntPtr.Zero, IntPtr.Zero);
+            }
+        }
+
+        public static void SetColorScheme(this Control control)
+        {
+            if (!IsDarkModeEnabled) return;
 
             //Need to set the color even if the SystemColors as been changed so all the Control is drawn correctly.
             if (control is Form form)
@@ -242,7 +344,7 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             }
             else if (control is TreeView treeView)
             {
-                treeView.BackColor = GetDarkSystemColor("Control");
+                treeView.BackColor = GetDarkSystemColor("ControlLight");
                 treeView.ForeColor = GetDarkSystemColor("ControlText");
                 treeView.BorderStyle = BorderStyle.None;
             }
@@ -252,11 +354,20 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 //panel.ForeColor = GetDarkSystemColor("ControlText");
                 //panel.BorderStyle = BorderStyle.None;
             }
+            else if (control is GroupBox grpBox)
+            {
+                //grpBox.BackColor = GetDarkSystemColor("Control");
+                grpBox.ForeColor = GetDarkSystemColor("ControlText");
+            }
             else if (control is UserControl userControl)
             {
                 userControl.BackColor = GetDarkSystemColor("Control");
                 userControl.ForeColor = GetDarkSystemColor("ControlText");
                 userControl.BorderStyle = BorderStyle.None;
+            }
+            else if (control is StatusStrip statusStrip)
+            {
+                ThemeControl(statusStrip);
             }
             else if (control is Button button && control.Name != "btAssociateExtensions")
             {
@@ -269,7 +380,8 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             }
             else if (control is ComboBox comboBox)
             {
-                comboBox.FlatStyle = FlatStyle.System;
+                ThemeControl(comboBox);
+                //comboBox.FlatStyle = FlatStyle.System;
                 //comboBox.EnabledChanged += (object? sender1, EventArgs e1) =>
                 //{
                 //    if (sender1 != null)
@@ -278,17 +390,9 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 //    }
                 //};
             }
-            else if (control is TextBox textBox && !(control is TextBoxEx))
+            else if (control is TextBox textBox)
             {
                 ThemeControl(textBox);
-            }
-            else if (control is StatusStrip statusStrip)
-            {
-                foreach (ToolStripStatusLabel tsLabel in statusStrip.Items)
-                {
-                    if (tsLabel.BorderStyle.Equals(Border3DStyle.SunkenOuter))
-                        tsLabel.BorderStyle = Border3DStyle.Flat;
-                }
             }
             else if (!(control is TextBoxEx))
             {
@@ -302,34 +406,47 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 }
 
             }
+            //else if (control is MdiClient mdiClient)
+            //{
+            //    mdiClient.BackColor = Color.Red; // GetDarkSystemColor("Control");
+            //    mdiClient.ForeColor = GetDarkSystemColor("ControlText");
+            //}
+            //else if (control is ScrollableControl scrollableControl)
+            //{
+            //    scrollableControl.BackColor = Color.Cyan; // GetDarkSystemColor("Control");
+            //    scrollableControl.ForeColor = GetDarkSystemColor("ControlText");
+            //}
+            else
+            {
+                control.BackColor = Color.Red;
+                control.ForeColor = Color.Orange;
+            }
+
             foreach (Control child in control.Controls)
             {
-                SetColorScheme(child, true);
+                SetColorScheme(child);
             }
         }
 
-        public static void SetDarkMode(bool darkMode = false)
+        public static void SetDarkMode()
         {
-            if (darkMode)
+            if (!IsDarkModeEnabled) return;
+            // WhiteSmoke is (245,245,245), but (11,11,11) would be too dark
+            int blackSmoke = Color.FromArgb(31, 31, 31).ToArgb();
+
+            ColorSchemeController colorSchemeController = new ColorSchemeController();
+
+            KnownColor knownColor = KnownColor.WhiteSmoke;
+            colorSchemeController.SetColor(knownColor, blackSmoke);
+
+            foreach (PropertyInfo prop in typeof(SystemColors).GetProperties(BindingFlags.Public | BindingFlags.Static))
             {
-                // WhiteSmoke is (245,245,245), but (11,11,11) would be too dark
-                int blackSmoke = Color.FromArgb(31, 31, 31).ToArgb();
-
-                ColorSchemeController colorSchemeController = new ColorSchemeController();
-
-                KnownColor knownColor = KnownColor.WhiteSmoke;
-                colorSchemeController.SetColor(knownColor, blackSmoke);
-
-                foreach (PropertyInfo prop in typeof(SystemColors).GetProperties(BindingFlags.Public | BindingFlags.Static))
+                if (prop.PropertyType == typeof(Color))
                 {
-                    if (prop.PropertyType == typeof(Color))
-                    {
-                        knownColor = (KnownColor)Enum.Parse(typeof(KnownColor), prop.Name);
-                        colorSchemeController.SetColor(knownColor, GetDarkSystemColor(prop.Name).ToArgb());
-                    }
+                    knownColor = (KnownColor)Enum.Parse(typeof(KnownColor), prop.Name);
+                    colorSchemeController.SetColor(knownColor, GetDarkSystemColor(prop.Name).ToArgb());
                 }
             }
-
         }
 
     }
