@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
 using cYo.Common.Runtime;
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 using cYo.Common.Windows.Properties;
 
 namespace cYo.Common.Windows.Forms
@@ -432,7 +434,14 @@ namespace cYo.Common.Windows.Forms
 			SetStyle(ControlStyles.UserPaint, value: true);
 		}
 
-		protected override void Dispose(bool disposing)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+
+        protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
 			{

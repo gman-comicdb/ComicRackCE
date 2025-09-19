@@ -1,3 +1,5 @@
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -102,7 +104,9 @@ namespace cYo.Common.Windows.Forms
 		{
 			base.OnHandleCreated(e);
 			SetPromptText();
-		}
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
 
 		private void SetPromptText()
 		{

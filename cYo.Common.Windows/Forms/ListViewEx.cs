@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -145,7 +147,7 @@ namespace cYo.Common.Windows.Forms
 			}
 		}
 
-		protected override void OnMouseWheel(MouseEventArgs e)
+        protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			OnScroll();
 			base.OnMouseWheel(e);
@@ -163,7 +165,14 @@ namespace cYo.Common.Windows.Forms
 			scrollTimer.Tick += scrollTimer_Tick;
 		}
 
-		protected override void Dispose(bool disposing)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+
+        protected override void Dispose(bool disposing)
 		{
 			if (disposing && scrollTimer != null)
 			{

@@ -1,7 +1,10 @@
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -16,7 +19,7 @@ namespace cYo.Common.Windows.Forms
 			set;
 		}
 
-		protected override void OnDragOver(DragEventArgs e)
+        protected override void OnDragOver(DragEventArgs e)
 		{
 			base.OnDragOver(e);
 			DragTab(e, ReorderTabsWhileDragging);
@@ -78,7 +81,14 @@ namespace cYo.Common.Windows.Forms
 			downPoint = Point.Empty;
 		}
 
-		private TabPage GetTabPageByTab(Point pt)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+
+        private TabPage GetTabPageByTab(Point pt)
 		{
 			for (int i = 0; i < base.TabPages.Count; i++)
 			{
