@@ -150,12 +150,13 @@ namespace cYo.Common.Windows.Forms.ColorScheme
 
                 SystemColors.AppWorkspace,       // 1px border around tab|panel|whatever-the-element-is. doubled for open comic as it's a seperate element.
 
+                SystemColors.HighlightText,     // selected ComboBox text color in some cases (probably related to DropDownList etc setting)
+
                 // these colors were not observed
                 // might be due to OS settings, not interacting with a UI element that uses them, or they are genuinely not used
                 SystemColors.Desktop,
                 SystemColors.ScrollBar,         // I think this is intended as a joke
 
-                SystemColors.HighlightText,
                 SystemColors.HotTrack,
 
                 SystemColors.ActiveBorder,
