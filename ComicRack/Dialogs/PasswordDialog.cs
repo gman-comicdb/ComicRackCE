@@ -2,10 +2,11 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using cYo.Common.Windows;
+using cYo.Common.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-	public partial class PasswordDialog : Form
+	public partial class PasswordDialog : FormEx
 	{
 		public string Description
 		{
