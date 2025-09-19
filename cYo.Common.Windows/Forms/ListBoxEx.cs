@@ -1,3 +1,5 @@
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -38,5 +40,12 @@ namespace cYo.Common.Windows.Forms
 				this.ItemDrag(this, e);
 			}
 		}
-	}
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+    }
 }

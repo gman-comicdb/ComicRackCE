@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -98,7 +100,14 @@ namespace cYo.Common.Windows.Forms
 			SetStyle(ControlStyles.ResizeRedraw, value: true);
 		}
 
-		protected override void OnPaintBackground(PaintEventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
 		{
 			DrawCaption(e.Graphics);
 			e.Graphics.SetClip(CaptionRectangle, CombineMode.Exclude);

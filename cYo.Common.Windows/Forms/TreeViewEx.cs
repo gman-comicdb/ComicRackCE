@@ -1,3 +1,5 @@
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.ColorScheme;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -116,7 +118,14 @@ namespace cYo.Common.Windows.Forms
 			EnableDoubleBuffer(this);
 		}
 
-		private void scrollTimer_Tick(object sender, EventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeRecursive(this, ColorSchemeExtensions.IsDarkModeEnabled);
+        }
+
+        private void scrollTimer_Tick(object sender, EventArgs e)
 		{
 			Native.ScrollLines(this, delta);
 		}
