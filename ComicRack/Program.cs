@@ -28,6 +28,7 @@ using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.ColorScheme;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display.Forms;
@@ -735,7 +736,8 @@ namespace cYo.Projects.ComicRack.Viewer
 			CommandLineParser.Parse(EngineConfiguration.Default);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(defaultValue: false);
-			ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
+            ColorSchemeExtensions.SetDarkMode(Program.ExtendedSettings.UseDarkMode);
+            ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
 			DatabaseManager.FirstDatabaseAccess += delegate
 			{
 				StartupProgress(TR.Messages["OpenDatabase", "Opening Database"], -1);
