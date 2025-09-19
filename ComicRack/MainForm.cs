@@ -23,6 +23,7 @@ using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.ColorScheme;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Engine.Database;
@@ -931,8 +932,8 @@ namespace cYo.Projects.ComicRack.Viewer
 			// ThemeIt
             if (m.Msg == Native.WM_CREATE)
             {
-                //ColorSchemeExtensions.SetColorScheme(this);
-                //UXTheme.ApplyDarkThemeRecursive(this);
+                ColorSchemeExtensions.SetColorScheme(this);
+                UXTheme.ApplyDarkThemeRecursive(this);
             }
         }
 
