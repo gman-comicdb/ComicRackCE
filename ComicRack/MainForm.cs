@@ -285,7 +285,8 @@ namespace cYo.Projects.ComicRack.Viewer
 		private static class Native
 		{
 			public const int WM_ACTIVATEAPP = 0x001C;
-		}
+            public const int WM_CREATE = 0x0001;
+        }
 
 		private readonly CommandMapper commands = new CommandMapper();
 
@@ -927,7 +928,13 @@ namespace cYo.Projects.ComicRack.Viewer
 				ComicDisplay.FullScreen = false;
 			}
 			base.WndProc(ref m);
-		}
+			// ThemeIt
+            if (m.Msg == Native.WM_CREATE)
+            {
+                //ColorSchemeExtensions.SetColorScheme(this);
+                //UXTheme.ApplyDarkThemeRecursive(this);
+            }
+        }
 
 		protected override void OnShown(EventArgs e)
 		{
