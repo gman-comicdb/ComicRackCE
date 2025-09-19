@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using cYo.Common.Win32;
-//using cYo.Common.Windows.Forms.ColorScheme;
+using cYo.Common.Windows.Forms.ColorScheme;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -11,8 +11,8 @@ namespace cYo.Common.Windows.Forms
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            //ColorSchemeExtensions.SetColorScheme(this);
-            //UXTheme.ApplyDarkThemeRecursive(this);
+            ColorSchemeExtensions.SetColorScheme(this);
+            UXTheme.ApplyDarkThemeToWindow(this, ColorSchemeExtensions.IsDarkModeEnabled, recurse: true);
 
         }
     }
