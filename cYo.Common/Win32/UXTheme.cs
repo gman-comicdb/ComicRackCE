@@ -28,7 +28,10 @@ namespace cYo.Common.Win32
 
             [DllImport("user32.dll")]
             public static extern int SendMessage(HandleRef hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        }
 
+        internal static class NativeDelegates
+        {
             public enum PreferredAppMode
             {
                 Default = 0,
@@ -37,13 +40,19 @@ namespace cYo.Common.Win32
                 ForceLight = 3,
                 Max = 4
             }
+
+            public delegate bool ShouldAppsUseDarkModeDelegate();
+            public delegate bool AllowDarkModeForWindowDelegate(IntPtr hWnd, bool allow);
+            public delegate PreferredAppMode SetPreferredAppModeDelegate(PreferredAppMode appMode);
         }
 
         private static bool _initialized = false;
         private static bool _isDarkModeSupported = false;
+        //private static bool _isDarkModeEnabled = false; // this would the app to follow system settings
 
-        private static Func<IntPtr, bool, bool>? _allowDarkModeForWindow;
-        public static bool IsDarkModeSupported => _isDarkModeSupported;
+        //private static NativeDelegates.ShouldAppsUseDarkModeDelegate _shouldAppsUseDarkMode;
+        private static NativeDelegates.AllowDarkModeForWindowDelegate _allowDarkModeForWindow;
+        private static NativeDelegates.SetPreferredAppModeDelegate _setPreferredAppMode;
 
         private static readonly int DWMWA_USE_IMMERSIVE_DARK_MODE = GetDwmDarkModeAttribute();
 
@@ -67,21 +76,24 @@ namespace cYo.Common.Win32
 
         };
 
-        public static void Initialize()
+        public static void Initialize(bool darkMode = false)
         {
-            if (_initialized) return;
+            if (_initialized || !darkMode) return;
             _initialized = true;
 
             IntPtr hUxTheme = Native.LoadLibraryEx("uxtheme.dll", IntPtr.Zero, Native.LOAD_LIBRARY_SEARCH_SYSTEM32);
             if (hUxTheme == IntPtr.Zero) return;
 
-            var allowDarkModeForWindow = GetDelegate<Func<IntPtr, bool, bool>>(hUxTheme, 133);
-            var setPreferredAppMode = GetDelegate<Func<Native.PreferredAppMode, Native.PreferredAppMode>>(hUxTheme, 135);
+            //_shouldAppsUseDarkMode = GetDelegate<NativeDelegates.ShouldAppsUseDarkModeDelegate>(hUxTheme, 132);
+            _allowDarkModeForWindow = GetDelegate<NativeDelegates.AllowDarkModeForWindowDelegate>(hUxTheme, 133);
+            _setPreferredAppMode = GetDelegate<NativeDelegates.SetPreferredAppModeDelegate>(hUxTheme, 135);
 
-            if (allowDarkModeForWindow != null && setPreferredAppMode != null)
+            //if (_shouldAppsUseDarkMode != null && _allowDarkModeForWindow != null && _setPreferredAppMode != null)
+            if (_allowDarkModeForWindow != null && _setPreferredAppMode != null)
             {
                 _isDarkModeSupported = true;
-                setPreferredAppMode(Native.PreferredAppMode.ForceDark);
+                //_isDarkModeEnabled = _shouldAppsUseDarkMode();
+                _setPreferredAppMode(NativeDelegates.PreferredAppMode.ForceDark);
             }
         }
 
