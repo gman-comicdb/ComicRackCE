@@ -171,7 +171,22 @@ namespace cYo.Common.Windows.Forms.ColorScheme
 
                 SystemColors.Menu,
                 SystemColors.MenuBar,
-                SystemColors.MenuHighlight
+                SystemColors.MenuHighlight,
+
+                //ProfessionalColors.MenuItemPressedGradientBegin,
+                //ProfessionalColors.MenuItemPressedGradientMiddle,
+                //ProfessionalColors.MenuItemPressedGradientEnd,
+                //ProfessionalColors.MenuItemSelected,
+                //ProfessionalColors.MenuItemSelectedGradientBegin,
+                //ProfessionalColors.MenuItemSelectedGradientEnd,
+                //ProfessionalColors.MenuStripGradientBegin,
+                //ProfessionalColors.MenuStripGradientEnd,
+                //ProfessionalColors.StatusStripGradientBegin,
+                //ProfessionalColors.StatusStripGradientEnd,
+                //ProfessionalColors.ToolStripDropDownBackground,
+                //ProfessionalColors.ImageMarginGradientBegin,
+                //ProfessionalColors.ImageMarginGradientMiddle,
+                //ProfessionalColors.ImageMarginGradientEnd
 
             }.Select(_ => _.ToKnownColor())
         );

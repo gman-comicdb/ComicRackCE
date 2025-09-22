@@ -13,9 +13,7 @@ namespace cYo.Common.Windows.Forms.ColorScheme
     public static class ColorSchemeExtensions
     {
 
-        public static Func<bool> UseDarkModeSetting { get; set; } = () => false;
-
-        public static bool IsDarkModeEnabled => UseDarkModeSetting?.Invoke() ?? false;
+        public static bool IsDarkModeEnabled = false;
 
         internal static class NativeMethods
         {
@@ -97,52 +95,116 @@ namespace cYo.Common.Windows.Forms.ColorScheme
         //     [Reverted] This makes tab labels look bad (bright), but is important to button lighting
         // - Highlight colors are inverted and then Blue/Red channels swapped, to maintain a blue color instead of orange
         // - Info is overriden with a closer-to-CR dark orange
-        private static Dictionary<string, Color> DarkColors = new Dictionary<string, Color>()
+        // make the following ajustments to strict inversion:
+        // - darkest is (15,15,15) instead of (0,0,0)
+        // - lightest is (240,240,240) instead of 255
+        // - [Reverted] Control Light and Dark are flipped so that Dark is still dark and Light is still light.
+        //     [Reverted] This makes tab labels look bad (bright), but is important to button lighting
+        // - Highlight colors are inverted and then Blue/Red channels swapped, to maintain a blue color instead of orange
+        // - Info is overriden with a closer-to-CR dark orange
+        //private static Dictionary<string, Color> DarkColors = new Dictionary<string, Color>()
+        //{
+        //    {"ActiveBorder", Color.FromArgb(99,99,99)},
+        //    {"ActiveCaption", Color.FromArgb(46,73,102)},
+        //    {"ActiveCaptionText", Color.FromArgb(240,240,240)},
+        //    //{"AppWorkspace", Color.FromArgb(107,107,107)},
+        //    {"ButtonFace", Color.FromArgb(38,38,38)},
+        //    {"ButtonHighlight", Color.FromArgb(15,15,15)},
+        //    {"ButtonShadow", Color.FromArgb(117,117,117)},
+        //    {"Control", Color.FromArgb(38,38,38)},
+        //    {"ControlDark", Color.FromArgb(117,117,117)},
+        //    {"ControlDarkDark", Color.FromArgb(162,162,162)},
+        //    //{"ControlLight", Color.FromArgb(53,53,53)},         // why isn't this between Control and ControlLightLight?
+        //    {"ControlLight", Color.FromArgb(27,27,27)},
+        //    {"ControlLightLight", Color.FromArgb(15,15,15)},
+        //    {"ControlText", Color.FromArgb(240,240,240)},
+        //    {"Desktop", Color.FromArgb(240,240,240)},
+        //    {"GradientActiveCaption", Color.FromArgb(21,45,70)},
+        //    {"GradientInactiveCaption", Color.FromArgb(13,26,40)},
+        //    {"GrayText", Color.FromArgb(159,159,159)},
+        //    //{"Highlight", Color.FromArgb(40,160,255)},
+        //    {"Highlight", Color.FromArgb(200,200,200)},           // replace blue with grey, ala Windows Dark Mode
+        //    {"HighlightText", Color.FromArgb(15,15,15)},
+        //    {"HotTrack", Color.FromArgb(51,153,255)},
+        //    {"InactiveBorder", Color.FromArgb(3,6,11)},
+        //    {"InactiveCaption", Color.FromArgb(36,50,64)},
+        //    {"InactiveCaptionText", Color.FromArgb(240,240,240)},
+        //    {"Info", Color.FromArgb(240,120,0)},                  // ~straight inversion = (30,30,0)
+        //    {"InfoText", Color.FromArgb(240,240,240)},
+        //    {"Menu", Color.FromArgb(38,38,38)},
+        //    {"MenuBar", Color.FromArgb(38,38,38)},
+        //    {"MenuHighlight", Color.FromArgb(0,102,204)},
+        //    {"MenuText", Color.FromArgb(240,240,240)},
+        //    {"ScrollBar", Color.FromArgb(80,80,80)},
+        //    //{"Window", Color.FromArgb(15,15,15)},
+        //    {"Window", Color.FromArgb(27,27,27)},                 // testing
+        //    {"WindowFrame", Color.FromArgb(166,166,166)},
+        //    {"WindowText", Color.FromArgb(240,240,240)}
+        //};
+
+        private static Dictionary<string, Color> DarkSystemColors = new Dictionary<string, Color>(34)
         {
-            {"ActiveBorder", Color.FromArgb(99,99,99)},
-            {"ActiveCaption", Color.FromArgb(46,73,102)},
-            {"ActiveCaptionText", Color.FromArgb(240,240,240)},
-            {"AppWorkspace", Color.FromArgb(107,107,107)},
-            {"ButtonFace", Color.FromArgb(38,38,38)},
-            {"ButtonHighlight", Color.FromArgb(15,15,15)},
-            {"ButtonShadow", Color.FromArgb(117,117,117)},
-            {"Control", Color.FromArgb(38,38,38)},
-            {"ControlDark", Color.FromArgb(117,117,117)},
-            {"ControlDarkDark", Color.FromArgb(162,162,162)},
-            //{"ControlLight", Color.FromArgb(53,53,53)},         // why isn't this between Control and ControlLightLight?
-            {"ControlLight", Color.FromArgb(27,27,27)},
-            {"ControlLightLight", Color.FromArgb(15,15,15)},
-            {"ControlText", Color.FromArgb(240,240,240)},
-            {"Desktop", Color.FromArgb(240,240,240)},
-            {"GradientActiveCaption", Color.FromArgb(21,45,70)},
-            {"GradientInactiveCaption", Color.FromArgb(13,26,40)},
-            {"GrayText", Color.FromArgb(159,159,159)},
-            //{"Highlight", Color.FromArgb(40,160,255)},
-            {"Highlight", Color.FromArgb(200,200,200)},           // replace blue with grey, ala Windows Dark Mode
-            {"HighlightText", Color.FromArgb(15,15,15)},
-            {"HotTrack", Color.FromArgb(51,153,255)},
-            {"InactiveBorder", Color.FromArgb(3,6,11)},
-            {"InactiveCaption", Color.FromArgb(36,50,64)},
-            {"InactiveCaptionText", Color.FromArgb(240,240,240)},
-            {"Info", Color.FromArgb(240,120,0)},                  // ~straight inversion = (30,30,0)
-            {"InfoText", Color.FromArgb(240,240,240)},
-            {"Menu", Color.FromArgb(38,38,38)},
-            {"MenuBar", Color.FromArgb(38,38,38)},
-            {"MenuHighlight", Color.FromArgb(0,102,204)},
-            {"MenuText", Color.FromArgb(240,240,240)},
-            {"ScrollBar", Color.FromArgb(80,80,80)},
-            //{"Window", Color.FromArgb(15,15,15)},
-            {"Window", Color.FromArgb(27,27,27)},                 // testing
-            {"WindowFrame", Color.FromArgb(166,166,166)},
-            {"WindowText", Color.FromArgb(240,240,240)}
+            // .NET 10 - System.Drawing.KnownColorTable.AlternateSystemColors
+            {"ActiveBorder"           , Color.FromArgb(unchecked((int)0xFF464646))},  // Dark gray
+            {"ActiveCaption"          , Color.FromArgb(unchecked((int)0xFF3C5F78))},  // Highlighted Text Background
+            {"ActiveCaptionText"      , Color.FromArgb(unchecked((int)0xFFFFFFFF))},  // White
+            {"AppWorkspace"           , Color.FromArgb(unchecked((int)0xFF3C3C3C))},  // Panel Background
+            {"Control"                , Color.FromArgb(unchecked((int)0xFF202020))},  // Normal Panel/Windows Background
+            {"ControlDark"            , Color.FromArgb(unchecked((int)0xFF4A4A4A))},  // A lighter gray for dark mode
+            {"ControlDarkDark"        , Color.FromArgb(unchecked((int)0xFF5A5A5A))},  // An even lighter gray for dark mode
+            {"ControlLight"           , Color.FromArgb(unchecked((int)0xFF2E2E2E))},  // Unfocused Textbox Background
+            {"ControlLightLight"      , Color.FromArgb(unchecked((int)0xFF1F1F1F))},  // Focused Textbox Background
+            {"ControlText"            , Color.FromArgb(unchecked((int)0xFFFFFFFF))},  // Control Forecolor and Text Color
+            {"Desktop"                , Color.FromArgb(unchecked((int)0xFF101010))},  // Black
+            {"GrayText"               , Color.FromArgb(unchecked((int)0xFF969696))},  // Prompt Text Focused TextBox
+            {"Highlight"              , Color.FromArgb(unchecked((int)0xFF2864B4))},  // Highlighted Panel in DarkMode
+            {"HighlightText"          , Color.FromArgb(unchecked((int)0xFF000000))},  // White
+            {"HotTrack"               , Color.FromArgb(unchecked((int)0xFF2D5FAF))},  // Background of the ToggleSwitch
+            {"InactiveBorder"         , Color.FromArgb(unchecked((int)0xFF3C3F41))},  // Dark gray
+            {"InactiveCaption"        , Color.FromArgb(unchecked((int)0xFF374B5A))},  // Highlighted Panel in DarkMode
+            {"InactiveCaptionText"    , Color.FromArgb(unchecked((int)0xFFBEBEBE))},  // Middle Dark Panel
+            {"Info"                   , Color.FromArgb(unchecked((int)0xFF50503C))},  // Link Label
+            {"InfoText"               , Color.FromArgb(unchecked((int)0xFFBEBEBE))},  // Prompt Text Color
+            {"Menu"                   , Color.FromArgb(unchecked((int)0xFF373737))},  // Normal Menu Background
+            {"MenuText"               , Color.FromArgb(unchecked((int)0xFFF0F0F0))},  // White
+            {"ScrollBar"              , Color.FromArgb(unchecked((int)0xFF505050))},  // Scrollbars and Scrollbar Arrows
+            {"Window"                 , Color.FromArgb(unchecked((int)0xFF323232))},  // Window Background
+            {"WindowFrame"            , Color.FromArgb(unchecked((int)0xFF282828))},  // White
+            {"WindowText"             , Color.FromArgb(unchecked((int)0xFFF0F0F0))},  // White
+            {"ButtonFace"             , Color.FromArgb(unchecked((int)0xFF202020))},  // Same as Window Background
+            {"ButtonHighlight"        , Color.FromArgb(unchecked((int)0xFF101010))},  // White
+            {"ButtonShadow"           , Color.FromArgb(unchecked((int)0xFF464646))},  // Same as Scrollbar Elements
+            {"GradientActiveCaption"  , Color.FromArgb(unchecked((int)0XFF416482))},  // Same as Highlighted Text Background
+            {"GradientInactiveCaption", Color.FromArgb(unchecked((int)0xFF557396))},  // Same as Highlighted Panel in DarkMode
+            {"MenuBar"                , Color.FromArgb(unchecked((int)0xFF373737))},  // Same as Normal Menu Background
+            {"MenuHighlight"          , Color.FromArgb(unchecked((int)0xFF2A80D2))},  // Same as Highlighted Menu Background
         };
+
+        //private static Dictionary<string, Color> DarkProfessionalColors = new Dictionary<string, Color>(34)
+        //{
+        //    // .NET 10 - System.Windows.Forms.DarkProfessionalColors
+        //    {"MenuItemPressedGradientBegin" , Color.FromArgb(unchecked((int)0xFF606060))},  // 
+        //    {"MenuItemPressedGradientMiddle", Color.FromArgb(unchecked((int)0xFF606060))},  // 
+        //    {"MenuItemPressedGradientEnd"   , Color.FromArgb(unchecked((int)0xFF606060))},  // 
+        //    {"MenuItemSelected"             , Color.FromArgb(unchecked((int)0xFFFFFFFF))},  // SystemColors.ControlText
+        //    {"MenuItemSelectedGradientBegin", Color.FromArgb(unchecked((int)0xFF404040))},  // 
+        //    {"MenuItemSelectedGradientEnd"  , Color.FromArgb(unchecked((int)0xFF404040))},  // 
+        //    {"MenuStripGradientBegin"       , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"MenuStripGradientEnd"         , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"StatusStripGradientBegin"     , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"StatusStripGradientEnd"       , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"ToolStripDropDownBackground"  , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"ImageMarginGradientBegin"     , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"ImageMarginGradientMiddle"    , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //    {"ImageMarginGradientEnd"       , Color.FromArgb(unchecked((int)0xFF373737))},  // SystemColors.Control
+        //};
 
         private static Color GetDarkSystemColor(string colorName)
         {
 
             try
             {
-                return DarkColors[colorName];
+                return DarkSystemColors[colorName];
             }
             catch
             {
@@ -169,31 +231,6 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                     };
                 }
 
-            }
-        }
-
-        private static void ThemeControl(Button button)
-        {
-            if (button.Image == null)
-            {
-                button.FlatStyle = FlatStyle.System;
-                uint msg = 5644u;
-                NativeMethods.SendMessage(new HandleRef(button, button.Handle), msg, new IntPtr(0), new IntPtr(0));
-            }
-            else
-            {
-                // manually set Dark Mode button settings. This is not-OS version aware
-                button.FlatStyle = FlatStyle.Flat;
-                button.BackColor = button.Name == "btnVTagsHelp" ? Color.Transparent : Color.FromArgb(51, 51, 51);
-                button.ForeColor = button.Name == "btnVTagsHelp" ? Color.Transparent : Color.FromArgb(255, 255, 255);
-                button.FlatAppearance.BorderSize = button.Name == "btnVTagsHelp" ? 0 : 1;
-                button.FlatAppearance.BorderColor = Color.FromArgb(155, 155, 155);
-                button.FlatAppearance.CheckedBackColor = Color.FromArgb(102, 102, 102);
-                button.FlatAppearance.MouseOverBackColor = Color.FromArgb(71, 71, 71);
-                // This _should_ handle buttons with images but it apparently missing something
-                //IntPtr imageHandle = new Bitmap(button.Image).GetHicon();
-                //const uint BM_SETIMAGE = 0xF7;
-                //NativeMethods.SendMessage(new HandleRef(button, button.Handle), BM_SETIMAGE, new IntPtr(1), imageHandle);
             }
         }
 
@@ -369,9 +406,9 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             {
                 ThemeControl(statusStrip);
             }
-            else if (control is Button button && control.Name != "btAssociateExtensions")
+            else if (control is Button button)
             {
-                ThemeControl(button);
+                button.FlatStyle = FlatStyle.System;
 
             }
             else if (control is CheckBox checkBox)
@@ -428,9 +465,11 @@ namespace cYo.Common.Windows.Forms.ColorScheme
             }
         }
 
-        public static void SetDarkMode()
+        public static void SetDarkMode(bool useDarkMode = false)
         {
-            if (!IsDarkModeEnabled) return;
+            if (!useDarkMode) return;
+
+            IsDarkModeEnabled = useDarkMode;
             // WhiteSmoke is (245,245,245), but (11,11,11) would be too dark
             int blackSmoke = Color.FromArgb(31, 31, 31).ToArgb();
 
@@ -444,7 +483,7 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 if (prop.PropertyType == typeof(Color))
                 {
                     knownColor = (KnownColor)Enum.Parse(typeof(KnownColor), prop.Name);
-                    colorSchemeController.SetColor(knownColor, GetDarkSystemColor(prop.Name).ToArgb());
+                    colorSchemeController.SetColor(knownColor, GetDarkSystemColor(knownColor.ToString()).ToArgb());
                 }
             }
         }
