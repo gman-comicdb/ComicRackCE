@@ -10,13 +10,17 @@ namespace cYo.Common.Win32
 
         internal static class Native
         {
-            //public const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
+            public const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
 
             public static readonly int DWMWA_USE_IMMERSIVE_DARK_MODE = GetDwmDarkModeAttribute();
 
             public const int WM_THEMECHANGED = 0x031A;
 
             public static int YES = 1;
+
+            // Win32 API ListView constants
+            public const int LVM_FIRST = 0x1000;
+            public const int LVM_GETHEADER = LVM_FIRST + 31;
 
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
@@ -35,6 +39,9 @@ namespace cYo.Common.Win32
 
             [DllImport("dwmapi.dll", PreserveSig = true)]
             public static extern int DwmSetWindowAttribute(IntPtr hwnd, int dwAttribute, ref int pvAttribute, int cbAttribute);
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
             public enum PreferredAppMode
             {
@@ -62,6 +69,7 @@ namespace cYo.Common.Win32
             typeof(ScrollBar),
             typeof(ScrollableControl),
             typeof(Button),
+            typeof(CheckBox),
             //typeof(ListView) // ListView can be set to DarkMode_Explorer (dark scrollbar; unthemed list) or DarkMode_ItemView (dark list; unthemed scrollbar)
         };
 
@@ -104,8 +112,38 @@ namespace cYo.Common.Win32
             if (!control.IsHandleCreated) return;
 
             IntPtr hwnd = control.Handle;
-            string themeClass = GetThemeClassForControl(control);
-            Native.SetWindowTheme(hwnd, themeClass, null);
+            if (control is TabControl)
+            {
+                Native.SetWindowTheme(hwnd, null, "DarkMode::FileExplorerBannerContainer");
+            }
+            else if (control is ListView listView)
+            {
+                // HeaderStyle is irrelevant; this is a temporary workaround ascannot reference ListViewEx class
+                if (listView.ShowGroups && listView.HeaderStyle != ColumnHeaderStyle.None)
+                {
+                    // sacrifice dark scrollbars to show readable group headers
+                    Native.SetWindowTheme(hwnd, "DarkMode_ItemsView", null);
+                    //Native.SetWindowTheme(hwnd,null, "DarkMode_ItemsView::ListView"); //messed up scrollbar
+                }
+                else
+                {
+                    // we don't have groups - let's get dark scrollbars
+                    Native.SetWindowTheme(hwnd, "DarkMode_Explorer", null);
+                }
+
+                // header has to be themed separately
+                IntPtr columnHeaderHandle = Native.SendMessage(hwnd, Native.LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+                if (columnHeaderHandle != IntPtr.Zero)
+                {
+                    Native.SetWindowTheme(columnHeaderHandle, "DarkMode_ItemsView", null); //working but dark header text
+                    //NativeMethods.SetWindowTheme(columnHeaderHandle, null, "DarkMode_ItemsView::Header");
+                }
+            }
+            else
+            {
+                string themeClass = GetThemeClassForControl(control);
+                Native.SetWindowTheme(hwnd, themeClass, null);
+            }
             Native.AllowDarkModeForWindow(hwnd, true);
         }
 
