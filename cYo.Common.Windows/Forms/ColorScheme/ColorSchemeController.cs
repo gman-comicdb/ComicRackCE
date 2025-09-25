@@ -173,21 +173,20 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 SystemColors.MenuBar,
                 SystemColors.MenuHighlight,
 
-                //ProfessionalColors.MenuItemPressedGradientBegin,
-                //ProfessionalColors.MenuItemPressedGradientMiddle,
-                //ProfessionalColors.MenuItemPressedGradientEnd,
-                //ProfessionalColors.MenuItemSelected,
-                //ProfessionalColors.MenuItemSelectedGradientBegin,
-                //ProfessionalColors.MenuItemSelectedGradientEnd,
-                //ProfessionalColors.MenuStripGradientBegin,
-                //ProfessionalColors.MenuStripGradientEnd,
-                //ProfessionalColors.StatusStripGradientBegin,
-                //ProfessionalColors.StatusStripGradientEnd,
-                //ProfessionalColors.ToolStripDropDownBackground,
-                //ProfessionalColors.ImageMarginGradientBegin,
-                //ProfessionalColors.ImageMarginGradientMiddle,
-                //ProfessionalColors.ImageMarginGradientEnd
-
+                ProfessionalColors.MenuItemPressedGradientBegin,
+                ProfessionalColors.MenuItemPressedGradientMiddle,
+                ProfessionalColors.MenuItemPressedGradientEnd,
+                ProfessionalColors.MenuItemSelected,
+                ProfessionalColors.MenuItemSelectedGradientBegin,
+                ProfessionalColors.MenuItemSelectedGradientEnd,
+                ProfessionalColors.MenuStripGradientBegin,
+                ProfessionalColors.MenuStripGradientEnd,
+                ProfessionalColors.StatusStripGradientBegin,
+                ProfessionalColors.StatusStripGradientEnd,
+                ProfessionalColors.ToolStripDropDownBackground,
+                ProfessionalColors.ImageMarginGradientBegin,
+                ProfessionalColors.ImageMarginGradientMiddle,
+                ProfessionalColors.ImageMarginGradientEnd
             }.Select(_ => _.ToKnownColor())
         );
 
@@ -198,46 +197,6 @@ namespace cYo.Common.Windows.Forms.ColorScheme
         private readonly FieldInfo _colorTableField;
         private readonly PropertyInfo _threadDataProperty;
 
-        public Bitmap RenderCheckboxToBitmap(CheckBoxState state, Size size)
-        {
-            Bitmap bmp = new Bitmap(size.Width, size.Height);
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                g.Clear(Color.Transparent); // Optional
-                CheckBoxRenderer.DrawCheckBox(g, new Point(0, 0), state);
-            }
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    Color original = bmp.GetPixel(x, y);
-                    Color inverted = Color.FromArgb(
-                        original.A,
-                        255 - original.R,
-                        255 - original.G,
-                        255 - original.B);
-                    bmp.SetPixel(x, y, inverted);
-                }
-            }
-            return bmp;
-        }
-
-        public void InvertBitmapColors(Bitmap bmp)
-        {
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    Color original = bmp.GetPixel(x, y);
-                    Color inverted = Color.FromArgb(
-                        original.A,
-                        255 - original.R,
-                        255 - original.G,
-                        255 - original.B);
-                    bmp.SetPixel(x, y, inverted);
-                }
-            }
-        }
     }
 
     public static class CollectionExtensions
