@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using cYo.Common;
 using cYo.Common.Localize;
 using cYo.Common.Text;
+using cYo.Common.Win32;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer.Properties;
