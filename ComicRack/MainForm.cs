@@ -47,7 +47,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 namespace cYo.Projects.ComicRack.Viewer
 {
 	[ComVisible(true)]
-	public partial class MainForm : Form, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+	public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
 	{
 		public partial class ComicReaderTab : TabBar.TabBarItem
 		{
@@ -928,12 +928,6 @@ namespace cYo.Projects.ComicRack.Viewer
 				ComicDisplay.FullScreen = false;
 			}
 			base.WndProc(ref m);
-			// ThemeIt
-            if (m.Msg == Native.WM_CREATE)
-            {
-                //ColorSchemeExtensions.SetColorScheme(this);
-                //UXTheme.ApplyDarkThemeRecursive(this);
-            }
         }
 
 		protected override void OnShown(EventArgs e)
