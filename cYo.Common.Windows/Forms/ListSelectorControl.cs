@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.Net.Search;
 using cYo.Common.Text;
+using cYo.Common.Win32;
 using cYo.Common.Windows.Properties;
 using cYo.Common.Windows.Forms.ColorScheme;
 
