@@ -298,28 +298,33 @@ namespace cYo.Common.Windows.Forms.ColorScheme
                 }
                 size = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
-                // how taxing is generating and then pixel-by-pixel inverting a checkbox?
-                ColorSchemeController colorSchemeController = new ColorSchemeController();
-
                 var x = 0;
                 var y = 0;
-                if (checkBox.CheckAlign == System.Drawing.ContentAlignment.TopLeft)
+                if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
                 {
-                    // default, expected, here so we can color unhandled cases in red
+                    x = checkBox.Width - size.Width;
+                    y = (checkBox.Height / 2) - (size.Height / 2);
                 }
-                else if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleLeft)
-                {
-                    y = (e.ClipRectangle.Height / 2) - (size.Height / 2);
-                }
-                else if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
-                {
-                    x = e.ClipRectangle.Width - size.Width;
-                    y = (e.ClipRectangle.Height / 2) - (size.Height / 2);
-                }
-                else
-                {
-                    e.Graphics.Clear(Color.Red);
-                }
+                // this causes checkboxes to be drawn in the wrong place.
+                // could be due to logic bug, or needing to doublebuffer or some other image processing/oprimisation
+                //if (checkBox.CheckAlign == System.Drawing.ContentAlignment.TopLeft)
+                //{
+                //    // default, expected, here so we can color unhandled cases in red
+                //}
+                //else if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleLeft)
+                //{
+                //    y = (e.ClipRectangle.Height / 2) - (size.Height / 2);
+                //}
+                //else if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
+                //{
+                //    x = e.ClipRectangle.Width - size.Width;
+                //    y = (e.ClipRectangle.Height / 2) - (size.Height / 2);
+                //}
+                //else
+                //{
+                //    e.Graphics.Clear(Color.Red);
+                //}
+
                 using (backGroundBrush)
                 {
                     e.Graphics.FillRectangle(backGroundBrush, x, y, size.Width, size.Height + 1);
