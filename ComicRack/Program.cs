@@ -41,7 +41,7 @@ using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
-//using static IronPython.Modules._ast;
+using static IronPython.Modules._ast;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using CoreWCF;
 using CoreWCF.Configuration;
@@ -892,14 +892,14 @@ namespace cYo.Projects.ComicRack.Viewer
 			StartupProgress(TR.Messages["CreateMainWindow", "Creating Main Window"], 50);
 			if (ExtendedSettings.DisableScriptOptimization)
 			{
-				//PythonCommand.Optimized = false;
+				PythonCommand.Optimized = false;
 			}
 			if (ExtendedSettings.ShowScriptConsole)
 			{
 				ScriptConsole = new ScriptOutputForm();
-				//TextBoxStream logOutput = (TextBoxStream)(PythonCommand.Output = new TextBoxStream(ScriptConsole.Log));
-				//PythonCommand.EnableLog = true;
-				//WebComic.SetLogOutput(logOutput);
+				TextBoxStream logOutput = (TextBoxStream)(PythonCommand.Output = new TextBoxStream(ScriptConsole.Log));
+				PythonCommand.EnableLog = true;
+				WebComic.SetLogOutput(logOutput);
 				ScriptConsole.Show();
 			}
 			NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);

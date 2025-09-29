@@ -11,12 +11,10 @@ namespace cYo.Projects.ComicRack.Plugins
 {
 	public class PluginEngine
 	{
-        //private readonly PluginInitializer[] initializers = new PluginInitializer[2]
-        private readonly PluginInitializer[] initializers = new PluginInitializer[1]
+        private readonly PluginInitializer[] initializers = new PluginInitializer[2]
 		{
-            new XmlPluginInitializer()
-            //new XmlPluginInitializer(),
-			//new PythonPluginInitializer()
+            new XmlPluginInitializer(),
+			new PythonPluginInitializer()
 		};
 
 		public const string ScriptTypeCreateBookList = "CreateBookList";
