@@ -1,16 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Selectors;
-using System.IdentityModel.Tokens;
-using System.Linq;
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
-using System.ServiceModel.Security;
-using System.Threading;
+using CoreWCF;
+using CoreWCF.Configuration;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -21,13 +10,32 @@ using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Engine.Properties;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+//using System.IdentityModel.Selectors;
+using System.IdentityModel.Tokens;
+using System.Linq;
+using System.Net;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+//using System.ServiceModel;
+//using System.ServiceModel.Channels;
+//using System.ServiceModel.Description;
+//using System.ServiceModel.Security;
+using System.Threading;
+
+using CoreWCF.Channels;
+
 
 namespace cYo.Projects.ComicRack.Engine.IO.Network
 {
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true, ConcurrencyMode = ConcurrencyMode.Multiple, AddressFilterMode = AddressFilterMode.Prefix)]
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true, ConcurrencyMode = CoreWCF.ConcurrencyMode.Multiple, AddressFilterMode = AddressFilterMode.Prefix)]
 	public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDisposable
 	{
-		private class PasswordValidator : UserNamePasswordValidator
+		private class PasswordValidator
 		{
 			private readonly string password;
 
@@ -36,7 +44,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				this.password = password;
 			}
 
-			public override void Validate(string userName, string password)
+			public void Validate(string userName, string password)
 			{
 				if (!string.IsNullOrEmpty(this.password) && this.password != password)
 				{
@@ -69,9 +77,12 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 
 		private bool serverValidationFailed;
 
-		private ServiceHost serviceHost;
+        //private ServiceHost serviceHost;
 
-		private readonly Cache<Guid, IImageProvider> providerCache = new Cache<Guid, IImageProvider>(EngineConfiguration.Default.ServerProviderCacheSize);
+        // new: CoreWCF host instance
+        private Microsoft.Extensions.Hosting.IHost? _wcfHost;
+
+        private readonly Cache<Guid, IImageProvider> providerCache = new Cache<Guid, IImageProvider>(EngineConfiguration.Default.ServerProviderCacheSize);
 
 		//private static readonly ServerRegistration serverRegistration = new ServerRegistration();
 
@@ -133,7 +144,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 			private set;
 		}
 
-		public bool IsRunning => serviceHost != null;
+		public bool IsRunning => _wcfHost != null;
 
 		public bool IsAnnounced => serverHasBeenAnnounced;
 
@@ -380,20 +391,76 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				{
 					return false;
 				}
-				string uriString = $"net.tcp://localhost:{Config.ServicePort}/{Config.ServiceName}";
-				serviceHost = new ServiceHost(this, new Uri(uriString));
-				serviceHost.Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
-				serviceHost.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new PasswordValidator(Config.ProtectionPassword);
-				serviceHost.Credentials.ServiceCertificate.Certificate = new X509Certificate2(Certificate);// New Cert (sha256)
-                serviceHost.Credentials.IssuedTokenAuthentication.KnownCertificates.Add(new X509Certificate2(Certificate));// New Cert (sha256)
-				serviceHost.Credentials.IssuedTokenAuthentication.KnownCertificates.Add(new X509Certificate2(Resources.Certificate, string.Empty));//Old Cert (md5)
-                serviceHost.Credentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
-				ServiceEndpoint serviceEndpoint = serviceHost.AddServiceEndpoint(typeof(IRemoteServerInfo), CreateChannel(secure: false), InfoPoint);
-				serviceEndpoint.Binding.SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
-				serviceEndpoint = serviceHost.AddServiceEndpoint(typeof(IRemoteComicLibrary), CreateChannel(secure: true), LibraryPoint);
-				serviceEndpoint.Binding.SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
-				serviceHost.Open();
-				if (Config.IsInternet)
+                // --- CoreWCF replacement for ServiceHost creation ---
+                string baseAddress = $"net.tcp://localhost:{Config.ServicePort}/{Config.ServiceName}";
+
+                // Build the generic host which will host CoreWCF services
+                var builder = Host.CreateDefaultBuilder()
+                    .ConfigureServices(services =>
+                    {
+                        // register CoreWCF plumbing
+                        services.AddServiceModelServices();
+
+                        // register THIS server instance as the service implementation (singleton)
+                        services.AddSingleton<ComicLibraryServer>(this);
+
+                        // custom username/password validator
+                        // services.AddSingleton<IUserNamePasswordValidator>(new PasswordValidator(Config.ProtectionPassword));
+                        //
+                        // (CoreWCF.Security package may be required)
+                    })
+                    .ConfigureWebHostDefaults(webBuilder =>
+                    {
+                        webBuilder.Configure(app =>
+                        {
+                            app.UseServiceModel(serviceBuilder =>
+                            {
+                                // register the service type
+                                serviceBuilder.AddService<ComicLibraryServer>();
+
+                                // insecure endpoint (Info)
+                                var infoBinding = new NetTcpBinding(SecurityMode.None)
+                                {
+                                    SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout)
+                                };
+
+                                // secure endpoint (Library) — transport security with client certs
+                                var libraryBinding = new NetTcpBinding(SecurityMode.Transport)
+                                {
+                                    SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout)
+                                };
+                                libraryBinding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+
+                                // Add endpoints. Using absolute URIs mirrors your old addresses.
+                                serviceBuilder.AddServiceEndpoint<ComicLibraryServer, IRemoteServerInfo>(
+                                    infoBinding,
+                                    $"{baseAddress}/InfoPoint");
+
+                                serviceBuilder.AddServiceEndpoint<ComicLibraryServer, IRemoteComicLibrary>(
+                                    libraryBinding,
+                                    $"{baseAddress}/LibraryPoint");
+                            });
+                        });
+                    });
+
+                // Build and start the host (non-blocking)
+                _wcfHost = builder.Build();
+                _wcfHost.Start();   // start the hosting background services
+
+				//string uriString = $"net.tcp://localhost:{Config.ServicePort}/{Config.ServiceName}";
+				//serviceHost = new ServiceHost(this, new Uri(uriString));
+				//serviceHost.Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
+				//serviceHost.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new PasswordValidator(Config.ProtectionPassword);
+				//serviceHost.Credentials.ServiceCertificate.Certificate = new X509Certificate2(Certificate);// New Cert (sha256)
+				//            serviceHost.Credentials.IssuedTokenAuthentication.KnownCertificates.Add(new X509Certificate2(Certificate));// New Cert (sha256)
+				//serviceHost.Credentials.IssuedTokenAuthentication.KnownCertificates.Add(new X509Certificate2(Resources.Certificate, string.Empty));//Old Cert (md5)
+				//            serviceHost.Credentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
+				//ServiceEndpoint serviceEndpoint = serviceHost.AddServiceEndpoint(typeof(IRemoteServerInfo), CreateChannel(secure: false), InfoPoint);
+				//serviceEndpoint.Binding.SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
+				//serviceEndpoint = serviceHost.AddServiceEndpoint(typeof(IRemoteComicLibrary), CreateChannel(secure: true), LibraryPoint);
+				//serviceEndpoint.Binding.SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
+				//serviceHost.Open();
+                if (Config.IsInternet)
 				{
 					AnnounceServer();
 					announceTimer = new Timer(ServerAnnounce, null, 300000, 300000);
@@ -432,14 +499,21 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				{
 					Broadcaster.Broadcast(new BroadcastData(BroadcastType.ServerStopped, Config.ServiceName, Config.ServicePort));
 				}
-				serviceHost.Close();
-			}
-			catch
+                //serviceHost.Close();
+                if (_wcfHost != null)
+                {
+                    _wcfHost.StopAsync().GetAwaiter().GetResult();
+                    _wcfHost.Dispose();
+                    _wcfHost = null;
+                }
+
+            }
+            catch
 			{
 			}
 			finally
 			{
-				serviceHost = null;
+                _wcfHost = null;
 			}
 		}
 

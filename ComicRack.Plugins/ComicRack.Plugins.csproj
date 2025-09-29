@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <NoWarn>$(NoWarn);WFO1000</NoWarn>
     <OutputType>Library</OutputType>
     <RootNamespace>cYo.Projects.ComicRack.Plugins</RootNamespace>
     <LangVersion>latest</LangVersion>
@@ -20,9 +21,6 @@
     <Compile Update="Controls\UIComicPageControl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IronPython">
-      <Version>2.7.4</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
     </PackageReference>

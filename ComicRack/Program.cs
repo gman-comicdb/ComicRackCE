@@ -21,7 +21,7 @@ using cYo.Common.IO;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Net;
-using cYo.Common.Presentation.Tao;
+//using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Text;
 using cYo.Common.Threading;
@@ -41,8 +41,10 @@ using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
-using static IronPython.Modules._ast;
+//using static IronPython.Modules._ast;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using CoreWCF;
+using CoreWCF.Configuration;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
@@ -544,7 +546,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 				if (Path.GetDirectoryName(path) is string dir && Directory.Exists(dir)) //Open parent dir if file does not exist
 					return FileExplorer.OpenFolder(dir, Program.ExtendedSettings.OpenExplorerUsingAPI);
-			}
+				}
 			catch (Exception)
 			{
 			}
@@ -725,15 +727,18 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		private static void StartNew(string[] args)
 		{
-			Thread.CurrentThread.Name = "GUI Thread";
+            Thread.CurrentThread.Name = "GUI Thread";
 			Diagnostic.StartWatchDog(CrashDialog.OnBark);
 			ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookPluginMatcher));
 			ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookExpressionMatcher));
 			Settings = Settings.Load(defaultSettingsFile);
 			Settings.RunCount++;
-			CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
+			//CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
 			CommandLineParser.Parse(EngineConfiguration.Default);
-			Application.EnableVisualStyles();
+#pragma warning disable WFO5001
+            //Application.SetColorMode(SystemColorMode.Dark);
+#pragma warning restore WFO5001
+            Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(defaultValue: false);
 			ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
 			DatabaseManager.FirstDatabaseAccess += delegate
@@ -840,18 +845,19 @@ namespace cYo.Projects.ComicRack.Viewer
 					};
 				}
 				ToolStripManager.Renderer = renderer;
-				if (ExtendedSettings.DisableHardware)
-				{
-					ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-				}
-				else
-				{
-					ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-				}
-				if (ExtendedSettings.DisableMipMapping)
-				{
-					ImageDisplayControl.HardwareSettings.MipMapping = false;
-				}
+                ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
+				//if (ExtendedSettings.DisableHardware)
+				//{
+				//	ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
+				//}
+				//else
+				//{
+				//	ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
+				//}
+				//if (ExtendedSettings.DisableMipMapping)
+				//{
+				//	ImageDisplayControl.HardwareSettings.MipMapping = false;
+				//}
 				Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
 				StartupProgress(TR.Messages["InitCache", "Initialize Disk Caches"], 30);
 				CacheManager = new CacheManager(DatabaseManager, Paths, Settings, Resources.ResourceManager);
@@ -886,19 +892,19 @@ namespace cYo.Projects.ComicRack.Viewer
 			StartupProgress(TR.Messages["CreateMainWindow", "Creating Main Window"], 50);
 			if (ExtendedSettings.DisableScriptOptimization)
 			{
-				PythonCommand.Optimized = false;
+				//PythonCommand.Optimized = false;
 			}
 			if (ExtendedSettings.ShowScriptConsole)
 			{
 				ScriptConsole = new ScriptOutputForm();
-				TextBoxStream logOutput = (TextBoxStream)(PythonCommand.Output = new TextBoxStream(ScriptConsole.Log));
-				PythonCommand.EnableLog = true;
-				WebComic.SetLogOutput(logOutput);
+				//TextBoxStream logOutput = (TextBoxStream)(PythonCommand.Output = new TextBoxStream(ScriptConsole.Log));
+				//PythonCommand.EnableLog = true;
+				//WebComic.SetLogOutput(logOutput);
 				ScriptConsole.Show();
 			}
 			NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);
 			MainForm = new MainForm();
-			MainForm.FormClosed += MainFormFormClosed;
+            MainForm.FormClosed += MainFormFormClosed;
 			MainForm.FormClosing += (object s, FormClosingEventArgs e) =>
             {
                 bool flag2 = e.CloseReason == CloseReason.UserClosing;
@@ -941,8 +947,8 @@ namespace cYo.Projects.ComicRack.Viewer
 			{
 				MainForm.ShowNews(always: false);
 			}
-			Application.Run(MainForm);
-		}
+            Application.Run(MainForm);
+        }
 
 		public static Dictionary<string, ImagePackage> CreateGenericsIcons(IEnumerable<string> folders, string searchPattern, string trigger, Func<string, IEnumerable<string>> mapKeys = null)
 		{
@@ -1065,10 +1071,10 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		private static void AutoTuneSystem()
 		{
-			if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault)
+            //if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault)
+            if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault)
 			{
 				int processorCount = Environment.ProcessorCount;
-				// TODO: Query the video memory instead of physical memory
 				int num = (int)(MemoryInfo.InstalledPhysicalMemory / 1024 / 1024);
 				int cpuSpeedInHz = MemoryInfo.CpuSpeedInHz;
 				if (num <= 512)
@@ -1080,12 +1086,12 @@ namespace cYo.Projects.ComicRack.Viewer
 				{
 					ExtendedSettings.OptimizedListScrolling = false;
 				}
-				ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
-				if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
-				{
-					ImageDisplayControl.HardwareSettings.TextureManagerOptions |= TextureManagerOptions.BigTexturesAs16Bit;
-					ImageDisplayControl.HardwareSettings.TextureManagerOptions &= ~TextureManagerOptions.MipMapFilter;
-				}
+				//ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
+				//if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
+				//{
+				//	ImageDisplayControl.HardwareSettings.TextureManagerOptions |= TextureManagerOptions.BigTexturesAs16Bit;
+				//	ImageDisplayControl.HardwareSettings.TextureManagerOptions &= ~TextureManagerOptions.MipMapFilter;
+				//}
 			}
 		}
 
@@ -1095,9 +1101,8 @@ namespace cYo.Projects.ComicRack.Viewer
 		[STAThread]
 		private static int Main(string[] args)
 		{
-			SetProcessDPIAware();
-			ServicePointManager.Expect100Continue = false;
-			if (ExtendedSettings.WaitPid != 0)
+            //ServicePointManager.Expect100Continue = false;
+            if (ExtendedSettings.WaitPid != 0)
 			{
 				try
 				{
@@ -1115,13 +1120,40 @@ namespace cYo.Projects.ComicRack.Viewer
 				}
 				return 0;
 			}
-			TR.ResourceFolder = new PackedLocalize(TR.ResourceFolder);
+            TR.ResourceFolder = new PackedLocalize(TR.ResourceFolder);
             NativeLibraryHelper.RegisterDirectory(); //Add the resources directory to the search path for natives dll's
             Control.CheckForIllegalCrossThreadCalls = false;
 			ItemMonitor.CatchThreadInterruptException = true;
-			SingleInstance singleInstance = new SingleInstance("ComicRackSingleInstance", StartNew, StartLast);
-			singleInstance.Run(args);
-			if (Restart)
+
+            SingleInstance singleInstance = new SingleInstance("ComicRackCommunityEdition");
+
+            bool isFirst = singleInstance.Run(args, StartLast);
+
+            if (!isFirst)
+                return 0; // another instance exists, arguments forwarded
+
+			StartNew(args);
+
+            ////SingleInstance singleInstance = new SingleInstance("ComicRackSingleInstance", StartNew, StartLast);
+            ////singleInstance.Run(args);
+            //Log.Information("CatchThreadInterruptException");
+            //var singleInstance = new SingleInstance("ComicRackSingleInstance", StartNew, StartLast);
+            //Log.Information("singleInstance");
+
+            //#region singleInstance.Run(args);
+            //// Try to notify first instance
+            //if (singleInstance.InvokeFirstInstance(args))
+            //    return 0; // exit second instance
+
+            //Log.Information	("InvokeFirstInstance");
+
+            //// Start CoreWCF host for first instance
+            //singleInstance.StartHost(args);
+            //Log.Information("StartHost fin");
+            //// Subscribe to future calls
+            ////singleInstance.OtherInstanceStarted += (otherArgs) => startLast(otherArgs);
+
+            if (Restart)
 			{
 				Application.Exit();
 				Process.Start(Application.ExecutablePath, "-restart -waitpid " + Process.GetCurrentProcess().Id + " " + Environment.CommandLine);

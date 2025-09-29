@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <NoWarn>$(NoWarn);WFO1000</NoWarn>
     <OutputType>Library</OutputType>
     <LangVersion>latest</LangVersion>
     <FileAlignment>4096</FileAlignment>
@@ -16,16 +17,6 @@
     <DebugType>none</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLL\Tao.OpenGl.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Platform.Windows, Version=1.0.0.5, Culture=neutral, PublicKeyToken=701104b2da67a104, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLL\Tao.Platform.Windows.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
@@ -52,10 +43,6 @@
     <PackageReference Include="SharpZipLib">
       <Version>1.4.2</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DLL\Tao.OpenGl.dll" />
-    <Content Include="DLL\Tao.Platform.Windows.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cYo.Common\cYo.Common.csproj" />

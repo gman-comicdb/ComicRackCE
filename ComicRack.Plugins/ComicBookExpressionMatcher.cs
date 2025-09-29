@@ -107,14 +107,14 @@ namespace cYo.Projects.ComicRack.Plugins
 			error = false;
 			try
 			{
-				if (expression == null)
-				{
-					expression = PythonCommand.CompileExpression<Func<ComicBook, IComicBookStatsProvider, bool>>(parsedMatchValue, new string[2]
-					{
-						BookVariableName,
-						BookStatsVariableName
-					});
-				}
+				//if (expression == null)
+				//{
+				//	expression = PythonCommand.CompileExpression<Func<ComicBook, IComicBookStatsProvider, bool>>(parsedMatchValue, new string[2]
+				//	{
+				//		BookVariableName,
+				//		BookStatsVariableName
+				//	});
+				//}
 			}
 			catch (Exception)
 			{

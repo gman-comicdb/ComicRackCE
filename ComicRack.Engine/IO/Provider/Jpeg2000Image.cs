@@ -12,9 +12,9 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using cYo.Common.Collections;
-using CSJ2K;
-using CSJ2K.Util;
-using CSJ2K.j2k.util;
+using CoreJ2K;
+using CoreJ2K.Util;
+using CoreJ2K.j2k.util;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
@@ -22,7 +22,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 	{
 		static Jpeg2000Image()
 		{
-			BitmapImageCreator.Register();
+            SKBitmapImageCreator.Register();
 		}
 
 		public static byte[] ConvertToJpeg2000(Bitmap bmp, int quality = 40, bool isJp2 = true)

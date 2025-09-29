@@ -147,21 +147,22 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 				using (new WaitCursor(this))
 				{
 					labelFailedServerList.Visible = false;
-					servers = new List<ShareInformation>();
-					using (ItemMonitor.Lock(Program.NetworkManager.LocalShares))
-					{
-						servers.AddRange(Program.NetworkManager.LocalShares.Values);
-					}
-					try
-					{
-						servers.AddRange((from s in ComicLibraryServer.GetPublicServers(ServerOptions.None, password)
-							orderby s.Name
-							select s).ToArray());
-					}
-					catch
-					{
-						labelFailedServerList.Visible = servers.Count == 0;
-					}
+                    labelFailedServerList.Visible = servers.Count == 0;
+     //               servers = new List<ShareInformation>();
+					//using (ItemMonitor.Lock(Program.NetworkManager.LocalShares))
+					//{
+					//	servers.AddRange(Program.NetworkManager.LocalShares.Values);
+					//}
+					//try
+					//{
+					//	servers.AddRange((from s in ComicLibraryServer.GetPublicServers(ServerOptions.None, password)
+					//		orderby s.Name
+					//		select s).ToArray());
+					//}
+					//catch
+					//{
+					//	labelFailedServerList.Visible = servers.Count == 0;
+					//}
 				}
 			}
 			lvServers.Items.Clear();

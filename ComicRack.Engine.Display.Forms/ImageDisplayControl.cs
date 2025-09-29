@@ -8,12 +8,12 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.Mathematics;
 using cYo.Common.Presentation;
-using cYo.Common.Presentation.Tao;
+//using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Threading;
 using cYo.Common.Windows.Forms;
-using Windows7.Multitouch;
-using Windows7.Multitouch.WinForms;
+//using Windows7.Multitouch;
+//using Windows7.Multitouch.WinForms;
 
 namespace cYo.Projects.ComicRack.Engine.Display.Forms
 {
@@ -858,7 +858,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 
 		private PointF flowMinDelta;
 
-		private GestureHandler gestureHandler;
+		//private GestureHandler gestureHandler;
 
 		private ImageRotation gestureRotation;
 
@@ -876,11 +876,11 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 
 		private ImagePartInfo panPart;
 
-		private Windows7.Multitouch.GestureEventArgs ignoreEvent;
+		//private Windows7.Multitouch.GestureEventArgs ignoreEvent;
 
 		private static HardwareAccelerationType hardwareAcceleration = HardwareAccelerationType.Enabled;
 
-		private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
+		//private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
 
 		private IContainer components;
 
@@ -1470,7 +1470,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 			}
 		}
 
-		public static TextureManagerSettings HardwareSettings => hardwareSettings;
+		//public static TextureManagerSettings HardwareSettings => hardwareSettings;
 
 		public Point PanLocation => panLocation;
 
@@ -1830,39 +1830,39 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 		{
 			try
 			{
-				if (hardware && HardwareAcceleration != 0 && !DisableHardwareAcceleration)
-				{
-					if (renderer != null && renderer.IsHardware)
-					{
-						return true;
-					}
-					if (renderer != null && renderer is IDisposable)
-					{
-						IDisposable disposable = renderer as IDisposable;
-						renderer = null;
-						disposable.Dispose();
-					}
-					ControlOpenGlRenderer controlOpenGlRenderer = null;
-					bool flag;
-					try
-					{
-						controlOpenGlRenderer = new ControlOpenGlRenderer(this, registerPaint: false, (TextureManagerSettings)HardwareSettings.Clone())
-						{
-							EnableFilter = hardwareFiltering
-						};
-						flag = controlOpenGlRenderer.IsSoftwareRenderer;
-					}
-					catch
-					{
-						flag = true;
-					}
-					if (!flag || HardwareAcceleration == HardwareAccelerationType.Forced)
-					{
-						renderer = controlOpenGlRenderer;
-						return true;
-					}
-					controlOpenGlRenderer?.Dispose();
-				}
+				//if (hardware && HardwareAcceleration != 0 && !DisableHardwareAcceleration)
+				//{
+				//	if (renderer != null && renderer.IsHardware)
+				//	{
+				//		return true;
+				//	}
+				//	if (renderer != null && renderer is IDisposable)
+				//	{
+				//		IDisposable disposable = renderer as IDisposable;
+				//		renderer = null;
+				//		disposable.Dispose();
+				//	}
+				//	ControlOpenGlRenderer controlOpenGlRenderer = null;
+				//	bool flag;
+				//	try
+				//	{
+				//		controlOpenGlRenderer = new ControlOpenGlRenderer(this, registerPaint: false, (TextureManagerSettings)HardwareSettings.Clone())
+				//		{
+				//			EnableFilter = hardwareFiltering
+				//		};
+				//		flag = controlOpenGlRenderer.IsSoftwareRenderer;
+				//	}
+				//	catch
+				//	{
+				//		flag = true;
+				//	}
+				//	if (!flag || HardwareAcceleration == HardwareAccelerationType.Forced)
+				//	{
+				//		renderer = controlOpenGlRenderer;
+				//		return true;
+				//	}
+				//	controlOpenGlRenderer?.Dispose();
+				//}
 				SetStyle(ControlStyles.OptimizedDoubleBuffer, value: true);
 				if (renderer != null)
 				{
@@ -2428,144 +2428,144 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 
 		private void InitWindowsTouch()
 		{
-			try
-			{
-				gestureHandler = Factory.CreateHandler<GestureHandler>(this);
-				gestureHandler.DisableGutter = true;
-				gestureHandler.RotateBegin += gestureHandler_RotateBegin;
-				gestureHandler.Rotate += gestureHandler_Rotate;
-				gestureHandler.ZoomBegin += gestureHandler_ZoomBegin;
-				gestureHandler.Zoom += gestureHandler_Zoom;
-				gestureHandler.PanBegin += gestureHandler_PanBegin;
-				gestureHandler.Pan += gestureHandler_Pan;
-				gestureHandler.PanEnd += gestureHandler_PanEnd;
-				gestureHandler.TwoFingerTap += gestureHandler_TwoFingerTap;
-				gestureHandler.PressAndTap += gestureHandler_PressAndTap;
-			}
-			catch (Exception)
-			{
-			}
+			//try
+			//{
+			//	gestureHandler = Factory.CreateHandler<GestureHandler>(this);
+			//	gestureHandler.DisableGutter = true;
+			//	gestureHandler.RotateBegin += gestureHandler_RotateBegin;
+			//	gestureHandler.Rotate += gestureHandler_Rotate;
+			//	gestureHandler.ZoomBegin += gestureHandler_ZoomBegin;
+			//	gestureHandler.Zoom += gestureHandler_Zoom;
+			//	gestureHandler.PanBegin += gestureHandler_PanBegin;
+			//	gestureHandler.Pan += gestureHandler_Pan;
+			//	gestureHandler.PanEnd += gestureHandler_PanEnd;
+			//	gestureHandler.TwoFingerTap += gestureHandler_TwoFingerTap;
+			//	gestureHandler.PressAndTap += gestureHandler_PressAndTap;
+			//}
+			//catch (Exception)
+			//{
+			//}
 		}
 
-		private void gestureHandler_RotateBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			GestureLocation = e.Location;
-			OnGestureStart();
-			gestureRotation = ImageRotation;
-			gestureRotationStart = e.RotateAngle;
-		}
+		//private void gestureHandler_RotateBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	GestureLocation = e.Location;
+		//	OnGestureStart();
+		//	gestureRotation = ImageRotation;
+		//	gestureRotationStart = e.RotateAngle;
+		//}
 
-		private void gestureHandler_Rotate(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			double num = gestureRotationStart / Math.PI * 180.0;
-			double num2 = e.RotateAngle / Math.PI * 180.0;
-			double num3 = num - num2;
-			ImageRotation imageRotation2 = (ImageRotation = gestureRotation.Add((int)num3 + 45));
-		}
+		//private void gestureHandler_Rotate(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	double num = gestureRotationStart / Math.PI * 180.0;
+		//	double num2 = e.RotateAngle / Math.PI * 180.0;
+		//	double num3 = num - num2;
+		//	ImageRotation imageRotation2 = (ImageRotation = gestureRotation.Add((int)num3 + 45));
+		//}
 
-		private void gestureHandler_ZoomBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			GestureLocation = e.Location;
-			OnGestureStart();
-			gestureZoomStart = ImageZoom;
-			zoomStart = true;
-		}
+		//private void gestureHandler_ZoomBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	GestureLocation = e.Location;
+		//	OnGestureStart();
+		//	gestureZoomStart = ImageZoom;
+		//	zoomStart = true;
+		//}
 
-		private void gestureHandler_Zoom(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			if (zoomStart)
-			{
-				zoomStart = false;
-				zoomOffset = (float)e.ZoomFactor - 1f;
-			}
-			float value = (float)(e.ZoomFactor - (double)zoomOffset) * gestureZoomStart;
-			DoZoom(ClientToImage(GestureLocation), value.Clamp(MinimumZoom, MaximumZoom));
-		}
+		//private void gestureHandler_Zoom(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	if (zoomStart)
+		//	{
+		//		zoomStart = false;
+		//		zoomOffset = (float)e.ZoomFactor - 1f;
+		//	}
+		//	float value = (float)(e.ZoomFactor - (double)zoomOffset) * gestureZoomStart;
+		//	DoZoom(ClientToImage(GestureLocation), value.Clamp(MinimumZoom, MaximumZoom));
+		//}
 
-		private void gestureHandler_PanBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			panLocation = e.Location;
-			GestureLocation = e.Location;
-			OnGestureStart();
-			OnPanStart();
-			if (!MouseHandled)
-			{
-				panStart = panLocation;
-				panPart = ImageVisiblePart;
-			}
-		}
+		//private void gestureHandler_PanBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	panLocation = e.Location;
+		//	GestureLocation = e.Location;
+		//	OnGestureStart();
+		//	OnPanStart();
+		//	if (!MouseHandled)
+		//	{
+		//		panStart = panLocation;
+		//		panPart = ImageVisiblePart;
+		//	}
+		//}
 
-		private void gestureHandler_Pan(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			if (ignoreEvent == e.LastBeginEvent)
-			{
-				return;
-			}
-			panLocation = e.Location;
-			OnPan();
-			if (MouseHandled || panStart.IsEmpty)
-			{
-				return;
-			}
-			if (Display.IsAllVisible && Math.Abs(e.PanVelocity.Width) > 2 && e.PanVelocity.Height == 0)
-			{
-				ignoreEvent = e.LastBeginEvent;
-				if (e.PanVelocity.Width < 0)
-				{
-					OnGesture(new GestureEventArgs(GestureType.FlickLeft));
-				}
-				else
-				{
-					OnGesture(new GestureEventArgs(GestureType.FlickRight));
-				}
-			}
-			else
-			{
-				Point point = ClientToImage(panStart);
-				Point point2 = ClientToImage(panLocation);
-				Point offset = new Point(panPart.Offset.X + (point.X - point2.X), panPart.Offset.Y + (point.Y - point2.Y));
-				SetVisiblePart(new ImagePartInfo(panPart.Part, offset));
-			}
-		}
+		//private void gestureHandler_Pan(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	if (ignoreEvent == e.LastBeginEvent)
+		//	{
+		//		return;
+		//	}
+		//	panLocation = e.Location;
+		//	OnPan();
+		//	if (MouseHandled || panStart.IsEmpty)
+		//	{
+		//		return;
+		//	}
+		//	if (Display.IsAllVisible && Math.Abs(e.PanVelocity.Width) > 2 && e.PanVelocity.Height == 0)
+		//	{
+		//		ignoreEvent = e.LastBeginEvent;
+		//		if (e.PanVelocity.Width < 0)
+		//		{
+		//			OnGesture(new GestureEventArgs(GestureType.FlickLeft));
+		//		}
+		//		else
+		//		{
+		//			OnGesture(new GestureEventArgs(GestureType.FlickRight));
+		//		}
+		//	}
+		//	else
+		//	{
+		//		Point point = ClientToImage(panStart);
+		//		Point point2 = ClientToImage(panLocation);
+		//		Point offset = new Point(panPart.Offset.X + (point.X - point2.X), panPart.Offset.Y + (point.Y - point2.Y));
+		//		SetVisiblePart(new ImagePartInfo(panPart.Part, offset));
+		//	}
+		//}
 
-		private void gestureHandler_PanEnd(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			panLocation = e.Location;
-			OnPanEnd();
-			panStart = Point.Empty;
-		}
+		//private void gestureHandler_PanEnd(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	panLocation = e.Location;
+		//	OnPanEnd();
+		//	panStart = Point.Empty;
+		//}
 
-		private void gestureHandler_PressAndTap(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			GestureLocation = (panLocation = e.Location);
-			if (e.IsBegin)
-			{
-				OnGestureStart();
-				OnGesture(new GestureEventArgs(GestureType.PressAndTap));
-				OnPanStart();
-			}
-			else if (e.IsEnd)
-			{
-				OnPanEnd();
-			}
-			else
-			{
-				OnPan();
-			}
-		}
+		//private void gestureHandler_PressAndTap(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	GestureLocation = (panLocation = e.Location);
+		//	if (e.IsBegin)
+		//	{
+		//		OnGestureStart();
+		//		OnGesture(new GestureEventArgs(GestureType.PressAndTap));
+		//		OnPanStart();
+		//	}
+		//	else if (e.IsEnd)
+		//	{
+		//		OnPanEnd();
+		//	}
+		//	else
+		//	{
+		//		OnPan();
+		//	}
+		//}
 
-		private void gestureHandler_TwoFingerTap(object sender, Windows7.Multitouch.GestureEventArgs e)
-		{
-			GestureLocation = (panLocation = e.Location);
-			if (e.IsBegin)
-			{
-				OnGestureStart();
-				OnGesture(new GestureEventArgs(GestureType.TwoFingerTap));
-				OnPanStart();
-				OnPan();
-				OnPanEnd();
-			}
-		}
+		//private void gestureHandler_TwoFingerTap(object sender, Windows7.Multitouch.GestureEventArgs e)
+		//{
+		//	GestureLocation = (panLocation = e.Location);
+		//	if (e.IsBegin)
+		//	{
+		//		OnGestureStart();
+		//		OnGesture(new GestureEventArgs(GestureType.TwoFingerTap));
+		//		OnPanStart();
+		//		OnPan();
+		//		OnPanEnd();
+		//	}
+		//}
 
 		protected virtual void OnGestureStart()
 		{

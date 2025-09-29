@@ -6,12 +6,22 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Net;
 using cYo.Common.Threading;
 using cYo.Projects.ComicRack.Engine.IO.Network;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using CoreWCF.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using CoreWCF.Security;
 
 namespace cYo.Projects.ComicRack.Engine
 {
 	public class NetworkManager : DisposableObject
 	{
-		public class RemoteServerStartedEventArgs : EventArgs
+
+        private IHost host;
+
+        private readonly List<IHost> runningHosts = new();
+
+        public class RemoteServerStartedEventArgs : EventArgs
 		{
 			public ShareInformation Information
 			{
@@ -154,38 +164,72 @@ namespace cYo.Projects.ComicRack.Engine
 			}
 		}
 
-		public void Start()
-		{
-			ComicLibraryServer.ExternalServerAddress = Settings.ExternalServerAddress;
-			if (Broadcaster != null)
-			{
-				Broadcaster.Listen = true;
-				Broadcaster.Recieved += BroadcasterRecieved;
-			}
-			foreach (ComicLibraryServerConfig share in Settings.Shares)
-			{
-				share.OnlyPrivateConnections = !share.IsInternet && PrivatePort == PublicPort;
-				share.PrivateListPassword = ((share.IsInternet && share.IsPrivate) ? Settings.PrivateListingPassword : string.Empty);
-			}
-			runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => !sc.IsInternet), PrivatePort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
-			runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => sc.IsInternet), PublicPort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
-		}
+        public void Start()
+        {
+            foreach (var share in Settings.Shares.Where(sc => sc.IsValidShare))
+            {
+                var server = new ComicLibraryServer(
+                    share,
+                    () => DatabaseManager.Database,
+                    CacheManager.ImagePool,
+                    CacheManager.ImagePool,
+                    Broadcaster
+                );
 
-		public void Stop()
-		{
-			if (Broadcaster != null)
-			{
-				Broadcaster.Recieved -= BroadcasterRecieved;
-				Broadcaster.Listen = false;
-			}
-			runningServers.ForEach(delegate(ComicLibraryServer s)
-			{
-				s.Stop();
-			});
-			runningServers.Clear();
-		}
+                var host = Host.CreateDefaultBuilder()
+                    .ConfigureServices(services =>
+                    {
+                        services.AddSingleton(server);
+                        services.AddServiceModelServices()
+                                .AddServiceModelMetadata();
+                    })
+                    .ConfigureWebHostDefaults(webBuilder =>
+                    {
+                        webBuilder.UseNetTcp(options =>
+                        {
+                            options.Listen($"net.tcp://0.0.0.0:{PrivatePort}");
+                            //options.Listen($"net.tcp://0.0.0.0:{share.IsInternet ? PublicPort : PrivatePort}");
+                        });
+                        webBuilder.Configure(app =>
+                        {
+                            app.UseServiceModel(sb =>
+                            {
+                                sb.AddService<ComicLibraryServer>(opts => {
+                                    opts.DebugBehavior.IncludeExceptionDetailInFaults = true;
+                                });
+                                sb.ConfigureServiceHostBase<ComicLibraryServer>(hostBase =>
+                                {
+                                    hostBase.Credentials.UserNameAuthentication.UserNamePasswordValidationMode =
+                                        UserNamePasswordValidationMode.Custom;
+									//hostBase.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator =
+									//	new CoreWCF.Security.PasswordValidator(share.ProtectionPassword);
+									//hostBase.Credentials.ServiceCertificate.Certificate = ComicLibraryServer.Certificate;
+                                });
 
-		private void BroadcasterRecieved(object sender, BroadcastEventArgs<BroadcastData> e)
+                                sb.AddServiceEndpoint<ComicLibraryServer, IRemoteServerInfo>(
+                                    ComicLibraryServer.CreateChannel(secure: false),
+                                    $"{share.ServiceName}/{ComicLibraryServer.InfoPoint}");
+
+                                sb.AddServiceEndpoint<ComicLibraryServer, IRemoteComicLibrary>(
+                                    ComicLibraryServer.CreateChannel(secure: share.IsInternet),
+                                    $"{share.ServiceName}/{ComicLibraryServer.LibraryPoint}");
+                            });
+                        });
+                    })
+                    .Build();
+
+                host.Start();
+                runningHosts.Add(host);
+            }
+        }
+
+        public void Stop()
+        {
+            host?.StopAsync().Wait();
+            host?.Dispose();
+        }
+
+        private void BroadcasterRecieved(object sender, BroadcastEventArgs<BroadcastData> e)
 		{
 			if (Broadcaster == null)
 			{

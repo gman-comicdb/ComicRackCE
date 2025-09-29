@@ -11,8 +11,8 @@ using cYo.Common.Mathematics;
 using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows.Properties;
-using Windows7.Multitouch;
-using Windows7.Multitouch.WinForms;
+//using Windows7.Multitouch;
+//using Windows7.Multitouch.WinForms;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -626,7 +626,7 @@ namespace cYo.Common.Windows.Forms
 
 		private readonly Dictionary<TabBarItem, Image> animatedImages = new Dictionary<TabBarItem, Image>();
 
-		private GestureHandler gestureHandler;
+		//private GestureHandler gestureHandler;
 
 		public TabBarItemCollection Items => items;
 
@@ -1892,20 +1892,20 @@ namespace cYo.Common.Windows.Forms
 
 		private void InitWindowsTouch()
 		{
-			try
-			{
-				gestureHandler = Factory.CreateHandler<GestureHandler>(this);
-				gestureHandler.DisableGutter = true;
-				gestureHandler.Pan += gestureHandler_Pan;
-			}
-			catch (Exception)
-			{
-			}
+			//try
+			//{
+			//	gestureHandler = Factory.CreateHandler<GestureHandler>(this);
+			//	gestureHandler.DisableGutter = true;
+			//	gestureHandler.Pan += gestureHandler_Pan;
+			//}
+			//catch (Exception)
+			//{
+			//}
 		}
 
-		private void gestureHandler_Pan(object sender, GestureEventArgs e)
-		{
-			TabsOffset += e.PanTranslation.Width;
-		}
+		//private void gestureHandler_Pan(object sender, GestureEventArgs e)
+		//{
+		//	TabsOffset += e.PanTranslation.Width;
+		//}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <NoWarn>$(NoWarn);WFO1000</NoWarn>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <OutputType>WinExe</OutputType>
         <RootNamespace>cYo.Projects.ComicRack.Viewer</RootNamespace>
@@ -38,10 +39,6 @@
     <PropertyGroup>
         <Win32Resource>myressources.res</Win32Resource>
     </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="System.Design" />
-        <Reference Include="System.Web.Services" />
-    </ItemGroup>
     <ItemGroup>
         <AppDesigner Include="Properties\" />
     </ItemGroup>
@@ -161,7 +158,6 @@
         <ProjectReference Include="..\cYo.Common.Windows\cYo.Common.Windows.csproj" />
         <ProjectReference Include="..\cYo.Common\cYo.Common.csproj" />
     </ItemGroup>
-    <PropertyGroup />
     <Target Name="CustomClean" AfterTargets="CoreClean">
         <RemoveDir Directories="$(OutDir)\Resources" />
         <RemoveDir Directories="$(OutDir)\Languages" />
