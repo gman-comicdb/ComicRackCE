@@ -1,4 +1,5 @@
 ﻿using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ internal partial class DarkControl
 
         [typeof(Label)] = new DarkControlDefinition
         {
-            Theme = c => DarkLabel((Label)c)
+            Theme = c => ThemeExtensions.Attach(c, PaintDark.Label)
         },
 
         [typeof(ListBox)] = new DarkControlDefinition

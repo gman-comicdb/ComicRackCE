@@ -4,6 +4,8 @@ using cYo.Common.Windows.Forms.Theme.Internal;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using System;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -76,15 +78,90 @@ public static class ThemeExtensions
 		// REVIEW : do we need to do anything on HandleDestroyed?
 	}
 
-	// Generally, Dark Mode instance theming
-	#region Control Extensions
-	/// <summary>
-	/// Apply <see cref="ThemeColors.DarkMode.UIComponent.SidePanel"/> <typeparamref name="BackColor"/> to a <see cref="Control"/>.
-	/// </summary>
-	/// <remarks>
-	/// This cannot be applied on the <see cref="System.Type"/> as it only applies to specific instances.
-	/// </remarks>
-	public static void SetSidePanelColor(this Control control)
+    /// <summary>
+    /// Unsubscribes and re-subscribes an event handler automatically
+    /// by matching the delegate type to a control's event.
+    /// </summary>
+    /// <param name="control">The control whose event to reattach to.</param>
+    /// <param name="handler">The delegate (event handler) to attach.</param>
+    public static void Attach(this Control control, Delegate handler)
+    {
+        if (control == null || handler == null) return;
+
+        var handlerType = handler.GetType();
+        var handlerInvoke = handlerType.GetMethod("Invoke");
+
+        // Find a public event whose EventHandlerType matches the handler's delegate type
+        var eventInfo = control
+            .GetType()
+            .GetEvents(BindingFlags.Instance | BindingFlags.Public)
+            .FirstOrDefault(e => HaveSameSignature(e.EventHandlerType?.GetMethod("Invoke"), handlerType.GetMethod("Invoke")));
+
+		if (eventInfo == null)
+            throw new InvalidOperationException($"{control.GetType().Name} does not contain an event matching {handler.Method.Name}.");
+
+        //var correctedHandler = handler;
+        if (eventInfo.EventHandlerType != handlerType)
+            handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, handler.Target, handler.Method);
+
+        // Unsubscribe, then resubscribe
+        eventInfo.RemoveEventHandler(control, handler);
+        eventInfo.AddEventHandler(control, handler);
+    }
+
+    private static bool HaveSameSignature(MethodInfo a, MethodInfo b)
+    {
+        if (a.ReturnType != b.ReturnType)
+            return false;
+
+        var aParams = a.GetParameters();
+        var bParams = b.GetParameters();
+        if (aParams.Length != bParams.Length)
+            return false;
+
+        for (int i = 0; i < aParams.Length; i++)
+        {
+            if (aParams[i].ParameterType != bParams[i].ParameterType)
+                return false;
+        }
+
+        return true;
+    }
+
+    public static void Attach(this ToolStripItem tsItem, Delegate handler)
+    {
+        if (tsItem == null || handler == null) return;
+
+        var handlerType = handler.GetType();
+        var handlerInvoke = handlerType.GetMethod("Invoke");
+
+        // Find a public event whose EventHandlerType matches the handler's delegate type
+        var eventInfo = tsItem
+            .GetType()
+            .GetEvents(BindingFlags.Instance | BindingFlags.Public)
+            .FirstOrDefault(e => HaveSameSignature(e.EventHandlerType?.GetMethod("Invoke"), handlerType.GetMethod("Invoke")));
+
+        if (eventInfo == null)
+            throw new InvalidOperationException($"{tsItem.GetType().Name} does not contain an event matching {handler.Method.Name}.");
+
+        //var correctedHandler = handler;
+        if (eventInfo.EventHandlerType != handlerType)
+            handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, handler.Target, handler.Method);
+
+        // Unsubscribe, then resubscribe
+        eventInfo.RemoveEventHandler(tsItem, handler);
+        eventInfo.AddEventHandler(tsItem, handler);
+    }
+
+    // Generally, Dark Mode instance theming
+    #region Control Extensions
+    /// <summary>
+    /// Apply <see cref="ThemeColors.DarkMode.UIComponent.SidePanel"/> <typeparamref name="BackColor"/> to a <see cref="Control"/>.
+    /// </summary>
+    /// <remarks>
+    /// This cannot be applied on the <see cref="System.Type"/> as it only applies to specific instances.
+    /// </remarks>
+    public static void SetSidePanelColor(this Control control)
 		=> InvokeAction(() => DarkThemeExtensions.SetSidePanelColor(control));
 
     /// <summary>

@@ -9,14 +9,10 @@ internal static class DarkEventHandlers
 
     internal static void TextBox_Mouse(TextBoxBase textBox)
     {
-        textBox.MouseLeave -= DarkTextBox.MouseLeave;
-        textBox.MouseLeave += DarkTextBox.MouseLeave;
-        textBox.MouseHover -= DarkTextBox.MouseHover;
-        textBox.MouseHover += DarkTextBox.MouseHover;
-        textBox.Enter -= DarkTextBox.Enter;
-        textBox.Enter += DarkTextBox.Enter;
-        textBox.Leave -= DarkTextBox.Leave;
-        textBox.Leave += DarkTextBox.Leave;
+        textBox.Attach(DarkTextBox.MouseLeave);
+        textBox.Attach(DarkTextBox.MouseHover);
+        textBox.Attach(DarkTextBox.Enter);
+        textBox.Attach(DarkTextBox.Leave);
     }
 
     #region TextBox
