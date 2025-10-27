@@ -60,6 +60,31 @@ public static class ThemeExtensions
 			defaultAction();
 	}
 
+    public static T InvokeFunction<T>(T value, Func<T, T> defaultFunction, bool isDefaultAction = false)
+    {
+        if (!ThemeColors.IsDefault && !isDefaultAction || ThemeColors.IsDefault && isDefaultAction)
+        {
+            return defaultFunction(value);
+        }
+        return value;
+    }
+
+    public static T InvokeFunction<T>(T value, Func<T, T> defaultFunction, Func<T, T> darkModeFunction)
+    {
+        if (ThemeManager.IsDarkModeEnabled)
+            return darkModeFunction(value);
+        else
+            return defaultFunction(value);
+    }
+
+    public static T InvokeFunction<T>(Func<T> defaultFunction, Func<T> darkModeFunction)
+    {
+        if (ThemeManager.IsDarkModeEnabled)
+            return darkModeFunction();
+        else
+            return defaultFunction();
+    }
+
     /// <summary>
     /// Invokes <see cref="Action{Control}"/> if <see cref="Control.IsHandleCreated"/>, and subscribes to
     /// <see cref="Control.OnHandleCreated(EventArgs)"/> otherwise.
@@ -220,6 +245,22 @@ public static class ThemeExtensions
 			return ThemeColors.TabBar.DefaultBorder;
 		else
 			return visualStyleRenderer.GetColor(colorProperty);
+    }
+
+    public static Color ReplaceDefaultWorkspaceColor(Color workspaceColor)
+    {
+        return InvokeFunction(
+            () => workspaceColor,
+            () => { return workspaceColor.ToKnownColor() == KnownColor.WhiteSmoke ? ThemeColors.DarkMode.BlackSmoke : workspaceColor; }
+        );
+    }
+
+    public static string ReplaceDefaultWorkspaceColor(string workspaceColor)
+    {
+        return InvokeFunction(
+            () => workspaceColor,
+            () => { return workspaceColor == ThemeColors.DarkMode.BlackSmoke.ToString() || workspaceColor == KnownColor.WhiteSmoke.ToString() ? KnownColor.WhiteSmoke.ToString() : workspaceColor; }
+        );
     }
     #endregion
 }

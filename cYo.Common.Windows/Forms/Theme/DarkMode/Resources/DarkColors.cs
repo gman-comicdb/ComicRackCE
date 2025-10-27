@@ -6,9 +6,26 @@ namespace cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 
 internal class DarkColors
 {
+
+    internal class DarkColor
+    {
+        public string Name { get; }
+        public Color Color { get; }
+
+        public DarkColor(string name, Color color)
+        {
+            Name = name;
+            Color = color;
+        }
+
+        public override string ToString() => $"{Color.A:X2}{Color.R:X2}{Color.G:X2}{Color.B:X2}".ToLower();
+
+        public static implicit operator Color(DarkColor darkColor) => darkColor.Color;
+    }
+
     // WhiteSmoke replacement. WhiteSmoke is RGB 245 but RGB 10 would be too dark
     // Mainly visible as DisplayWorkspace background. Also used in PreferencesDialog as PanelOverlays background
-    internal static readonly Color BlackSmoke = Color.FromArgb(48, 48, 48);
+    internal static readonly DarkColor BlackSmoke = new DarkColor("BlackSmoke", Color.FromArgb(48, 48, 48));
 
     private static class Common
     {
