@@ -5,7 +5,7 @@ using cYo.Common.Windows.Forms.Theme.Resources;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using static cYo.Common.Windows.Forms.Theme.DarkMode.Rendering.DarkListViewRenderer;
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Handlers;
 
 internal partial class DarkControl
@@ -20,8 +20,7 @@ internal partial class DarkControl
 
     private static void DarkCheckBox(CheckBox checkBox)
     {
-        checkBox.Paint -= PaintDark.CheckBox;
-        checkBox.Paint += PaintDark.CheckBox;
+        checkBox.AttachPaint(DarkEventHandlers.CheckBox_Paint);
         if (checkBox.Appearance == Appearance.Button)
             DarkButtonBase(checkBox);
         else if (checkBox.FlatStyle == FlatStyle.System)
@@ -49,8 +48,7 @@ internal partial class DarkControl
 
     private static void DarkLabel(Label label)
     {
-        label.Paint -= PaintDark.Label;
-        label.Paint += PaintDark.Label;
+        label.AttachPaint(DarkEventHandlers.Label_PaintDisabled);
     }
 
     private static void DarkListView(ListView listView)
@@ -59,12 +57,7 @@ internal partial class DarkControl
         if (!listView.OwnerDraw && listView.View == View.Details && listView.HeaderStyle != ColumnHeaderStyle.None)
         {
             listView.OwnerDraw = true;
-            listView.DrawItem -= DrawDarkListView.Item;
-            listView.DrawItem += DrawDarkListView.Item;
-            listView.DrawColumnHeader -= DrawDarkListView.ColumnHeader;
-            listView.DrawColumnHeader += DrawDarkListView.ColumnHeader;
-            listView.DrawSubItem -= DrawDarkListView.SubItem;
-            listView.DrawSubItem += DrawDarkListView.SubItem;
+            DarkEventHandlers.ListView_Draw(listView);
             if (listView.Items.Count > 0) listView.Items[0].UseItemStyleForSubItems = false;
         }
     }
@@ -84,8 +77,7 @@ internal partial class DarkControl
             if (tsLabel.BorderStyle.Equals(Border3DStyle.SunkenOuter))
             {
                 tsLabel.BorderSides = ToolStripStatusLabelBorderSides.None;
-                tsLabel.Paint -= PaintDark.ToolStripStatusLabel;
-                tsLabel.Paint += PaintDark.ToolStripStatusLabel;
+                tsLabel.AttachPaint(DarkEventHandlers.ToolStripStatusLabel_PaintBorder);
             }
         }
     }
@@ -111,7 +103,6 @@ internal partial class DarkControl
             treeView.ForeColor = DarkColors.TreeView.Text;
             treeView.WhenHandleCreated(treeView => TreeViewEx.SetColor((TreeView)treeView));
         }
-            
     }
 
     #region Helpers
@@ -121,7 +112,7 @@ internal partial class DarkControl
 
         //if (button is CheckBox)
         //{
-            button.BackColor = DarkColors.Button.Back;
+            button.BackColor = DarkColors.Button.Back; // SOMEDAY : handle transparent buttons.
             button.ForeColor = DarkColors.Button.Text;
             button.FlatAppearance.CheckedBackColor = DarkColors.Button.CheckedBack;
             button.FlatAppearance.MouseOverBackColor = DarkColors.Button.MouseOverBack;

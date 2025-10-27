@@ -62,28 +62,19 @@ internal static class DarkThemeExtensions
     }
     #endregion
 
+    // return value
+    #region Functions
+    internal static string ReplaceWebColors(string webPage)
+    {
+        Regex rxWebBody = new Regex(@"<body(?=[^>]*)([^>]*?)\bstyle=""([^""]*)""([^>]*)>|<body([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        string rxWebBodyReplace = "<body$1 style=\"$2background-color:#383838;color:#eeeeee;scrollbar-face-color:#4d4d4d;scrollbar-track-color:#171717;scrollbar-shadow-color:#171717;scrollbar-arrow-color:#676767;\"$3>";
+        return rxWebBody.Replace(webPage, rxWebBodyReplace);
+    }
+    #endregion
+
     // Provide a single point of entry for ThemeExtensions methods which need to make use of DarkMode internal methods
     #region Drawing Extensions [DarkMode.Rendering]
     internal static void ListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-        => DrawDarkListView.ColumnHeader(sender, e);
-
-    internal static void DrawSplitButtonBase(Graphics graphics, Rectangle rect, PushButtonState state)
-        => DrawDark.ButtonBase(graphics, rect, state);
-
-    internal static void DrawTabItem(Graphics g, Rectangle rect, TabItemState tabItemState, bool buttonMode)
-        => DrawDark.TabItem(g, rect, tabItemState, buttonMode);
-
-    // ControlPaintEx -> DarkControlPaint bridge.
-    // REVIEW : Maybe should just subclass...? ControlPaintEx : DarkControlPaint
-    internal static class ControlPaint
-    {
-        internal static void DrawBackground(PaintEventArgs e, Color backColor) => DarkControlPaint.DrawBackground(e, backColor);
-        internal static void DrawBackground(DrawItemEventArgs e) => DarkControlPaint.DrawBackground(e);
-        internal static void DrawBackground(DrawToolTipEventArgs e) => DarkControlPaint.DrawBackground(e);
-        internal static void DrawBorder(Graphics g, Rectangle bounds) => DarkControlPaint.DrawBorder(g, bounds);
-        internal static void DrawBorder(DrawToolTipEventArgs e) => DarkControlPaint.DrawBorder(e);
-        internal static void DrawFocusRectangle(DrawItemEventArgs e) => DarkControlPaint.DrawFocusRectangle(e);
-        internal static void DrawFocusRectangle(Graphics g, Rectangle rect) => DarkControlPaint.DrawFocusRectangle(g, rect);
-    }
+        => DarkEventHandlers.ListView_DrawColumnHeader(sender, e);
     #endregion
 }

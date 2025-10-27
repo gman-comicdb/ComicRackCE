@@ -96,6 +96,7 @@ namespace cYo.Common.Windows.Forms
 			}
 		}
 
+		// TODO : Update to handle unknown colors
 		public void FillKnownColors(bool includingSystem)
 		{
 			foreach (KnownColor value in Enum.GetValues(typeof(KnownColor)))

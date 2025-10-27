@@ -9,7 +9,7 @@ using cYo.Common.Windows.Forms.Theme.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
 
-internal static partial class DrawDarkListView
+internal static partial class DarkListViewRenderer
 {
 
     #region Native interop & constants

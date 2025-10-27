@@ -54,7 +54,7 @@ namespace cYo.Projects.ComicRack.Engine.Controls
 		private static void DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
 			=> ThemeExtensions.ListView_DrawColumnHeader(sender, e); // handles dark text on dark background in Dark Mode
 
-        private static void DrawItem(object sender, DrawListViewItemEventArgs e)
+		private static void DrawItem(object sender, DrawListViewItemEventArgs e)
 		{
 			e.DrawDefault = false;
 			e.DrawBackground();

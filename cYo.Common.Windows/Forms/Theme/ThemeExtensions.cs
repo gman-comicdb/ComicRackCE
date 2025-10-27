@@ -1,5 +1,7 @@
 ﻿using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme.DarkMode;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Internal;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using System;
@@ -39,7 +41,8 @@ public static class ThemeExtensions
     /// <returns>a <see cref="bool"/> if it was successful in drawing</returns>
     public static bool InvokeAction(Action action, bool isDefaultAction = false)
 	{
-		if (!ThemeColors.IsDefault && !isDefaultAction || ThemeColors.IsDefault && isDefaultAction) // We are themed or we have requested to only draw when in the default 
+        // We are themed or we have requested to only draw when in the default 
+        if (!ThemeColors.IsDefault && !isDefaultAction || ThemeColors.IsDefault && isDefaultAction) 
 		{
 			action();
 			return true;
@@ -59,6 +62,31 @@ public static class ThemeExtensions
 		else
 			defaultAction();
 	}
+
+    public static T InvokeFunction<T>(T value, Func<T, T> defaultFunction, bool isDefaultAction = false)
+    {
+        if (!ThemeColors.IsDefault && !isDefaultAction || ThemeColors.IsDefault && isDefaultAction) // We are themed or we have requested to only draw when in the default 
+        {
+            return defaultFunction(value);
+        }
+        return value;
+    }
+
+    public static T InvokeFunction<T>(T value, Func<T,T> defaultFunction, Func<T,T> darkModeFunction)
+    {
+		if (ThemeManager.IsDarkModeEnabled)
+            return darkModeFunction(value);
+        else
+            return defaultFunction(value);
+    }
+
+    public static T InvokeFunction<T>(Func<T> defaultFunction, Func<T> darkModeFunction)
+    {
+        if (ThemeManager.IsDarkModeEnabled)
+            return darkModeFunction();
+        else
+            return defaultFunction();
+    }
 
     /// <summary>
     /// Invokes <see cref="Action{Control}"/> if <see cref="Control.IsHandleCreated"/>, and subscribes to
@@ -122,15 +150,28 @@ public static class ThemeExtensions
 	/// </summary>
     public static void SetTreeViewColor(this TreeView treeView)
 		=> InvokeAction(() => DarkThemeExtensions.SetTreeViewColor(treeView));
+    
+    /// <summary>
+    /// Wrapper for common unsubscribe/subscribe <see cref="PaintEventHandler"/> from/to <see cref="Control.Paint"/>.
+    /// </summary>
+    public static void AttachPaint(this Control control, PaintEventHandler p)
+    {
+        control.Paint -= p;
+        control.Paint += p;
+    }
+
+    /// <summary>
+    /// Wrapper for common unsubscribe/subscribe <see cref="PaintEventHandler"/> from/to <see cref="ToolStripItem.Paint"/>.
+    /// </summary>
+    public static void AttachPaint(this ToolStripItem tsItem, PaintEventHandler p)
+    {
+        tsItem.Paint -= p;
+        tsItem.Paint += p;
+    }
     #endregion
 
     // Generally, either draw default or draw Dark Mode version
     #region Drawing Extensions
-	public static void DrawThemeFocusRectangle(this DrawItemEventArgs e)
-		=> InvokeAction(
-			() => e.DrawFocusRectangle(),
-			() => DarkThemeExtensions.ControlPaint.DrawFocusRectangle(e)
-		);
 
     /// <summary>
     /// <list type="bullet">
@@ -150,16 +191,22 @@ public static class ThemeExtensions
             () => DarkThemeExtensions.ListView_DrawColumnHeader(sender, e)
         );
 
-	public static void DrawThemeBackground(this VisualStyleRenderer vsr, PaintEventArgs e, Rectangle rect, Color backColor)
+    public static void DrawThemeFocusRectangle(this DrawItemEventArgs e)
         => InvokeAction(
-			() => vsr.DrawBackground(e.Graphics, rect),
-			() => DarkThemeExtensions.ControlPaint.DrawBackground(e, backColor)
+            () => e.DrawFocusRectangle(),
+            () => e.DrawDarkFocusRectangle()
+		);
+
+    public static void DrawThemeBackground(this VisualStyleRenderer vsr, PaintEventArgs e, Rectangle bounds, Color backColor)
+        => InvokeAction(
+            () => vsr.DrawBackground(e.Graphics, bounds),
+            () => e.DrawDarkBackground(bounds, backColor)
 		);
 
     public static void DrawThemeBackground(this VisualStyleRenderer vsr, DrawToolTipEventArgs e)
         => InvokeAction(
             () => vsr.DrawBackground(e.Graphics, e.Bounds),
-			() => DarkThemeExtensions.ControlPaint.DrawBackground(e)
+            () => e.DrawDarkBackground()
 		);
 
 	public static void DrawThemeText(this VisualStyleRenderer vsr, Graphics g, Color foreColor, Font font, Rectangle rect, string text, bool drawDisabled, TextFormatFlags textFormatFlags)
@@ -168,10 +215,10 @@ public static class ThemeExtensions
 			() => TextRenderer.DrawText(g, text, font, rect, foreColor, textFormatFlags)
 		);
 
-	public static void DrawThemeText(this VisualStyleRenderer vsr, DrawToolTipEventArgs e, FontDC dc, Rectangle rect)
+	public static void DrawThemeText(this VisualStyleRenderer vsr, DrawToolTipEventArgs e, FontDC dc, Rectangle bounds)
 		=> InvokeAction(
-			() => vsr.DrawText(dc, rect, e.ToolTipText),
-			() => TextRenderer.DrawText(e.Graphics, e.ToolTipText, e.Font, rect, ThemeColors.ToolTip.InfoText)
+			() => vsr.DrawText(dc, bounds, e.ToolTipText),
+			() => e.DrawDarkText(bounds)
 		);
 
     //public static void DrawThemeBackground(this DrawToolTipEventArgs e) => InvokeAction(
@@ -182,21 +229,21 @@ public static class ThemeExtensions
     public static void DrawThemeBackground(this DrawItemEventArgs e)
         => InvokeAction(
             () => e.DrawBackground(),
-			() => DarkThemeExtensions.ControlPaint.DrawBackground(e)
+            () => e.DrawDarkBackground()
 		);
 
     public static void DrawThemeBorder(this DrawToolTipEventArgs e)
         => InvokeAction(
             () => e.DrawBorder(),
-			() => DarkThemeExtensions.ControlPaint.DrawBorder(e)
+            () => e.DrawDarkBorder()
 		);
 
 	// draw Dark Mode version if Dark Mode is enabled (default version is implemented in the Control class itself)
-	public static void DrawSplitButtonBase(Graphics g, Rectangle rect, PushButtonState state)
-		=> InvokeAction(() => DarkThemeExtensions.DrawSplitButtonBase(g, rect, state));
+	public static void DrawSplitButtonBase(Graphics g, Rectangle bounds, PushButtonState state)
+		=> InvokeAction(() => DarkRenderer.DrawButtonBase(g, bounds, state));
 
-	public static void DrawTabItem(Graphics g, Rectangle rect, TabItemState tabItemState, bool buttonMode)
-		=> InvokeAction(() => DarkThemeExtensions.DrawTabItem(g, rect, tabItemState, buttonMode));
+	public static void DrawTabItem(Graphics g, Rectangle bounds, TabItemState state, bool buttonMode)
+		=> InvokeAction(() => DarkRenderer.DrawTabItem(g, bounds, state, buttonMode));
     #endregion
 
     // REVIEW: could these be wrapped in a Func<T,TResult> delegate, similar to InvokeAction?
@@ -205,21 +252,35 @@ public static class ThemeExtensions
     public static string ReplaceWebColors(this string webPage)
 	{
         //TODO: Add a way to disable the replace if the plugin supports theme and doesn't need you to replace the colors
-		Regex rxWebBody = new Regex(@"<body(?=[^>]*)([^>]*?)\bstyle=""([^""]*)""([^>]*)>|<body([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        string rxWebBodyReplace = "<body$1 style=\"$2background-color:#383838;color:#eeeeee;scrollbar-face-color:#4d4d4d;scrollbar-track-color:#171717;scrollbar-shadow-color:#171717;scrollbar-arrow-color:#676767;\"$3>";
-
-        if (ThemeManager.IsDarkModeEnabled)
-			return rxWebBody.Replace(webPage, rxWebBodyReplace);
-		else
-			return webPage;
+        return InvokeFunction(
+             webPage,
+            (webPage) => webPage,
+			(webPage) => DarkThemeExtensions.ReplaceWebColors(webPage)
+        );
     }
 
 	public static Color GetTabBarBorderColor(this VisualStyleRenderer visualStyleRenderer, ColorProperty colorProperty)
+	{
+		return InvokeFunction(
+			() => visualStyleRenderer.GetColor(colorProperty),
+			() => ThemeColors.TabBar.DefaultBorder
+        );
+	}
+
+    public static Color ReplaceDefaultWorkspaceColor(Color workspaceColor)
     {
-		if (ThemeManager.IsDarkModeEnabled)
-			return ThemeColors.TabBar.DefaultBorder;
-		else
-			return visualStyleRenderer.GetColor(colorProperty);
+        return InvokeFunction(
+            () => workspaceColor,
+            () => { return workspaceColor.ToKnownColor() == KnownColor.WhiteSmoke ? ThemeColors.DarkMode.BlackSmoke : workspaceColor; }
+        );
+    }
+
+    public static string ReplaceDefaultWorkspaceColor(string workspaceColor)
+    {
+        return InvokeFunction(
+            () => workspaceColor,
+            () => { return workspaceColor == ThemeColors.DarkMode.BlackSmoke.ToString() || workspaceColor == KnownColor.WhiteSmoke.ToString() ? KnownColor.WhiteSmoke.ToString() : workspaceColor; }
+        );
     }
     #endregion
 }
@@ -229,21 +290,21 @@ public static class ThemeExtensions
 /// </summary>
 public static class ControlPaintEx
 {
-    public static void DrawBorder3D(Graphics graphics, Rectangle bounds, Border3DStyle borderStyle)
+    public static void DrawBorder3D(Graphics g, Rectangle bounds, Border3DStyle borderStyle)
 		=> ThemeExtensions.InvokeAction(
-			() => ControlPaint.DrawBorder3D(graphics, bounds, borderStyle),
-			() => DarkThemeExtensions.ControlPaint.DrawBorder(graphics, bounds)
+			() => ControlPaint.DrawBorder3D(g, bounds, borderStyle),
+			() => g.DrawDarkBorder(bounds)
 		);
 
-    public static void DrawFocusRectangle(Graphics graphics, Rectangle rect)
+    public static void DrawFocusRectangle(Graphics g, Rectangle bounds)
 		=> ThemeExtensions.InvokeAction(
-            () => ControlPaint.DrawFocusRectangle(graphics, rect),
-            () => DarkThemeExtensions.ControlPaint.DrawFocusRectangle(graphics, rect)
+            () => ControlPaint.DrawFocusRectangle(g, bounds),
+            () => g.DrawDarkFocusRectangle(bounds)
         );
 
-    public static void DrawStringDisabled(Graphics g, string text, Font font, Color color, Rectangle rect, TextFormatFlags textFormatFlags)
+    public static void DrawStringDisabled(Graphics g, string text, Font font, Color color, Rectangle bounds, TextFormatFlags textFormatFlags)
 		=> ThemeExtensions.InvokeAction(
-            () => ControlPaint.DrawStringDisabled(g, text, font, color, rect, textFormatFlags),
-            () => TextRenderer.DrawText(g, text, font, rect, SystemColors.GrayText, textFormatFlags)
+            () => ControlPaint.DrawStringDisabled(g, text, font, color, bounds, textFormatFlags),
+            () => g.DrawDarkStringDisabled(text, font, color, bounds, textFormatFlags) // color is currently not used
         );
 }

@@ -27,14 +27,14 @@ namespace cYo.Common.Drawing
 			return Color.FromArgb(num2 / num, num3 / num, num4 / num);
 		}
 
-		public static string IsNamedColor(string color)
+		public static string IsNamedColor(string colorName)
 		{
-			Color color2 = Color.FromName(color);
-			if (string.IsNullOrEmpty(color2.Name))
+			Color color = Color.FromName(colorName);
+			if (string.IsNullOrEmpty(color.Name))
 			{
 				throw new ArgumentException("Only named colors allowed");
 			}
-			return color2.Name;
+			return color.Name;
 		}
 
 		public static int ToRgb(this Color color)

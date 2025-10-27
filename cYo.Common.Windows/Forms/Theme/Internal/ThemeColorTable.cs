@@ -111,7 +111,7 @@ internal class ThemeColorTable
     #endregion
 
     // TabBar
-    public virtual Color TabBarBack => Color.Transparent; // TabBar.BackColor
+    public virtual Color TabBarBack => Color.Transparent;
     public virtual Color TabBarDefaultBorder => SystemColors.AppWorkspace; // replaced when RenderWithVisualStyles enabled 
     public virtual Color TabBarSelectedBack => SystemColors.ControlLightLight;
 

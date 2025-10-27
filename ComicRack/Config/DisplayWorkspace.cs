@@ -11,6 +11,7 @@ using cYo.Common.Mathematics;
 using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Viewer.Views;
 
@@ -261,8 +262,9 @@ namespace cYo.Projects.ComicRack.Viewer.Config
 		{
 			get
 			{
-				return backgroundColor;
-			}
+                // replaces BlackSmoke (ff303030) with WhiteSmoke, for backwards compatibility (Config.xml, saved Workspaces)
+                return ThemeExtensions.ReplaceDefaultWorkspaceColor(backgroundColor);
+            }
 			set
 			{
 				backgroundColor = ColorExtensions.IsNamedColor(value);
@@ -274,8 +276,9 @@ namespace cYo.Projects.ComicRack.Viewer.Config
 		{
 			get
 			{
-				return Color.FromName(BackgroundColor);
-			}
+                // replaces WhiteSmoke with BlackSmoke, for backwards compatibility (Config.xml, saved Workspaces)
+                return ThemeExtensions.ReplaceDefaultWorkspaceColor(Color.FromName(BackgroundColor));
+            }
 			set
 			{
 				BackgroundColor = value.Name;
