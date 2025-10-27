@@ -1622,7 +1622,8 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			}
 			else
 			{
-				foreach (ComicBook item in source.Reverse())
+				source.Reverse();
+                foreach (ComicBook item in source)
 				{
 					editableComicBookListProvider.Insert(0, item);
 				}
@@ -1639,7 +1640,8 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			books = books.ToArray();
 			IEditableComicBookListProvider editableComicBookListProvider = BookList.QueryService<IEditableComicBookListProvider>();
 			ComicBook[] source = books.Where(editableComicBookListProvider.Remove).ToArray();
-			foreach (ComicBook item in source.Reverse())
+			source.Reverse();
+            foreach (ComicBook item in source)
 			{
 				editableComicBookListProvider.Insert(0, item);
 			}

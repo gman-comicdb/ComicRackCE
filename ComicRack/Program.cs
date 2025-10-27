@@ -738,9 +738,11 @@ namespace cYo.Projects.ComicRack.Viewer
 #pragma warning disable WFO5001
             //Application.SetColorMode(SystemColorMode.Dark);
 #pragma warning restore WFO5001
-            Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(defaultValue: false);
-			ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
+            // moved to 
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(defaultValue: false);
+            ApplicationConfiguration.Initialize();
+            ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
 			DatabaseManager.FirstDatabaseAccess += delegate
 			{
 				StartupProgress(TR.Messages["OpenDatabase", "Opening Database"], -1);

@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net9.0-windows</TargetFramework>
-        <NoWarn>$(NoWarn);WFO1000</NoWarn>
+        <NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <OutputType>WinExe</OutputType>
         <RootNamespace>cYo.Projects.ComicRack.Viewer</RootNamespace>
@@ -28,6 +29,9 @@
         <UseWPF>true</UseWPF>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <Deterministic>false</Deterministic>
+		<ApplicationVisualStyles>true</ApplicationVisualStyles>
+		<ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+		<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>none</DebugType>
@@ -172,7 +176,8 @@
         <Exec Command="git rev-parse HEAD &gt; &quot;CurrentCommit.txt&quot;&#xD;&#xA;git status --porcelain &gt; &quot;isDirty.txt&quot;&#xD;&#xA;exit 0" />
     </Target>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="cd $(OutDir)&#xD;&#xA;echo %25cd%25&#xD;&#xA;xcopy /Y x64\pdfium.dll Resources\pdfium_x64.dll*&#xD;&#xA;xcopy /Y x86\pdfium.dll Resources\pdfium_x86.dll*&#xD;&#xA;rmdir /S /Q arm64&#xD;&#xA;rmdir /S /Q Lib&#xD;&#xA;rmdir /S /Q x64&#xD;&#xA;rmdir /S /Q x86&#xD;&#xA;rmdir /S /Q de&#xD;&#xA;&#xD;&#xA;if $(Configuration) == Debug Goto :Exit&#xD;&#xA;del /Q *.pdb&#xD;&#xA;&#xD;&#xA;: Exit" />
+        <!-- Exec Command="cd $(OutDir)&#xD;&#xA;echo %25cd%25&#xD;&#xA;xcopy /Y x64\pdfium.dll Resources\pdfium_x64.dll*&#xD;&#xA;xcopy /Y x86\pdfium.dll Resources\pdfium_x86.dll*&#xD;&#xA;rmdir /S /Q arm64&#xD;&#xA;rmdir /S /Q Lib&#xD;&#xA;rmdir /S /Q x64&#xD;&#xA;rmdir /S /Q x86&#xD;&#xA;rmdir /S /Q de&#xD;&#xA;&#xD;&#xA;if $(Configuration) == Debug Goto :Exit&#xD;&#xA;del /Q *.pdb&#xD;&#xA;&#xD;&#xA;: Exit" /-->
+        <Exec Command="cd $(OutDir)&#xD;&#xA;echo %25cd%25&#xD;rmdir /S /Q arm64&#xD;&#xA;rmdir /S /Q Lib&#xD;&#xA;rmdir /S /Q x64&#xD;&#xA;rmdir /S /Q x86&#xD;&#xA;rmdir /S /Q de&#xD;&#xA;rmdir /S /Q cs&#xD;&#xA;rmdir /S /Q es&#xD;&#xA;rmdir /S /Q fr&#xD;&#xA;rmdir /S /Q it&#xD;&#xA;rmdir /S /Q ja&#xD;&#xA;rmdir /S /Q ko&#xD;&#xA;rmdir /S /Q pl&#xD;&#xA;rmdir /S /Q pt-BR&#xD;&#xA;rmdir /S /Q ru&#xD;&#xA;;rmdir /S /Q tr&#xD;&#xA;&#xD;&#xA;if $(Configuration) == Debug Goto :Exit&#xD;&#xA;del /Q *.pdb&#xD;&#xA;&#xD;&#xA;: Exit" />
     </Target>
     <Target Name="CompressIconFolders" AfterTargets="PostBuild">
         <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(SolutionDir)CompressIconFolders.ps1&quot; -BaseDirectory &quot;$(OutDir)&quot;" />

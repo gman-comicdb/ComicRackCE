@@ -223,8 +223,10 @@ namespace cYo.Common.Presentation.Panels
 
 		public OverlayPanel HitTest(Point pt)
 		{
-			return (from op in panels.ToArray().Reverse()
-				select op.HitTest(pt)).FirstOrDefault((OverlayPanel hit) => hit != null);
+            var panelsArray = panels.ToArray();
+            panelsArray.Reverse();
+            return (from op in panelsArray
+                    select op.HitTest(pt)).FirstOrDefault((OverlayPanel hit) => hit != null);
 		}
 
 		public virtual void Invalidate()

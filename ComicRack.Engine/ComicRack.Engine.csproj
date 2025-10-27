@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0-windows</TargetFramework>
-    <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    <NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
     <OutputType>Library</OutputType>
     <RootNamespace>cYo.Projects.ComicRack.Engine</RootNamespace>
     <LangVersion>latest</LangVersion>
@@ -10,6 +10,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Deterministic>false</Deterministic>
+	<ApplicationVisualStyles>true</ApplicationVisualStyles>
+	<ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+	<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -30,6 +33,7 @@
     <PackageReference Include="Microsoft.Bcl.Numerics" Version="9.0.6" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <PackageReference Include="PDFiumSharpV2" Version="1.1.4" />
+	<PackageReference Include="PDFium.Windows" Version="1.0.0" />
     <PackageReference Include="PolySharp" Version="1.15.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
