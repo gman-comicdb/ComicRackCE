@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Internal;
+using static cYo.Common.Windows.Forms.Theme.DarkMode.Resources.DarkColors;
 
 namespace cYo.Common.Windows.Forms.Theme.Resources;
 
@@ -243,7 +244,7 @@ public static class ThemeColors
 
     public static class DarkMode
     {
-        public static readonly Color BlackSmoke = DarkColors.BlackSmoke;
+        internal static readonly DarkColor BlackSmoke = DarkColors.BlackSmoke;
         //public static class Button
         //{
         //    public static readonly Color Back = DarkColors.Button.Back; // RGB 50 HEX 32

@@ -82,6 +82,7 @@ namespace cYo.Common.Windows.Forms
 					bounds2.Width = e.Bounds.Width - bounds2.X;
 					using (Brush brush2 = new SolidBrush(e.ForeColor))
 					{
+						// SOMEDAY : add support for unknown colors
 						string s = color.ToKnownColor().ToString().PascalToSpaced();
 						graphics.DrawString(s, e.Font, brush2, bounds2, format);
 					}
