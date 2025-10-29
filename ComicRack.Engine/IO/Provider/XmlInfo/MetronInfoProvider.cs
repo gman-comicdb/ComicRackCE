@@ -6,8 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using cYo.Common.Text;
 using cYo.Common.Threading;
-using cYo.Common.Windows;
 using cYo.Common.Xml;
 using cYo.Projects.ComicRack.Engine.Drawing;
 
@@ -80,7 +80,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo
 					Web = (metronInfo.UrLs.Where(u => u.Primary)?.FirstOrDefault()?.Value ?? metronInfo.UrLs.FirstOrDefault()?.Value) ?? string.Empty,
 					PageCount = metronInfo.PageCount,
 					LanguageISO = metronInfo.Series?.Lang ?? string.Empty,
-					AgeRating = metronInfo.AgeRating == AgeRatingType.Unknown ? string.Empty : LocalizeUtility.LocalizeEnum(typeof(AgeRatingType), (int)metronInfo.AgeRating),
+					AgeRating = metronInfo.AgeRating == AgeRatingType.Unknown ? string.Empty : LocalizeBase.LocalizeEnum(typeof(AgeRatingType), (int)metronInfo.AgeRating),
 					Characters = string.Join(delimiter, metronInfo.Characters.Select(c => c.Value)),
 					Teams = string.Join(delimiter, metronInfo.Teams.Select(t => t.Value)),
 					Locations = string.Join(delimiter, metronInfo.Locations.Select(t => t.Value)),
@@ -97,7 +97,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo
 			return (metronInfo.Series?.Format) switch
 			{
 				FormatType.TradePaperback => "TPB",
-				_ => LocalizeUtility.LocalizeEnum(typeof(FormatType), (int)metronInfo.Series?.Format),
+				_ => LocalizeBase.LocalizeEnum(typeof(FormatType), (int)metronInfo.Series?.Format),
 			};
 		}
 	}

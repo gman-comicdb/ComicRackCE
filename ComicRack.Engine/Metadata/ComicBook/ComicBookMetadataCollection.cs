@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Engine
 {

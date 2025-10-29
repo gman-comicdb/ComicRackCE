@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Text;
-using cYo.Common.Windows;
 
 namespace cYo.Projects.ComicRack.Engine
 {
@@ -181,9 +180,9 @@ namespace cYo.Projects.ComicRack.Engine
 			}
 		}
 
-		public string PageTypeAsText => LocalizeUtility.LocalizeEnum(typeof(ComicPageType), (int)PageType);
+		public string PageTypeAsText => LocalizeBase.LocalizeEnum(typeof(ComicPageType), (int)PageType);
 
-		public string PagePositionAsText => LocalizeUtility.LocalizeEnum(typeof(ComicPagePosition), (int)PagePosition);
+		public string PagePositionAsText => LocalizeBase.LocalizeEnum(typeof(ComicPagePosition), (int)PagePosition);
 
 		public string ImageFileSizeAsText
 		{

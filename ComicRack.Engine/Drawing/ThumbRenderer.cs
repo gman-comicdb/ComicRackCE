@@ -7,7 +7,6 @@ using cYo.Common;
 using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
-using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Rendering;
 using cYo.Projects.ComicRack.Engine.Properties;
 
