@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace cYo.Common.Threading
 {
@@ -118,7 +117,7 @@ namespace cYo.Common.Threading
 				{
 					try
 					{
-						Synchronize.Invoke(new MethodInvoker(InvokeTick), null);
+						Synchronize.Invoke(InvokeTick, null);
 					}
 					catch (InvalidOperationException)
 					{

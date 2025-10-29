@@ -9,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Text;
-using System.Windows.Forms;
 
 
 namespace cYo.Common.Text.FunctionParser
