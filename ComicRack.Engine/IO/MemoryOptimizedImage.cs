@@ -7,7 +7,6 @@ using System.Threading;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
-using cYo.Common.Presentation;
 using cYo.Common.Threading;
 
 namespace cYo.Projects.ComicRack.Engine.IO
