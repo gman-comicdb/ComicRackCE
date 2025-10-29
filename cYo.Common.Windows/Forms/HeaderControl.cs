@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Properties;
+using cYo.Common.Windows.Rendering;
 
 namespace cYo.Common.Windows.Forms
 {

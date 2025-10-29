@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using cYo.Common.IO;
 using cYo.Common.Runtime;
 using cYo.Common.Text;
+using cYo.Common.Windows.Extensions;
 using Microsoft.Win32;
 
 namespace cYo.Common.Windows

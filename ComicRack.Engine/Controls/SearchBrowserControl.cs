@@ -12,6 +12,7 @@ using cYo.Common.Text;
 using cYo.Common.Win32;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Rendering;
 
 namespace cYo.Projects.ComicRack.Engine.Controls
 {

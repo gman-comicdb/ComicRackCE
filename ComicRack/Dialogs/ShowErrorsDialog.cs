@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.Sync;

@@ -9,6 +9,7 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Sync;

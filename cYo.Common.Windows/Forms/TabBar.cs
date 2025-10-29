@@ -13,6 +13,7 @@ using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Properties;
+using cYo.Common.Windows.Rendering;
 using Windows7.Multitouch;
 using Windows7.Multitouch.WinForms;
 

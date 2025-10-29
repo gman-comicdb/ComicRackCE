@@ -7,7 +7,7 @@ using cYo.Common.Cryptography;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Threading;
-using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Network;

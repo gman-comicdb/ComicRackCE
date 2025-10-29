@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using cYo.Common.Threading;
+using cYo.Common.Windows.Extensions;
 
 namespace cYo.Common.Windows.Forms
 {

@@ -7,6 +7,7 @@ using System.Security.Permissions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using cYo.Common.Drawing;
+using cYo.Common.Windows.Extensions;
 
 namespace cYo.Common.Windows.Forms
 {

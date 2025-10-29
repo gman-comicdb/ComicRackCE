@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.Win32;
-using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Controls;
