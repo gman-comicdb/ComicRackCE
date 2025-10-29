@@ -27,6 +27,7 @@ using cYo.Common.Text;
 using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;

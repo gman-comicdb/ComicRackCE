@@ -10,6 +10,7 @@ using cYo.Common.Text;
 using cYo.Common.Threading;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Rendering;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Network;
 using cYo.Projects.ComicRack.Viewer.Properties;

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
+using cYo.Common.Windows.Extensions;
 
 namespace cYo.Common.Windows.Forms
 {

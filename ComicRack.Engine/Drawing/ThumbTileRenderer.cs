@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using cYo.Common.Collections;
 using cYo.Common.Drawing;
-using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Rendering;
 
 namespace cYo.Projects.ComicRack.Engine.Drawing
 {

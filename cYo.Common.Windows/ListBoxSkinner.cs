@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Rendering;
 
 namespace cYo.Common.Windows
 {

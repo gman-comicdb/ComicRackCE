@@ -10,6 +10,7 @@ using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;

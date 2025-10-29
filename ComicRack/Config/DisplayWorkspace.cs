@@ -9,7 +9,7 @@ using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Text;
-using cYo.Common.Windows;
+using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Viewer.Views;
