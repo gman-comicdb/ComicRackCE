@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Web.Services.Protocols;
-using System.Windows.Forms;
 using cYo.Common.ComponentModel;
 using cYo.Common.IO;
 using cYo.Common.Threading;
@@ -200,7 +199,8 @@ namespace cYo.Common.Net
 					{
 						return null;
 					}
-					if (userCredentialsDialog.ShowDialog() != DialogResult.OK)
+                    //if (userCredentialsDialog.ShowDialog() != DialogResult.OK) // changed to remove System.Windows.Forms dependence
+                    if ((int)userCredentialsDialog.ShowDialog() != 1)
 					{
 						Ignored.Add(text);
 						return null;

@@ -1,3 +1,4 @@
+
 namespace cYo.Common.Windows.Extensions;
 
 public static class CommandKeyExtension
