@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using cYo.Common.Text;
-using cYo.Common.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Engine.Metadata.VirtualTags
 {
