@@ -1,3 +1,6 @@
+global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
+global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
+global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,8 +45,10 @@ using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
-using static IronPython.Modules._ast;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
+using cYo.Projects.ComicRack.Plugins.Theme;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
