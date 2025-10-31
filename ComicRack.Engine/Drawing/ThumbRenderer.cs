@@ -7,6 +7,8 @@ using cYo.Common;
 using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
+using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Rendering;
 using cYo.Projects.ComicRack.Engine.Properties;
 
@@ -48,7 +50,7 @@ namespace cYo.Projects.ComicRack.Engine.Drawing
 			Resources.NewPages5Plus.ToOptimized()
 		};
 
-		private Color selectionBackColor = SystemColors.Highlight;
+		private Color selectionBackColor = ThemeColors.ThumbRenderer.SelectionBack;
 
 		private List<Image> stateImages;
 
@@ -532,8 +534,8 @@ namespace cYo.Projects.ComicRack.Engine.Drawing
 				{
 					DrawShadow(graphics, thumbnailBounds, shadowSize);
 				}
-				graphics.FillRectangle(SystemBrushes.Control, thumbnailBounds);
-				graphics.DrawRectangle(Pens.Black, thumbnailBounds);
+				graphics.FillRectangle(ThemeBrushes.Stack.Fill, thumbnailBounds);
+				graphics.DrawRectangle(ThemePens.Stack.Border, thumbnailBounds);
 			}
 		}
 

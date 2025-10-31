@@ -54,7 +54,7 @@ namespace cYo.Common.Windows.Forms
 		public TextBoxEx()
 		{
 			FocusSelect = true;
-		}
+        }
 
 		protected override bool IsInputKey(Keys keyData)
 		{
@@ -69,7 +69,7 @@ namespace cYo.Common.Windows.Forms
 		{
 			base.OnHandleCreated(e);
 			SetPromptText();
-		}
+        }
 
 		protected override void OnEnter(EventArgs e)
 		{

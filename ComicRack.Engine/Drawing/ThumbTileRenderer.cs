@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using cYo.Common.Collections;
 using cYo.Common.Drawing;
+using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Rendering;
 
 namespace cYo.Projects.ComicRack.Engine.Drawing
@@ -154,18 +156,18 @@ namespace cYo.Projects.ComicRack.Engine.Drawing
 			bounds.Offset(1, 1);
 			base.TextLines.ForEach(delegate(TextLine tl)
 			{
-				tl.ForeColor = Color.White;
+				tl.ForeColor = ThemeColors.ThumbTileRenderer.Emboss;
 			});
 			SimpleTextRenderer.DrawText(graphics, base.TextLines, bounds);
 			bounds.Offset(-1, -1);
 			base.TextLines.ForEach(delegate(TextLine tl)
 			{
-				tl.ForeColor = Color.Black;
-			});
+				tl.ForeColor = ThemeColors.ThumbTileRenderer.TitleText;
+            });
 			base.TextLines.Where((TextLine tl) => tl.Font != null && !tl.Font.Bold).ForEach(delegate(TextLine tl)
 			{
-				tl.ForeColor = Color.Gray;
-			});
+				tl.ForeColor = ThemeColors.ThumbTileRenderer.BodyText;
+            });
 			SimpleTextRenderer.DrawText(graphics, base.TextLines, bounds);
 		}
 

@@ -19,6 +19,8 @@ using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Xml;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
@@ -32,7 +34,7 @@ using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-    public partial class PreferencesDialog : Form
+    public partial class PreferencesDialog : FormEx
     {
         private const int MaximumMemoryStepSize = 32;
 
@@ -431,7 +433,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void lbPaths_DrawItem(object sender, DrawItemEventArgs e)
         {
-            e.DrawBackground();
+            e.DrawThemeBackground();
             string s = lbPaths.Items[e.Index] as string;
             using (StringFormat format = new StringFormat
             {
@@ -443,7 +445,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                     e.Graphics.DrawString(s, e.Font, brush, e.Bounds, format);
                 }
             }
-            e.DrawFocusRectangle();
+            e.DrawThemeFocusRectangle();
         }
 
         private void lbPaths_SelectedIndexChanged(object sender, EventArgs e)
@@ -568,7 +570,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             }
             if ((e.State & DrawItemState.Focus) != 0)
             {
-                ControlPaint.DrawFocusRectangle(e.Graphics, e.Bounds);
+                ControlPaintEx.DrawFocusRectangle(e.Graphics, e.Bounds);
             }
         }
 
@@ -1054,12 +1056,14 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             {
                 Dock = DockStyle.Fill,
                 Config = cfg,
-                BackColor = Color.Transparent
+                BackColor = ThemeColors.Preferences.ServerEditControl
             };
             sc.ShareNameChanged += delegate
             {
                 tab.Text = sc.ShareName;
             };
+            // this IS required
+            //ThemeExtensions.Theme(tab);
             tab.Controls.Add(sc);
             tabShares.TabPages.Add(tab);
         }
