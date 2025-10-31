@@ -1,12 +1,13 @@
-﻿using System.Drawing;
+﻿using cYo.Common.Drawing;
+using cYo.Common.Windows.Forms.Theme.Resources;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-using cYo.Common.Drawing;
 
 namespace cYo.Common.Windows.Rendering;
 
-public class MenuRenderer : ToolStripProfessionalRenderer
+public class MenuRenderer : ThemeToolStripProRenderer
 {
     private Image starImage;
 
@@ -49,6 +50,7 @@ public class MenuRenderer : ToolStripProfessionalRenderer
         Graphics graphics = e.Graphics;
         if (!text.StartsWith("*"))
         {
+            SetToolStripItemThemeColor(e);
             base.OnRenderItemText(e);
             return;
         }

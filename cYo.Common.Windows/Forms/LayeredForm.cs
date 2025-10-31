@@ -7,7 +7,7 @@ using cYo.Common.Windows.Extensions;
 
 namespace cYo.Common.Windows.Forms
 {
-	public partial class LayeredForm : Form
+	public partial class LayeredForm : FormEx
 	{
 		public static class LayeredApi
 		{

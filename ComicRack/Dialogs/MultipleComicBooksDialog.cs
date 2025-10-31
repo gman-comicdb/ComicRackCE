@@ -16,6 +16,7 @@ using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Viewer.Config;
@@ -24,7 +25,7 @@ using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-	public partial class MultipleComicBooksDialog : Form
+	public partial class MultipleComicBooksDialog : FormEx
 	{
 		private class StoreInfo
 		{
@@ -70,7 +71,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			new ComboBoxSkinner(cbBookLocation);
 			new ComboBoxSkinner(cbBookOwner);
 			new ComboBoxSkinner(cbBookPrice);
-			listFields.AddRange(new TextBoxEx[14]
+			listFields.AddRange(new TextBoxEx[]
 			{
 				txWriter,
 				txPenciller,
@@ -85,7 +86,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 				txCharacters,
 				txTeams,
 				txLocations,
-				txCollectionStatus
+				txCollectionStatus,
+				txMainCharacterOrTeam
 			});
 			ListSelectorControl.Register(SearchEngines.Engines, listFields.ToArray());
 			cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList((ComicBook cb) => cb.LanguageISO).Cast<string>().Distinct();
@@ -157,7 +159,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-			Init();
+			Init();			
 		}
 
 		private void RefreshBooksInfoFromFiles()
@@ -401,7 +403,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			{
 				label.Left = c.Left;
 			}
-			return checkBox;
+            ThemeExtensions.Theme(checkBox);
+            return checkBox;
 		}
 
 		private void SetGrayText(IPromptText tx, string property)
