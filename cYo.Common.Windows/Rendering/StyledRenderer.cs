@@ -1,9 +1,10 @@
+using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using cYo.Common.Drawing;
 using cYo.Common.Mathematics;
-using cYo.Common.Windows.Forms;
 
 namespace cYo.Common.Windows.Rendering;
 
@@ -186,16 +187,16 @@ public static class StyledRenderer
 		return AlphaStyle.None;
 	}
 
-	public static Color GetSelectionColor(bool focused)
-	{
-		if (!focused)
-		{
-			return Color.Gray;
-		}
-		return SystemColors.Highlight;
-	}
+    public static Color GetSelectionColor(bool focused)
+    {
+        if (!focused)
+        {
+            return ThemeColors.StyledRenderer.Selection;
+        }
+        return ThemeColors.StyledRenderer.SelectionFocused;
+    }
 
-	public static void DrawStyledRectangle(this Graphics gr, Rectangle rc, int baseAlpha, Color baseColor, StyleDefinition style = null)
+    public static void DrawStyledRectangle(this Graphics gr, Rectangle rc, int baseAlpha, Color baseColor, StyleDefinition style = null)
 	{
 		if (style == null)
 		{

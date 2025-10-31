@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
+using cYo.Common.Windows.Forms.Theme;
 
 namespace cYo.Common.Windows.Rendering;
 
@@ -55,9 +56,7 @@ public static class ListStyles
     }
 
     private static void DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-    {
-        e.DrawDefault = true;
-    }
+        => ThemeExtensions.ListView_DrawColumnHeader(sender, e); // handles dark text on dark background in Dark Mode
 
     private static void DrawItem(object sender, DrawListViewItemEventArgs e)
     {
