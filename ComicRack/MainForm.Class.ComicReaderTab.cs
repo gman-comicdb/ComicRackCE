@@ -1,17 +1,18 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-using cYo.Common.ComponentModel;
+﻿using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Drawing;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : Form, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
 {
     public partial class ComicReaderTab : TabBar.TabBarItem
     {
@@ -63,7 +64,7 @@ public partial class MainForm : Form, IMain, IContainerControl, IPluginConfig, I
                         }
                         rc.Height -= 10;
                     }
-                    ThumbTileRenderer.DrawTile(gr, rc, itemLock.Item.GetThumbnail(rc.Height), comic, font, SystemColors.InfoText, Color.Transparent, ThumbnailDrawingOptions.DefaultWithoutBackground, ComicTextElements.DefaultComic, threeD: false, comic.GetIcons());
+                    ThumbTileRenderer.DrawTile(gr, rc, itemLock?.Item.GetThumbnail(rc.Height), comic, font, ThemeColors.ToolTip.InfoText, Color.Transparent, ThumbnailDrawingOptions.DefaultWithoutBackground, ComicTextElements.DefaultComic, threeD: false, comic.GetIcons());
                 }
             }
             catch
