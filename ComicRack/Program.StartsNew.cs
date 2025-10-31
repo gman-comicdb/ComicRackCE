@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Forms;
-using cYo.Common.Collections;
+﻿using cYo.Common.Collections;
 using cYo.Common.Compression;
 using cYo.Common.Drawing;
 using cYo.Common.Localize;
@@ -20,6 +10,8 @@ using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows.Extensions;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Rendering;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
@@ -27,10 +19,21 @@ using cYo.Projects.ComicRack.Engine.Display.Forms;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
+using cYo.Projects.ComicRack.Plugins.Theme;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
@@ -61,6 +64,9 @@ public static partial class Program
         CommandLineParser.Parse(EngineConfiguration.Default);
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(defaultValue: false);
+        ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
+        ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
+        ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins
         ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
         DatabaseManager.FirstDatabaseAccess += delegate
         {
@@ -152,21 +158,30 @@ public static partial class Program
             ComicBook.FormatIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Formats*.zip"), SplitIconKeys);
             ComicBook.SpecialIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Special*.zip"), SplitIconKeys);
             ComicBook.GenericIcons = CreateGenericsIcons(defaultLocations, "*.zip", "_", SplitIconKeys);
-            ToolStripRenderer renderer;
-            if (ExtendedSettings.SystemToolBars)
+            if (ExtendedSettings.UseDarkMode)
             {
-                renderer = new ToolStripSystemRenderer();
+                ToolStripManager.Renderer = new ThemeToolStripProRenderer();
             }
             else
             {
-                bool flag = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
-                ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || flag)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
-                renderer = new ToolStripProfessionalRenderer(professionalColorTable)
+                ToolStripRenderer renderer;
+                if (ExtendedSettings.SystemToolBars)
                 {
-                    RoundedEdges = false
-                };
+                    renderer = new ToolStripSystemRenderer();
+                }
+                else
+                {
+                    // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
+                    bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
+                    // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
+                    ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || isWinXp)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
+                    renderer = new ThemeToolStripProRenderer(professionalColorTable)
+                    {
+                        RoundedEdges = false
+                    };
+                }
+                ToolStripManager.Renderer = renderer;
             }
-            ToolStripManager.Renderer = renderer;
             if (ExtendedSettings.DisableHardware)
             {
                 ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
