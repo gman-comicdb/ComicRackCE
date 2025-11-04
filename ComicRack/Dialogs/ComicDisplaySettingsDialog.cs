@@ -194,7 +194,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			set;
 		}
 
-		public override UIComponent UIComponent => UIComponent.Content;
+		public override UIComponent UIComponent => UIComponent.ContentWindow;
 
 		public ComicDisplaySettingsDialog()
 		{

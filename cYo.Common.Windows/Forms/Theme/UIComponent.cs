@@ -11,5 +11,6 @@ public enum UIComponent
     None,
     SidePanel,
     Content,
+    ContentWindow,
     Window
 }

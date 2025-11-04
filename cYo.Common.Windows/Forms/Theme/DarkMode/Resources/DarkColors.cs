@@ -21,6 +21,7 @@ internal class DarkColors
     {
         public static readonly Color SidePanel = Color.FromArgb(25, 25, 25); // RGB 25 HEX 19 : ComicExplorerView.SidePanel [favView(ItemView) + ComicListBrowser + SmallComicPreview]
         public static readonly Color Content = SystemColors.Control;         // RGB 32 HEX 20 : MainViewItemView + CollapsibleGroupBox + background
+        public static readonly Color ContentWindow = Common.ListBack;        // RGB 40 HEX 28 :
         public static readonly Color Window = SystemColors.Window;           // RGB 50 HEX 32 : Form Background 
     }
 
@@ -147,6 +148,8 @@ internal class DarkColors
                 return UIComponent.SidePanel;
             case Theme.UIComponent.Content:
                 return UIComponent.Content;
+            case Theme.UIComponent.ContentWindow:
+                return UIComponent.ContentWindow;
             case Theme.UIComponent.Window:
                 return UIComponent.Window;
             default:
