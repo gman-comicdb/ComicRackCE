@@ -105,8 +105,8 @@ public static partial class Program
         };
 
         // autotune
-        //if (!ExtendedSettings.DisableAutoTuneSystem)
-            //AutoTuneSystem();
+        if (!ExtendedSettings.DisableAutoTuneSystem)
+            AutoTuneSystem();
 
         // set some more things
         ListExtensions.ParallelEnabled = EngineConfiguration.Default.EnableParallelQueries;
