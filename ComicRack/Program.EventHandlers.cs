@@ -22,30 +22,21 @@ public static partial class Program
 {
     private static void RemoteServerStarted(object sender, NetworkManager.RemoteServerStartedEventArgs e)
     {
-        CallMainForm("Remote Server Started", delegate
-        {
-            MainForm.OnRemoteServerStarted(e.Information);
-        });
+        CallMainForm("Remote Server Started", () => MainForm.OnRemoteServerStarted(e.Information));
     }
 
     private static void RemoteServerStopped(object sender, NetworkManager.RemoteServerStoppedEventArgs e)
     {
-        CallMainForm("Remote Server Stopped", delegate
-        {
-            MainForm.OnRemoteServerStopped(e.Address);
-        });
+        CallMainForm("Remote Server Stopped", () => MainForm.OnRemoteServerStopped(e.Address));
     }
 
     private static void ScannerCheckFileIgnore(object sender, ComicScanNotifyEventArgs e)
     {
         if (Settings.DontAddRemoveFiles && Database.IsBlacklisted(e.File))
-        {
             e.IgnoreFile = true;
-        }
+
         if (ExtendedSettings.MacCompatibleScanning && Path.GetFileName(e.File).StartsWith("._"))
-        {
             e.IgnoreFile = true;
-        }
     }
 
     private static void IgnoredCoverImagesChanged(object sender, EventArgs e)
@@ -92,7 +83,14 @@ public static partial class Program
 
     private static void MainFormFormClosed(object sender, FormClosedEventArgs e)
     {
-        AutomaticProgressDialog.Process(null, TR.Messages["ClosingComicRack", "Closing ComicRack"], TR.Messages["SaveAllData", "Saving all Data to Disk..."], 1500, CleanUp, AutomaticProgressDialogOptions.None);
+        AutomaticProgressDialog.Process(
+            null,
+            TR.Messages["ClosingComicRack", "Closing ComicRack"],
+            TR.Messages["SaveAllData", "Saving all Data to Disk..."],
+            1500,
+            CleanUp,
+            AutomaticProgressDialogOptions.None
+        );
     }
 
     #region Helpers
@@ -103,15 +101,11 @@ public static partial class Program
             while (MainForm == null || !MainForm.IsInitialized)
             {
                 if (MainForm != null && MainForm.IsDisposed)
-                {
                     return;
-                }
                 Thread.Sleep(1000);
             }
             if (!MainForm.InvokeIfRequired(action))
-            {
                 action();
-            }
         });
     }
 
@@ -129,7 +123,15 @@ public static partial class Program
         }
         catch (Exception ex)
         {
-            MessageBox.Show(StringUtility.Format(TR.Messages["ErrorShutDown", "There was an error shutting down the application:\r\n{0}"], ex.Message), TR.Messages["Error", "Error"], MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            MessageBox.Show(
+                StringUtility.Format(
+                    TR.Messages["ErrorShutDown", "There was an error shutting down the application:\r\n{0}"],
+                    ex.Message
+                ),
+                TR.Messages["Error", "Error"],
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Hand
+            );
         }
     }
     #endregion
