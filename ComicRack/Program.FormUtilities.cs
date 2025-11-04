@@ -36,13 +36,11 @@ public static partial class Program
     public static bool AskQuestion(IWin32Window parent, string question, string okButton, HiddenMessageBoxes hmb, string askAgainText = null, string cancelButton = null)
     {
         if ((Settings.HiddenMessageBoxes & hmb) != 0)
-        {
             return true;
-        }
+
         if (string.IsNullOrEmpty(askAgainText))
-        {
             askAgainText = TR.Messages["NotAskAgain", "&Do not ask me again"];
-        }
+
         switch (QuestionDialog.AskQuestion(parent, question, okButton, askAgainText, null, showCancel: true, cancelButton))
         {
             case var type when type.HasFlag(QuestionResult.Cancel):
@@ -118,21 +116,25 @@ public static partial class Program
                                                  orderby f
                                                  select f;
             if (includeReadingLists)
-            {
-                enumerable = enumerable.AddLast(new FileFormat(TR.Load("FileFilter")["FormatReadingList", "ComicRack Reading List"], 10089, ".cbl"));
-            }
+                enumerable = enumerable.AddLast(
+                    new FileFormat(
+                        TR.Load("FileFilter")["FormatReadingList", "ComicRack Reading List"],
+                        10089,
+                        ".cbl"
+                    )
+                );
+
             openFileDialog.Title = title;
             openFileDialog.Filter = enumerable.GetDialogFilter(withAllFilter: true);
             openFileDialog.FilterIndex = Settings.LastOpenFilterIndex;
             openFileDialog.CheckFileExists = true;
+
             foreach (string favoritePath in GetFavoritePaths())
-            {
                 openFileDialog.CustomPlaces.Add(favoritePath);
-            }
+
             if (openFileDialog.ShowDialog(parent) == DialogResult.OK)
-            {
                 result = openFileDialog.FileName;
-            }
+
             Settings.LastOpenFilterIndex = openFileDialog.FilterIndex;
             return result;
         }
@@ -146,10 +148,10 @@ public static partial class Program
         try
         {
             ProcessStartInfo processStartInfo = new ProcessStartInfo(document);
+
             if (path != null && Directory.Exists(path))
-            {
                 processStartInfo.WorkingDirectory = path;
-            }
+
             Process.Start(processStartInfo);
         }
         catch (Exception)
@@ -160,23 +162,18 @@ public static partial class Program
     // PreferencesDialog
     public static void RefreshAllWindows()
     {
-        ForAllForms((Form f) =>
-        {
-            f.Refresh();
-        });
+        ForAllForms((Form form) => form.Refresh());
     }
 
     // PreferencesDialog
     public static void ForAllForms(Action<Form> action)
     {
         if (action == null)
-        {
             return;
-        }
+
         foreach (Form openForm in Application.OpenForms)
-        {
             action(openForm);
-        }
+
     }
 
     // MatcherEditor
@@ -185,6 +182,7 @@ public static partial class Program
         ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
         Type[] source = (from m in GetUsedComicBookMatchers(5)
                          select m.GetType()).ToArray();
+
         foreach (ComicBookValueMatcher availableComicBookMatcher in GetAvailableComicBookMatchers())
         {
             ComicBookValueMatcher i = availableComicBookMatcher;
@@ -193,6 +191,7 @@ public static partial class Program
                 action(i);
             }, null, source.Contains(availableComicBookMatcher.GetType()) ? DateTime.MaxValue : DateTime.MinValue);
         }
+
         ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
         contextMenuStrip.Items.AddRange(contextMenuBuilder.Create(20));
         return contextMenuStrip;
@@ -230,35 +229,35 @@ public static partial class Program
     // FolderComicListProvider
     public static Image MakeBooksImage(IEnumerable<ComicBook> books, Size size, int maxImages, bool onlyMemory)
     {
-        int num = books.Count();
-        int num2 = Math.Min(maxImages, num);
-        int num3 = size.Width / (num2 + 1);
-        int height = size.Height - (num2 - 1) * 3;
+        int nBooks = books.Count();
+        int nImages = Math.Min(maxImages, nBooks);
+        int width = size.Width / (nImages + 1);
+        int height = size.Height - (nImages - 1) * 3;
         Bitmap bitmap = new Bitmap(size.Width, size.Height);
         using (Graphics graphics = Graphics.FromImage(bitmap))
         {
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            int num4 = 0;
-            foreach (ComicBook item in books.Take(num2))
+            int nItem = 0;
+            foreach (ComicBook item in books.Take(nImages))
             {
-                int num5 = num3 * num4;
-                int num6 = num3 * (num4 + 2);
+                int xLeft = width * nItem;
+                int xRight = width * (nItem + 2);
                 ThumbnailKey frontCoverThumbnailKey = item.GetFrontCoverThumbnailKey();
                 using (IItemLock<ThumbnailImage> itemLock = ImagePool.Thumbs.GetImage(frontCoverThumbnailKey, onlyMemory))
                 {
                     Image image = itemLock?.Item.Bitmap;
                     if (image != null)
                     {
-                        ThumbRenderer.DrawThumbnail(graphics, image, new Rectangle(num5, 3 * num4, num6 - num5, height), ThumbnailDrawingOptions.Default | ThumbnailDrawingOptions.KeepAspect, item);
+                        ThumbRenderer.DrawThumbnail(graphics, image, new Rectangle(xLeft, 3 * nItem, xRight - xLeft, height), ThumbnailDrawingOptions.Default | ThumbnailDrawingOptions.KeepAspect, item);
                     }
                 }
-                num4++;
+                nItem++;
             }
-            if (num2 != num)
+            if (nImages != nBooks)
             {
                 Color color = Color.FromArgb(192, SystemColors.Highlight);
                 Font iconTitleFont = SystemFonts.IconTitleFont;
-                string text = StringUtility.Format("{0} {1}", num, TR.Default["Books", "books"]);
+                string text = StringUtility.Format("{0} {1}", nBooks, TR.Default["Books", "books"]);
                 Rectangle rectangle = new Rectangle(Point.Empty, graphics.MeasureString(text, iconTitleFont).ToSize());
                 rectangle.Inflate(4, 4);
                 rectangle = rectangle.Align(new Rectangle(Point.Empty, size), ContentAlignment.MiddleCenter);
@@ -350,7 +349,13 @@ public static partial class Program
 
     public static IEnumerable<ComicBookValueMatcher> GetUsedComicBookMatchers(int minUsage)
     {
-        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany((ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>((object o) => (!(o is ComicBookGroupMatcher)) ? null : ((ComicBookGroupMatcher)o).Matchers))
+        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany(
+                (ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>(
+                    (object o) => (!(o is ComicBookGroupMatcher))
+                        ? null
+                        : ((ComicBookGroupMatcher)o).Matchers
+                    )
+                )
                select n.GetType() into n
                group n by n into g
                where g.Count() >= minUsage

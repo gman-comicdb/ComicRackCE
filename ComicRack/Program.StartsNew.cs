@@ -53,25 +53,39 @@ public static partial class Program
     /// <param name="args">Command line arguments</param>
     private static void StartNew(string[] args)
     {
+        // makes sense for this to be the first thing
         Thread.CurrentThread.Name = "GUI Thread";
         Diagnostic.StartWatchDog(CrashDialog.OnBark);
+
+        #region Pre-MainForm
+        // does this need to be done this early?
         ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookPluginMatcher));
         ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookExpressionMatcher));
+
+        // get settings
         Settings = Settings.Load(defaultSettingsFile);
         Settings.RunCount++;
         CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
         CommandLineParser.Parse(EngineConfiguration.Default);
+
+        // set visual styles
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(defaultValue: false);
         ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
         ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
         ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins
+        
+        // does this need to be set here?
         ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
-        DatabaseManager.FirstDatabaseAccess += delegate
-        {
-            StartupProgress(TR.Messages["OpenDatabase", "Opening Database"], -1);
-        };
+
+        // open database
+        DatabaseManager.FirstDatabaseAccess += (object s, EventArgs e)
+            => StartupProgress(TR.Messages["OpenDatabase", "Opening Database"], -1);
+
+        // does this need to be set here?
         DatabaseManager.BackgroundSaveInterval = ExtendedSettings.DatabaseBackgroundSaving;
+
+        // ... does this REALLY have to be done here?
         WirelessSyncProvider.StartListen();
         WirelessSyncProvider.ClientSyncRequest += (object s, WirelessSyncProvider.ClientSyncRequestArgs e) =>
         {
@@ -89,37 +103,40 @@ public static partial class Program
                 }
             }
         };
-        if (!ExtendedSettings.DisableAutoTuneSystem)
-        {
-            AutoTuneSystem();
-        }
+
+        // autotune
+        //if (!ExtendedSettings.DisableAutoTuneSystem)
+            //AutoTuneSystem();
+
+        // set some more things
         ListExtensions.ParallelEnabled = EngineConfiguration.Default.EnableParallelQueries;
+
         if (EngineConfiguration.Default.IgnoredArticles != null)
-        {
             StringUtility.Articles = EngineConfiguration.Default.IgnoredArticles;
-        }
+        
         ComicLibrary.QueryCacheMode = ExtendedSettings.QueryCacheMode;
         ComicLibrary.BackgroundQueryCacheUpdate = !ExtendedSettings.DisableBackgroundQueryCacheUpdate;
         ComicBook.EnableGroupNameCompression = ExtendedSettings.EnableGroupNameCompression;
+        
+        // set language/culture
         try
         {
-            string text = ExtendedSettings.Language ?? Settings.CultureName;
-            if (!string.IsNullOrEmpty(text))
+            string cultureName = ExtendedSettings.Language ?? Settings.CultureName;
+            if (!string.IsNullOrEmpty(cultureName))
             {
-                SetUICulture(text);
-                TR.DefaultCulture = new CultureInfo(text);
+                SetUICulture(cultureName);
+                TR.DefaultCulture = new CultureInfo(cultureName);
             }
         }
         catch (Exception)
         {
         }
+
+        // (if set to background) load database
         if (!ExtendedSettings.LoadDatabaseInForeground)
-        {
-            ThreadUtility.RunInBackground("Loading Database", delegate
-            {
-                InitializeDatabase(0, null);
-            });
-        }
+            ThreadUtility.RunInBackground("Loading Database", () => InitializeDatabase(0, null));
+
+        // show splash screen
         if (!ExtendedSettings.StartHidden && Settings.ShowSplash)
         {
             ManualResetEvent mre = new ManualResetEvent(initialState: false);
@@ -129,7 +146,10 @@ public static partial class Program
                 {
                     Fade = true
                 };
-                splash.Location = splash.Bounds.Align(Screen.FromPoint(Settings.CurrentWorkspace.FormBounds.Location).Bounds, ContentAlignment.MiddleCenter).Location;
+                splash.Location = splash
+                    .Bounds
+                    .Align(Screen.FromPoint(Settings.CurrentWorkspace.FormBounds.Location).Bounds, ContentAlignment.MiddleCenter)
+                    .Location;
                 splash.VisibleChanged += delegate
                 {
                     mre.Set();
@@ -142,21 +162,27 @@ public static partial class Program
             });
             mre.WaitOne(5000, exitContext: false);
         }
+
+        // ... and then (almost) everything else
         try
         {
+            // (if set to foreground) load database
             if (ExtendedSettings.LoadDatabaseInForeground)
             {
                 string msgOpenDb = TR.Messages["OpenDatabase", "Opening Database"];
                 StartupProgress(msgOpenDb, 0);
                 InitializeDatabase(0, msgOpenDb);
             }
+            
             StartupProgress(TR.Messages["LoadCustomSettings", "Loading custom settings"], 20);
+            
             IEnumerable<string> defaultLocations = IniFile.GetDefaultLocations(DefaultIconPackagesPath);
             ComicBook.PublisherIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Publishers*.zip"), SplitIconKeysWithYearAndMonth);
             ComicBook.AgeRatingIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "AgeRatings*.zip"), SplitIconKeys);
             ComicBook.FormatIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Formats*.zip"), SplitIconKeys);
             ComicBook.SpecialIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Special*.zip"), SplitIconKeys);
             ComicBook.GenericIcons = CreateGenericsIcons(defaultLocations, "*.zip", "_", SplitIconKeys);
+            
             if (ExtendedSettings.UseDarkMode)
             {
                 ToolStripManager.Renderer = new ThemeToolStripProRenderer();
@@ -172,8 +198,12 @@ public static partial class Program
                 {
                     // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
                     bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
+                    
                     // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
-                    ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || isWinXp)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
+                    ProfessionalColorTable professionalColorTable = !(ExtendedSettings.ForceTanColorSchema || isWinXp)
+                        ? new OptimizedProfessionalColorTable()
+                        : new OptimizedTanColorTable();
+                    
                     renderer = new ThemeToolStripProRenderer(professionalColorTable)
                     {
                         RoundedEdges = false
@@ -181,20 +211,21 @@ public static partial class Program
                 }
                 ToolStripManager.Renderer = renderer;
             }
+
             if (ExtendedSettings.DisableHardware)
-            {
                 ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-            }
             else
-            {
-                ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-            }
+                ImageDisplayControl.HardwareAcceleration = !ExtendedSettings.ForceHardware
+                    ? ImageDisplayControl.HardwareAccelerationType.Enabled
+                    : ImageDisplayControl.HardwareAccelerationType.Forced;
+            
             if (ExtendedSettings.DisableMipMapping)
-            {
                 ImageDisplayControl.HardwareSettings.MipMapping = false;
-            }
+            
             Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
+            
             StartupProgress(TR.Messages["InitCache", "Initialize Disk Caches"], 30);
+            
             CacheManager = new CacheManager(DatabaseManager, Paths, Settings, Resources.ResourceManager);
             QueueManager = new QueueManager(DatabaseManager, CacheManager, Settings, Settings.Devices);
             QueueManager.ComicScanned += ScannerCheckFileIgnore;
@@ -204,10 +235,18 @@ public static partial class Program
         }
         catch (Exception ex2)
         {
-            MessageBox.Show(StringUtility.Format(TR.Messages["FailedToInitialize", "Failed to initialize ComicRack: {0}"], ex2.Message));
+            MessageBox.Show(
+                StringUtility.Format(
+                    TR.Messages["FailedToInitialize", "Failed to initialize ComicRack: {0}"],
+                    ex2.Message
+                )
+            );
             return;
         }
+
         StartupProgress(TR.Messages["ReadNewsFeed", "Reading News Feed"], 40);
+
+        // news
         News = NewsStorage.Load(defaultNewsFile);
         if (News.Subscriptions.Count == 0)
         {
@@ -224,7 +263,10 @@ public static partial class Program
                 News.Subscriptions.Add(new NewsStorage.Subscription(DefaultNewsFeed, "ComicRack News"));
             }
         }
+
         StartupProgress(TR.Messages["CreateMainWindow", "Creating Main Window"], 50);
+
+        // script stuff
         if (ExtendedSettings.DisableScriptOptimization)
         {
             PythonCommand.Optimized = false;
@@ -237,31 +279,48 @@ public static partial class Program
             WebComic.SetLogOutput(logOutput);
             ScriptConsole.Show();
         }
-        NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);
+
+        NetworkManager = new NetworkManager(
+            DatabaseManager,
+            CacheManager,
+            Settings,
+            ExtendedSettings.PrivateServerPort,
+            ExtendedSettings.InternetServerPort,
+            ExtendedSettings.DisableBroadcast
+        );
+        #endregion
+        
         MainForm = new MainForm();
+        
         MainForm.FormClosed += MainFormFormClosed;
         MainForm.FormClosing += MainFormFormClosing;
         Application.AddMessageFilter(new MouseWheelDelegater());
+        
         MainForm.Show();
         MainForm.Update();
         MainForm.Activate();
+
         if (splash != null)
-        {
             splash.Invoke(splash.Close);
-        }
+
         ThreadUtility.RunInBackground("Starting Network", NetworkManager.Start);
         ThreadUtility.RunInBackground("Generate Language Pack Info", delegate
         {
             int num = InstalledLanguages.Length;
         });
+
         if (!string.IsNullOrEmpty(DatabaseManager.OpenMessage))
-        {
-            MessageBox.Show(MainForm, DatabaseManager.OpenMessage, TR.Messages["Attention", "Attention"], MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
+            MessageBox.Show(
+                MainForm,
+                DatabaseManager.OpenMessage,
+                TR.Messages["Attention", "Attention"],
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation
+            );
+
         if (Settings.NewsStartup)
-        {
             MainForm.ShowNews(always: false);
-        }
+
         Application.Run(MainForm);
     }
 
@@ -293,7 +352,13 @@ public static partial class Program
         }
     }
 
-    public static Dictionary<string, ImagePackage> CreateGenericsIcons(IEnumerable<string> folders, string searchPattern, string trigger, Func<string, IEnumerable<string>> mapKeys = null)
+    public static Dictionary<string, ImagePackage> CreateGenericsIcons(
+        IEnumerable<string> folders,
+        string searchPattern,
+        string trigger,
+        Func<string,
+        IEnumerable<string>> mapKeys = null
+    )
     {
         Dictionary<string, ImagePackage> dictionary = new Dictionary<string, ImagePackage>();
         foreach (var generic in ZipFileFolder.CreateDictionaryFromFiles(folders, searchPattern, trigger))
@@ -365,20 +430,25 @@ public static partial class Program
 
     private static void AutoTuneSystem()
     {
-        if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault)
+        bool shouldRunAutoTune = ExtendedSettings.IsQueryCacheModeDefault
+            && EngineConfiguration.Default.IsEnableParallelQueriesDefault
+            && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault
+            && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault;
+
+        if (shouldRunAutoTune)
         {
             int processorCount = Environment.ProcessorCount;
             // TODO: Query the video memory instead of physical memory
-            int num = (int)(MemoryInfo.InstalledPhysicalMemory / 1024 / 1024);
+            int mbPhysMemory = (int)(MemoryInfo.InstalledPhysicalMemory / 1024 / 1024);
             int cpuSpeedInHz = MemoryInfo.CpuSpeedInHz;
-            if (num <= 512)
+            if (mbPhysMemory <= 512)
                 ExtendedSettings.QueryCacheMode = QueryCacheMode.Disabled;
 
             EngineConfiguration.Default.EnableParallelQueries = processorCount > 1;
             if (cpuSpeedInHz < 2000)
                 ExtendedSettings.OptimizedListScrolling = true;
 
-            ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
+            ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (mbPhysMemory / 8).Clamp(32, 2048);
             if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
             {
                 ImageDisplayControl.HardwareSettings.TextureManagerOptions |= TextureManagerOptions.BigTexturesAs16Bit;
@@ -389,10 +459,14 @@ public static partial class Program
 
     private static bool InitializeDatabase(int startPercent, string readDbMessage)
     {
-        return DatabaseManager.Open(Paths.DatabasePath, ExtendedSettings.DataSource, ExtendedSettings.DoNotLoadQueryCaches, string.IsNullOrEmpty(readDbMessage) ? null : ((Action<int>)((int percent) =>
-        {
-            StartupProgress(readDbMessage, startPercent + percent / 5);
-        })));
+        return DatabaseManager.Open(
+            Paths.DatabasePath,
+            ExtendedSettings.DataSource,
+            ExtendedSettings.DoNotLoadQueryCaches,
+            string.IsNullOrEmpty(readDbMessage)
+                ? null
+                : ((Action<int>)((int percent) => StartupProgress(readDbMessage, startPercent + percent / 5)))
+            );
     }
     #endregion
 }
