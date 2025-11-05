@@ -1,8 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -10,12 +5,19 @@ using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer.Properties;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-	public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
+	public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor, IThemeCustom
 	{
 		private static TR TR = TR.Load("SmartListDialog");
 
@@ -27,7 +29,9 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
 		private readonly string rulesText;
 
-		private int DialogEditorOffset
+        public ThemeControlDefinition ControlDefinition => new() { BackColor = Color.Transparent };
+
+        private int DialogEditorOffset
 		{
 			get
 			{

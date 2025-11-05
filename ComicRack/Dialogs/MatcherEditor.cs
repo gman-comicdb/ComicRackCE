@@ -9,13 +9,14 @@ using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-	public partial class MatcherEditor : UserControlEx, IMatcherEditor
-	{
+	public partial class MatcherEditor : UserControlEx, IMatcherEditor, IThemeCustom
+    {
 		private class MatcherEntry : ComboBoxSkinner.ComboBoxItem<ComicBookValueMatcher>
 		{
 			public MatcherEntry(ComicBookValueMatcher item)
@@ -41,6 +42,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
         private readonly ComicBookMatcherCollection matchers;
         private readonly int spacing = 10;
         private readonly int level;
+
+		public ThemeControlDefinition ControlDefinition => new() { BackColor = Color.Transparent };
 
         public string Description
 		{

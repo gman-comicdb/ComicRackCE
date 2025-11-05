@@ -194,7 +194,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			}
 		}
 
-		public override UIComponent UIComponent => UIComponent.Content;
+		public override UIComponent UIComponent => UIComponent.Window;
 
 		public event EventHandler Apply;
 
