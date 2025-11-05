@@ -328,5 +328,11 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 				cbOperator.Focus();
 			}
 		}
+
+        public override void ApplyTheme(Control control = null)
+        {
+            base.ApplyTheme(control);
+			this.BackColor = Color.Transparent;
+        }
 	}
 }
