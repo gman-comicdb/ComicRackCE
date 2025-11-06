@@ -1,5 +1,4 @@
-﻿using cYo.Common.Drawing.ExtendedColors;
-using cYo.Common.Win32;
+﻿using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme.Internal;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using System.Drawing;
@@ -78,9 +77,9 @@ public class ThemeManager
         if (theme == Themes.Dark)
         {
             ThemeHandler.Register<DarkMode.DarkThemeHandler>();
-            KnownColorTableEx darkColorTable = new KnownColorTableEx();
-            darkColorTable.Initialize(true);
-            darkColorTable.SetColor(KnownColor.WhiteSmoke, ThemeColors.DarkMode.BlackSmoke.ToArgb());
+            //KnownColorTableEx darkColorTable = new KnownColorTableEx();
+            //darkColorTable.Initialize(true);
+            //darkColorTable.SetColor(KnownColor.WhiteSmoke, ThemeColors.DarkMode.BlackSmoke.ToArgb());
             UXTheme.Initialize();
             return true;
         }

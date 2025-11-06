@@ -1,5 +1,4 @@
-﻿using cYo.Common.Drawing.ExtendedColors;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -33,7 +32,8 @@ public class ThemeControlDefinition
     {
         if (color.IsSystemColor)
         {
-            systemColor = KnownColorTableEx.GetSystemColor(color.ToKnownColor());
+            systemColor = color;
+            //systemColor = KnownColorTableEx.GetSystemColor(color.ToKnownColor());
             return true;
         }
         systemColor = Color.Empty;

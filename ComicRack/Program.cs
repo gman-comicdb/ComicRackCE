@@ -1,6 +1,6 @@
-global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
-global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
-global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
+//global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
+//global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
+//global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -741,13 +741,16 @@ namespace cYo.Projects.ComicRack.Viewer
 			Settings.RunCount++;
 			//CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
 			CommandLineParser.Parse(EngineConfiguration.Default);
-#pragma warning disable WFO5001
-            //Application.SetColorMode(SystemColorMode.Dark);
-#pragma warning restore WFO5001
-            // moved to 
+            // moved to ApplicationConfiguration
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(defaultValue: false);
             ApplicationConfiguration.Initialize();
+            if (ExtendedSettings.UseDarkMode)
+			{
+#pragma warning disable WFO5001
+                Application.SetColorMode(SystemColorMode.Dark);
+#pragma warning restore WFO5001
+            }
             ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
 			ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
 			ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using cYo.Common.Drawing.ExtendedColors;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme.Resources;
 
@@ -10,7 +10,7 @@ namespace cYo.Common.Windows.Forms.Theme.Resources;
 public class ThemeToolStripProRenderer : ToolStripProfessionalRenderer
 {
     public ThemeToolStripProRenderer()
-        : base(new ProfessionalColorTableEx())
+        : base(ThemeManager.IsDarkModeEnabled ? new DarkProfessionalColors() : new ProfessionalColorTable())
     {
     }
 

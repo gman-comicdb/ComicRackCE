@@ -53,7 +53,7 @@ internal class DarkControlDefinition : ThemeControlDefinition
     /// </remarks>
     public DarkControlDefinition(Control control)
     {
-        SetColor(control);
+        //SetColor(control);
     }
 
     public void SetColor(Control control)
