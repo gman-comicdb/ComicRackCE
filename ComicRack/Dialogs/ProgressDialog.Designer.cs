@@ -46,7 +46,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             // 
             // ProgressDialog
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            //this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(410, 88);
             this.ControlBox = false;
