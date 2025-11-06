@@ -11,10 +11,11 @@ using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Win32;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
 
 namespace cYo.Projects.ComicRack.Engine.Controls
 {
-	public partial class SearchBrowserControl : UserControl
+	public partial class SearchBrowserControl : UserControlEx
 	{
 		public class SelectionEntry : IComparable<SelectionEntry>
 		{
@@ -243,7 +244,7 @@ namespace cYo.Projects.ComicRack.Engine.Controls
 				new SelectionEntry(index, 29, "BookCondition", "Book Conditions", typeof(ComicBookBookConditionMatcher), multiValue: false),
 				new SelectionEntry(index, 30, "BookCollectionStatus", "Book Collection Status", typeof(ComicBookBookCollectionStatusMatcher), multiValue: true),
 				new SelectionEntry(index, 31, "BookLocation", "Book Locations", typeof(ComicBookBookLocationMatcher), multiValue: false),
-				new SelectionEntry(index, 32, "MainCharacterOrTeam", "Main Characters/Teams", typeof(ComicBookMainCharacterOrTeamMatcher), multiValue: false),
+				new SelectionEntry(index, 32, "MainCharacterOrTeam", "Main Characters/Teams", typeof(ComicBookMainCharacterOrTeamMatcher), multiValue: true),
 				new SelectionEntry(index, 33, "SeriesGroup", "Series Group", typeof(ComicBookSeriesGroupMatcher), multiValue: false),
 				new SelectionEntry(index, 34, "StoryArc", "Story Arcs", typeof(ComicBookStoryArcMatcher), multiValue: false),
 				new SelectionEntry(index, 35, "ScanInformation", "Scan Information", typeof(ComicBookScanInformationMatcher), multiValue: false),
@@ -309,9 +310,17 @@ namespace cYo.Projects.ComicRack.Engine.Controls
 			SafeSetBounds(cbType1, listView1.Left, 0, listView1.Width - 1 - width2, cbType1.Height);
 			SafeSetBounds(cbType2, listView2.Left, 0, listView2.Width - 1 - width2, cbType2.Height);
 			SafeSetBounds(cbType3, listView3.Left, 0, listView3.Width - 1 - width2, cbType3.Height);
-			SafeSetBounds(btNot1, cbType1.Right + 1, -1, width2, cbType1.Height);
-			SafeSetBounds(btNot2, cbType2.Right + 1, -1, width2, cbType2.Height);
-			SafeSetBounds(btNot3, cbType3.Right + 1, -1, width2, cbType3.Height);
+			int yOffset = -1;
+			int heightOffset = 0;
+			ThemeExtensions.InvokeAction(() =>
+			{
+				yOffset = 0;
+				heightOffset = -2;
+			});
+            SafeSetBounds(btNot1, cbType1.Right + 1, yOffset, width2, cbType1.Height + heightOffset);
+            SafeSetBounds(btNot2, cbType2.Right + 1, yOffset, width2, cbType2.Height + heightOffset);
+            SafeSetBounds(btNot3, cbType3.Right + 1, yOffset, width2, cbType3.Height + heightOffset);
+				
 			base.OnLayout(levent);
 		}
 

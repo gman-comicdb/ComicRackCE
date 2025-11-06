@@ -1,3 +1,6 @@
+global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
+global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
+global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,6 +48,9 @@ using static IronPython.Modules._ast;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using CoreWCF;
 using CoreWCF.Configuration;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
+using cYo.Projects.ComicRack.Plugins.Theme;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
@@ -742,6 +748,9 @@ namespace cYo.Projects.ComicRack.Viewer
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(defaultValue: false);
             ApplicationConfiguration.Initialize();
+            ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
+			ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
+			ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins
             ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
 			DatabaseManager.FirstDatabaseAccess += delegate
 			{
@@ -759,7 +768,8 @@ namespace cYo.Projects.ComicRack.Viewer
                     {
                         MainForm.BeginInvoke(delegate
                         {
-                            QueueManager.SynchronizeDevice(e.Key, address);
+							MainForm.StoreWorkspace(); // save workspace before sync, so sorted lists key are up to date
+							QueueManager.SynchronizeDevice(e.Key, address);
                         });
                     }
                 }
@@ -832,21 +842,42 @@ namespace cYo.Projects.ComicRack.Viewer
 				ComicBook.FormatIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Formats*.zip"), SplitIconKeys);
 				ComicBook.SpecialIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Special*.zip"), SplitIconKeys);
 				ComicBook.GenericIcons = CreateGenericsIcons(defaultLocations, "*.zip", "_", SplitIconKeys);
-				ToolStripRenderer renderer;
-				if (ExtendedSettings.SystemToolBars)
+                if (ExtendedSettings.UseDarkMode)
+                {
+                    ToolStripManager.Renderer = new ThemeToolStripProRenderer();
+                }
+                else
+                {
+                    ToolStripRenderer renderer;
+                    if (ExtendedSettings.SystemToolBars)
+                    {
+                        renderer = new ToolStripSystemRenderer();
+                    }
+                    else
+                    {
+                        // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
+                        bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
+                        // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
+                        ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || isWinXp)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
+                        renderer = new ThemeToolStripProRenderer(professionalColorTable)
+                        {
+                            RoundedEdges = false
+                        };
+                    }
+                    ToolStripManager.Renderer = renderer;
+                }
+				if (ExtendedSettings.DisableHardware)
 				{
-					renderer = new ToolStripSystemRenderer();
+					ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
 				}
 				else
 				{
-					bool flag = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
-					ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || flag)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
-					renderer = new ToolStripProfessionalRenderer(professionalColorTable)
-					{
-						RoundedEdges = false
-					};
+					ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
 				}
-				ToolStripManager.Renderer = renderer;
+				if (ExtendedSettings.DisableMipMapping)
+				{
+					ImageDisplayControl.HardwareSettings.MipMapping = false;
+				}
                 ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
 				//if (ExtendedSettings.DisableHardware)
 				//{
@@ -1080,14 +1111,12 @@ namespace cYo.Projects.ComicRack.Viewer
 				int num = (int)(MemoryInfo.InstalledPhysicalMemory / 1024 / 1024);
 				int cpuSpeedInHz = MemoryInfo.CpuSpeedInHz;
 				if (num <= 512)
-				{
 					ExtendedSettings.QueryCacheMode = QueryCacheMode.Disabled;
-				}
+
 				EngineConfiguration.Default.EnableParallelQueries = processorCount > 1;
-				if (cpuSpeedInHz > 2000)
-				{
-					ExtendedSettings.OptimizedListScrolling = false;
-				}
+				if (cpuSpeedInHz < 2000)
+					ExtendedSettings.OptimizedListScrolling = true;
+
 				//ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
 				//if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
 				//{
