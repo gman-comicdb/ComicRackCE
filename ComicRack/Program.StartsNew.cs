@@ -47,6 +47,110 @@ public static partial class Program
         RegexOptions.Compiled
     );
 
+    private static void SetVisualStyleSettings(Themes theme)
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(defaultValue: false);
+        ThemeManager.Initialize(theme); // if using dark mode, replace SystemColors and initialize native Windows theming
+        ResourceManagerEx.InitResourceManager(theme);
+        ThemePlugin.Register(theme); // Register the current theme for the IThemePlugin interface for plugins
+    }
+
+    private static void LoadSettings()
+    {
+        Settings = Settings.Load(defaultSettingsFile);
+        Settings.RunCount++;
+        CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
+        CommandLineParser.Parse(EngineConfiguration.Default);
+    }
+
+    private static void ApplyUnImportantSettings()
+    {
+        // does this need to be set here?
+        ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
+
+        // does this need to be set here?
+        DatabaseManager.BackgroundSaveInterval = ExtendedSettings.DatabaseBackgroundSaving;
+
+        // set some more things
+        ListExtensions.ParallelEnabled = EngineConfiguration.Default.EnableParallelQueries;
+
+        if (EngineConfiguration.Default.IgnoredArticles != null)
+            StringUtility.Articles = EngineConfiguration.Default.IgnoredArticles;
+
+        ComicLibrary.QueryCacheMode = ExtendedSettings.QueryCacheMode;
+        ComicLibrary.BackgroundQueryCacheUpdate = !ExtendedSettings.DisableBackgroundQueryCacheUpdate;
+        ComicBook.EnableGroupNameCompression = ExtendedSettings.EnableGroupNameCompression;
+    }
+
+    private static void ShowSplashDialog()
+    {
+        ManualResetEvent mre = new ManualResetEvent(initialState: false);
+        ThreadUtility.RunInBackground("Splash Thread", delegate
+        {
+            splash = new Splash
+            {
+                Fade = true
+            };
+            splash.Location = splash
+                .Bounds
+                .Align(Screen.FromPoint(Settings.CurrentWorkspace.FormBounds.Location).Bounds, ContentAlignment.MiddleCenter)
+                .Location;
+            splash.VisibleChanged += delegate
+            {
+                mre.Set();
+            };
+            splash.Closed += delegate
+            {
+                splash = null;
+            };
+            splash.ShowDialog();
+        });
+        mre.WaitOne(5000, exitContext: false);
+    }
+
+    private static void SetToolStripRenderer()
+    {
+        if (ExtendedSettings.UseDarkMode)
+        {
+            ToolStripManager.Renderer = new ThemeToolStripProRenderer();
+        }
+        else
+        {
+            ToolStripRenderer renderer;
+            if (ExtendedSettings.SystemToolBars)
+            {
+                renderer = new ToolStripSystemRenderer();
+            }
+            else
+            {
+                // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
+                bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
+
+                // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
+                ProfessionalColorTable professionalColorTable = !(ExtendedSettings.ForceTanColorSchema || isWinXp)
+                    ? new OptimizedProfessionalColorTable()
+                    : new OptimizedTanColorTable();
+
+                renderer = new ThemeToolStripProRenderer(professionalColorTable)
+                {
+                    RoundedEdges = false
+                };
+            }
+            ToolStripManager.Renderer = renderer;
+        }
+    }
+
+    private static void AddIcons()
+    {
+        IEnumerable<string> defaultLocations = IniFile.GetDefaultLocations(DefaultIconPackagesPath);
+        ComicBook.PublisherIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Publishers*.zip"), SplitIconKeysWithYearAndMonth);
+        ComicBook.AgeRatingIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "AgeRatings*.zip"), SplitIconKeys);
+        ComicBook.FormatIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Formats*.zip"), SplitIconKeys);
+        ComicBook.SpecialIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Special*.zip"), SplitIconKeys);
+        ComicBook.GenericIcons = CreateGenericsIcons(defaultLocations, "*.zip", "_", SplitIconKeys);
+    }
+
     /// <summary>
     /// Effectively Run(). StartUp logic, concluding in displaying <see cref="MainForm"/>.
     /// </summary>
@@ -63,27 +167,16 @@ public static partial class Program
         ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookExpressionMatcher));
 
         // get settings
-        Settings = Settings.Load(defaultSettingsFile);
-        Settings.RunCount++;
-        CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
-        CommandLineParser.Parse(EngineConfiguration.Default);
+        LoadSettings();
 
-        // set visual styles
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(defaultValue: false);
-        ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
-        ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
-        ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins
-        
-        // does this need to be set here?
-        ShellFile.DeleteAPI = ExtendedSettings.DeleteAPI;
+        // set language/culture. shouldn't this be before first TR. call?
+        SetUICulture(ExtendedSettings.Language ?? Settings.CultureName);
+
+        SetVisualStyleSettings(ExtendedSettings.Theme);
 
         // open database
         DatabaseManager.FirstDatabaseAccess += (object s, EventArgs e)
             => StartupProgress(TR.Messages["OpenDatabase", "Opening Database"], -1);
-
-        // does this need to be set here?
-        DatabaseManager.BackgroundSaveInterval = ExtendedSettings.DatabaseBackgroundSaving;
 
         // ... does this REALLY have to be done here?
         WirelessSyncProvider.StartListen();
@@ -108,60 +201,13 @@ public static partial class Program
         if (!ExtendedSettings.DisableAutoTuneSystem)
             AutoTuneSystem();
 
-        // set some more things
-        ListExtensions.ParallelEnabled = EngineConfiguration.Default.EnableParallelQueries;
-
-        if (EngineConfiguration.Default.IgnoredArticles != null)
-            StringUtility.Articles = EngineConfiguration.Default.IgnoredArticles;
-        
-        ComicLibrary.QueryCacheMode = ExtendedSettings.QueryCacheMode;
-        ComicLibrary.BackgroundQueryCacheUpdate = !ExtendedSettings.DisableBackgroundQueryCacheUpdate;
-        ComicBook.EnableGroupNameCompression = ExtendedSettings.EnableGroupNameCompression;
-        
-        // set language/culture
-        try
-        {
-            string cultureName = ExtendedSettings.Language ?? Settings.CultureName;
-            if (!string.IsNullOrEmpty(cultureName))
-            {
-                SetUICulture(cultureName);
-                TR.DefaultCulture = new CultureInfo(cultureName);
-            }
-        }
-        catch (Exception)
-        {
-        }
-
         // (if set to background) load database
         if (!ExtendedSettings.LoadDatabaseInForeground)
             ThreadUtility.RunInBackground("Loading Database", () => InitializeDatabase(0, null));
 
         // show splash screen
         if (!ExtendedSettings.StartHidden && Settings.ShowSplash)
-        {
-            ManualResetEvent mre = new ManualResetEvent(initialState: false);
-            ThreadUtility.RunInBackground("Splash Thread", delegate
-            {
-                splash = new Splash
-                {
-                    Fade = true
-                };
-                splash.Location = splash
-                    .Bounds
-                    .Align(Screen.FromPoint(Settings.CurrentWorkspace.FormBounds.Location).Bounds, ContentAlignment.MiddleCenter)
-                    .Location;
-                splash.VisibleChanged += delegate
-                {
-                    mre.Set();
-                };
-                splash.Closed += delegate
-                {
-                    splash = null;
-                };
-                splash.ShowDialog();
-            });
-            mre.WaitOne(5000, exitContext: false);
-        }
+            ShowSplashDialog();
 
         // ... and then (almost) everything else
         try
@@ -176,41 +222,8 @@ public static partial class Program
             
             StartupProgress(TR.Messages["LoadCustomSettings", "Loading custom settings"], 20);
             
-            IEnumerable<string> defaultLocations = IniFile.GetDefaultLocations(DefaultIconPackagesPath);
-            ComicBook.PublisherIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Publishers*.zip"), SplitIconKeysWithYearAndMonth);
-            ComicBook.AgeRatingIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "AgeRatings*.zip"), SplitIconKeys);
-            ComicBook.FormatIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Formats*.zip"), SplitIconKeys);
-            ComicBook.SpecialIcons.AddRange(ZipFileFolder.CreateFromFiles(defaultLocations, "Special*.zip"), SplitIconKeys);
-            ComicBook.GenericIcons = CreateGenericsIcons(defaultLocations, "*.zip", "_", SplitIconKeys);
-            
-            if (ExtendedSettings.UseDarkMode)
-            {
-                ToolStripManager.Renderer = new ThemeToolStripProRenderer();
-            }
-            else
-            {
-                ToolStripRenderer renderer;
-                if (ExtendedSettings.SystemToolBars)
-                {
-                    renderer = new ToolStripSystemRenderer();
-                }
-                else
-                {
-                    // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
-                    bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
-                    
-                    // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
-                    ProfessionalColorTable professionalColorTable = !(ExtendedSettings.ForceTanColorSchema || isWinXp)
-                        ? new OptimizedProfessionalColorTable()
-                        : new OptimizedTanColorTable();
-                    
-                    renderer = new ThemeToolStripProRenderer(professionalColorTable)
-                    {
-                        RoundedEdges = false
-                    };
-                }
-                ToolStripManager.Renderer = renderer;
-            }
+            AddIcons();
+            SetToolStripRenderer();
 
             if (ExtendedSettings.DisableHardware)
                 ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
@@ -268,9 +281,8 @@ public static partial class Program
 
         // script stuff
         if (ExtendedSettings.DisableScriptOptimization)
-        {
             PythonCommand.Optimized = false;
-        }
+
         if (ExtendedSettings.ShowScriptConsole)
         {
             ScriptConsole = new ScriptOutputForm();
@@ -299,7 +311,7 @@ public static partial class Program
         MainForm.Show();
         MainForm.Update();
         MainForm.Activate();
-
+        ApplyUnImportantSettings();
         if (splash != null)
             splash.Invoke(splash.Close);
 
@@ -377,6 +389,7 @@ public static partial class Program
             try
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+                TR.DefaultCulture = new CultureInfo(culture);
             }
             catch (Exception)
             {
