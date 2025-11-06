@@ -866,32 +866,20 @@ namespace cYo.Projects.ComicRack.Viewer
                     }
                     ToolStripManager.Renderer = renderer;
                 }
-				if (ExtendedSettings.DisableHardware)
-				{
-					ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-				}
-				else
-				{
-					ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-				}
-				if (ExtendedSettings.DisableMipMapping)
-				{
-					ImageDisplayControl.HardwareSettings.MipMapping = false;
-				}
                 ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-				//if (ExtendedSettings.DisableHardware)
-				//{
-				//	ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-				//}
-				//else
-				//{
-				//	ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-				//}
-				//if (ExtendedSettings.DisableMipMapping)
-				//{
-				//	ImageDisplayControl.HardwareSettings.MipMapping = false;
-				//}
-				Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
+                //if (ExtendedSettings.DisableHardware)
+                //{
+                //	ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
+                //}
+                //else
+                //{
+                //	ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
+                //}
+                //if (ExtendedSettings.DisableMipMapping)
+                //{
+                //	ImageDisplayControl.HardwareSettings.MipMapping = false;
+                //}
+                Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
 				StartupProgress(TR.Messages["InitCache", "Initialize Disk Caches"], 30);
 				CacheManager = new CacheManager(DatabaseManager, Paths, Settings, Resources.ResourceManager);
 				QueueManager = new QueueManager(DatabaseManager, CacheManager, Settings, Settings.Devices);
