@@ -57,10 +57,6 @@ namespace cYo.Common.Windows.Forms
 
 		private static Dictionary<string, IEnumerable<PanelState>> panelStates;
 
-		//private const int LOGPIXELSX = 88;
-
-		//private const int LOGPIXELSY = 90;
-
 		private static PointF dpiScale = PointF.Empty;
 
 		public static Dictionary<string, Rectangle> FormPositions

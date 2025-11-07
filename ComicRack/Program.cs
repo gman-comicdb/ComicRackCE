@@ -53,33 +53,6 @@ namespace cYo.Projects.ComicRack.Viewer
 {
 	public static class Program
 	{
-		//private class MouseWheelDelegater : IMessageFilter
-		//{
-		//	private IntPtr lastHandle;
-
-		//	[DllImport("user32.dll")]
-		//	private static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-		//	public bool PreFilterMessage(ref Message m)
-		//	{
-		//		switch (m.Msg)
-		//		{
-		//		case 512:
-		//			lastHandle = m.HWnd;
-		//			break;
-		//		case 522:
-		//		case 526:
-		//			if (!(m.HWnd == lastHandle))
-		//			{
-		//				SendMessage(lastHandle, m.Msg, m.WParam, m.LParam);
-		//				return true;
-		//			}
-		//			break;
-		//		}
-		//		return false;
-		//	}
-		//}
-
 		public const int DeadLockTestTime = 0;
 
 		public const int MinThumbHeight = 96;
