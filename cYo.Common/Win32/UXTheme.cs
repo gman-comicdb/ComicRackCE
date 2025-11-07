@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace cYo.Common.Win32;
 
@@ -310,4 +311,8 @@ public static class UXTheme
         var build = Environment.OSVersion.Version.Build;
         return (build < 17763) ? 0 : (build >= 18985) ? 20 : 19;
     }
+
+    public static int GetCurrentThemeName(StringBuilder themeFileName, int maxNameChars, StringBuilder colorBuff,
+        int maxColorChars, StringBuilder sizeBuff, int maxSize)
+        => PInvoke.GetCurrentThemeName(themeFileName, maxNameChars, colorBuff, maxColorChars, sizeBuff, maxSize);
 }

@@ -11,29 +11,30 @@ using cYo.Common.Drawing;
 using cYo.Common.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
+using cYo.Common.Win32;
+//using System.Runtime.InteropServices;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
     public static class HeifAvifImage
     {
-        public static class NativeMethods
-        {
-            public enum heif_filetype_result
-            {
-                heif_filetype_no,
-                heif_filetype_yes_supported,   // it is heif and can be read by libheif
-                heif_filetype_yes_unsupported, // it is heif, but cannot be read by libheif
-                heif_filetype_maybe // not sure whether it is an heif, try detection with more input data
-            };
+        //public static class NativeMethods
+        //{
+        //    public enum heif_filetype_result
+        //    {
+        //        heif_filetype_no,
+        //        heif_filetype_yes_supported,   // it is heif and can be read by libheif
+        //        heif_filetype_yes_unsupported, // it is heif, but cannot be read by libheif
+        //        heif_filetype_maybe // not sure whether it is an heif, try detection with more input data
+        //    };
 
-            [DllImport("libheif", CallingConvention = CallingConvention.Cdecl)]
-            public static extern heif_filetype_result heif_check_filetype(IntPtr data, int len);
-        }
+        //    [DllImport("libheif", CallingConvention = CallingConvention.Cdecl)]
+        //    public static extern heif_filetype_result heif_check_filetype(IntPtr data, int len);
+        //}
 
 		public static byte[] ConvertToJpeg(byte[] data)
         {
-            if (!IsSupported(data) || !IsSupportedNative(data))
+            if (!IsSupported(data) || !Win32.IsHeifSupportedNative(data))
             {
                 return data;
             }
@@ -93,28 +94,28 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 			return Array.Exists(supportedTypes, t => t == fileType);
 		}
 
-		private static bool IsSupportedNative(byte[] data)
-        {
-            if (data.Length < 12 || !Environment.Is64BitProcess)
-                return false;
+		//private static bool IsSupportedNative(byte[] data)
+  //      {
+  //          if (data.Length < 12 || !Environment.Is64BitProcess)
+  //              return false;
 
-            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            IntPtr dataPtr = handle.AddrOfPinnedObject();
+  //          GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+  //          IntPtr dataPtr = handle.AddrOfPinnedObject();
 
-            try
-            {
-                NativeMethods.heif_filetype_result result = NativeMethods.heif_check_filetype(dataPtr, data.Length);
+  //          try
+  //          {
+  //              NativeMethods.heif_filetype_result result = NativeMethods.heif_check_filetype(dataPtr, data.Length);
 
-                if (result == NativeMethods.heif_filetype_result.heif_filetype_yes_supported)
-                    return true;
+  //              if (result == NativeMethods.heif_filetype_result.heif_filetype_yes_supported)
+  //                  return true;
 
-                return false;
-            }
-            finally
-            {
-                handle.Free();
-            }
-        } 
+  //              return false;
+  //          }
+  //          finally
+  //          {
+  //              handle.Free();
+  //          }
+  //      } 
         #endregion
 
         #region HEIF // AVIF Decoding

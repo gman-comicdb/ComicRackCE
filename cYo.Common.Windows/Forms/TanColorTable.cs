@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.Win32;
+using cYo.Common.Win32;
 
 namespace cYo.Common.Windows.Forms
 {
@@ -46,7 +47,7 @@ namespace cYo.Common.Windows.Forms
 					if (VisualStyleInformation.IsEnabledByUser)
 					{
 						StringBuilder stringBuilder = new StringBuilder(512);
-						GetCurrentThemeName(stringBuilder, stringBuilder.Capacity, null, 0, null, 0);
+						UXTheme.GetCurrentThemeName(stringBuilder, stringBuilder.Capacity, null, 0, null, 0);
 						string path = stringBuilder.ToString();
 						isLunaTheme = string.Equals(lunaFileName, Path.GetFileName(path), StringComparison.InvariantCultureIgnoreCase);
 					}
@@ -57,8 +58,8 @@ namespace cYo.Common.Windows.Forms
 				}
 			}
 
-			[DllImport("uxtheme.dll", CharSet = CharSet.Auto)]
-			public static extern int GetCurrentThemeName(StringBuilder pszThemeFileName, int dwMaxNameChars, StringBuilder pszColorBuff, int dwMaxColorChars, StringBuilder pszSizeBuff, int cchMaxSizeChars);
+			//[DllImport("uxtheme.dll", CharSet = CharSet.Auto)]
+			//public static extern int GetCurrentThemeName(StringBuilder pszThemeFileName, int dwMaxNameChars, StringBuilder pszColorBuff, int dwMaxColorChars, StringBuilder pszSizeBuff, int cchMaxSizeChars);
 		}
 
 		private enum KnownColors

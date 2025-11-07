@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.Win32;
@@ -14,19 +14,19 @@ namespace cYo.Common.Windows.Forms
 {
 	public class FolderTreeView : TreeViewEx
 	{
-		public static class NativeMethods
-		{
-			[DllImport("Shell32.dll", CharSet = CharSet.Auto)]
-			private static extern uint ExtractIconEx(string lpszFile, int nIconIndex, IntPtr[] phiconLarge, IntPtr[] phiconSmall, uint nIcons);
+		//public static class NativeMethods
+		//{
+		//	[DllImport("Shell32.dll", CharSet = CharSet.Auto)]
+		//	private static extern uint ExtractIconEx(string lpszFile, int nIconIndex, IntPtr[] phiconLarge, IntPtr[] phiconSmall, uint nIcons);
 
-			public static Icon GetDesktopIcon()
-			{
-				IntPtr[] phiconLarge = new IntPtr[1];
-				IntPtr[] array = new IntPtr[1];
-				ExtractIconEx(Environment.SystemDirectory + "\\shell32.dll", 34, phiconLarge, array, 1u);
-				return Icon.FromHandle(array[0]);
-			}
-		}
+		//	public static Icon GetDesktopIcon()
+		//	{
+		//		IntPtr[] phiconLarge = new IntPtr[1];
+		//		IntPtr[] array = new IntPtr[1];
+		//		ExtractIconEx(Environment.SystemDirectory + "\\shell32.dll", 34, phiconLarge, array, 1u);
+		//		return Icon.FromHandle(array[0]);
+		//	}
+		//}
 
 		public static class ShellOperations
 		{
@@ -84,8 +84,8 @@ namespace cYo.Common.Windows.Forms
 				}
 			}
 
-			[DllImport("shlwapi.dll")]
-			private static extern bool PathIsNetworkPath(string pszPath);
+			//[DllImport("shlwapi.dll")]
+			//private static extern bool PathIsNetworkPath(string pszPath);
 
 			public static void FillNode(TreeNode tn, ImageList imageList, bool sortNetworkFolders)
 			{
@@ -105,8 +105,8 @@ namespace cYo.Common.Windows.Forms
 								list.Add(item2);
 							}
 						}
-						if (sortNetworkFolders && PathIsNetworkPath(shellFolder.Pidl.PhysicalPath) 
-							|| shellFolder.Pidl.IsFileSystem && !shellFolder.Pidl.IsDesktop && !PathIsNetworkPath(shellFolder.Pidl.PhysicalPath))
+						if (sortNetworkFolders && Win32.Win32.PathIsNetworkPath(shellFolder.Pidl.PhysicalPath) 
+							|| shellFolder.Pidl.IsFileSystem && !shellFolder.Pidl.IsDesktop && !Win32.Win32.PathIsNetworkPath(shellFolder.Pidl.PhysicalPath))
 						{
 							list.Sort((TreeNode a, TreeNode b) => string.Compare(a.Text, b.Text, StringComparison.InvariantCultureIgnoreCase));
 						}
@@ -207,7 +207,7 @@ namespace cYo.Common.Windows.Forms
 				TransparentColor = Color.Transparent
 			};
 			myImageList.ImageSize = myImageList.ImageSize.ScaleDpi();
-			myImageList.Images.Add(NativeMethods.GetDesktopIcon());
+			myImageList.Images.Add(Win32.Win32.GetDesktopIcon());
 			base.ImageList = myImageList;
 		}
 

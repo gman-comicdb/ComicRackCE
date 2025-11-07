@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms.Theme;
@@ -120,13 +120,13 @@ namespace cYo.Common.Windows.Forms
 			}
 		}
 
-		private static class Native
-		{
-			public const int CB_SETDROPPEDWIDTH = 352;
+		//private static class Native
+		//{
+		//	public const int CB_SETDROPPEDWIDTH = 352;
 
-			[DllImport("user32.dll", CharSet = CharSet.Unicode)]
-			public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-		}
+		//	[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		//	public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+		//}
 
 		private ComboBox comboBox;
 
@@ -386,7 +386,7 @@ namespace cYo.Common.Windows.Forms
 					num = Math.Max(num, graphics.MeasureString(ComboBox.GetItemText(item), ComboBox.Font).ToSize().Width);
 				}
 			}
-			Native.SendMessage(ComboBox.Handle, 352u, num, 0);
+			Win32.Win32.SetComboBoxWidth(ComboBox, num);
 			ComboBox.DropDownHeight = MaxHeightScale * 150;
 		}
 	}

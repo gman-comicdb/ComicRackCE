@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Text;
 using cYo.Common.Win32;
 
@@ -19,21 +19,21 @@ namespace cYo.Common.IO
 			IgnoreSubFolders = 0x4
 		}
 
-		private static class Native
-		{
-			public const int GCT_INVALID = 0;
+		//private static class Native
+		//{
+		//	public const int GCT_INVALID = 0;
 
-			public const int GCT_LFNCHAR = 1;
+		//	public const int GCT_LFNCHAR = 1;
 
-			public const int GCT_SHORTCHAR = 2;
+		//	public const int GCT_SHORTCHAR = 2;
 
-			public const int GCT_WILD = 4;
+		//	public const int GCT_WILD = 4;
 
-			public const int GCT_SEPARATOR = 8;
+		//	public const int GCT_SEPARATOR = 8;
 
-			[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-			public static extern int PathGetCharType(char c);
-		}
+		//	[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+		//	public static extern int PathGetCharType(char c);
+		//}
 
 		private static FileFolderAction SafeValidator(Func<string, bool, FileFolderAction> validator, string path, bool isPath)
 		{
@@ -133,8 +133,7 @@ namespace cYo.Common.IO
 				StringBuilder stringBuilder = new StringBuilder();
 				foreach (char c in name)
 				{
-					int num = Native.PathGetCharType(c);
-					if (num == Native.GCT_INVALID || ((uint)num & 0xCu) != 0)
+                    if (!Win32Internal.IsValidPathChar(c))
 					{
 						stringBuilder.Append(safe);
 					}

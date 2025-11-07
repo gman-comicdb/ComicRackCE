@@ -132,7 +132,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             chkOverwriteAssociations.Checked = Program.Settings.OverwriteAssociations;
             if (!FileFormat.CanRegisterShell)
             {
-                Win7.ShowShield(btAssociateExtensions);
+                Win32.ShowShield(btAssociateExtensions);
             }
             else
             {

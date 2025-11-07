@@ -11,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -54,32 +54,32 @@ namespace cYo.Projects.ComicRack.Viewer
 {
 	public static class Program
 	{
-		private class MouseWheelDelegater : IMessageFilter
-		{
-			private IntPtr lastHandle;
+		//private class MouseWheelDelegater : IMessageFilter
+		//{
+		//	private IntPtr lastHandle;
 
-			[DllImport("user32.dll")]
-			private static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+		//	[DllImport("user32.dll")]
+		//	private static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-			public bool PreFilterMessage(ref Message m)
-			{
-				switch (m.Msg)
-				{
-				case 512:
-					lastHandle = m.HWnd;
-					break;
-				case 522:
-				case 526:
-					if (!(m.HWnd == lastHandle))
-					{
-						SendMessage(lastHandle, m.Msg, m.WParam, m.LParam);
-						return true;
-					}
-					break;
-				}
-				return false;
-			}
-		}
+		//	public bool PreFilterMessage(ref Message m)
+		//	{
+		//		switch (m.Msg)
+		//		{
+		//		case 512:
+		//			lastHandle = m.HWnd;
+		//			break;
+		//		case 522:
+		//		case 526:
+		//			if (!(m.HWnd == lastHandle))
+		//			{
+		//				SendMessage(lastHandle, m.Msg, m.WParam, m.LParam);
+		//				return true;
+		//			}
+		//			break;
+		//		}
+		//		return false;
+		//	}
+		//}
 
 		public const int DeadLockTestTime = 0;
 
@@ -947,7 +947,7 @@ namespace cYo.Projects.ComicRack.Viewer
                     }
                 }
             };
-			Application.AddMessageFilter(new MouseWheelDelegater());
+			Application.AddMessageFilter(new Win32.MouseWheelDelegater());
 			MainForm.Show();
 			MainForm.Update();
 			MainForm.Activate();
@@ -1115,13 +1115,13 @@ namespace cYo.Projects.ComicRack.Viewer
 			}
 		}
 
-		[DllImport("user32.dll")]
-		private static extern bool SetProcessDPIAware();
+		//[DllImport("user32.dll")]
+		//private static extern bool SetProcessDPIAware();
 
 		[STAThread]
 		private static int Main(string[] args)
 		{
-			SetProcessDPIAware();
+            User32.SetProcessDPIAware();
 			ServicePointManager.Expect100Continue = false;
 			if (ExtendedSettings.WaitPid != 0)
 			{
