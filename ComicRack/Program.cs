@@ -11,7 +11,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-//using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -1114,9 +1113,6 @@ namespace cYo.Projects.ComicRack.Viewer
 				}
 			}
 		}
-
-		//[DllImport("user32.dll")]
-		//private static extern bool SetProcessDPIAware();
 
 		[STAThread]
 		private static int Main(string[] args)

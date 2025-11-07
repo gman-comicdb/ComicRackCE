@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-//using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using cYo.Common.Win32;
@@ -43,8 +42,5 @@ namespace cYo.Common.Windows
                 return true;
             }
         }
-
-        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        //private static extern bool SetDllDirectory(string lpPathName);
     }
 }
