@@ -6,123 +6,124 @@ using System.Runtime.InteropServices;
 using System.Text;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
+using Win32Interop = cYo.Common.Win32.WebpImage;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
 	public static class WebpImage
 	{
-		private static class NativeMethods
-		{
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPFree")]
-			private static extern void WebPFree32(IntPtr toDeallocate);
+        //private static class NativeMethods
+        //{
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPFree")]
+        //	private static extern void WebPFree32(IntPtr toDeallocate);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPFree")]
-			private static extern void WebPFree64(IntPtr toDeallocate);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPFree")]
+        //	private static extern void WebPFree64(IntPtr toDeallocate);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPGetInfo")]
-			private static extern int WebPGetInfo32([In] IntPtr data, UIntPtr dataSize, ref int width, ref int height);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPGetInfo")]
+        //	private static extern int WebPGetInfo32([In] IntPtr data, UIntPtr dataSize, ref int width, ref int height);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPGetInfo")]
-			private static extern int WebPGetInfo64([In] IntPtr data, UIntPtr dataSize, ref int width, ref int height);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPGetInfo")]
+        //	private static extern int WebPGetInfo64([In] IntPtr data, UIntPtr dataSize, ref int width, ref int height);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPDecodeBGRAInto")]
-			private static extern IntPtr WebPDecodeBGRAInto32([In] IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPDecodeBGRAInto")]
+        //	private static extern IntPtr WebPDecodeBGRAInto32([In] IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPDecodeBGRAInto")]
-			private static extern IntPtr WebPDecodeBGRAInto64([In] IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPDecodeBGRAInto")]
+        //	private static extern IntPtr WebPDecodeBGRAInto64([In] IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeLosslessBGR")]
-			private static extern UIntPtr WebPEncodeLosslessBGR32([In] IntPtr bgr, int width, int height, int stride, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeLosslessBGR")]
+        //	private static extern UIntPtr WebPEncodeLosslessBGR32([In] IntPtr bgr, int width, int height, int stride, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeLosslessBGR")]
-			private static extern UIntPtr WebPEncodeLosslessBGR64([In] IntPtr bgr, int width, int height, int stride, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeLosslessBGR")]
+        //	private static extern UIntPtr WebPEncodeLosslessBGR64([In] IntPtr bgr, int width, int height, int stride, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeLosslessBGRA")]
-			private static extern UIntPtr WebPEncodeLosslessBGRA32([In] IntPtr bgra, int width, int height, int stride, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeLosslessBGRA")]
+        //	private static extern UIntPtr WebPEncodeLosslessBGRA32([In] IntPtr bgra, int width, int height, int stride, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeLosslessBGRA")]
-			private static extern UIntPtr WebPEncodeLosslessBGRA64([In] IntPtr bgra, int width, int height, int stride, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeLosslessBGRA")]
+        //	private static extern UIntPtr WebPEncodeLosslessBGRA64([In] IntPtr bgra, int width, int height, int stride, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeBGR")]
-			private static extern UIntPtr WebPEncodeBGR32([In] IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeBGR")]
+        //	private static extern UIntPtr WebPEncodeBGR32([In] IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeBGR")]
-			private static extern UIntPtr WebPEncodeBGR64([In] IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeBGR")]
+        //	private static extern UIntPtr WebPEncodeBGR64([In] IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeBGRA")]
-			private static extern IntPtr WebPEncodeBGRA32([In] IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp32.dll", EntryPoint = "WebPEncodeBGRA")]
+        //	private static extern IntPtr WebPEncodeBGRA32([In] IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output);
 
-			[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeBGRA")]
-			private static extern IntPtr WebPEncodeBGRA64([In] IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output);
+        //	[DllImport("Resources\\libwebp64.dll", EntryPoint = "WebPEncodeBGRA")]
+        //	private static extern IntPtr WebPEncodeBGRA64([In] IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output);
 
-			public static int WebPGetInfo(IntPtr data, UIntPtr dataSize, ref int width, ref int height)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPGetInfo32(data, dataSize, ref width, ref height);
-				}
-				return WebPGetInfo64(data, dataSize, ref width, ref height);
-			}
+        //	public static int WebPGetInfo(IntPtr data, UIntPtr dataSize, ref int width, ref int height)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPGetInfo32(data, dataSize, ref width, ref height);
+        //		}
+        //		return WebPGetInfo64(data, dataSize, ref width, ref height);
+        //	}
 
-			public static void WebPFree(IntPtr toDeallocate)
-			{
-				if (Environment.Is64BitProcess)
-				{
-					WebPFree64(toDeallocate);
-				}
-				else
-				{
-					WebPFree32(toDeallocate);
-				}
-			}
+        //	public static void WebPFree(IntPtr toDeallocate)
+        //	{
+        //		if (Environment.Is64BitProcess)
+        //		{
+        //			WebPFree64(toDeallocate);
+        //		}
+        //		else
+        //		{
+        //			WebPFree32(toDeallocate);
+        //		}
+        //	}
 
-			public static IntPtr WebPDecodeBGRAInto(IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPDecodeBGRAInto32(data, dataSize, outputBuffer, outputBufferSize, outputStride);
-				}
-				return WebPDecodeBGRAInto64(data, dataSize, outputBuffer, outputBufferSize, outputStride);
-			}
+        //	public static IntPtr WebPDecodeBGRAInto(IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPDecodeBGRAInto32(data, dataSize, outputBuffer, outputBufferSize, outputStride);
+        //		}
+        //		return WebPDecodeBGRAInto64(data, dataSize, outputBuffer, outputBufferSize, outputStride);
+        //	}
 
-			public static UIntPtr WebPEncodeLosslessBGR(IntPtr bgr, int width, int height, int stride, ref IntPtr output)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPEncodeLosslessBGR32(bgr, width, height, stride, ref output);
-				}
-				return WebPEncodeLosslessBGR64(bgr, width, height, stride, ref output);
-			}
+        //	public static UIntPtr WebPEncodeLosslessBGR(IntPtr bgr, int width, int height, int stride, ref IntPtr output)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPEncodeLosslessBGR32(bgr, width, height, stride, ref output);
+        //		}
+        //		return WebPEncodeLosslessBGR64(bgr, width, height, stride, ref output);
+        //	}
 
-			public static UIntPtr WebPEncodeLosslessBGRA(IntPtr bgra, int width, int height, int stride, ref IntPtr output)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPEncodeLosslessBGRA32(bgra, width, height, stride, ref output);
-				}
-				return WebPEncodeLosslessBGRA64(bgra, width, height, stride, ref output);
-			}
+        //	public static UIntPtr WebPEncodeLosslessBGRA(IntPtr bgra, int width, int height, int stride, ref IntPtr output)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPEncodeLosslessBGRA32(bgra, width, height, stride, ref output);
+        //		}
+        //		return WebPEncodeLosslessBGRA64(bgra, width, height, stride, ref output);
+        //	}
 
-			public static UIntPtr WebPEncodeBGR(IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPEncodeBGR32(bgr, width, height, stride, qualityFactor, ref output);
-				}
-				return WebPEncodeBGR64(bgr, width, height, stride, qualityFactor, ref output);
-			}
+        //	public static UIntPtr WebPEncodeBGR(IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPEncodeBGR32(bgr, width, height, stride, qualityFactor, ref output);
+        //		}
+        //		return WebPEncodeBGR64(bgr, width, height, stride, qualityFactor, ref output);
+        //	}
 
-			public static IntPtr WebPEncodeBGRA(IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output)
-			{
-				if (!Environment.Is64BitProcess)
-				{
-					return WebPEncodeBGRA32(bgra, width, height, stride, qualityFactor, ref output);
-				}
-				return WebPEncodeBGRA64(bgra, width, height, stride, qualityFactor, ref output);
-			}
-		}
+        //	public static IntPtr WebPEncodeBGRA(IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output)
+        //	{
+        //		if (!Environment.Is64BitProcess)
+        //		{
+        //			return WebPEncodeBGRA32(bgra, width, height, stride, qualityFactor, ref output);
+        //		}
+        //		return WebPEncodeBGRA64(bgra, width, height, stride, qualityFactor, ref output);
+        //	}
+        //}
 
-		private static readonly byte[] header1 = Encoding.ASCII.GetBytes("RIFF");
+        private static readonly byte[] header1 = Encoding.ASCII.GetBytes("RIFF");
 
 		private static readonly byte[] header2 = Encoding.ASCII.GetBytes("WEBP");
 
@@ -138,7 +139,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 		{
 			int width = 0;
 			int height = 0;
-			if (NativeMethods.WebPGetInfo(data, (UIntPtr)(ulong)length, ref width, ref height) == 0)
+			if (Win32Interop.WebPGetInfo(data, (UIntPtr)(ulong)length, ref width, ref height) == 0)
 			{
 				throw new Exception("Invalid WebP header detected");
 			}
@@ -149,7 +150,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 			{
 				bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 				bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-				IntPtr intPtr = NativeMethods.WebPDecodeBGRAInto(data, (UIntPtr)(ulong)length, bitmapData.Scan0, (UIntPtr)(ulong)(bitmapData.Stride * bitmapData.Height), bitmapData.Stride);
+				IntPtr intPtr = Win32Interop.WebPDecodeBGRAInto(data, (UIntPtr)(ulong)length, bitmapData.Scan0, (UIntPtr)(ulong)(bitmapData.Stride * bitmapData.Height), bitmapData.Stride);
 				if (bitmapData.Scan0 != intPtr)
 				{
 					throw new Exception("Failed to decode WebP image with error " + (long)intPtr);
@@ -185,7 +186,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 			}
 			finally
 			{
-				NativeMethods.WebPFree(result);
+				Win32Interop.WebPFree(result);
 			}
 		}
 
@@ -207,21 +208,21 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 				case PixelFormat.Format32bppArgb:
 					if (quality <= 0f)
 					{
-						length = (long)(ulong)NativeMethods.WebPEncodeLosslessBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
+						length = (long)(ulong)Win32Interop.WebPEncodeLosslessBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
 					}
 					else
 					{
-						length = (long)NativeMethods.WebPEncodeBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
+						length = (long)Win32Interop.WebPEncodeBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
 					}
 					break;
 				case PixelFormat.Format24bppRgb:
 					if (quality <= 0f)
 					{
-						length = (long)(ulong)NativeMethods.WebPEncodeLosslessBGR(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
+						length = (long)(ulong)Win32Interop.WebPEncodeLosslessBGR(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
 					}
 					else
 					{
-						length = (long)(ulong)NativeMethods.WebPEncodeBGR(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
+						length = (long)(ulong)Win32Interop.WebPEncodeBGR(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
 					}
 					break;
 				default:

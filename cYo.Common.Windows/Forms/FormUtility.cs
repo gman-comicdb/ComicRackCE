@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -58,9 +58,9 @@ namespace cYo.Common.Windows.Forms
 
 		private static Dictionary<string, IEnumerable<PanelState>> panelStates;
 
-		private const int LOGPIXELSX = 88;
+		//private const int LOGPIXELSX = 88;
 
-		private const int LOGPIXELSY = 90;
+		//private const int LOGPIXELSY = 90;
 
 		private static PointF dpiScale = PointF.Empty;
 
@@ -84,15 +84,16 @@ namespace cYo.Common.Windows.Forms
 				{
 					return dpiScale;
 				}
-				if (!IsProcessDPIAware())
+				if (!User32.IsProcessDPIAware())
 				{
 					dpiScale = new PointF(1f, 1f);
 				}
 				else
 				{
-					IntPtr dC = GetDC(IntPtr.Zero);
-					Size size = new Size(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
-					dpiScale = new PointF((float)size.Width / 96f, (float)size.Height / 96f);
+					//IntPtr dC = GetDC(IntPtr.Zero);
+					//Size size = new Size(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
+					Size size = User32.GetDpiSize();
+                    dpiScale = new PointF((float)size.Width / 96f, (float)size.Height / 96f);
 				}
 				return dpiScale;
 			}
@@ -179,12 +180,12 @@ namespace cYo.Common.Windows.Forms
 			return root.FindServices<T>().FirstOrDefault();
 		}
 
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetActiveWindow();
+		//[DllImport("user32.dll")]
+		//private static extern IntPtr GetActiveWindow();
 
 		public static T FindActiveService<T>() where T : class
 		{
-			return (Form.ActiveForm ?? Control.FromHandle(GetActiveWindow())).FindActiveService<T>();
+			return (Form.ActiveForm ?? User32.GetActiveWindowControl()).FindActiveService<T>();
 		}
 
 		public static T FindParentService<T>(this Control c) where T : class
@@ -465,20 +466,25 @@ namespace cYo.Common.Windows.Forms
 			return text?.Replace("&", "&&");
 		}
 
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetMessageExtraInfo();
+        //[DllImport("user32.dll")]
+        //private static extern IntPtr GetMessageExtraInfo();
 
-		public static bool MessageHasExtraInfo(this Control control)
-		{
-			return GetMessageExtraInfo() != IntPtr.Zero;
-		}
+        //public static bool MessageHasExtraInfo(this Control control)
+        //{
+        //	return GetMessageExtraInfo() != IntPtr.Zero;
+        //}
 
-		public static bool IsTouchMessage(this Control control)
-		{
-			return (GetMessageExtraInfo().ToInt64() & 0xFFFFFF00u) == 4283520768u;
-		}
+        //public static bool IsTouchMessage(this Control control)
+        //{
+        //	return (GetMessageExtraInfo().ToInt64() & 0xFFFFFF00u) == 4283520768u;
+        //}
 
-		public static IEnumerable<ToolStripItem> GetTools(ToolStripItemCollection tic)
+        public static bool IsTouchMessage(this Control control)
+        {
+            return User32.IsTouchMessage();
+        }
+
+        public static IEnumerable<ToolStripItem> GetTools(ToolStripItemCollection tic)
 		{
 			foreach (ToolStripItem t in tic)
 			{
@@ -796,14 +802,14 @@ namespace cYo.Common.Windows.Forms
 			return false;
 		}
 
-		[DllImport("user32.dll")]
-		private static extern bool IsProcessDPIAware();
+		//[DllImport("user32.dll")]
+		//private static extern bool IsProcessDPIAware();
 
-		[DllImport("gdi32.dll")]
-		private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+		//[DllImport("gdi32.dll")]
+		//private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
 
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetDC(IntPtr hWnd);
+		//[DllImport("user32.dll")]
+		//private static extern IntPtr GetDC(IntPtr hWnd);
 
 		public static Size ScaleDpi(this Size size)
 		{

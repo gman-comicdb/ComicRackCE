@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using cYo.Common.ComponentModel;
@@ -233,7 +233,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             AssemblyCopyrightAttribute assemblyCopyrightAttribute = Attribute.GetCustomAttribute(entryAssembly, typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
             string str = assemblyCopyrightAttribute.Copyright + "\n";
             str = $"{str}V {Application.ProductVersion}{GitVersion.GetCurrentVersionInfo()}";
-            str += $" {Marshal.SizeOf(typeof(IntPtr)) * 8} bit";
+            //str += $" {Marshal.SizeOf(typeof(IntPtr)) * 8} bit";
+            str += Environment.Is64BitProcess ? $" 64-bit" : $" 32-bit";
             Size size = e.Graphics.MeasureString(str, Font).ToSize();
             using (StringFormat stringFormat = new StringFormat
             {

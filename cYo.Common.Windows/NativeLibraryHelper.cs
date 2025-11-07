@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using cYo.Common.Win32;
 
 namespace cYo.Common.Windows
 {
@@ -35,7 +36,7 @@ namespace cYo.Common.Windows
 			if (!libraryNames.Contains(path))
             {
                 libraryNames.Add(path);
-                return SetDllDirectory(path);
+                return Kernel32.SetDllDirectory(path);
             }
             else
             {
@@ -43,9 +44,7 @@ namespace cYo.Common.Windows
             }
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool SetDllDirectory(string lpPathName);
+        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        //private static extern bool SetDllDirectory(string lpPathName);
     }
-
-
 }

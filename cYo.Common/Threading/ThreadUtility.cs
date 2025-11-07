@@ -1,12 +1,13 @@
+using cYo.Common.Collections;
+using cYo.Common.Runtime;
+using cYo.Common.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Threading;
-using cYo.Common.Collections;
-using cYo.Common.Runtime;
 
 namespace cYo.Common.Threading
 {
@@ -56,14 +57,14 @@ namespace cYo.Common.Threading
 			}
 		}
 
-		[Flags]
-		private enum EXECUTION_STATE : uint
-		{
-			ES_AWAYMODE_REQUIRED = 0x40u,
-			ES_CONTINUOUS = 0x80000000u,
-			ES_DISPLAY_REQUIRED = 0x2u,
-			ES_SYSTEM_REQUIRED = 0x1u
-		}
+		//[Flags]
+		//private enum EXECUTION_STATE : uint
+		//{
+		//	ES_AWAYMODE_REQUIRED = 0x40u,
+		//	ES_CONTINUOUS = 0x80000000u,
+		//	ES_DISPLAY_REQUIRED = 0x2u,
+		//	ES_SYSTEM_REQUIRED = 0x1u
+		//}
 
 		private static readonly HashSet<Thread> activeThreads = new HashSet<Thread>();
 
@@ -346,17 +347,20 @@ namespace cYo.Common.Threading
 			}
 		}
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags);
+        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        //private static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags);
 
-		public static void KeepAlive(bool withDisplay = false)
-		{
-			EXECUTION_STATE eXECUTION_STATE = EXECUTION_STATE.ES_SYSTEM_REQUIRED;
-			if (withDisplay)
-			{
-				eXECUTION_STATE |= EXECUTION_STATE.ES_DISPLAY_REQUIRED;
-			}
-			SetThreadExecutionState(eXECUTION_STATE);
-		}
-	}
+        //public static void KeepAlive(bool withDisplay = false)
+        //{
+        //	EXECUTION_STATE eXECUTION_STATE = EXECUTION_STATE.ES_SYSTEM_REQUIRED;
+        //	if (withDisplay)
+        //	{
+        //		eXECUTION_STATE |= EXECUTION_STATE.ES_DISPLAY_REQUIRED;
+        //	}
+        //	SetThreadExecutionState(eXECUTION_STATE);
+        //}
+
+        public static void KeepAlive(bool withDisplay = false)
+			=> Win32Internal.KeepThreadAlive(withDisplay);
+    }
 }

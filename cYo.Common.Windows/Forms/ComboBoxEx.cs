@@ -1,92 +1,92 @@
+using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using static cYo.Common.Win32.ExecuteProcess;
+//using static cYo.Common.Win32.ExecuteProcess;
 
 namespace cYo.Common.Windows.Forms
 {
 	public class ComboBoxEx : ComboBox, IPromptText
 	{
-		private static class NativeMethods
-		{
-			public struct RECT
-			{
-				public int left;
+		//private static class NativeMethods
+		//{
+		//	public struct RECT
+		//	{
+		//		public int left;
 
-				public int top;
+		//		public int top;
 
-				public int right;
+		//		public int right;
 
-				public int bottom;
-			}
+		//		public int bottom;
+		//	}
 
-			public enum ComboBoxButtonState
-			{
-				STATE_SYSTEM_NONE = 0,
-				STATE_SYSTEM_INVISIBLE = 0x8000,
-				STATE_SYSTEM_PRESSED = 8
-			}
+		//	public enum ComboBoxButtonState
+		//	{
+		//		STATE_SYSTEM_NONE = 0,
+		//		STATE_SYSTEM_INVISIBLE = 0x8000,
+		//		STATE_SYSTEM_PRESSED = 8
+		//	}
 
-			public struct COMBOBOXINFO
-			{
-				public int cbSize;
+		//	public struct COMBOBOXINFO
+		//	{
+		//		public int cbSize;
 
-				public RECT rcItem;
+		//		public RECT rcItem;
 
-				public RECT rcButton;
+		//		public RECT rcButton;
 
-				public ComboBoxButtonState buttonState;
+		//		public ComboBoxButtonState buttonState;
 
-				public IntPtr hwndCombo;
+		//		public IntPtr hwndCombo;
 
-				public IntPtr hwndEdit;
+		//		public IntPtr hwndEdit;
 
-				public IntPtr hwndList;
-			}
+		//		public IntPtr hwndList;
+		//	}
 
-			public const int ECM_FIRST = 5376;
+		//	public const int ECM_FIRST = 5376;
 
-			public const int EM_SETCUEBANNER = 5377;
+		//	public const int EM_SETCUEBANNER = 5377;
 
-			public const int WM_CTLCOLORSTATIC = 0x0138; //312U;
+		//	public const int WM_CTLCOLORSTATIC = 0x0138; //312U;
 
-			public const int WM_PAINT = 15;
+		//	public const int WM_PAINT = 15;
 
-			[DllImport("user32.dll", CharSet = CharSet.Auto)]
-			public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
+		//	[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		//	public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
 
-			[DllImport("user32.dll")]
-			public static extern bool GetComboBoxInfo(IntPtr hwnd, ref COMBOBOXINFO pcbi);
+		//	[DllImport("user32.dll")]
+		//	public static extern bool GetComboBoxInfo(IntPtr hwnd, ref COMBOBOXINFO pcbi);
 
-			[DllImport("gdi32.dll")]
-			public static extern int SetTextColor(IntPtr hdc, int crColor);
+		//	[DllImport("gdi32.dll")]
+		//	public static extern int SetTextColor(IntPtr hdc, int crColor);
 
-			[DllImport("gdi32.dll")]
-			public static extern int SetBkColor(IntPtr hdc, int crColor);
+		//	[DllImport("gdi32.dll")]
+		//	public static extern int SetBkColor(IntPtr hdc, int crColor);
 
-			[StructLayout(LayoutKind.Sequential)]
-			public struct PAINTSTRUCT
-			{
-				public IntPtr hdc;
-				public bool fErase;
-				public Rectangle rcPaint;
-				public bool fRestore;
-				public bool fIncUpdate;
-				[MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-				public byte[] rgbReserved;
-			}
+		//	[StructLayout(LayoutKind.Sequential)]
+		//	public struct PAINTSTRUCT
+		//	{
+		//		public IntPtr hdc;
+		//		public bool fErase;
+		//		public Rectangle rcPaint;
+		//		public bool fRestore;
+		//		public bool fIncUpdate;
+		//		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+		//		public byte[] rgbReserved;
+		//	}
 
-            [DllImport("gdi32.dll")]
-            private static extern IntPtr CreateSolidBrush(int crColor);
+  //          [DllImport("gdi32.dll")]
+  //          private static extern IntPtr CreateSolidBrush(int crColor);
 
-			// cache it
-            public static readonly IntPtr darkEditBrush = CreateSolidBrush(ColorTranslator.ToWin32(Color.FromArgb(64, 64, 64)));
-
-        }
+		//	// cache it
+  //          public static readonly IntPtr darkEditBrush = CreateSolidBrush(ColorTranslator.ToWin32(Color.FromArgb(64, 64, 64)));
+  //      }
 
 		private bool quickSelectAll;
 
@@ -137,93 +137,143 @@ namespace cYo.Common.Windows.Forms
 			SetPromptText();
 		}
 
-		private void SetPromptText()
+        //private void SetPromptText()
+        //{
+        //	IntPtr textHandle = GetTextHandle();
+        //	if (textHandle != IntPtr.Zero)
+        //	{
+        //		NativeMethods.SendMessage(textHandle, NativeMethods.EM_SETCUEBANNER, IntPtr.Zero, promptText);
+        //	}
+        //}
+
+        private void SetPromptText()
 		{
-			IntPtr textHandle = GetTextHandle();
-			if (textHandle != IntPtr.Zero)
-			{
-				NativeMethods.SendMessage(textHandle, NativeMethods.EM_SETCUEBANNER, IntPtr.Zero, promptText);
-			}
+			Win32.Win32.SetPromptText(this, promptText);
 		}
 
-		private NativeMethods.COMBOBOXINFO GetChildHandle()
-		{
-			NativeMethods.COMBOBOXINFO pcbi = default(NativeMethods.COMBOBOXINFO);
-			pcbi.cbSize = Marshal.SizeOf((object)pcbi);
-			NativeMethods.GetComboBoxInfo(base.Handle, ref pcbi);
-			return pcbi;
-		}
+        //private NativeMethods.COMBOBOXINFO GetChildHandle()
+        //{
+        //	NativeMethods.COMBOBOXINFO pcbi = default(NativeMethods.COMBOBOXINFO);
+        //	pcbi.cbSize = Marshal.SizeOf((object)pcbi);
+        //	NativeMethods.GetComboBoxInfo(base.Handle, ref pcbi);
+        //	return pcbi;
+        //}
 
-		private IntPtr GetTextHandle()
+        //private IntPtr GetTextHandle()
+        //{
+        //	NativeMethods.COMBOBOXINFO pcbi = GetChildHandle();
+        //	return pcbi.hwndEdit;
+        //}
+
+		private void DrawDisabledDropDownListText(Graphics g)
 		{
-			NativeMethods.COMBOBOXINFO pcbi = GetChildHandle();
-			return pcbi.hwndEdit;
-		}
+            // The text area for DropDownList (excluding the dropdown button)
+            Rectangle textBounds = ClientRectangle;
+            textBounds.Width -= SystemInformation.VerticalScrollBarWidth;
+
+            // Fill the background
+            using var bgBrush = new SolidBrush(ThemeColors.DarkMode.ComboBox.Disabled);
+            g.FillRectangle(bgBrush, textBounds);
+
+            // Draw the text
+            TextRenderer.DrawText(
+                g,
+                Text,
+                Font,
+                textBounds,
+                SystemColors.GrayText,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis
+			);
+        }
 
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
 
-            IntPtr hdc = m.WParam;   // handle to device context (DC)
-            IntPtr hwndChild = m.LParam;  // handle to the static control
-            NativeMethods.COMBOBOXINFO pcbi = GetChildHandle();
-
-
-			if (!ThemeManager.IsDarkModeEnabled || pcbi.hwndEdit == IntPtr.Zero)
+			if (!ThemeManager.IsDarkModeEnabled)
 				return;
 
-			switch (m.Msg)
+            if (m.IsColorStatic())
+            {
+                IntPtr darkBrush = Win32.Win32.DrawDisabledComboBox(this, m.WParam, m.LParam);
+
+                if (darkBrush != IntPtr.Zero)
+                    m.Result = darkBrush;
+                    return;
+            }
+			else if (m.IsPaint())
 			{
-				case NativeMethods.WM_CTLCOLORSTATIC:
-					if (hwndChild == pcbi.hwndEdit)
+				if (!GetStyle(ControlStyles.UserPaint) && (FlatStyle == FlatStyle.Flat || FlatStyle == FlatStyle.Popup) && !(SystemInformation.HighContrast && BackColor == SystemColors.Window))
+				{
+					if (!Enabled && DropDownStyle == ComboBoxStyle.DropDownList)
 					{
-						NativeMethods.SetBkColor(hdc, ColorTranslator.ToWin32(ThemeColors.DarkMode.ComboBox.Disabled));
-						NativeMethods.SetTextColor(hdc, ColorTranslator.ToWin32(SystemColors.GrayText));
+						using Graphics g = Graphics.FromHdc(m.WParam);
+                        DrawDisabledDropDownListText(g);
+                    }
+				}
+            }
+				
 
-						m.Result = NativeMethods.darkEditBrush;
-						return;
-					}
+   //         IntPtr hdc = m.WParam;   // handle to device context (DC)
+   //         IntPtr hwndChild = m.LParam;  // handle to the static control
+   //         NativeMethods.COMBOBOXINFO pcbi = GetChildHandle();
 
-					// Additional handling for Simple style listbox when disabled
-					if (DropDownStyle == ComboBoxStyle.Simple && !Enabled && hwndChild == pcbi.hwndList)
-					{
-						NativeMethods.SetBkColor(hdc, ColorTranslator.ToWin32(ThemeColors.DarkMode.ComboBox.Disabled));
-						NativeMethods.SetTextColor(hdc, ColorTranslator.ToWin32(SystemColors.GrayText));
-						m.Result = NativeMethods.darkEditBrush;
-						return;
-					}
 
-					break;
-				case NativeMethods.WM_PAINT:
-					if (!GetStyle(ControlStyles.UserPaint) && (FlatStyle == FlatStyle.Flat || FlatStyle == FlatStyle.Popup) && !(SystemInformation.HighContrast && BackColor == SystemColors.Window))
-					{
-                        using Graphics g = Graphics.FromHdc(hdc);
+			//if (!ThemeManager.IsDarkModeEnabled || pcbi.hwndEdit == IntPtr.Zero)
+			//	return;
 
-                        // Special handling for disabled DropDownList in dark mode
-                        if (!Enabled && DropDownStyle == ComboBoxStyle.DropDownList)
-						{
-							// The text area for DropDownList (excluding the dropdown button)
-							Rectangle textBounds = ClientRectangle;
-							textBounds.Width -= SystemInformation.VerticalScrollBarWidth;
+			//switch (m.Msg)
+			//{
+			//	case NativeMethods.WM_CTLCOLORSTATIC:
+			//		if (hwndChild == pcbi.hwndEdit)
+			//		{
+			//			NativeMethods.SetBkColor(hdc, ColorTranslator.ToWin32(ThemeColors.DarkMode.ComboBox.Disabled));
+			//			NativeMethods.SetTextColor(hdc, ColorTranslator.ToWin32(SystemColors.GrayText));
 
-							// Fill the background
-							using var bgBrush = new SolidBrush(ThemeColors.DarkMode.ComboBox.Disabled);
-							g.FillRectangle(bgBrush, textBounds);
+			//			m.Result = NativeMethods.darkEditBrush;
+			//			return;
+			//		}
 
-							// Draw the text
-							TextRenderer.DrawText(
-								g,
-								Text,
-								Font,
-								textBounds,
-                                SystemColors.GrayText,
-								TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
-						}
+			//		// Additional handling for Simple style listbox when disabled
+			//		if (DropDownStyle == ComboBoxStyle.Simple && !Enabled && hwndChild == pcbi.hwndList)
+			//		{
+			//			NativeMethods.SetBkColor(hdc, ColorTranslator.ToWin32(ThemeColors.DarkMode.ComboBox.Disabled));
+			//			NativeMethods.SetTextColor(hdc, ColorTranslator.ToWin32(SystemColors.GrayText));
+			//			m.Result = NativeMethods.darkEditBrush;
+			//			return;
+			//		}
 
-						return;
-					}
-					break;
-			}
+			//		break;
+			//	case NativeMethods.WM_PAINT:
+			//		if (!GetStyle(ControlStyles.UserPaint) && (FlatStyle == FlatStyle.Flat || FlatStyle == FlatStyle.Popup) && !(SystemInformation.HighContrast && BackColor == SystemColors.Window))
+			//		{
+   //                     using Graphics g = Graphics.FromHdc(hdc);
+
+   //                     // Special handling for disabled DropDownList in dark mode
+   //                     if (!Enabled && DropDownStyle == ComboBoxStyle.DropDownList)
+			//			{
+			//				// The text area for DropDownList (excluding the dropdown button)
+			//				Rectangle textBounds = ClientRectangle;
+			//				textBounds.Width -= SystemInformation.VerticalScrollBarWidth;
+
+			//				// Fill the background
+			//				using var bgBrush = new SolidBrush(ThemeColors.DarkMode.ComboBox.Disabled);
+			//				g.FillRectangle(bgBrush, textBounds);
+
+			//				// Draw the text
+			//				TextRenderer.DrawText(
+			//					g,
+			//					Text,
+			//					Font,
+			//					textBounds,
+   //                             SystemColors.GrayText,
+			//					TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+			//			}
+
+			//			return;
+			//		}
+			//		break;
+			//}
 
         }
 
