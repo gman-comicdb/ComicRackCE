@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms.Theme;
@@ -119,14 +118,6 @@ namespace cYo.Common.Windows.Forms
 			{
 			}
 		}
-
-		//private static class Native
-		//{
-		//	public const int CB_SETDROPPEDWIDTH = 352;
-
-		//	[DllImport("user32.dll", CharSet = CharSet.Unicode)]
-		//	public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-		//}
 
 		private ComboBox comboBox;
 

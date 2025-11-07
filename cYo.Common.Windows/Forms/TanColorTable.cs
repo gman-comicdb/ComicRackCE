@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-//using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -57,9 +56,6 @@ namespace cYo.Common.Windows.Forms
 					colorScheme = null;
 				}
 			}
-
-			//[DllImport("uxtheme.dll", CharSet = CharSet.Auto)]
-			//public static extern int GetCurrentThemeName(StringBuilder pszThemeFileName, int dwMaxNameChars, StringBuilder pszColorBuff, int dwMaxColorChars, StringBuilder pszSizeBuff, int cchMaxSizeChars);
 		}
 
 		private enum KnownColors

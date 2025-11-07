@@ -12,26 +12,11 @@ using cYo.Common.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using cYo.Common.Win32;
-//using System.Runtime.InteropServices;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
     public static class HeifAvifImage
     {
-        //public static class NativeMethods
-        //{
-        //    public enum heif_filetype_result
-        //    {
-        //        heif_filetype_no,
-        //        heif_filetype_yes_supported,   // it is heif and can be read by libheif
-        //        heif_filetype_yes_unsupported, // it is heif, but cannot be read by libheif
-        //        heif_filetype_maybe // not sure whether it is an heif, try detection with more input data
-        //    };
-
-        //    [DllImport("libheif", CallingConvention = CallingConvention.Cdecl)]
-        //    public static extern heif_filetype_result heif_check_filetype(IntPtr data, int len);
-        //}
-
 		public static byte[] ConvertToJpeg(byte[] data)
         {
             if (!IsSupported(data) || !Win32.IsHeifSupportedNative(data))

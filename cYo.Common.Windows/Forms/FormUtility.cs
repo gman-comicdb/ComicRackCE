@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -90,8 +89,6 @@ namespace cYo.Common.Windows.Forms
 				}
 				else
 				{
-					//IntPtr dC = GetDC(IntPtr.Zero);
-					//Size size = new Size(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
 					Size size = User32.GetDpiSize();
                     dpiScale = new PointF((float)size.Width / 96f, (float)size.Height / 96f);
 				}
@@ -179,9 +176,6 @@ namespace cYo.Common.Windows.Forms
 		{
 			return root.FindServices<T>().FirstOrDefault();
 		}
-
-		//[DllImport("user32.dll")]
-		//private static extern IntPtr GetActiveWindow();
 
 		public static T FindActiveService<T>() where T : class
 		{
@@ -465,19 +459,6 @@ namespace cYo.Common.Windows.Forms
 		{
 			return text?.Replace("&", "&&");
 		}
-
-        //[DllImport("user32.dll")]
-        //private static extern IntPtr GetMessageExtraInfo();
-
-        //public static bool MessageHasExtraInfo(this Control control)
-        //{
-        //	return GetMessageExtraInfo() != IntPtr.Zero;
-        //}
-
-        //public static bool IsTouchMessage(this Control control)
-        //{
-        //	return (GetMessageExtraInfo().ToInt64() & 0xFFFFFF00u) == 4283520768u;
-        //}
 
         public static bool IsTouchMessage(this Control control)
         {
@@ -801,15 +782,6 @@ namespace cYo.Common.Windows.Forms
 		{
 			return false;
 		}
-
-		//[DllImport("user32.dll")]
-		//private static extern bool IsProcessDPIAware();
-
-		//[DllImport("gdi32.dll")]
-		//private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-
-		//[DllImport("user32.dll")]
-		//private static extern IntPtr GetDC(IntPtr hWnd);
 
 		public static Size ScaleDpi(this Size size)
 		{

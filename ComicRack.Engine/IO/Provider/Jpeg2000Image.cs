@@ -10,7 +10,6 @@ using cYo.Common.Drawing;
 using cYo.Common.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-//using System.Runtime.InteropServices;
 using cYo.Common.Collections;
 using CSJ2K;
 using CSJ2K.Util;

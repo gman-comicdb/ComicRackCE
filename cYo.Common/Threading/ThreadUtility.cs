@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-//using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace cYo.Common.Threading
@@ -346,19 +345,6 @@ namespace cYo.Common.Threading
 				}
 			}
 		}
-
-        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        //private static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags);
-
-        //public static void KeepAlive(bool withDisplay = false)
-        //{
-        //	EXECUTION_STATE eXECUTION_STATE = EXECUTION_STATE.ES_SYSTEM_REQUIRED;
-        //	if (withDisplay)
-        //	{
-        //		eXECUTION_STATE |= EXECUTION_STATE.ES_DISPLAY_REQUIRED;
-        //	}
-        //	SetThreadExecutionState(eXECUTION_STATE);
-        //}
 
         public static void KeepAlive(bool withDisplay = false)
 			=> Win32Internal.KeepThreadAlive(withDisplay);

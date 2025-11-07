@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-//using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using cYo.Common.Drawing;
@@ -14,8 +13,6 @@ namespace cYo.Projects.ComicRack.Viewer
 		private static TaskbarManager windowsTaskbar;
 
 		private static Dictionary<string, TabbedThumbnail> thumbnails = new Dictionary<string, TabbedThumbnail>(StringComparer.OrdinalIgnoreCase);
-
-		//private const uint BCM_SETSHIELD = 0x160Cu;
 
 		public static bool TabbedThumbnailsEnabled => false;
 
@@ -117,18 +114,5 @@ namespace cYo.Projects.ComicRack.Viewer
 				TaskbarManager.Instance.TabbedThumbnail.SetActiveTab(value);
 			}
 		}
-
-		//[DllImport("user32.dll")]
-		//private static extern int SendMessage(HandleRef hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-		//public static bool ShowShield(Button button)
-		//{
-		//	if (button == null)
-		//	{
-		//		return false;
-		//	}
-		//	button.FlatStyle = FlatStyle.System;
-		//	return SendMessage(new HandleRef(button, button.Handle), BCM_SETSHIELD, new IntPtr(0), new IntPtr(1)) == 0;
-		//}
 	}
 }
