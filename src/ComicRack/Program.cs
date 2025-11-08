@@ -1,20 +1,6 @@
-global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
+global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Forms;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -31,6 +17,8 @@ using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display.Forms;
@@ -40,14 +28,27 @@ using cYo.Projects.ComicRack.Engine.IO.Cache;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
+using cYo.Projects.ComicRack.Plugins.Theme;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
-using cYo.Common.Windows.Forms.Theme;
-using cYo.Common.Windows.Forms.Theme.Resources;
-using cYo.Projects.ComicRack.Plugins.Theme;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
@@ -728,7 +729,23 @@ namespace cYo.Projects.ComicRack.Viewer
 			}
 		}
 
-		private static void StartNew(string[] args)
+        private static Assembly ResolvePackageLibrary(object sender, ResolveEventArgs resolveArgs)
+        {
+            var assemblyName = new AssemblyName(resolveArgs.Name).Name + ".dll";
+            var subPath = "Resources\\Lib";
+            if (assemblyName.StartsWith("Microsoft"))
+            {
+                subPath += "\\Microsoft";
+            }
+            else if (assemblyName.StartsWith("System"))
+            {
+                subPath += "\\System";
+            }
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, subPath, assemblyName);
+            return File.Exists(path) ? Assembly.LoadFrom(path) : null;
+        }
+
+        private static void StartNew(string[] args)
 		{
 			Thread.CurrentThread.Name = "GUI Thread";
 			Diagnostic.StartWatchDog(CrashDialog.OnBark);
@@ -1133,6 +1150,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			}
 			TR.ResourceFolder = new PackedLocalize(TR.ResourceFolder);
             NativeLibraryHelper.RegisterDirectory(); //Add the resources directory to the search path for natives dll's
+            AppDomain.CurrentDomain.AssemblyResolve += ResolvePackageLibrary; // Hook AssemblyResolve to search for non-native dll's
             Control.CheckForIllegalCrossThreadCalls = false;
 			ItemMonitor.CatchThreadInterruptException = true;
 			SingleInstance singleInstance = new SingleInstance("ComicRackSingleInstance", StartNew, StartLast);
