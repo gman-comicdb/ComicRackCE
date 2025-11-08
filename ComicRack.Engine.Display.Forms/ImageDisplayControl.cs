@@ -8,7 +8,7 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.Mathematics;
 using cYo.Common.Presentation;
-//using cYo.Common.Presentation.Tao;
+using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Threading;
 using cYo.Common.Windows.Forms;
@@ -880,7 +880,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 
 		private static HardwareAccelerationType hardwareAcceleration = HardwareAccelerationType.Enabled;
 
-		//private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
+		private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
 
 		private IContainer components;
 
@@ -1470,7 +1470,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 			}
 		}
 
-		//public static TextureManagerSettings HardwareSettings => hardwareSettings;
+		public static TextureManagerSettings HardwareSettings => hardwareSettings;
 
 		public Point PanLocation => panLocation;
 
@@ -1830,39 +1830,39 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 		{
 			try
 			{
-				//if (hardware && HardwareAcceleration != 0 && !DisableHardwareAcceleration)
-				//{
-				//	if (renderer != null && renderer.IsHardware)
-				//	{
-				//		return true;
-				//	}
-				//	if (renderer != null && renderer is IDisposable)
-				//	{
-				//		IDisposable disposable = renderer as IDisposable;
-				//		renderer = null;
-				//		disposable.Dispose();
-				//	}
-				//	ControlOpenGlRenderer controlOpenGlRenderer = null;
-				//	bool flag;
-				//	try
-				//	{
-				//		controlOpenGlRenderer = new ControlOpenGlRenderer(this, registerPaint: false, (TextureManagerSettings)HardwareSettings.Clone())
-				//		{
-				//			EnableFilter = hardwareFiltering
-				//		};
-				//		flag = controlOpenGlRenderer.IsSoftwareRenderer;
-				//	}
-				//	catch
-				//	{
-				//		flag = true;
-				//	}
-				//	if (!flag || HardwareAcceleration == HardwareAccelerationType.Forced)
-				//	{
-				//		renderer = controlOpenGlRenderer;
-				//		return true;
-				//	}
-				//	controlOpenGlRenderer?.Dispose();
-				//}
+				if (hardware && HardwareAcceleration != 0 && !DisableHardwareAcceleration)
+				{
+					if (renderer != null && renderer.IsHardware)
+					{
+						return true;
+					}
+					if (renderer != null && renderer is IDisposable)
+					{
+						IDisposable disposable = renderer as IDisposable;
+						renderer = null;
+						disposable.Dispose();
+					}
+					ControlOpenGlRenderer controlOpenGlRenderer = null;
+					bool flag;
+					try
+					{
+						controlOpenGlRenderer = new ControlOpenGlRenderer(this, registerPaint: false, (TextureManagerSettings)HardwareSettings.Clone())
+						{
+							EnableFilter = hardwareFiltering
+						};
+						flag = controlOpenGlRenderer.IsSoftwareRenderer;
+					}
+					catch
+					{
+						flag = true;
+					}
+					if (!flag || HardwareAcceleration == HardwareAccelerationType.Forced)
+					{
+						renderer = controlOpenGlRenderer;
+						return true;
+					}
+					controlOpenGlRenderer?.Dispose();
+				}
 				SetStyle(ControlStyles.OptimizedDoubleBuffer, value: true);
 				if (renderer != null)
 				{

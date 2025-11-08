@@ -38,13 +38,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
     <PackageReference Include="PolySharp">
       <Version>1.15.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="OpenTK">
-      <Version>3.3.3</Version>
+      <Version>4.9.4</Version>
     </PackageReference>
     <PackageReference Include="SharpZipLib">
       <Version>1.4.2</Version>

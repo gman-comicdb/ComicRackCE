@@ -1,3 +1,14 @@
+using cYo.Common.ComponentModel;
+using cYo.Common.Drawing;
+//using OpenTK.Platform;
+//using OpenTK.Platform.Windows;
+//using OpenTK.WinForms;
+//using OpenTK.Graphics.OpenGL4;
+using OpenTK.GLControl;
+//using OpenTK;
+//using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,13 +18,7 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using cYo.Common.ComponentModel;
-using cYo.Common.Drawing;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Platform;
-using OpenTK.Platform.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace cYo.Common.Presentation.Tao
@@ -22,8 +27,10 @@ namespace cYo.Common.Presentation.Tao
     {
         private TextureManager tm;
 
-        private IWindowInfo windowInfo;
-        private GraphicsContext graphicsContext;
+        //private IWindowInfo windowInfo;
+        //private GraphicsContext graphicsContext;
+
+        private GLControl? glControl;
 
         private bool isSoftwareRenderer;
 
@@ -216,18 +223,28 @@ namespace cYo.Common.Presentation.Tao
             DestroyContexts();
         }
 
+        //public void MakeCurrent()
+        //{
+        //    if (graphicsContext == null)
+        //        throw new InvalidOperationException("GraphicsContext is not initialized.");
+        //    graphicsContext.MakeCurrent(windowInfo);
+        //}
+
         public void MakeCurrent()
         {
-            if (graphicsContext == null)
-                throw new InvalidOperationException("GraphicsContext is not initialized.");
-            graphicsContext.MakeCurrent(windowInfo);
+            glControl?.MakeCurrent();
         }
+
+        //public void SwapBuffers()
+        //{
+        //    if (graphicsContext == null)
+        //        throw new InvalidOperationException("GraphicsContext is not initialized.");
+        //    graphicsContext.SwapBuffers();
+        //}
 
         public void SwapBuffers()
         {
-            if (graphicsContext == null)
-                throw new InvalidOperationException("GraphicsContext is not initialized.");
-            graphicsContext.SwapBuffers();
+            glControl?.MakeCurrent();
         }
 
         public void Draw()
@@ -245,6 +262,43 @@ namespace cYo.Common.Presentation.Tao
             GL.LoadIdentity();
         }
 
+   //     private void InitializeContexts(Control window)
+   //     {
+   //         if (window == null)
+   //             throw new ArgumentNullException("window", "No valid window handle");
+   //         Control = window;
+   //         if (Control.Handle == IntPtr.Zero)
+   //             throw new InvalidOperationException("Window not created");
+
+   //         windowInfo = Utilities.CreateWindowsWindowInfo(Control.Handle);
+
+   //         GraphicsMode mode = new GraphicsMode(
+   //             ColorBits,
+   //             DepthBits,
+   //             StencilBits,
+			//	GraphicsMode.Default.Samples, // samples
+			//	AccumBits,
+   //             GraphicsMode.Default.Buffers, // buffers
+   //             false // stereo
+   //         );
+
+   //         graphicsContext = new GraphicsContext(mode, windowInfo, 3, 0, GraphicsContextFlags.Default);
+   //         graphicsContext.MakeCurrent(windowInfo);
+   //         graphicsContext.LoadAll();
+
+   //         // Check renderer type
+   //         string renderer = GL.GetString(StringName.Renderer);
+   //         isSoftwareRenderer = renderer != null && renderer.IndexOf("software", StringComparison.InvariantCultureIgnoreCase) >= 0;
+			//if (OpenGlInfo.Version < 1.2f)
+			//	isSoftwareRenderer = true;
+
+			//Settings.Validate();
+   //         tm = new TextureManager
+   //         {
+   //             Settings = Settings
+   //         };
+   //     }
+
         private void InitializeContexts(Control window)
         {
             if (window == null)
@@ -253,43 +307,50 @@ namespace cYo.Common.Presentation.Tao
             if (Control.Handle == IntPtr.Zero)
                 throw new InvalidOperationException("Window not created");
 
-            windowInfo = Utilities.CreateWindowsWindowInfo(Control.Handle);
+            var settings = new GLControlSettings();
 
-            GraphicsMode mode = new GraphicsMode(
-                ColorBits,
-                DepthBits,
-                StencilBits,
-				GraphicsMode.Default.Samples, // samples
-				AccumBits,
-                GraphicsMode.Default.Buffers, // buffers
-                false // stereo
-            );
+            glControl = new GLControl(settings)
+            {
+                Dock = DockStyle.Fill
+            };
 
-            graphicsContext = new GraphicsContext(mode, windowInfo, 3, 0, GraphicsContextFlags.Default);
-            graphicsContext.MakeCurrent(windowInfo);
-            graphicsContext.LoadAll();
+            window.Controls.Add(glControl);
+            glControl.MakeCurrent();   // binds the underlying context
+                                       // … if needed: GL.LoadBindings() or other initialization
+            
+            //graphicsContext = new GraphicsContext(mode, windowInfo, 3, 0, GraphicsContextFlags.Default);
+            //graphicsContext.MakeCurrent(windowInfo);
+            //graphicsContext.LoadAll();
 
             // Check renderer type
             string renderer = GL.GetString(StringName.Renderer);
             isSoftwareRenderer = renderer != null && renderer.IndexOf("software", StringComparison.InvariantCultureIgnoreCase) >= 0;
-			if (OpenGlInfo.Version < 1.2f)
-				isSoftwareRenderer = true;
+            if (OpenGlInfo.Version < 1.2f)
+                isSoftwareRenderer = true;
 
-			Settings.Validate();
+            Settings.Validate();
             tm = new TextureManager
             {
                 Settings = Settings
             };
         }
 
+        //public void DestroyContexts()
+        //{
+        //    if (graphicsContext != null)
+        //    {
+        //        graphicsContext.Dispose();
+        //        graphicsContext = null;
+        //    }
+        //    windowInfo = null;
+        //}
         public void DestroyContexts()
         {
-            if (graphicsContext != null)
+            if (glControl != null)
             {
-                graphicsContext.Dispose();
-                graphicsContext = null;
+                glControl.Dispose();
+                glControl = null;
             }
-            windowInfo = null;
         }
 
         private static void SetStyle(Control window, ControlStyles styles, bool enable)
@@ -362,7 +423,7 @@ namespace cYo.Common.Presentation.Tao
         {
             if (sceneCounter == 0)
             {
-                if (graphicsContext == null)
+                if (glControl == null)
                 {
                     return false;
                 }
