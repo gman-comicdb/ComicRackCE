@@ -24,7 +24,7 @@ using cYo.Common.IO;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Net;
-//using cYo.Common.Presentation.Tao;
+using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Text;
 using cYo.Common.Threading;
@@ -739,7 +739,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			ComicBookValueMatcher.RegisterMatcherType(typeof(ComicBookExpressionMatcher));
 			Settings = Settings.Load(defaultSettingsFile);
 			Settings.RunCount++;
-			//CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
+			CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
 			CommandLineParser.Parse(EngineConfiguration.Default);
             // moved to ApplicationConfiguration
             //Application.EnableVisualStyles();
@@ -869,20 +869,20 @@ namespace cYo.Projects.ComicRack.Viewer
                     }
                     ToolStripManager.Renderer = renderer;
                 }
-                ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-                //if (ExtendedSettings.DisableHardware)
-                //{
-                //	ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-                //}
-                //else
-                //{
-                //	ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-                //}
-                //if (ExtendedSettings.DisableMipMapping)
-                //{
-                //	ImageDisplayControl.HardwareSettings.MipMapping = false;
-                //}
-                Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
+                //ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
+				if (ExtendedSettings.DisableHardware)
+				{
+					ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
+				}
+				else
+				{
+					ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
+				}
+				if (ExtendedSettings.DisableMipMapping)
+				{
+					ImageDisplayControl.HardwareSettings.MipMapping = false;
+				}
+				Lists = new DefaultLists(() => Database.Books, IniFile.GetDefaultLocations(DefaultListsFile));
 				StartupProgress(TR.Messages["InitCache", "Initialize Disk Caches"], 30);
 				CacheManager = new CacheManager(DatabaseManager, Paths, Settings, Resources.ResourceManager);
 				QueueManager = new QueueManager(DatabaseManager, CacheManager, Settings, Settings.Devices);
@@ -1095,8 +1095,8 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		private static void AutoTuneSystem()
 		{
-            //if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault)
-            if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault)
+            if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault && ImageDisplayControl.HardwareSettings.IsMaxTextureMemoryMBDefault && ImageDisplayControl.HardwareSettings.IsTextureManagerOptionsDefault)
+            //if (ExtendedSettings.IsQueryCacheModeDefault && EngineConfiguration.Default.IsEnableParallelQueriesDefault)
 			{
 				int processorCount = Environment.ProcessorCount;
 				int num = (int)(MemoryInfo.InstalledPhysicalMemory / 1024 / 1024);
@@ -1108,12 +1108,12 @@ namespace cYo.Projects.ComicRack.Viewer
 				if (cpuSpeedInHz < 2000)
 					ExtendedSettings.OptimizedListScrolling = true;
 
-				//ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
-				//if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
-				//{
-				//	ImageDisplayControl.HardwareSettings.TextureManagerOptions |= TextureManagerOptions.BigTexturesAs16Bit;
-				//	ImageDisplayControl.HardwareSettings.TextureManagerOptions &= ~TextureManagerOptions.MipMapFilter;
-				//}
+				ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB = (num / 8).Clamp(32, 2048);
+				if (ImageDisplayControl.HardwareSettings.MaxTextureMemoryMB <= 64)
+				{
+					ImageDisplayControl.HardwareSettings.TextureManagerOptions |= TextureManagerOptions.BigTexturesAs16Bit;
+					ImageDisplayControl.HardwareSettings.TextureManagerOptions &= ~TextureManagerOptions.MipMapFilter;
+				}
 			}
 		}
 
