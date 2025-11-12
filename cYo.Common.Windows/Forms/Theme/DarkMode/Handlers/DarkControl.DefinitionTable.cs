@@ -77,7 +77,9 @@ internal partial class DarkControl
         [typeof(RichTextBox)] = new DarkControlDefinition
         {
             BackColor = DarkColors.TextBox.Back,
+#if !NET10_0_OR_GREATER
             BorderStyle = BorderStyle.None,
+#endif
             //Theme = c => DarkTextBoxBase((TextBoxBase)c) // Need to account for BackColor change in SmartQuery before adding this
         },
 
@@ -106,7 +108,9 @@ internal partial class DarkControl
         // DeviceEditControl TreeView
         [typeof(TreeView)] = new DarkControlDefinition
         {
+#if !NET10_0_OR_GREATER
             BorderStyle = BorderStyle.None,
+#endif
             Theme = c => DarkTreeView((TreeView)c)
         },
 

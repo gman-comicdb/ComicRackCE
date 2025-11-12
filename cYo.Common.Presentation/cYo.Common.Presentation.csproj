@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+	<TargetFramework>net10.0-windows</TargetFramework>
+	<NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
     <OutputType>Library</OutputType>
     <FileAlignment>4096</FileAlignment>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -15,7 +16,7 @@
     <DebugType>none</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
+  <!--ItemGroup>
     <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\Tao.OpenGl.dll</HintPath>
@@ -24,7 +25,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\Tao.Platform.Windows.dll</HintPath>
     </Reference>
-  </ItemGroup>
+  </ItemGroup-->
   <ItemGroup>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
@@ -48,8 +49,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DLL\Tao.OpenGl.dll" />
-    <Content Include="DLL\Tao.Platform.Windows.dll" />
+    <!--Content Include="DLL\Tao.OpenGl.dll" /-->
+    <!--Content Include="DLL\Tao.Platform.Windows.dll" /-->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cYo.Common\cYo.Common.csproj" />

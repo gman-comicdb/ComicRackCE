@@ -12,8 +12,10 @@ using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Threading;
 using cYo.Common.Windows.Forms;
+#if !NET10_0_OR_GREATER
 using Windows7.Multitouch;
 using Windows7.Multitouch.WinForms;
+#endif
 
 namespace cYo.Projects.ComicRack.Engine.Display.Forms
 {
@@ -858,8 +860,9 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 
 		private PointF flowMinDelta;
 
+#if !NET10_0_OR_GREATER
 		private GestureHandler gestureHandler;
-
+#endif
 		private ImageRotation gestureRotation;
 
 		private double gestureRotationStart;
@@ -875,9 +878,9 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 		private Point panLocation;
 
 		private ImagePartInfo panPart;
-
+#if !NET10_0_OR_GREATER
 		private Windows7.Multitouch.GestureEventArgs ignoreEvent;
-
+#endif
 		private static HardwareAccelerationType hardwareAcceleration = HardwareAccelerationType.Enabled;
 
 		private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
@@ -2130,7 +2133,9 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 		protected override void OnCreateControl()
 		{
 			base.OnCreateControl();
+#if !NET10_0_OR_GREATER
 			InitWindowsTouch();
+#endif
 			SetRenderer(hardware: true);
 		}
 
@@ -2426,6 +2431,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 			return HasDisplayOption(ImageDisplayOptions, mask);
 		}
 
+#if !NET10_0_OR_GREATER
 		private void InitWindowsTouch()
 		{
 			try
@@ -2570,8 +2576,9 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 		protected virtual void OnGestureStart()
 		{
 		}
+#endif
 
-		public static bool HasDisplayOption(ImageDisplayOptions option, ImageDisplayOptions mask)
+        public static bool HasDisplayOption(ImageDisplayOptions option, ImageDisplayOptions mask)
 		{
 			return (option & mask) != 0;
 		}

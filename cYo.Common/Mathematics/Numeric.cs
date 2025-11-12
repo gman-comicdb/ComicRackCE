@@ -258,9 +258,13 @@ namespace cYo.Common.Mathematics
 		public static int BinaryHash(params bool[] flags)
 		{
 			int num = 0;
+#if NET10_0_OR_GREATER
+            foreach (bool item in Enumerable.Reverse(flags))
+#else
 			foreach (bool item in flags.Reverse())
-			{
-				num <<= 1;
+#endif
+            {
+                num <<= 1;
 				num += (item ? 1 : 0);
 			}
 			return num;

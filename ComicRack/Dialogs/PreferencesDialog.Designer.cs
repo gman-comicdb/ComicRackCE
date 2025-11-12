@@ -2475,7 +2475,9 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			// PreferencesDialog
 			// 
 			this.AcceptButton = this.btOK;
+#if !NET9_0_OR_GREATER
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+#endif
 			this.CancelButton = this.btCancel;
 			this.ClientSize = new System.Drawing.Size(610, 453);
 			this.Controls.Add(this.pageAdvanced);

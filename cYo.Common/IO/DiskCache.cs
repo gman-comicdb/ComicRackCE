@@ -241,15 +241,19 @@ namespace cYo.Common.IO
 
 				if (index.Count > 0)
 					return index;
-
+#if NET10_0_OR_GREATER
+                return new List<CacheItem>();
+#else
 				return LoadCacheIndexBinary(cacheIndexLegacy);
-			}
+#endif
+            }
 			catch (Exception)
 			{
 				return new List<CacheItem>();
 			}
 		}
 
+#if !NET10_0_OR_GREATER
 		private static List<CacheItem> LoadCacheIndexBinary(string cacheIndexFile)
 		{
 			try
@@ -268,7 +272,7 @@ namespace cYo.Common.IO
 				throw;
 			}
 		}
-
+#endif
 		private static List<CacheItem> LoadCacheIndexXml(string cacheIndexFile)
 		{
 			try
@@ -295,10 +299,13 @@ namespace cYo.Common.IO
 			}
 			finally
 			{
-				SaveCacheIndexBinary(cacheIndexLegacy);
-			}
-		}
+#if !NET10_0_OR_GREATER
+                SaveCacheIndexBinary(cacheIndexLegacy);
+#endif
+            }
+        }
 
+		#if !NET10_0_OR_GREATER
 		public void SaveCacheIndexBinary(string cacheIndexFile)
 		{
 			lock (this)
@@ -325,6 +332,7 @@ namespace cYo.Common.IO
 				}
 			}
 		}
+#endif
 
 		public void SaveCacheIndexXml(string cacheIndexFile)
 		{

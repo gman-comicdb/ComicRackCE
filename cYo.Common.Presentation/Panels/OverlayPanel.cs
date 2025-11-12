@@ -687,8 +687,12 @@ namespace cYo.Common.Presentation.Panels
 			if (panels != null)
 			{
 				Point pt2 = new Point(pt.X - X, pt.Y - Y);
+#if NET10_0_OR_GREATER
+                foreach (OverlayPanel item in Enumerable.Reverse(panels.ToArray()))
+#else
 				foreach (OverlayPanel item in panels.ToArray().Reverse())
-				{
+#endif
+                {
 					OverlayPanel overlayPanel = item.HitTest(pt2);
 					if (overlayPanel != null)
 					{

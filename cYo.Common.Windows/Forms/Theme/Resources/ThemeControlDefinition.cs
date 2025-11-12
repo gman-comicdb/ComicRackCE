@@ -1,5 +1,4 @@
-﻿using cYo.Common.Drawing.ExtendedColors;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -33,11 +32,15 @@ public class ThemeControlDefinition
     {
         if (color.IsSystemColor)
         {
+#if NET10_0_OR_GREATER
+            systemColor = color;
+#else
             systemColor = KnownColorTableEx.GetSystemColor(color.ToKnownColor());
+#endif
             return true;
         }
         systemColor = Color.Empty;
         return false;
     }
-    #endregion
+#endregion
 }

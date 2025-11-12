@@ -253,8 +253,13 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                     int num2 = num / messageLines;
                     Rectangle messageBounds = MessageBounds;
                     stringFormat.LineAlignment = StringAlignment.Far;
+#if NET10_0_OR_GREATER
+                    string[] array = Enumerable.Reverse(message.Split('\n')).Take(messageLines)
+                        .ToArray();
+#else
                     string[] array = message.Split('\n').Reverse().Take(messageLines)
                         .ToArray();
+#endif
                     foreach (string s in array)
                     {
                         using (Brush brush2 = new SolidBrush(Color.FromArgb(num, Color.Black)))

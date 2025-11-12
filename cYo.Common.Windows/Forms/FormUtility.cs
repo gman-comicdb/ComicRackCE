@@ -80,10 +80,14 @@ namespace cYo.Common.Windows.Forms
 		{
 			get
 			{
-				if (!dpiScale.IsEmpty)
-				{
-					return dpiScale;
-				}
+                if (!dpiScale.IsEmpty)
+                {
+                    return dpiScale;
+                }
+#if NET10_0_OR_GREATER
+                dpiScale = new PointF(1f, 1f);
+#else
+				
 				if (!IsProcessDPIAware())
 				{
 					dpiScale = new PointF(1f, 1f);
@@ -94,8 +98,10 @@ namespace cYo.Common.Windows.Forms
 					Size size = new Size(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
 					dpiScale = new PointF((float)size.Width / 96f, (float)size.Height / 96f);
 				}
-				return dpiScale;
-			}
+#endif
+                return dpiScale;
+
+            }
 		}
 
 		public static object FindActiveService(this Control root, Type service)

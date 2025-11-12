@@ -29,6 +29,7 @@ internal partial class DarkControl
 
     private static void DarkDataGridView(DataGridView gridView)
     {
+#if !NET10_0_OR_GREATER
         gridView.EnableHeadersVisualStyles = false;
         gridView.BorderStyle = BorderStyle.None;
         gridView.BackgroundColor = DarkColors.ListBox.Back;
@@ -44,11 +45,14 @@ internal partial class DarkControl
         gridView.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
         gridView.RowHeadersDefaultCellStyle.BackColor = DarkColors.Header.Back;
         gridView.RowHeadersDefaultCellStyle.ForeColor = SystemColors.ControlText;
+#endif
     }
 
     private static void DarkLabel(Label label)
     {
+#if !NET10_0_OR_GREATER
         label.SafeSubscribe(nameof(Label.Paint), PaintDark.Label);
+#endif
     }
 
     private static void DarkListView(ListView listView)
@@ -131,5 +135,5 @@ internal partial class DarkControl
             button.FlatAppearance.BorderColor = DarkColors.Button.Border;
         }
     }
-	#endregion
+    #endregion
 }

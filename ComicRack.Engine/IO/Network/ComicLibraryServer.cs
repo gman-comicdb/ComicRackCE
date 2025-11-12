@@ -1,15 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Selectors;
-using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
-using System.ServiceModel.Security;
 using System.Threading;
 using cYo.Common;
 using cYo.Common.Collections;
@@ -21,6 +15,23 @@ using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Engine.Properties;
+using System.IdentityModel.Tokens;
+#if NET10_0_OR_GREATER
+using CoreWCF;
+using CoreWCF.Channels;
+using CoreWCF.Configuration;
+using CoreWCF.IdentityModel.Selectors;
+using CoreWCF.Security;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+#else
+using System.IdentityModel.Selectors;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Security;
+#endif
 
 namespace cYo.Projects.ComicRack.Engine.IO.Network
 {
@@ -44,8 +55,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				}
 			}
 		}
-
-		public const string InfoPoint = "Info";
+        public const string InfoPoint = "Info";
 
 		public const string LibraryPoint = "Library";
 
@@ -69,9 +79,13 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 
 		private bool serverValidationFailed;
 
+#if NET10_0_OR_GREATER
+		private Microsoft.Extensions.Hosting.IHost? serviceHost;
+#else
 		private ServiceHost serviceHost;
+#endif
 
-		private readonly Cache<Guid, IImageProvider> providerCache = new Cache<Guid, IImageProvider>(EngineConfiguration.Default.ServerProviderCacheSize);
+        private readonly Cache<Guid, IImageProvider> providerCache = new Cache<Guid, IImageProvider>(EngineConfiguration.Default.ServerProviderCacheSize);
 
 		//private static readonly ServerRegistration serverRegistration = new ServerRegistration();
 
@@ -380,6 +394,66 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				{
 					return false;
 				}
+                string uriString = $"net.tcp://localhost:{Config.ServicePort}/{Config.ServiceName}";
+#if NET10_0_OR_GREATER
+                string uriBase = $"net.tcp://localhost:{Config.ServicePort}";
+
+                var serviceHost = Host.CreateDefaultBuilder()
+                    .ConfigureServices(services =>
+                    {
+                        services.AddSingleton(this)
+								.AddSingleton<UserNamePasswordValidator>(new PasswordValidator(Config.ProtectionPassword))
+                                .AddServiceModelServices()
+                                .AddServiceModelMetadata();
+                    })
+                    .ConfigureWebHostDefaults(webBuilder =>
+                    {
+                        webBuilder.UseNetTcp(options =>
+                        {
+                            options.Listen(uriBase);
+                        });
+
+                        webBuilder.Configure(app =>
+                        {
+                            app.UseServiceModel(sb =>
+                            {
+                                sb.AddService<ComicLibraryServer>(opts =>
+                                {
+                                    opts.DebugBehavior.IncludeExceptionDetailInFaults = true;
+                                });
+                                sb.ConfigureServiceHostBase<ComicLibraryServer>(hostBase =>
+                                {
+                                    hostBase.Credentials.UserNameAuthentication.UserNamePasswordValidationMode =
+                                        UserNamePasswordValidationMode.Custom;
+                                    //hostBase.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator =
+                                    //	new CoreWCF.Security.PasswordValidator(share.ProtectionPassword);
+                                    hostBase.Credentials.ServiceCertificate.Certificate = ComicLibraryServer.Certificate;
+                                    //var creds = new CoreWCF.Description.ServiceCredentials
+                                    //{
+                                    //    ServiceCertificate = { Certificate = new X509Certificate2(Certificate) }
+                                    //};
+                                    //creds.ClientCertificate.Authentication.CertificateValidationMode =
+                                    //    X509CertificateValidationMode.None;
+                                    //hostBase.Description.Behaviors.Add(creds);
+                                });
+
+                                sb.AddServiceEndpoint<ComicLibraryServer, IRemoteServerInfo>(
+                                    CreateChannel(secure: false),
+                                    $"{Config.ServiceName}/{InfoPoint}");
+
+                                sb.AddServiceEndpoint<ComicLibraryServer, IRemoteComicLibrary>(
+                                    CreateChannel(secure: true),
+                                    $"{Config.ServiceName}/{LibraryPoint}");
+                            });
+                        });
+                    })
+                    .Build();
+
+                //host.Start();
+                serviceHost.StartAsync().GetAwaiter().GetResult();
+                if (serviceHost == null)
+                    throw new Exception($"Failed to start {Config.ServiceName} ({uriString})");
+#else
 				string uriString = $"net.tcp://localhost:{Config.ServicePort}/{Config.ServiceName}";
 				serviceHost = new ServiceHost(this, new Uri(uriString));
 				serviceHost.Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
@@ -393,7 +467,8 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				serviceEndpoint = serviceHost.AddServiceEndpoint(typeof(IRemoteComicLibrary), CreateChannel(secure: true), LibraryPoint);
 				serviceEndpoint.Binding.SendTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
 				serviceHost.Open();
-				if (Config.IsInternet)
+#endif
+                if (Config.IsInternet)
 				{
 					AnnounceServer();
 					announceTimer = new Timer(ServerAnnounce, null, 300000, 300000);
@@ -432,8 +507,17 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 				{
 					Broadcaster.Broadcast(new BroadcastData(BroadcastType.ServerStopped, Config.ServiceName, Config.ServicePort));
 				}
+#if NET10_0_OR_GREATER
+                if (serviceHost != null)
+                {
+                    serviceHost.StopAsync().GetAwaiter().GetResult();
+                    serviceHost.Dispose();
+                    serviceHost = null;
+                }
+#else
 				serviceHost.Close();
-			}
+#endif
+            }
 			catch
 			{
 			}
@@ -494,20 +578,43 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 			return comicBook.OpenProvider();
 		}
 
-		public static Binding CreateChannel(bool secure)
+#if NET10_0_OR_GREATER
+
+        public static Binding CreateChannel(bool secure)
 		{
 			NetTcpBinding netTcpBinding = new NetTcpBinding();
-			netTcpBinding.Security.Mode = (secure ? SecurityMode.Message : SecurityMode.None);
-			if (secure)
-			{
-				netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-			}
-			netTcpBinding.MaxReceivedMessageSize = 100000000L;
-			netTcpBinding.ReaderQuotas.MaxArrayLength = 100000000;
+            netTcpBinding.Security.Mode = SecurityMode.None;
+			//if (secure)
+			//{
+			//	// CoreWCF supports TransportWithMessageCredential for username/password
+			//	netTcpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
+			//	netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+			//}
+			//else
+			//{
+			//	// Unsecured transport
+			//	netTcpBinding.Security.Mode = SecurityMode.None;
+			//}
+			//netTcpBinding.MaxReceivedMessageSize = 100000000L;
+			//netTcpBinding.ReaderQuotas.MaxArrayLength = 100000000;
 			return netTcpBinding;
 		}
+#else
+        public static Binding CreateChannel(bool secure)
+        {
+            NetTcpBinding netTcpBinding = new NetTcpBinding();
+            netTcpBinding.Security.Mode = (secure ? SecurityMode.Message : SecurityMode.None);
+            if (secure)
+            {
+                netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+            }
+            netTcpBinding.MaxReceivedMessageSize = 100000000L;
+            netTcpBinding.ReaderQuotas.MaxArrayLength = 100000000;
+            return netTcpBinding;
+        }
+#endif
 
-		public static IEnumerable<ShareInformation> GetPublicServers(ServerOptions optionsMask, string password)
+        public static IEnumerable<ShareInformation> GetPublicServers(ServerOptions optionsMask, string password)
 		{
 			//ServerInfo[] source = HttpAccess.CallSoap(serverRegistration, (ServerRegistration s) => s.GetList((int)optionsMask, password));
 			//return ((IEnumerable<ServerInfo>)source).Select((Func<ServerInfo, ShareInformation>)((ServerInfo s) => s));

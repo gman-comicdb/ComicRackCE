@@ -1,6 +1,8 @@
+#if !NET10_0_OR_GREATER
 global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
 global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -738,8 +740,14 @@ namespace cYo.Projects.ComicRack.Viewer
 			Settings.RunCount++;
 			CommandLineParser.Parse(ImageDisplayControl.HardwareSettings);
 			CommandLineParser.Parse(EngineConfiguration.Default);
+#if NET10_0_OR_GREATER
+            ApplicationConfiguration.Initialize();
+            if (ExtendedSettings.UseDarkMode)
+                Application.SetColorMode(SystemColorMode.Dark);
+#else
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(defaultValue: false);
+#endif
             ThemeManager.Initialize(ExtendedSettings.Theme); // if using dark mode, replace SystemColors and initialize native Windows theming
 			ResourceManagerEx.InitResourceManager(ExtendedSettings.Theme);
 			ThemePlugin.Register(ExtendedSettings.Theme); // Register the current theme for the IThemePlugin interface for plugins
@@ -1111,9 +1119,11 @@ namespace cYo.Projects.ComicRack.Viewer
 		[STAThread]
 		private static int Main(string[] args)
 		{
+#if !NET10_0_OR_GREATER
 			SetProcessDPIAware();
 			ServicePointManager.Expect100Continue = false;
-			if (ExtendedSettings.WaitPid != 0)
+#endif
+            if (ExtendedSettings.WaitPid != 0)
 			{
 				try
 				{

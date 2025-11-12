@@ -3,8 +3,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using cYo.Common.Drawing;
+#if NET10_0_OR_GREATER
+using cYo.Common.Presentation.Tao.TaoOpenGL;
+#else
 using Tao.OpenGl;
 using Tao.Platform.Windows;
+#endif
 
 namespace cYo.Common.Presentation.Tao
 {

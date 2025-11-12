@@ -1970,6 +1970,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 			PositionMagnifier();
 		}
 
+#if !NET10_0_OR_GREATER
 		protected override void OnGestureStart()
 		{
 			base.MouseActionHappened = false;
@@ -1979,6 +1980,7 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 				MagnifierVisible = false;
 			}
 		}
+#endif
 
 		protected override void OnPanStart()
 		{

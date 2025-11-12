@@ -1,3 +1,13 @@
+#if NET10_0_OR_GREATER
+using System;
+
+namespace cYo.Common.Runtime;
+
+internal interface ISingleInstance : IDisposable
+{
+    void InvokeLast(string[] args);
+}
+#else
 using System.ServiceModel;
 
 namespace cYo.Common.Runtime
@@ -9,3 +19,4 @@ namespace cYo.Common.Runtime
 		void InvokeLast(string[] args);
 	}
 }
+#endif

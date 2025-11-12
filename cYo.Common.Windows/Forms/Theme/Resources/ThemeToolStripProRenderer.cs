@@ -10,7 +10,11 @@ namespace cYo.Common.Windows.Forms.Theme.Resources;
 public class ThemeToolStripProRenderer : ToolStripProfessionalRenderer
 {
     public ThemeToolStripProRenderer()
+#if NET10_0_OR_GREATER
+        : base(ThemeManager.IsDarkModeEnabled ? new DarkMode.Resources.DarkProfessionalColors() : new ProfessionalColorTable())
+#else
         : base(new ProfessionalColorTableEx())
+#endif
     {
     }
 

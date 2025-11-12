@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+	<TargetFramework>net10.0-windows</TargetFramework>
+	<NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
     <OutputType>Library</OutputType>
     <FileAlignment>4096</FileAlignment>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -11,13 +12,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
   </PropertyGroup>
-  <ItemGroup>
+  <!--ItemGroup>
     <Reference Include="System.Design" />
     <Reference Include="Windows7.Multitouch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d934502757229ee0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ComicRack.Engine.Display.Forms\DLL\Windows7.Multitouch.dll</HintPath>
     </Reference>
-  </ItemGroup>
+  </ItemGroup-->
   <ItemGroup>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
@@ -124,9 +125,7 @@
     <Compile Update="Forms\SplitterEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Forms\TabBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Forms\TabBar.cs" />
     <Compile Update="Forms\TabControlEx.cs">
       <SubType>Component</SubType>
     </Compile>

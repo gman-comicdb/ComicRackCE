@@ -1,13 +1,13 @@
 using System;
 using System.ComponentModel;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Security;
 using System.Threading;
 using cYo.Common.ComponentModel;
 using cYo.Common.Net;
 using cYo.Common.Threading;
 using cYo.Projects.ComicRack.Engine.Database;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Security;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Network
 {
@@ -21,8 +21,12 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 		{
 			get
 			{
+#if NET10_0_OR_GREATER
+                IContextChannel serviceChannel = remoteLibrary as IContextChannel;
+#else
 				IServiceChannel serviceChannel = remoteLibrary as IServiceChannel;
-				if (serviceChannel.State == CommunicationState.Faulted || serviceChannel.State == CommunicationState.Closed)
+#endif
+                if (serviceChannel.State == CommunicationState.Faulted || serviceChannel.State == CommunicationState.Closed)
 				{
 					Connect();
 				}
@@ -168,9 +172,15 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 		private static IRemoteComicLibrary GetComicLibraryService(string address, string password)
 		{
 			string uriString = string.Format("net.tcp://{0}/{1}", address, ComicLibraryServer.LibraryPoint);
+#if NET10_0_OR_GREATER
+            EndpointAddress remoteAddress = new EndpointAddress(new Uri(uriString));
+            ChannelFactory<IRemoteComicLibrary> channelFactory = new ChannelFactory<IRemoteComicLibrary>(CreateChannel(secure: true), remoteAddress);
+            channelFactory.Credentials.ServiceCertificate.Authentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
+#else
 			EndpointAddress remoteAddress = new EndpointAddress(new Uri(uriString), EndpointIdentity.CreateDnsIdentity("ComicRack"), (AddressHeaderCollection)null);
 			ChannelFactory<IRemoteComicLibrary> channelFactory = new ChannelFactory<IRemoteComicLibrary>(ComicLibraryServer.CreateChannel(secure: true), remoteAddress);
-			channelFactory.Credentials.UserName.UserName = "ComicRack";
+#endif
+            channelFactory.Credentials.UserName.UserName = "ComicRack";
 			channelFactory.Credentials.UserName.Password = password;
 			channelFactory.Credentials.ClientCertificate.Certificate = ComicLibraryServer.Certificate;// New Cert (sha256)
             channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
@@ -182,13 +192,39 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network
 		private static IRemoteServerInfo GetServerInfoService(string serviceAddress)
 		{
 			string remoteAddress = string.Format("net.tcp://{0}/{1}", serviceAddress, ComicLibraryServer.InfoPoint);
+#if NET10_0_OR_GREATER
+            ChannelFactory<IRemoteServerInfo> channelFactory = new ChannelFactory<IRemoteServerInfo>(CreateChannel(secure: false), new EndpointAddress(remoteAddress));
+#else
 			ChannelFactory<IRemoteServerInfo> channelFactory = new ChannelFactory<IRemoteServerInfo>(ComicLibraryServer.CreateChannel(secure: false), remoteAddress);
-			IRemoteServerInfo remoteServerInfo = channelFactory.CreateChannel();
+#endif
+            IRemoteServerInfo remoteServerInfo = channelFactory.CreateChannel();
 			((IContextChannel)remoteServerInfo).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
 			return remoteServerInfo;
 		}
 
-		public static ComicLibraryClient Connect(string address, ShareInformation information)
+#if NET10_0_OR_GREATER
+        public static Binding CreateChannel(bool secure)
+        {
+            NetTcpBinding netTcpBinding = new NetTcpBinding();
+            netTcpBinding.Security.Mode = SecurityMode.None;
+            //netTcpBinding.Security.Mode = (secure ? SecurityMode.Message : SecurityMode.None);
+            //if (secure)
+            //{
+            //    netTcpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
+            //    netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+            //}
+            //else
+            //{
+            //    // Unsecured transport
+            //    netTcpBinding.Security.Mode = SecurityMode.None;
+            //}
+            //netTcpBinding.MaxReceivedMessageSize = 100000000L;
+            //netTcpBinding.ReaderQuotas.MaxArrayLength = 100000000;
+            return netTcpBinding;
+        }
+#endif
+
+        public static ComicLibraryClient Connect(string address, ShareInformation information)
 		{
 			try
 			{

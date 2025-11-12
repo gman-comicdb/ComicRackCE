@@ -1,5 +1,8 @@
 ﻿using System.Drawing;
 using cYo.Common.Drawing.ExtendedColors;
+#if NET10_0_OR_GREATER
+using System.Windows.Forms;
+#endif
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 
@@ -9,7 +12,11 @@ namespace cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 /// <remarks>
 /// Based on <a href="https://github.com/dotnet/winforms">dotnet/winforms</a>. <c>src/System/Windows/Forms/DarkProfessionalColors.cs</c> (.NET Foundation, MIT license)<br/>
 /// </remarks>
+#if NET10_0_OR_GREATER
+internal sealed class DarkProfessionalColors : ProfessionalColorTable
+#else
 internal sealed class DarkProfessionalColors : ProfessionalColorTableEx
+#endif
 {
     public override Color MenuItemPressedGradientBegin
         => Color.FromArgb(0xFF, 0x60, 0x60, 0x60);
@@ -23,11 +30,11 @@ internal sealed class DarkProfessionalColors : ProfessionalColorTableEx
     public override Color MenuItemSelected => DarkColors.SelectedText.Highlight;
     //=> SystemColors.ControlText; // this means white highlight
 
-    public override Color MenuItemSelectedGradientBegin
-        => Color.FromArgb(0xFF, 0x40, 0x40, 0x40);
+    //public override Color MenuItemSelectedGradientBegin
+    //    => Color.FromArgb(0xFF, 0x40, 0x40, 0x40);
 
-    public override Color MenuItemSelectedGradientEnd
-        => Color.FromArgb(0xFF, 0x40, 0x40, 0x40);
+    //public override Color MenuItemSelectedGradientEnd
+    //    => Color.FromArgb(0xFF, 0x40, 0x40, 0x40);
 
     public override Color MenuStripGradientBegin => SystemColors.ControlLightLight;
     //=> SystemColors.Control;

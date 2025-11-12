@@ -194,8 +194,12 @@ namespace cYo.Common.Windows.Forms
 						Tag = text
 					});
 				}
+#if NET10_0_OR_GREATER
+                foreach (ToolStripMenuItem item in Enumerable.Reverse(array2))
+#else
 				foreach (ToolStripMenuItem item in array2.Reverse())
-				{
+#endif
+                {
 					item.Tag = cms.Text ?? text;
 					cm.Items.Insert((!top) ? cm.Items.Count : 0, item);
 				}

@@ -6,7 +6,11 @@ using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.Threading;
+#if NET10_0_OR_GREATER
+using cYo.Common.Presentation.Tao.TaoOpenGL;
+#else
 using Tao.OpenGl;
+#endif
 
 namespace cYo.Common.Presentation.Tao
 {

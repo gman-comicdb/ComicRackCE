@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+	<TargetFramework>net10.0-windows</TargetFramework>
+	<NoWarn>$(NoWarn);WFO1000;CA1416</NoWarn>
     <OutputType>Library</OutputType>
     <RootNamespace>cYo.Projects.ComicRack.Engine.Display.Forms</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -12,10 +13,10 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Windows7.Multitouch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d934502757229ee0, processorArchitecture=MSIL">
+	<!--Reference Include="Windows7.Multitouch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d934502757229ee0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\Windows7.Multitouch.dll</HintPath>
-    </Reference>
+    </Reference-->
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
@@ -24,12 +25,10 @@
     <Compile Update="ComicDisplayControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="ImageDisplayControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="ImageDisplayControl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DLL\Windows7.Multitouch.dll" />
+	  <!--Content Include="DLL\Windows7.Multitouch.dll" /-->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ComicRack.Engine\ComicRack.Engine.csproj" />

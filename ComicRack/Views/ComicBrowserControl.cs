@@ -1666,9 +1666,13 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			}
 			else
 			{
+#if NET10_0_OR_GREATER
+                foreach (ComicBook item in Enumerable.Reverse(source))
+#else
 				foreach (ComicBook item in source.Reverse())
-				{
-					editableComicBookListProvider.Insert(0, item);
+#endif
+                {
+                    editableComicBookListProvider.Insert(0, item);
 				}
 			}
 			return true;
@@ -1683,11 +1687,16 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			books = books.ToArray();
 			IEditableComicBookListProvider editableComicBookListProvider = BookList.QueryService<IEditableComicBookListProvider>();
 			ComicBook[] source = books.Where(editableComicBookListProvider.Remove).ToArray();
+#if NET10_0_OR_GREATER
+            foreach (ComicBook item in Enumerable.Reverse(source))
+#else
 			foreach (ComicBook item in source.Reverse())
-			{
-				editableComicBookListProvider.Insert(0, item);
+#endif
+            {
+                editableComicBookListProvider.Insert(0, item);
 			}
-		}
+
+        }
 
 		private bool AllSelectedLinked()
 		{

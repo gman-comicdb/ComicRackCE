@@ -78,10 +78,12 @@ public class ThemeManager
         if (theme == Themes.Dark)
         {
             ThemeHandler.Register<DarkMode.DarkThemeHandler>();
+#if !NET10_0_OR_GREATER
             KnownColorTableEx darkColorTable = new KnownColorTableEx();
             darkColorTable.Initialize(true);
             darkColorTable.SetColor(KnownColor.WhiteSmoke, ThemeColors.DarkMode.BlackSmoke.ToArgb());
             UXTheme.Initialize();
+#endif
             return true;
         }
         return false;

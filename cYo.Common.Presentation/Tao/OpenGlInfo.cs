@@ -1,4 +1,8 @@
+#if NET10_0_OR_GREATER
+using cYo.Common.Presentation.Tao.TaoOpenGL;
+#else
 using Tao.OpenGl;
+#endif
 
 namespace cYo.Common.Presentation.Tao
 {

@@ -53,7 +53,9 @@ internal class DarkControlDefinition : ThemeControlDefinition
     /// </remarks>
     public DarkControlDefinition(Control control)
     {
+#if !NET10_0_OR_GREATER
         SetColor(control);
+#endif
     }
 
     public void SetColor(Control control)

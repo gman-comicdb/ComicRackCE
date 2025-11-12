@@ -13,8 +13,10 @@ using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Properties;
+#if !NET10_0_OR_GREATER
 using Windows7.Multitouch;
 using Windows7.Multitouch.WinForms;
+#endif
 
 namespace cYo.Common.Windows.Forms
 {
@@ -629,8 +631,9 @@ namespace cYo.Common.Windows.Forms
 
 		private readonly Dictionary<TabBarItem, Image> animatedImages = new Dictionary<TabBarItem, Image>();
 
+#if !NET10_0_OR_GREATER
 		private GestureHandler gestureHandler;
-
+#endif
 		public TabBarItemCollection Items => items;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -976,7 +979,9 @@ namespace cYo.Common.Windows.Forms
 
 		protected override void OnCreateControl()
 		{
+#if !NET10_0_OR_GREATER
 			InitWindowsTouch();
+#endif
 			base.OnCreateControl();
 		}
 
@@ -1909,6 +1914,7 @@ namespace cYo.Common.Windows.Forms
 			}
 		}
 
+#if !NET10_0_OR_GREATER
 		private void InitWindowsTouch()
 		{
 			try
@@ -1926,5 +1932,6 @@ namespace cYo.Common.Windows.Forms
 		{
 			TabsOffset += e.PanTranslation.Width;
 		}
+#endif
 	}
 }

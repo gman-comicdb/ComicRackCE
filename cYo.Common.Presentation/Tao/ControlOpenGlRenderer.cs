@@ -9,8 +9,12 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
+#if NET10_0_OR_GREATER
+using cYo.Common.Presentation.Tao.TaoOpenGL;
+#else
 using Tao.OpenGl;
 using Tao.Platform.Windows;
+#endif
 
 namespace cYo.Common.Presentation.Tao
 {

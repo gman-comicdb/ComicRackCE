@@ -639,11 +639,18 @@ namespace cYo.Common.Drawing
 		/// </summary>
 		public static Icon BitmapToIcon(this Bitmap bitmap)
 		{
-			Type[] cargt = new[] { typeof(IntPtr), typeof(bool) };
-			ConstructorInfo ci = typeof(Icon).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, cargt, null);
-			object[] cargs = new[] { (object)bitmap.GetHicon(), true };
-			Icon icon = (Icon)ci.Invoke(cargs);
-			return icon;
+#if NET9_0_OR_GREATER
+            // net-9 has the same issue with calling the internal constructor with ownHandle=false, and the same constructor,
+			// so not sure why we get an error only on net-10.
+            // for now let's use the supported method (which may result in a memory leak) and untangle later
+            Icon icon = Icon.FromHandle(bitmap.GetHicon());
+#else
+            Type[] cargt = new[] { typeof(IntPtr), typeof(bool) };
+            ConstructorInfo ci = typeof(Icon).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, cargt, null);
+            object[] cargs = new[] { (object)bitmap.GetHicon(), true };
+            Icon icon = (Icon)ci.Invoke(cargs);
+#endif
+            return icon;
 		}
 	}
 }
