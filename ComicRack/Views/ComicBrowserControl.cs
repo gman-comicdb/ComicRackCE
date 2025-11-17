@@ -3256,9 +3256,9 @@ namespace cYo.Projects.ComicRack.Viewer.Views
                 }
 				else
 				{
-                    e.DrawBackground();
+                    //e.DrawBackground();
 					//e.DrawBorder();
-					//e.DrawThemeBackground();
+					e.DrawThemeBackground();
 					e.DrawThemeBorder();
 				}
                 Rectangle bounds = e.Bounds;

@@ -1,84 +1,92 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using ContentAlignment = System.Drawing.ContentAlignment;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
 
 internal static class Helpers
 {
     internal static Rectangle GetCheckRectangle(CheckBox checkBox, Graphics g)
+        => GetCheckRectangle(g, checkBox.ClientRectangle, checkBox.CheckAlign);
+
+    internal static Rectangle GetCheckRectangle(Graphics g, Rectangle clientRectangle, ContentAlignment checkAlign = ContentAlignment.MiddleLeft, CheckBoxState checkBoxState = CheckBoxState.UncheckedNormal)
     {
-        Size glyphSize = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
-        Point checkPosition = GetImageAlignmentPoint(checkBox.ClientRectangle, glyphSize, checkBox.CheckAlign);
+        Size glyphSize = CheckBoxRenderer.GetGlyphSize(g, checkBoxState);
+        Point checkPosition = GetImageAlignmentPoint(clientRectangle, glyphSize, checkAlign);
 
         Rectangle boxRect = new Rectangle(checkPosition, glyphSize);
 
-        if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
+        if (checkAlign == ContentAlignment.MiddleRight)
             boxRect.X -= 1;
         return boxRect;
     }
 
     internal static Rectangle GetTextRectangle(CheckBox checkBox, Graphics g, Rectangle boxRect)
+        => GetTextRectangle(g, checkBox.ClientRectangle, checkBox.Bounds, checkBox.CheckAlign);
+
+    internal static Rectangle GetTextRectangle(Graphics g, Rectangle clientRectangle, Rectangle bounds, ContentAlignment checkAlign = ContentAlignment.MiddleLeft)
     {
         // this is the kind of thing Microsoft love to change between OS versions
         int padTextY = 1, padBoxRtl = 2, padBoxLtr = 3;
 
-        Rectangle textRect = checkBox.ClientRectangle;
-        textRect.Y -= FormUtility.ScaleDpiX(padTextY);
+        Rectangle boxRect = GetCheckRectangle(g, clientRectangle, checkAlign);
+        Rectangle textRect = clientRectangle;
+        //textRect.Y -= FormUtility.ScaleDpiX(padTextY);
 
-        if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
+        if (checkAlign == ContentAlignment.MiddleRight)
         {
             textRect.X += 1;
-            textRect.Width = checkBox.Bounds.Width - FormUtility.ScaleDpiX(boxRect.Width) - FormUtility.ScaleDpiX(padBoxRtl);
+            textRect.Width = bounds.Width - FormUtility.ScaleDpiX(boxRect.Width) - FormUtility.ScaleDpiX(padBoxRtl);
         }
         else
         {
             textRect.X = boxRect.Right + FormUtility.ScaleDpiX(padBoxLtr);
-            textRect.Width = checkBox.Bounds.Right - FormUtility.ScaleDpiX(textRect.X);
+            textRect.Width = bounds.Right - FormUtility.ScaleDpiX(textRect.X);
         }
         return textRect;
     }
 
-    internal static Point GetImageAlignmentPoint(Rectangle bounds, Size imageSize, System.Drawing.ContentAlignment alignment)
+    internal static Point GetImageAlignmentPoint(Rectangle bounds, Size imageSize, ContentAlignment alignment)
     {
         int x = 0;
         int y = 0;
 
         switch (alignment)
         {
-            case System.Drawing.ContentAlignment.TopLeft:
+            case ContentAlignment.TopLeft:
                 x = bounds.Left;
                 y = bounds.Top;
                 break;
-            case System.Drawing.ContentAlignment.TopCenter:
+            case ContentAlignment.TopCenter:
                 x = bounds.Left + (bounds.Width - imageSize.Width) / 2;
                 y = bounds.Top;
                 break;
-            case System.Drawing.ContentAlignment.TopRight:
+            case ContentAlignment.TopRight:
                 x = bounds.Right - imageSize.Width;
                 y = bounds.Top;
                 break;
-            case System.Drawing.ContentAlignment.MiddleLeft:
+            case ContentAlignment.MiddleLeft:
                 x = bounds.Left;
                 y = bounds.Top + (bounds.Height - imageSize.Height) / 2;
                 break;
-            case System.Drawing.ContentAlignment.MiddleCenter:
+            case ContentAlignment.MiddleCenter:
                 x = bounds.Left + (bounds.Width - imageSize.Width) / 2;
                 y = bounds.Top + (bounds.Height - imageSize.Height) / 2;
                 break;
-            case System.Drawing.ContentAlignment.MiddleRight:
+            case ContentAlignment.MiddleRight:
                 x = bounds.Right - imageSize.Width;
                 y = bounds.Top + (bounds.Height - imageSize.Height) / 2;
                 break;
-            case System.Drawing.ContentAlignment.BottomLeft:
+            case ContentAlignment.BottomLeft:
                 x = bounds.Left;
                 y = bounds.Bottom - imageSize.Height;
                 break;
-            case System.Drawing.ContentAlignment.BottomCenter:
+            case ContentAlignment.BottomCenter:
                 x = bounds.Left + (bounds.Width - imageSize.Width) / 2;
                 y = bounds.Bottom - imageSize.Height;
                 break;
-            case System.Drawing.ContentAlignment.BottomRight:
+            case ContentAlignment.BottomRight:
                 x = bounds.Right - imageSize.Width;
                 y = bounds.Bottom - imageSize.Height;
                 break;
@@ -93,31 +101,31 @@ internal static class Helpers
 
         switch (button.TextAlign)
         {
-            case System.Drawing.ContentAlignment.TopLeft:
+            case ContentAlignment.TopLeft:
                 flags |= TextFormatFlags.Top | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.TopCenter:
+            case ContentAlignment.TopCenter:
                 flags |= TextFormatFlags.Top | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.TopRight:
+            case ContentAlignment.TopRight:
                 flags |= TextFormatFlags.Top | TextFormatFlags.Right;
                 break;
-            case System.Drawing.ContentAlignment.MiddleLeft:
+            case ContentAlignment.MiddleLeft:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.MiddleCenter:
+            case ContentAlignment.MiddleCenter:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.MiddleRight:
+            case ContentAlignment.MiddleRight:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.Right;
                 break;
-            case System.Drawing.ContentAlignment.BottomLeft:
+            case ContentAlignment.BottomLeft:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.BottomCenter:
+            case ContentAlignment.BottomCenter:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.BottomRight:
+            case ContentAlignment.BottomRight:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.Right;
                 break;
         }
@@ -150,31 +158,31 @@ internal static class Helpers
         // Alignment
         switch (label.TextAlign)
         {
-            case System.Drawing.ContentAlignment.TopLeft:
+            case ContentAlignment.TopLeft:
                 flags |= TextFormatFlags.Top | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.TopCenter:
+            case ContentAlignment.TopCenter:
                 flags |= TextFormatFlags.Top | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.TopRight:
+            case ContentAlignment.TopRight:
                 flags |= TextFormatFlags.Top | TextFormatFlags.Right;
                 break;
-            case System.Drawing.ContentAlignment.MiddleLeft:
+            case ContentAlignment.MiddleLeft:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.MiddleCenter:
+            case ContentAlignment.MiddleCenter:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.MiddleRight:
+            case ContentAlignment.MiddleRight:
                 flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.Right;
                 break;
-            case System.Drawing.ContentAlignment.BottomLeft:
+            case ContentAlignment.BottomLeft:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.Left;
                 break;
-            case System.Drawing.ContentAlignment.BottomCenter:
+            case ContentAlignment.BottomCenter:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter;
                 break;
-            case System.Drawing.ContentAlignment.BottomRight:
+            case ContentAlignment.BottomRight:
                 flags |= TextFormatFlags.Bottom | TextFormatFlags.Right;
                 break;
         }

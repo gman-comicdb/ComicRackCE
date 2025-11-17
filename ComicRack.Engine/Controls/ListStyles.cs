@@ -58,7 +58,10 @@ namespace cYo.Projects.ComicRack.Engine.Controls
 		{
 			e.DrawDefault = false;
 			e.DrawBackground();
-			using (e.Graphics.SaveState())
+            // ListView is a Win32 control; the OS is responsible for some aspects of drawing, independent of .NET version
+			// This includes which parts are handling in DrawItem and DrawSubItem. Requires testing.
+            //e.DrawThemeBackground();  
+            using (e.Graphics.SaveState())
 			{
 				e.Graphics.SetClip(e.Item.Bounds, CombineMode.Intersect);
 				StyledRenderer.AlphaStyle alphaStyle = StyledRenderer.GetAlphaStyle(e.Item.Selected, hot: false, e.Item.Focused);

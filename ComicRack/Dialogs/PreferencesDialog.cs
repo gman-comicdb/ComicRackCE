@@ -537,7 +537,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 return;
             }
             TRInfo tRInfo = (TRInfo)lbLanguages.Items[e.Index];
-            e.DrawBackground();
+            //e.DrawBackground();
+            e.DrawThemeBackground(drawFocus: true, focused:(sender as Control).Focused);
             using (Brush brush = new SolidBrush((tRInfo.CompletionPercent > 95f) ? ForeColor : Color.Red))
             {
                 Rectangle bounds = e.Bounds;
@@ -569,7 +570,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             }
             if ((e.State & DrawItemState.Focus) != 0)
             {
-                ControlPaintEx.DrawFocusRectangle(e.Graphics, e.Bounds);
+                ThemeExtensions.InvokeAction(() => ControlPaint.DrawFocusRectangle(e.Graphics, e.Bounds), isDefaultAction: true);
             }
         }
 
