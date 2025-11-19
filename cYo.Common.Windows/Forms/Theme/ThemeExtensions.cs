@@ -1,12 +1,13 @@
-﻿using System;
+﻿using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.Theme.DarkMode;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+using cYo.Common.Windows.Forms.Theme.Internal;
+using cYo.Common.Windows.Forms.Theme.Resources;
+using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using cYo.Common.Win32;
-using cYo.Common.Windows.Forms.Theme.DarkMode;
-using cYo.Common.Windows.Forms.Theme.Internal;
-using cYo.Common.Windows.Forms.Theme.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme;
 
@@ -264,6 +265,29 @@ public static class ControlPaintEx
         => ThemeExtensions.InvokeAction(
             () => ControlPaint.DrawStringDisabled(g, text, font, color, rectangle, textFormatFlags),
             () => g.DrawDarkStringDisabled(text, font, color, rectangle, textFormatFlags) // color is currently not used
+        );
+
+    public static void DrawCheckBox(Graphics g, Rectangle rectangle, ButtonState state)
+         => ThemeExtensions.InvokeAction(
+            () => ControlPaint.DrawCheckBox(g, rectangle, state),
+            () => DarkRenderer.DrawCheckBox(g, rectangle, state)
+        );
+}
+
+// Win11 could draw themed CheckBoxes.
+// - Not when using ControlPaint (above)
+// - When using CheckBoxRenderer, UXTheme.OpenThemeData will have the Light color mode theme
+public static class CheckBoxRendererEx
+{
+    public static void DrawCheckBox(Graphics g, Point glyphLocation, CheckBoxState state)
+         => ThemeExtensions.InvokeAction(
+            () => CheckBoxRenderer.DrawCheckBox(g, glyphLocation, state),
+            () => DarkRenderer.DrawCheckBox(g, glyphLocation, state)
+        );
+    public static void DrawCheckBox(Graphics g, Point glyphLocation, CheckBoxState state, Size glyphSize)
+         => ThemeExtensions.InvokeAction(
+            () => CheckBoxRenderer.DrawCheckBox(g, glyphLocation, state),
+            () => DarkRenderer.DrawCheckBox(g, glyphLocation, state, glyphSize)
         );
 }
 

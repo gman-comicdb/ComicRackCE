@@ -14,6 +14,7 @@ using cYo.Common.Mathematics;
 using cYo.Common.Reflection;
 using cYo.Common.Text;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
@@ -1015,8 +1016,9 @@ namespace cYo.Projects.ComicRack.Viewer.Controls
 				break;
 			}
 			ButtonState buttonState = (ButtonState)num3;
-			ControlPaint.DrawCheckBox(gr, rectangle, ButtonState.Flat | buttonState);
-			if (onlyYesNo && newState == YesNo.Unknown)
+            //ControlPaint.DrawCheckBox(gr, rectangle, ButtonState.Flat | buttonState);
+            ControlPaintEx.DrawCheckBox(gr, rectangle, ButtonState.Flat | buttonState);
+            if (onlyYesNo && newState == YesNo.Unknown)
 			{
 				newState = YesNo.Yes;
 			}

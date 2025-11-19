@@ -51,15 +51,17 @@ namespace cYo.Common.Windows.Forms
 				CheckBoxState state = ((itemCheckState == CheckState.Unchecked || itemCheckState != CheckState.Checked) ? CheckBoxState.UncheckedNormal : CheckBoxState.CheckedNormal);
 				size = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 				Point glyphLocation = new Point(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2);
-				CheckBoxRenderer.DrawCheckBox(e.Graphics, glyphLocation, state);
-			}
+                //CheckBoxRenderer.DrawCheckBox(e.Graphics, glyphLocation, state);
+                CheckBoxRendererEx.DrawCheckBox(e.Graphics, glyphLocation, state, size);
+            }
 			else
 			{
 				ButtonState state2 = ((itemCheckState != 0 && itemCheckState == CheckState.Checked) ? ButtonState.Checked : ButtonState.Normal);
 				size = new Size(14, 14);
 				Rectangle rectangle = new Rectangle(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2, size.Width, size.Height);
-				ControlPaint.DrawCheckBox(e.Graphics, rectangle, state2);
-			}
+				//ControlPaint.DrawCheckBox(e.Graphics, rectangle, state2);
+                ControlPaintEx.DrawCheckBox(e.Graphics, rectangle, state2);
+            }
 			Rectangle textRectangle = new Rectangle(e.Bounds.X + size.Width + 2, e.Bounds.Y, e.Bounds.Width - (size.Width + 2), e.Bounds.Height);
 			OnDrawItemText(new DrawItemEventArgs(e.Graphics, e.Font, textRectangle, e.Index, e.State, e.ForeColor, e.BackColor)); // BackColor is unused
 			// FocusRectangle is not drawn around item in Dark Mode when it should be, possibly related to underlying ListBox being a Win32 control.

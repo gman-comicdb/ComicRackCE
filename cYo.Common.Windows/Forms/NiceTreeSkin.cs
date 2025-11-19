@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using cYo.Common.Drawing;
+using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Properties;
 
@@ -74,8 +75,9 @@ namespace cYo.Common.Windows.Forms
 				{
 					buttonState |= ButtonState.Inactive;
 				}
-				ControlPaint.DrawCheckBox(di.Graphics, rectangle, buttonState);
-			}
+                //ControlPaint.DrawCheckBox(di.Graphics, rectangle, buttonState);
+                ControlPaintEx.DrawCheckBox(di.Graphics, rectangle, buttonState);
+            }
 			if (di.Node.Nodes.Count != 0 && base.TreeView.ShowPlusMinus)
 			{
 				Image image2 = (di.Node.IsExpanded ? down : right);

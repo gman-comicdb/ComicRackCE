@@ -1,4 +1,5 @@
-﻿using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+﻿using cYo.Common.Windows.Forms.Theme.DarkMode.Controls;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -26,7 +27,11 @@ internal static class PaintDark
 
         // Draw actual Check (Box + Mark)
         if (!onlyDrawDisabledText)
-            DrawDark.CheckBox(checkBox, e.Graphics, boxRect);
+        {
+            //DrawDark.CheckBox(checkBox, e.Graphics, boxRect);
+            e.Graphics.Clear(checkBox.BackColor);
+            DarkCheckBoxRenderer.DrawCheckBox(e.Graphics, boxRect, checkBox.CheckState, checkBox.Enabled);
+        }
 
         // Clear text area
         using (var backBrush = new SolidBrush(checkBox.BackColor))

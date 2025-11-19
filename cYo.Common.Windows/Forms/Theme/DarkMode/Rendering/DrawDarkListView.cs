@@ -94,8 +94,9 @@ internal static partial class DrawDarkListView
 				checkRect.X += padCheck;
 				textRect.X = padCheck = checkRect.Right; // padding space for checkbox
 
-				CheckBoxRenderer.DrawCheckBox(e.Graphics, checkRect.TopLeft(), state); // Draw the checkbox
-			}
+                //CheckBoxRenderer.DrawCheckBox(e.Graphics, checkRect.TopLeft(), state); // Draw the checkbox
+                CheckBoxRendererEx.DrawCheckBox(e.Graphics, checkRect.TopLeft(), state);
+            }
 			if (imageList != null)
 			{
 				Size imageSize = imageList.ImageSize;
