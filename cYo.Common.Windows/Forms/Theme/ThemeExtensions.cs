@@ -1,12 +1,13 @@
-﻿using System;
+﻿using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.Theme.DarkMode;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+using cYo.Common.Windows.Forms.Theme.Internal;
+using cYo.Common.Windows.Forms.Theme.Resources;
+using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using cYo.Common.Win32;
-using cYo.Common.Windows.Forms.Theme.DarkMode;
-using cYo.Common.Windows.Forms.Theme.Internal;
-using cYo.Common.Windows.Forms.Theme.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme;
 
@@ -264,6 +265,41 @@ public static class ControlPaintEx
         => ThemeExtensions.InvokeAction(
             () => ControlPaint.DrawStringDisabled(g, text, font, color, rectangle, textFormatFlags),
             () => g.DrawDarkStringDisabled(text, font, color, rectangle, textFormatFlags) // color is currently not used
+        );
+
+    public static void DrawCheckBox(Graphics g, Rectangle rectangle, ButtonState state)
+         => ThemeExtensions.InvokeAction(
+            () => ControlPaint.DrawCheckBox(g, rectangle, state),
+            () => DarkRenderer.DrawCheckBox(g, rectangle, state)
+        );
+}
+
+/// <summary>
+/// Dark Mode-aware versions of <see cref="CheckBoxRenderer"/> Draw methods. With added bonus of theming Win10 <see cref="CheckBox"/> controls, which is not supported natively.
+/// </summary>
+/// <remarks>
+/// Win11 could draw Dark Mode <see cref="CheckBox"/>. However, <see cref="CheckBoxRenderer"/> will always open a handle to the Light color mode theme.<br/>
+/// In order for Dark Mode <see cref="CheckBox"/> to be drawn, will either need to avoid explicitly calling <see cref="CheckBoxRenderer"/> or open a handle <br/>
+/// to the Dark Mode <c>uxtheme.dll</c> section via <c>UXTheme.OpenThemeData</c>.
+/// </remarks>
+public static class CheckBoxRendererEx
+{ 
+    /// <summary>
+    /// Draws a check box control in the specified state and location.
+    /// </summary>
+    /// <param name="g">The <see cref="Graphics"/> used to draw the check box.</param>
+    /// <param name="glyphLocation">The <see cref="Point"/> to draw the check box glyph at.</param>
+    /// <param name="state">One of the <see cref="CheckBoxState"/> values that specifies the visual state of the check box.</param>
+    public static void DrawCheckBox(Graphics g, Point glyphLocation, CheckBoxState state)
+         => ThemeExtensions.InvokeAction(
+            () => CheckBoxRenderer.DrawCheckBox(g, glyphLocation, state),
+            () => DarkRenderer.DrawCheckBox(g, glyphLocation, state)
+        );
+
+    public static void DrawCheckBox(Graphics g, Point glyphLocation, CheckBoxState state, Size glyphSize)
+         => ThemeExtensions.InvokeAction(
+            () => CheckBoxRenderer.DrawCheckBox(g, glyphLocation, state),
+            () => DarkRenderer.DrawCheckBox(g, glyphLocation, state, glyphSize)
         );
 }
 
