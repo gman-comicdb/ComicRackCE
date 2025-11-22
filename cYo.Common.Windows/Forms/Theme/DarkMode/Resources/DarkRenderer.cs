@@ -14,5 +14,10 @@ internal static class DarkRenderer
         => DarkCheckBoxRenderer.DrawCheckBox(g, new Rectangle(glyphLocation, glyphSize), state);
 
     internal static void DrawCheckBox(Graphics g, Rectangle rectangle, ButtonState state)
-        => DarkCheckBoxRenderer.DrawCheckBox(g, rectangle, state);
+        => DarkCheckBoxRenderer.DrawCheckBox(
+            g,
+            //rectangle,                          // Needs some adjustment that is not currently accounted for (CheckAlign ContentAlignment? ButtonState.Flat?)
+            new Point(rectangle.X, rectangle.Y),  // Pass Point instead, and use GetGlyphSize to calculate rectangle
+            DarkCheckBoxRenderer.ConvertFromButtonState(state, isMixed: false, isHot: false)
+        );
 }

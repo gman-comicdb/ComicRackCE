@@ -77,4 +77,23 @@ internal static class DarkControlPaint
 
     }
     #endregion
+
+    public static void DrawDisabledText(Graphics graphics, Control control, TextFormatFlags textFormatFlags)
+    {
+        if (control.Text == null || control.Text == string.Empty)
+            return;
+
+        TextRenderer.DrawText(
+            graphics,
+            control.Text,
+            control.Font,
+            control.ClientRectangle,
+            SystemColors.GrayText,
+            control.BackColor,
+            textFormatFlags
+        );
+    }
+
+    public static void DrawDisabledText(Graphics graphics, Label label)
+        => DrawDisabledText(graphics, label, Helpers.GetTextFormatFlags(label));
 }

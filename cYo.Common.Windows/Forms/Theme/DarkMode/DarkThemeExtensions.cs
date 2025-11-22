@@ -180,7 +180,6 @@ internal static class DrawEventArgsExtensions
     }
     #endregion
 
-
     #region DrawToolTip
     internal static void DrawDarkBackground(this DrawToolTipEventArgs e, Color? backColor = null)
         => e.Graphics.DrawDarkBackground(e.Bounds, backColor ?? DarkColors.ToolTip.Back);
@@ -213,7 +212,6 @@ internal static class DrawEventArgsExtensions
         e.Graphics.DrawDarkString(e.Header.Text, e.Font, DarkColors.Header.Text, e.Bounds, stringFormat);
     }
     #endregion
-
 
     #region ListViewSubItem
     //internal static void DrawDarkBackground(this DrawListViewSubItemEventArgs e, Color backColor)
