@@ -51,6 +51,9 @@ internal partial class DarkControl
         label.SafeSubscribe(nameof(Label.Paint), PaintDark.Label);
     }
 
+    private static void DarkListBox(ListBox listBox)
+        => listBox.DrawDarkNativeBorder();
+
     private static void DarkListView(ListView listView)
     {
         //if (!(listView is ListViewEx) && listView.View == View.Details && listView.HeaderStyle != ColumnHeaderStyle.None)
@@ -112,6 +115,7 @@ internal partial class DarkControl
                 treeView.BackColor = DarkColors.TreeView.Back; // DeviceEditControl
         }
         treeView.ForeColor = DarkColors.TreeView.Text;
+        treeView.DrawDarkNativeBorder();
         treeView.WhenHandleCreated(treeView => TreeViewEx.SetColor((TreeView)treeView));
     }
 

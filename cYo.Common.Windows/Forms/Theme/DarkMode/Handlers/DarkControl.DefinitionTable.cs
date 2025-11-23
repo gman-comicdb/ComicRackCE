@@ -21,13 +21,6 @@ internal partial class DarkControl
             Theme = c => DarkCheckBox((CheckBox)c)
         },
 
-        [typeof(CheckedListBox)] = new DarkControlDefinition
-        {
-            BackColor = DarkColors.ListBox.Back,
-            BorderStyle = BorderStyle.FixedSingle
-            //Theme = c => DarkCheckedListBox((CheckedListBox)c) // TODO: Dark Mode CheckBoxes
-        },
-
         [typeof(ComboBox)] = new DarkControlDefinition
         {
             BackColor = DarkColors.ComboBox.Back,
@@ -57,7 +50,8 @@ internal partial class DarkControl
         [typeof(ListBox)] = new DarkControlDefinition
         {
             BackColor = DarkColors.ListBox.Back,
-            BorderStyle = BorderStyle.FixedSingle
+            BorderStyle = BorderStyle.FixedSingle,
+            Theme = c => DarkListBox((ListBox)c)
         },
 
         [typeof(ListView)] = new DarkControlDefinition
@@ -101,10 +95,9 @@ internal partial class DarkControl
             Theme = c => DarkTextBoxBase((TextBox)c)
         },
 
-        // DeviceEditControl TreeView
         [typeof(TreeView)] = new DarkControlDefinition
         {
-            BorderStyle = BorderStyle.None,
+            BorderStyle = BorderStyle.FixedSingle,
             Theme = c => DarkTreeView((TreeView)c)
         },
 
