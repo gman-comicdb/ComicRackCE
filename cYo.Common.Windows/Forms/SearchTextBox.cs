@@ -245,7 +245,7 @@ namespace cYo.Common.Windows.Forms
 			if (!(text == cueText))
 			{
 				cueText = text;
-				textBox.TextBox.SetCueText(text);
+				textBox.TextBox.SetCueText(text, legacy: true);
 			}
 		}
 
