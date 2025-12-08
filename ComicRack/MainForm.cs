@@ -88,7 +88,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     #endregion
 
     #region string
-    private string[] recentFiles = new string[0];
+    private string[] recentFiles = [];
 
     private string lastWorkspaceName;
 
@@ -521,7 +521,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 		books.CurrentSlotChanged += OpenBooks_CurrentSlotChanged;
 		books.OpenComicsChanged += OpenBooks_CaptionsChanged;
 		components.Add(commands);
-		tbZoom.Width = 60;
 		fileTabs.Visible = false;
 		DropDownHost<MagnifySetupControl> dropDownHost = new DropDownHost<MagnifySetupControl>();
 		ComicDisplay.MagnifierOpacity = (dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque);

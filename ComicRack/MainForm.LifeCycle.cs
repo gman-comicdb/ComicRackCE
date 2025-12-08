@@ -287,38 +287,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void InitializeHelp(string helpSystem)
-    {
-        Program.HelpSystem = helpSystem;
-        miWebHelp.DropDownItems.Clear();
-        miHelp.Visible = false;
-        if (miHelp.DropDownItems.Contains(miWebHelp))
-        {
-            miHelp.DropDownItems.Remove(miWebHelp);
-            helpMenu.DropDownItems.Insert(helpMenu.DropDownItems.IndexOf(miHelp) + 1, miWebHelp);
-        }
-        miHelp.DropDownItems.Clear();
-        ToolStripItem[] array = Program.Help.GetCustomHelpMenu().ToArray();
-        if (array.Length != 0)
-        {
-            helpMenu.DropDownItems.Remove(miWebHelp);
-            miHelp.Visible = true;
-            miHelp.DropDownItems.Add(miWebHelp);
-            miHelp.DropDownItems.Add(new ToolStripSeparator());
-            miHelp.DropDownItems.AddRange(array);
-        }
-        IEnumerable<string> helpSystems = Program.HelpSystems;
-        miChooseHelpSystem.Visible = helpSystems.Count() > 1;
-        miChooseHelpSystem.DropDownItems.Clear();
-        foreach (string item in helpSystems)
-        {
-            string name = item;
-            ((ToolStripMenuItem)miChooseHelpSystem.DropDownItems.Add(name, null, delegate
-            {
-                Program.Settings.HelpSystem = name;
-            })).Checked = Program.HelpSystem == name;
-        }
-    }
+    
 
     private void UpdateSafeBounds()
     {
