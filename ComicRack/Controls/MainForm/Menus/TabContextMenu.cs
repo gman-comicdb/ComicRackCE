@@ -1,4 +1,4 @@
-﻿using cYo.Projects.ComicRack.Engine.Display;
+﻿using cYo.Projects.ComicRack.Engine;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -6,18 +6,28 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class TabContextMenu : UserControl
 {
+    private MainController controller;
+
     public TabContextMenu()
     {
         InitializeComponent();
+
+        tabContextMenuItem.Opening += OnContextMenuOpening;
+        //this.controller = controller;
     }
 
-    private void tabContextMenu_Opening(object sender, CancelEventArgs e)
+    public void SetController(MainController controller)
     {
-        bool flag = ComicDisplay == null || ComicDisplay.Book == null || ComicDisplay.Book.Comic.EditMode.IsLocalComic();
-        ToolStripSeparator toolStripSeparator = sepBeforeRevealInBrowser;
-        ToolStripMenuItem toolStripMenuItem = cmRevealInExplorer;
-        bool flag3 = (cmCopyPath.Visible = flag);
-        bool visible = (toolStripMenuItem.Visible = flag3);
-        toolStripSeparator.Visible = visible;
+        this.controller = controller;
+    }
+
+    public static implicit operator ContextMenuStrip(TabContextMenu menu)
+        => menu.tabContextMenuItem;
+
+    private void OnContextMenuOpening(object sender, CancelEventArgs e)
+    {
+        bool comicIsNullOrLocal = controller.ComicDisplay?.Book == null || controller.ComicDisplay.Book.Comic.EditMode.IsLocalComic();
+        tsSeparatorReveal.Visible = comicIsNullOrLocal;
+        cmRevealInExplorer.Visible = comicIsNullOrLocal;
     }
 }

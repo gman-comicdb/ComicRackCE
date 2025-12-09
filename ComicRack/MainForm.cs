@@ -1,14 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -38,11 +27,23 @@ using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Controls;
+using cYo.Projects.ComicRack.Viewer.Controls.MainForm;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Menus;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using cYo.Projects.ComicRack.Viewer.Views;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace cYo.Projects.ComicRack.Viewer;
@@ -88,21 +89,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     #endregion
 
     #region string
-    private string[] recentFiles = [];
-
     private string lastWorkspaceName;
-
-    private static readonly string None = TR.Default["None", "None"];
-
-    private static readonly string NotAvailable = TR.Default["NotAvailable", "NA"];
-
-    private static readonly string ExportingComics = TR.Load(typeof(MainForm).Name)["ExportingComics", "Exporting Books: {0} queued"];
-
-    private static readonly string ExportingErrors = TR.Load(typeof(MainForm).Name)["ExportingErrors", "{0} errors. Click for details"];
-
-    private static readonly string DeviceSyncing = TR.Load(typeof(MainForm).Name)["DeviceSyncing", "Syncing Devices: {0} queued"];
-
-    private static readonly string DeviceSyncingErrors = TR.Load(typeof(MainForm).Name)["DeviceSyncingErrors", "{0} errors. Click for details"];
 
     const string NightlyDownloadLinkEXE = @"https://github.com/maforget/ComicRackCE/releases/download/nightly/ComicRackCESetup_nightly.exe";
     const string NightlyDownloadLinkZIP = @"https://github.com/maforget/ComicRackCE/releases/download/nightly/ComicRackCE_nightly.zip";
@@ -113,46 +100,23 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private Image emptyTabImage = Resources.Original;
 
-    private static Image SinglePageRtl = Resources.SinglePageRtl;
 
-    private static Image TwoPagesRtl = Resources.TwoPageForcedRtl;
-
-    private static Image TwoPagesAdaptiveRtl = Resources.TwoPageRtl;
-
-    private static readonly Image exportErrorAnimation = Resources.ExportAnimationWithError;
-
-    private static readonly Image exportAnimation = Resources.ExportAnimation;
-
-    private static readonly Image exportError = Resources.ExportError;
-
-    private static readonly Image deviceSyncErrorAnimation = Resources.DeviceSyncAnimationWithError;
-
-    private static readonly Image deviceSyncAnimation = Resources.DeviceSyncAnimation;
-
-    private static readonly Image deviceSyncError = Resources.DeviceSyncError;
-
-    private static readonly Image zoomImage = Resources.Zoom;
-
-    private static readonly Image zoomClearImage = Resources.ZoomClear;
-
-    private static readonly Image updatePages = Resources.UpdatePages;
-
-    private static readonly Image greenLight = Resources.GreenLight;
-
-    private static readonly Image grayLight = Resources.GrayLight;
-
-    private static readonly Image trackPagesLockedImage = Resources.Locked;
-
-    private static readonly Image datasourceConnected = Resources.DataSourceConnected;
-
-    private static readonly Image datasourceDisconnected = Resources.DataSourceDisconnected;
     #endregion
     #endregion
 
     #region Complex Properties
     private readonly CommandMapper commands = new CommandMapper();
 
-	private readonly ToolStripThumbSize thumbSize = new ToolStripThumbSize();
+	public void AddCommand(CommandHandler clickHandler, UpdateHandler enabledHandler, UpdateHandler checkedHandler, params object[] senders)
+		=> commands.Add(clickHandler, enabledHandler, checkedHandler, senders);
+
+	public void AddCommand(CommandHandler clickHandler, bool isCheckedHandler, UpdateHandler updateHandler, params object[] senders)
+		=> commands.Add(clickHandler, isCheckedHandler, updateHandler, senders);
+
+    public void AddCommand(CommandHandler clickHandler, UpdateHandler enableHandler, params object[] senders)
+        => commands.Add(clickHandler, enableHandler, null, senders);
+
+    private readonly ToolStripThumbSize thumbSize = new ToolStripThumbSize();
 
 	private readonly VisibilityAnimator mainMenuStripVisibility;
 
@@ -483,26 +447,30 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 		get => Program.ScriptConsole != null ? Program.ScriptConsole : null;
 	}
 
-	#endregion
+    #endregion
 
-	public MainForm()
+    private MainController controller;
+
+    private MainMenuControl menu;
+
+	public void SetController(MainController controller)
+	{
+		this.controller = controller;
+		menu.SetController(controller);
+    }
+
+    public MainForm()
 	{
 		LocalizeUtility.UpdateRightToLeft(this);
-		InitializeComponent();
+		//controller = new MainController(this);
+        menu = new MainMenuControl();
+		
+        InitializeComponent();
 		base.Size = base.Size.ScaleDpi();
-		statusStrip.Height = (int)tsText.Font.GetHeight() + FormUtility.ScaleDpiY(8);
-		SystemEvents.DisplaySettingsChanging += delegate
-		{
-			StoreWorkspace();
-		};
-		SystemEvents.DisplaySettingsChanged += delegate
-		{
-			SetWorkspaceDisplayOptions(Program.Settings.CurrentWorkspace);
-		};
-		if (Program.ExtendedSettings.DisableFoldersView)
-		{
-			miViewFolders.GetCurrentParent().Items.Remove(miViewFolders);
-		}
+		
+		SystemEvents.DisplaySettingsChanging += (_, _) => StoreWorkspace();
+		SystemEvents.DisplaySettingsChanged += (_, _) => SetWorkspaceDisplayOptions(Program.Settings.CurrentWorkspace);
+
 		notifyIcon.MouseDoubleClick += NotifyIconMouseDoubleClick;
 		FormUtility.EnableRightClickSplitButtons(mainToolStrip.Items);
 		AllowDrop = !Program.Settings.DisableDragDrop;
@@ -522,15 +490,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 		books.OpenComicsChanged += OpenBooks_CaptionsChanged;
 		components.Add(commands);
 		fileTabs.Visible = false;
-		DropDownHost<MagnifySetupControl> dropDownHost = new DropDownHost<MagnifySetupControl>();
-		ComicDisplay.MagnifierOpacity = (dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque);
-		ComicDisplay.MagnifierSize = (dropDownHost.Control.MagnifySize = Program.Settings.MagnifySize);
-		ComicDisplay.MagnifierZoom = (dropDownHost.Control.MagnifyZoom = Program.Settings.MagnifyZoom);
-		ComicDisplay.MagnifierStyle = (dropDownHost.Control.MagnifyStyle = Program.Settings.MagnifyStyle);
-		ComicDisplay.AutoMagnifier = (dropDownHost.Control.AutoMagnifier = Program.Settings.AutoMagnifier);
-		ComicDisplay.AutoHideMagnifier = (dropDownHost.Control.AutoHideMagnifier = Program.Settings.AutoHideMagnifier);
-		dropDownHost.Control.ValuesChanged += MagnifySetupChanged;
-		tbMagnify.DropDown = dropDownHost;
 		mainMenuStripVisibility = new VisibilityAnimator(components, mainMenuStrip);
 		fileTabsVisibility = new VisibilityAnimator(components, fileTabs);
 		statusStripVisibility = new VisibilityAnimator(components, statusStrip);
@@ -538,30 +497,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 		quickOpenView.Caption = TR.Load(base.Name)[quickOpenView.Name, quickOpenView.Caption];
 		Program.StartupProgress(TR.Messages["InitScripts", "Initializing Scripts"], 70);
 		if (ScriptUtility.Initialize(this, this, this, ComicDisplay, this, OpenBooks))
-		{
-			miFileAutomation.DropDownItems.AddRange(ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, PluginEngine.ScriptTypeLibrary, () => Program.Database.Books).ToArray());
-			miFileAutomation.Visible = miFileAutomation.DropDownItems.Count != 0;
-			int num = fileMenu.DropDownItems.IndexOf(miNewComic);
-			ToolStripMenuItem[] array = ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, PluginEngine.ScriptTypeNewBooks, () => Program.Database.Books).ToArray();
-			foreach (ToolStripMenuItem value in array)
-			{
-				fileMenu.DropDownItems.Insert(++num, value);
-			}
-			foreach (Command sc in ScriptUtility.Scripts.GetCommands(PluginEngine.ScriptTypeDrawThumbnailOverlay))
-			{
-				sc.PreCompile();
-				CoverViewItem.DrawCustomThumbnailOverlay += (ComicBook comic, Graphics graphics, Rectangle bounds, int flags) =>
-				{
-					sc.Invoke(new object[4]
-					{
-						comic,
-						graphics,
-						bounds,
-						flags
-					}, catchErrors: true);
-				};
-			}
-		}
+			menu.CreatePluginMenuItems();
 		Program.StartupProgress(TR.Messages["InitGUI", "Initializing User Interface"], 80);
 	}
 
@@ -584,7 +520,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         pageDisplay.DragDrop += BookDragDrop;
         pageDisplay.DragEnter += BookDragEnter;
         pageDisplay.BookChanged += viewer_BookChanged;
-        pageDisplay.PageDisplayModeChanged += viewer_PageDisplayModeChanged;
+        pageDisplay.PageDisplayModeChanged += menu.OnPageDisplayModeChanged;
         pageDisplay.Resize += delegate
         {
             ScriptUtility.Invoke(PluginEngine.ScriptTypeReaderResized, pageDisplay.Width, pageDisplay.Height);

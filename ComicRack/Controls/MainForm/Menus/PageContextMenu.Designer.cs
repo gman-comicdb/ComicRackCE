@@ -103,7 +103,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tsSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.tsSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparatorComics = new System.Windows.Forms.ToolStripSeparator();
             this.tsSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.tsSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -130,8 +130,6 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.cmMinimalGui});
             this.pageContextMenuItem.Name = "pageContextMenu";
             this.pageContextMenuItem.Size = new System.Drawing.Size(221, 292);
-            this.pageContextMenuItem.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.pageContextMenu_Closed);
-            this.pageContextMenuItem.Opening += new System.ComponentModel.CancelEventHandler(this.pageContextMenu_Opening);
             // 
             // cmShowInfo
             // 
@@ -257,7 +255,6 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.cmBookmarks.Name = "cmBookmarks";
             this.cmBookmarks.Size = new System.Drawing.Size(220, 22);
             this.cmBookmarks.Text = "&Bookmarks";
-            this.cmBookmarks.DropDownOpening += new System.EventHandler(this.cmBookmarks_DropDownOpening);
             // 
             // cmSetBookmark
             // 
@@ -331,7 +328,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.cmPrevFromList,
             this.cmNextFromList,
             this.cmRandomFromList,
-            this.tsSeparator10});
+            this.tsSeparatorComics});
             this.cmComics.Name = "cmComics";
             this.cmComics.Size = new System.Drawing.Size(220, 22);
             this.cmComics.Text = "Books";
@@ -387,8 +384,8 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             // 
             // tsSeparator10
             // 
-            this.tsSeparator10.Name = "tsSeparator10";
-            this.tsSeparator10.Size = new System.Drawing.Size(215, 6);
+            this.tsSeparatorComics.Name = "tsSeparatorComics";
+            this.tsSeparatorComics.Size = new System.Drawing.Size(215, 6);
             //
             // cmPageLayout
             //
@@ -689,7 +686,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
         private ToolStripSeparator tsSeparator7;
         private ToolStripSeparator tsSeparator8;
         private ToolStripSeparator tsSeparator9;
-        private ToolStripSeparator tsSeparator10;
+        private ToolStripSeparator tsSeparatorComics;
         private ToolStripSeparator tsSeparator11;
         private ToolStripSeparator tsSeparator12;
         private ToolStripSeparator tsSeparator13;

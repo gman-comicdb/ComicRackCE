@@ -9,14 +9,11 @@ namespace cYo.Projects.ComicRack.Viewer;
 
 public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
 {
-    public IEditPage GetPageEditor()
-    {
-        return new PageEditorWrapper(FormUtility.FindActiveService<IEditPage>());
-    }
+    public IEditPage GetPageEditor() => new PageEditorWrapper();
 
     public class PageEditorWrapper : IEditPage
     {
-        private IEditPage editor;
+        private readonly IEditPage editor;
 
         public bool IsValid
         {
@@ -66,6 +63,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     editor.Rotation = value;
                 }
             }
+        }
+
+        public PageEditorWrapper()
+        {
+            this.editor = FormUtility.FindActiveService<IEditPage>();
         }
 
         public PageEditorWrapper(IEditPage editor)

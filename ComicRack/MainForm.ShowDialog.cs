@@ -45,11 +45,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    public void ShowNews()
-    {
-        ShowNews(always: true);
-    }
-
     public void ShowNews(bool always)
     {
         if (always)
@@ -109,7 +104,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void ShowPendingTasks(int tab = 0)
+    public void ShowPendingTasks(int tab = 0)
     {
         if (taskDialog != null && !taskDialog.IsDisposed)
         {
@@ -141,13 +136,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    public void ShowOpenDialog()
+    public void ShowOpenDialog(string title)
     {
-        string text = Program.ShowComicOpenDialog(Form.ActiveForm ?? this, miOpenComic.Text.Replace("&", ""), includeReadingLists: true);
-        if (text != null)
-        {
-            OpenSupportedFile(text, Program.Settings.OpenInNewTab);
-        }
+        string filePath = Program.ShowComicOpenDialog(Form.ActiveForm ?? this, title, includeReadingLists: true);
+        if (filePath != null)
+            OpenSupportedFile(filePath, Program.Settings.OpenInNewTab);
     }
 
     public int AskQuestion(string question, string buttonText, string optionText)

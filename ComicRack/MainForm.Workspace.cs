@@ -103,44 +103,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     }
 
     private void UpdateWorkspaceMenus()
-    {
-        UpdateWorkspaceMenus(tsWorkspaces.DropDownItems);
-        UpdateWorkspaceMenus(miWorkspaces.DropDownItems);
-    }
+        => MainController.Commands.UpdateWorkspaceMenus();
 
-    private void UpdateWorkspaceMenus(ToolStripItemCollection items)
-    {
-        ToolStripSeparator toolStripSeparator = null;
-        for (int num = items.Count - 1; num > 0; num--)
-        {
-            if (items[num] is ToolStripSeparator)
-            {
-                toolStripSeparator = items[num] as ToolStripSeparator;
-                break;
-            }
-            items.RemoveAt(num);
-        }
-        if (toolStripSeparator != null)
-        {
-            toolStripSeparator.Visible = Program.Settings.Workspaces.Count > 0;
-        }
-        int num2 = 0;
-        foreach (DisplayWorkspace workspace in Program.Settings.Workspaces)
-        {
-            DisplayWorkspace itemWs = workspace;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(FormUtility.FixAmpersand(workspace.Name), null, delegate
-            {
-                SetWorkspace(CloneUtility.Clone(itemWs), remember: true);
-            });
-            if (num2 < 6)
-            {
-                toolStripMenuItem.ShortcutKeys = (Keys)(0x50000 | (112 + num2++));
-            }
-            items.Add(toolStripMenuItem);
-        }
-    }
-
-    private void SetWorkspace(DisplayWorkspace workspace, bool remember)
+    public void SetWorkspace(DisplayWorkspace workspace, bool remember)
     {
         if (ComicDisplay == null)
         {

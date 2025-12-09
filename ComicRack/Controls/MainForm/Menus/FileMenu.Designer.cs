@@ -94,7 +94,7 @@ public partial class FileMenu : UserControl
         this.fileMenuItem.Name = "fileMenu";
         this.fileMenuItem.Size = new System.Drawing.Size(37, 20);
         this.fileMenuItem.Text = "&File";
-        this.fileMenuItem.DropDownOpening += new System.EventHandler(this.fileMenu_DropDownOpening);
+        
         // 
         // miOpenComic
         // 
@@ -245,7 +245,6 @@ public partial class FileMenu : UserControl
         this.miOpenRecent.Name = "miOpenRecent";
         this.miOpenRecent.Size = new System.Drawing.Size(280, 22);
         this.miOpenRecent.Text = "&Recent Books";
-        this.miOpenRecent.DropDownOpening += new System.EventHandler(this.RecentFilesMenuOpening);
         // 
         // toolStripMenuItem4
         // 
@@ -290,8 +289,7 @@ public partial class FileMenu : UserControl
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
         this.ClientSize = new System.Drawing.Size(744, 662);
         this.Controls.Add(menu);
-        this.ResumeLayout(false);
-        this.PerformLayout();
+        this.ResumeLayout();
     }
 
     private MenuStrip menu;

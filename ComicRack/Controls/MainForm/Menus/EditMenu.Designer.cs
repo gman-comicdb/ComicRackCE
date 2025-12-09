@@ -95,7 +95,6 @@ partial class EditMenu : UserControl
         this.tsSeparator3 = new System.Windows.Forms.ToolStripSeparator();
         this.tsSeparator4 = new System.Windows.Forms.ToolStripSeparator();
         this.tsSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-
         this.tsSeparator6 = new System.Windows.Forms.ToolStripSeparator();
         this.tsSeparator7 = new System.Windows.Forms.ToolStripSeparator();
         this.tsSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -130,7 +129,6 @@ partial class EditMenu : UserControl
         this.editMenuItem.Name = "editMenu";
         this.editMenuItem.Size = new System.Drawing.Size(39, 20);
         this.editMenuItem.Text = "&Edit";
-        this.editMenuItem.DropDownOpening += new System.EventHandler(this.editMenu_DropDownOpening);
         // 
         // miShowInfo
         // 
@@ -238,7 +236,6 @@ partial class EditMenu : UserControl
         this.miBookmarks.Name = "miBookmarks";
         this.miBookmarks.Size = new System.Drawing.Size(220, 22);
         this.miBookmarks.Text = "&Bookmarks";
-        this.miBookmarks.DropDownOpening += new System.EventHandler(this.miBookmarks_DropDownOpening);
         // 
         // miSetBookmark
         // 

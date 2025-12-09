@@ -20,7 +20,6 @@ namespace cYo.Projects.ComicRack.Viewer
 
         protected override void Dispose(bool disposing)
         {
-            // TODO ; FIX
             if (disposing)
             {
                 IdleProcess.Idle -= Application_Idle;
@@ -41,7 +40,7 @@ namespace cYo.Projects.ComicRack.Viewer
                 }
                 if (components != null)
                 {
-                    components.Dispose(); // added
+                    //components.Dispose(); // added
                 }
             }
         }
@@ -49,19 +48,15 @@ namespace cYo.Projects.ComicRack.Viewer
         {
             this.components = new System.ComponentModel.Container();
             this.mouseDisableTimer = new System.Windows.Forms.Timer(this.components);
-            this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
 
-            this.fileMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.FileMenu();
-            this.editMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.EditMenu();
-            this.browseMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.BrowseMenu();
-            this.readMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.ReadMenu();
-            this.displayMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.DisplayMenu();
-            this.helpMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.HelpMenu();
-            this.mainToolStrip = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.MainToolStrip();
+            this.mainMenuStrip = menu.MenuStrip;
+            this.mainToolStrip = menu.ToolStrip;
+            this.pageContextMenu = menu.PageContextMenu;
+            this.statusStrip = menu.StatusStrip;
+            this.tabContextMenu = menu.TabContextMenu;
 
-            //this.pageContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.pageContextMenu = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.PageContextMenu();
-            this.statusStrip = new cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.StatusStrip();
+            components.Add(pageContextMenu);
+            components.Add(mainToolStrip.ContextMenu);
 
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notfifyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -77,35 +72,21 @@ namespace cYo.Projects.ComicRack.Viewer
             this.mainViewContainer = new cYo.Common.Windows.Forms.SizableContainer();
             this.mainView = new cYo.Projects.ComicRack.Viewer.Views.MainView();
             this.updateActivityTimer = new System.Windows.Forms.Timer(this.components);
-            this.mainMenuStrip.SuspendLayout();
+            //this.mainMenuStrip.SuspendLayout();
             this.notfifyContextMenu.SuspendLayout();
             this.viewContainer.SuspendLayout();
             this.panelReader.SuspendLayout();
             this.readerContainer.SuspendLayout();
             this.fileTabs.SuspendLayout();
-            this.mainToolStrip.SuspendLayout();
-            this.tabContextMenu.SuspendLayout();
+            //this.mainToolStrip.SuspendLayout();
+            //this.tabContextMenu.SuspendLayout();
             this.mainViewContainer.SuspendLayout();
             // 
             // mouseDisableTimer
             // 
             this.mouseDisableTimer.Interval = 500;
             this.mouseDisableTimer.Tick += new System.EventHandler(this.showDisableTimer_Tick);
-            // 
-            // mainMenuStrip
-            // 
-            this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileMenu,
-            this.editMenu,
-            this.browseMenu,
-            this.readMenu,
-            this.displayMenu,
-            this.helpMenu});
-            this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.mainMenuStrip.Name = "mainMenuStrip";
-            this.mainMenuStrip.Size = new System.Drawing.Size(744, 24);
-            this.mainMenuStrip.TabIndex = 0;
-            this.mainMenuStrip.MenuDeactivate += new System.EventHandler(this.mainMenuStrip_MenuDeactivate);
+            
             // 
             // notifyIcon
             // 
@@ -240,7 +221,7 @@ namespace cYo.Projects.ComicRack.Viewer
             // 
             this.updateActivityTimer.Enabled = true;
             this.updateActivityTimer.Interval = 1000;
-            this.updateActivityTimer.Tick += new System.EventHandler(this.UpdateActivityTimerTick);
+            this.updateActivityTimer.Tick += menu.UpdateActivityTimerTick;
             // 
             // MainForm
             // 
@@ -253,11 +234,11 @@ namespace cYo.Projects.ComicRack.Viewer
             this.KeyPreview = true;
             this.Name = "MainForm";
             this.Text = "ComicRack";
-            this.mainMenuStrip.ResumeLayout(false);
-            this.mainMenuStrip.PerformLayout();
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
-            this.pageContextMenu.ResumeLayout(false);
+            //this.mainMenuStrip.ResumeLayout(false);
+            //this.mainMenuStrip.PerformLayout();
+            //this.statusStrip.ResumeLayout(false);
+            //this.statusStrip.PerformLayout();
+            //this.pageContextMenu.ResumeLayout(false);
             this.notfifyContextMenu.ResumeLayout(false);
             this.viewContainer.ResumeLayout(false);
             this.panelReader.ResumeLayout(false);
@@ -265,9 +246,9 @@ namespace cYo.Projects.ComicRack.Viewer
             this.readerContainer.PerformLayout();
             this.fileTabs.ResumeLayout(false);
             this.fileTabs.PerformLayout();
-            this.mainToolStrip.ResumeLayout(false);
-            this.mainToolStrip.PerformLayout();
-            this.tabContextMenu.ResumeLayout(false);
+            //this.mainToolStrip.ResumeLayout(false);
+            //this.mainToolStrip.PerformLayout();
+            //this.tabContextMenu.ResumeLayout(false);
             this.mainViewContainer.ResumeLayout(false);
         }
 
@@ -276,13 +257,6 @@ namespace cYo.Projects.ComicRack.Viewer
         private Timer mouseDisableTimer;
         private MenuStrip mainMenuStrip;
         private MainView mainView;
-
-        private ToolStripMenuItem fileMenu;
-        private ToolStripMenuItem editMenu;
-        private ToolStripMenuItem browseMenu;
-        private ToolStripMenuItem readMenu;
-        private ToolStripMenuItem displayMenu;
-        private ToolStripMenuItem helpMenu;
 
         private ToolStrip mainToolStrip;
         private ContextMenuStrip pageContextMenu;
@@ -306,7 +280,5 @@ namespace cYo.Projects.ComicRack.Viewer
         private ToolStripSeparator cmBookmarkSeparator;
         private Timer updateActivityTimer;
         private QuickOpenView quickOpenView;
-        private ToolStripSeparator cmComicsSep;
-
     }
 }

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using cYo.Common.Collections;
+﻿using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Threading;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Properties;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display;
@@ -17,6 +13,12 @@ using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Controls;
 using cYo.Projects.ComicRack.Viewer.Views;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
@@ -58,19 +60,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ToggleBrowser(alwaysShow: false);
     }
 
-    public void ToggleBrowserFromReader()
-    {
-        if (!Program.ExtendedSettings.MouseSwitchesToFullLibrary && (ReaderUndocked || mainViewContainer.Dock == DockStyle.Fill))
-        {
-            MinimalGui = !MinimalGui;
-        }
-        else
-        {
-            ToggleBrowser(alwaysShow: false);
-        }
-    }
-
-    private void ToggleZoom(CommandKey key)
+    public void ToggleZoom(CommandKey key)
     {
         float num;
         if (ComicDisplay.ImageZoom < 1.05f)
@@ -128,12 +118,10 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void ToggleUndockReader()
+    public void ToggleUndockReader()
     {
         if (!ReaderUndocked)
-        {
             ComicDisplay.FullScreen = false;
-        }
         ReaderUndocked = !ReaderUndocked;
     }
     #endregion
@@ -184,8 +172,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         bool flag = !MinimalGui;
         bool flag2 = books.OpenCount > 0;
-        miOpenNow.Enabled = miOpenNow.DropDownItems.Count > 0;
-        cmComicsSep.Visible = miOpenNow.DropDownItems.Count > 0;
         if (ReaderUndocked)
         {
             fileTabsVisibility.Visible = flag;
@@ -240,7 +226,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void UpdateBookmarkMenu(ToolStripItemCollection items, int direction)
+    public void UpdateBookmarkMenu(ToolStripItemCollection items, int direction)
     {
         for (int num = items.Count - 1; num >= 0; num--)
         {
@@ -308,63 +294,33 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
+    private static readonly string None = TR.Default["None", "None"];
+
     private void OnUpdateGui()
     {
         UpdateQuickList();
-        miOpenRecent.Enabled = recentFiles.Length != 0;
-        string text = ((ComicDisplay.Book == null) ? null : ComicDisplay.Book.Caption.Ellipsis(60, "..."));
-        tsBook.Text = (string.IsNullOrEmpty(text) ? None : text);
+        IComicBrowser comicBrowser = mainView.FindActiveService<IComicBrowser>();
+        ItemSizeInfo itemSizeInfo = this.FindActiveService<IItemSize>()?.GetItemSize();
+        string comicTitle = controller.ComicDisplay.Book?.Caption.Ellipsis(60, "...");
+        menu.UpdateMenu(
+            IsComicVisible || ComicDisplay.Book != null,
+            FormUtility.FixAmpersand((comicBrowser != null) ? comicBrowser.SelectionInfo : string.Empty)
+            );
+
         if (readerForm != null && !MinimizedToTray)
         {
             readerForm.Visible = books.OpenCount > 0;
-            readerForm.Text = tsBook.Text;
+            readerForm.Text = string.IsNullOrEmpty(comicTitle) ? TR.Default["None", "None"] : comicTitle;
         }
-        if (ComicDisplay.Book == null || string.IsNullOrEmpty(text))
-        {
+
+        if (ComicDisplay.Book == null || string.IsNullOrEmpty(comicTitle))
             Text = Application.ProductName;
-        }
         else
-        {
-            Text = Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? text : ComicDisplay.Book.Comic.FileName);
-        }
-        tsCurrentPage.Text = ((ComicDisplay.Book == null) ? NotAvailable : (ComicDisplay.Book.CurrentPage + 1).ToString());
-        tsPageCount.Text = TotalPageInformation(ComicDisplay.Book);
-        IComicBrowser comicBrowser = mainView.FindActiveService<IComicBrowser>();
-        tsText.Text = FormUtility.FixAmpersand((comicBrowser != null) ? comicBrowser.SelectionInfo : string.Empty);
-        tbFit.Image = GetFitModeImage();
-        tbPageLayout.Image = GetLayoutImage();
-        ToolStripMenuItem toolStripMenuItem = miMagnify;
-        ToolStripMenuItem toolStripMenuItem2 = cmMagnify;
-        Image image2 = (tbMagnify.Image = (ComicDisplay.MagnifierVisible ? zoomImage : zoomClearImage));
-        Image image5 = (toolStripMenuItem.Image = (toolStripMenuItem2.Image = image2));
-        ItemSizeInfo itemSizeInfo = this.FindActiveService<IItemSize>()?.GetItemSize();
+            Text = Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? comicTitle : ComicDisplay.Book.Comic.FileName);
+
         thumbSize.Visible = mainViewContainer.Expanded && itemSizeInfo != null;
         if (itemSizeInfo != null)
-        {
             thumbSize.SetSlider(itemSizeInfo.Minimum, itemSizeInfo.Maximum, itemSizeInfo.Value);
-        }
-        ToolStripMenuItem toolStripMenuItem3 = miSynchronizeDevices;
-        bool visible = (tsSynchronizeDevices.Visible = Program.Settings.Devices.Count > 0);
-        toolStripMenuItem3.Visible = visible;
-        ToolStripMenuItem toolStripMenuItem4 = readMenu;
-        ToolStripSplitButton toolStripSplitButton = tbPrevPage;
-        ToolStripSplitButton toolStripSplitButton2 = tbNextPage;
-        ToolStripSeparator toolStripSeparator = toolStripSeparator5;
-        ToolStripSplitButton toolStripSplitButton3 = tbPageLayout;
-        ToolStripSplitButton toolStripSplitButton4 = tbFit;
-        ToolStripSplitButton toolStripSplitButton5 = tbZoom;
-        ToolStripSplitButton toolStripSplitButton6 = tbRotate;
-        ToolStripSeparator toolStripSeparator2 = toolStripSeparator7;
-        bool flag3 = (tbMagnify.Visible = IsComicVisible || ComicDisplay.Book != null);
-        bool flag5 = (toolStripSeparator2.Visible = flag3);
-        bool flag7 = (toolStripSplitButton6.Visible = flag5);
-        bool flag9 = (toolStripSplitButton5.Visible = flag7);
-        bool flag11 = (toolStripSplitButton4.Visible = flag9);
-        bool flag13 = (toolStripSplitButton3.Visible = flag11);
-        bool flag15 = (toolStripSeparator.Visible = flag13);
-        bool flag17 = (toolStripSplitButton2.Visible = flag15);
-        visible = (toolStripSplitButton.Visible = flag17);
-        toolStripMenuItem4.Visible = visible;
     }
 
     private void UpdateQuickList()
@@ -445,30 +401,20 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     }
 
     // Command
-    public void StartFullScan()
-    {
-        Program.QueueManager.StartScan(all: true, Program.Settings.RemoveMissingFilesOnFullScan);
-    }
-
+    
     private void UpdateTabCaptions()
     {
         using (ItemMonitor.Lock(OpenBooks.Slots.SyncRoot))
         {
             foreach (TabBar.TabBarItem item in fileTabs.Items.Where((TabBar.TabBarItem t) => t.Tag is int && (int)t.Tag >= 0))
-            {
                 item.Text = OpenBooks.GetSlotCaption((int)item.Tag);
-            }
+
             foreach (TabBar.TabBarItem fileTab in mainView.GetFileTabs())
-            {
                 fileTab.Text = OpenBooks.GetSlotCaption((int)fileTab.Tag);
-            }
-            foreach (ToolStripMenuItem dropDownItem in miOpenNow.DropDownItems)
-            {
+
+            foreach (ToolStripMenuItem dropDownItem in menu.OpenNow)
                 if (dropDownItem.Tag is int)
-                {
                     dropDownItem.Text = OpenBooks.GetSlotCaption((int)dropDownItem.Tag);
-                }
-            }
         }
     }
 
@@ -486,66 +432,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             }
         }
     }
-
-    #region ToolStrip Helpers
-    private Image GetLayoutImage()
-    {
-        switch (ComicDisplay.PageLayout)
-        {
-            default:
-                if (!ComicDisplay.RightToLeftReading)
-                {
-                    return miSinglePage.Image;
-                }
-                return SinglePageRtl;
-            case PageLayoutMode.Double:
-                if (!ComicDisplay.RightToLeftReading)
-                {
-                    return miTwoPages.Image;
-                }
-                return TwoPagesRtl;
-            case PageLayoutMode.DoubleAdaptive:
-                if (!ComicDisplay.RightToLeftReading)
-                {
-                    return miTwoPagesAdaptive.Image;
-                }
-                return TwoPagesAdaptiveRtl;
-        }
-    }
-
-    private Image GetFitModeImage()
-    {
-        try
-        {
-            int imageFitMode = (int)ComicDisplay.ImageFitMode;
-            foreach (ToolStripItem dropDownItem in tbFit.DropDownItems)
-            {
-                if (dropDownItem.Image != null && imageFitMode-- == 0)
-                {
-                    return dropDownItem.Image;
-                }
-            }
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private static string TotalPageInformation(ComicBookNavigator nav)
-    {
-        if (nav == null)
-        {
-            return NotAvailable;
-        }
-        if (nav.IsIndexRetrievalCompleted || nav.IndexPagesRetrieved == nav.Comic.PageCount)
-        {
-            return nav.Comic.PagesAsText;
-        }
-        return $"{nav.Comic.PagesAsText} ({nav.IndexPagesRetrieved})";
-    }
-    #endregion
 
     #region DesktopWindow
     private void MinimizeToTray()
@@ -641,7 +527,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     void IApplication.ScanFolders()
     {
-        StartFullScan();
+        MainController.Commands.StartFullScan();
     }
     #endregion
 }

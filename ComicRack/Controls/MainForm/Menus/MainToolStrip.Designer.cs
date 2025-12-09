@@ -105,6 +105,21 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tbShowMainMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.tbExit = new System.Windows.Forms.ToolStripMenuItem();
+
+            this.tsSeparatorPage = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparatorRotateMagnify = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparatorBms = new System.Windows.Forms.ToolStripSeparator();
+            this.tsSeparatorBms2 = new System.Windows.Forms.ToolStripSeparator();
+
             this.SuspendLayout();
 
             // 
@@ -116,12 +131,15 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.mainToolStripItem.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbPrevPage,
             this.tbNextPage,
+            this.tsSeparatorPage,
             this.tbPageLayout,
             this.tbFit,
             this.tbZoom,
             this.tbRotate,
+            this.tsSeparatorRotateMagnify,
             this.tbMagnify,
             this.tbFullScreen,
+            this.tsSeparator3,
             this.tbTools});
             this.mainToolStripItem.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainToolStripItem.Location = new System.Drawing.Point(400, 1);
@@ -137,6 +155,8 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbPrevPage.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbFirstPage,
             this.tbPrevBookmark,
+            this.tsSeparatorBms,
+            this.tsSeparator4,
             this.tbPrevFromList});
             this.tbPrevPage.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.GoPrevious;
             this.tbPrevPage.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -161,6 +181,17 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbPrevBookmark.Size = new System.Drawing.Size(268, 22);
             this.tbPrevBookmark.Text = "Previous Bookmark";
             // 
+            // tsSeparatorBms
+            // 
+            this.tsSeparatorBms.Name = "tsSeparatorBms";
+            this.tsSeparatorBms.Size = new System.Drawing.Size(265, 6);
+            this.tsSeparatorBms.Tag = "bms";
+            // 
+            // tsSeparator4
+            // 
+            this.tsSeparator4.Name = "tsSeparator4";
+            this.tsSeparator4.Size = new System.Drawing.Size(265, 6);
+            // 
             // tbPrevFromList
             // 
             this.tbPrevFromList.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.PrevFromList;
@@ -177,6 +208,8 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbLastPage,
             this.tbNextBookmark,
             this.tbLastPageRead,
+            this.tsSeparatorBms2,
+            this.tsSeparator5,
             this.tbNextFromList,
             this.tbRandomFromList});
             this.tbNextPage.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.GoNext;
@@ -211,6 +244,17 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbLastPageRead.Size = new System.Drawing.Size(250, 22);
             this.tbLastPageRead.Text = "L&ast Page Read";
             // 
+            // tsSeparatorBms2
+            // 
+            this.tsSeparatorBms2.Name = "tsSeparatorBms2";
+            this.tsSeparatorBms2.Size = new System.Drawing.Size(247, 6);
+            this.tsSeparatorBms2.Tag = "bms";
+            // 
+            // tsSeparator5
+            // 
+            this.tsSeparator5.Name = "tsSeparator5";
+            this.tsSeparator5.Size = new System.Drawing.Size(247, 6);
+            // 
             // tbNextFromList
             // 
             this.tbNextFromList.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.NextFromList;
@@ -230,8 +274,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbRandomFromList.Size = new System.Drawing.Size(250, 22);
             this.tbRandomFromList.Text = "Random Book";
             // 
-            // toolStripSeparator5
+            // tsSeparatorPage
             // 
+            this.tsSeparatorPage.Name = "tsSeparatorPage";
+            this.tsSeparatorPage.Size = new System.Drawing.Size(6, 25);
             // 
             // tbPageLayout
             // 
@@ -240,6 +286,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbSinglePage,
             this.tbTwoPages,
             this.tbTwoPagesAdaptive,
+            this.tsSeparator6,
             this.tbRightToLeft});
             this.tbPageLayout.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.SinglePage;
             this.tbPageLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -269,8 +316,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbTwoPagesAdaptive.Text = "Two Pages (adaptive)";
             this.tbTwoPagesAdaptive.ToolTipText = "Show one or two pages";
             // 
-            // toolStripMenuItem54
+            // tsSeparator6
             // 
+            this.tsSeparator6.Name = "tsSeparator6";
+            this.tsSeparator6.Size = new System.Drawing.Size(222, 6);
             // 
             // tbRightToLeft
             // 
@@ -289,6 +338,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbFitWidthAdaptive,
             this.tbFitHeight,
             this.tbBestFit,
+            this.tsSeparator7,
             this.tbOnlyFitOversized});
             this.tbFit.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.FitAll;
             this.tbFit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -341,8 +391,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbBestFit.Size = new System.Drawing.Size(247, 22);
             this.tbBestFit.Text = "Fit Best";
             // 
-            // toolStripMenuItem20
+            // tsSeparator7
             // 
+            this.tsSeparator7.Name = "tsSeparator7";
+            this.tsSeparator7.Size = new System.Drawing.Size(244, 6);
             // 
             // tbOnlyFitOversized
             // 
@@ -359,11 +411,13 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbZoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbZoomIn,
             this.tbZoomOut,
+            this.tsSeparator8,
             this.tbZoom100,
             this.tbZoom125,
             this.tbZoom150,
             this.tbZoom200,
             this.tbZoom400,
+            this.tsSeparator9,
             this.tbZoomCustom});
             this.tbZoom.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.ZoomIn;
             this.tbZoom.Name = "tbZoom";
@@ -385,8 +439,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbZoomOut.Size = new System.Drawing.Size(222, 22);
             this.tbZoomOut.Text = "Zoom &Out";
             // 
-            // toolStripMenuItem30
+            // tsSeparator8
             // 
+            this.tsSeparator8.Name = "tsSeparator8";
+            this.tsSeparator8.Size = new System.Drawing.Size(219, 6);
             // 
             // tbZoom100
             // 
@@ -418,8 +474,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbZoom400.Size = new System.Drawing.Size(222, 22);
             this.tbZoom400.Text = "400%";
             // 
-            // toolStripMenuItem31
+            // tsSeparator9
             // 
+            this.tsSeparator9.Name = "tsSeparator9";
+            this.tsSeparator9.Size = new System.Drawing.Size(219, 6);
             // 
             // tbZoomCustom
             // 
@@ -435,10 +493,12 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbRotate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbRotateLeft,
             this.tbRotateRight,
+            this.tsSeparator10,
             this.tbRotate0,
             this.tbRotate90,
             this.tbRotate180,
             this.tbRotate270,
+            this.tsSeparator11,
             this.tbAutoRotate});
             this.tbRotate.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.RotateRight;
             this.tbRotate.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -465,8 +525,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbRotateRight.Size = new System.Drawing.Size(256, 22);
             this.tbRotateRight.Text = "Rotate Right";
             // 
-            // toolStripSeparator11
+            // tsSeparator10
             // 
+            this.tsSeparator10.Name = "tsSeparator10";
+            this.tsSeparator10.Size = new System.Drawing.Size(253, 6);
             // 
             // tbRotate0
             // 
@@ -504,8 +566,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbRotate270.Size = new System.Drawing.Size(256, 22);
             this.tbRotate270.Text = "270°";
             // 
-            // toolStripMenuItem34
+            // tsSeparator11
             // 
+            this.tsSeparator11.Name = "tsSeparator11";
+            this.tsSeparator11.Size = new System.Drawing.Size(253, 6);
             // 
             // tbAutoRotate
             // 
@@ -514,8 +578,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbAutoRotate.Size = new System.Drawing.Size(256, 22);
             this.tbAutoRotate.Text = "Autorotate Double Pages";
             // 
-            // toolStripSeparator7
+            // tsSeparatorRotateMagnify
             // 
+            this.tsSeparatorRotateMagnify.Name = "tsSeparatorRotateMagnify";
+            this.tsSeparatorRotateMagnify.Size = new System.Drawing.Size(6, 25);
             // 
             // tbMagnify
             // 
@@ -536,8 +602,10 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.tbFullScreen.Text = "Full Screen";
             this.tbFullScreen.ToolTipText = "Full Screen";
             // 
-            // toolStripSeparator1
+            // tsSeparator3
             // 
+            this.tsSeparator3.Name = "tsSeparator3";
+            this.tsSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // tbTools
             // 
@@ -891,6 +959,20 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
         private ToolStripMenuItem tbUpdateWebComics;
         private ToolStripMenuItem tbOpenRemoteLibrary;
         private ToolStripButton tbFullScreen;
+
+        private ToolStripSeparator tsSeparatorPage;
+        private ToolStripSeparator tsSeparatorRotateMagnify;
+        private ToolStripSeparator tsSeparator3;
+        private ToolStripSeparator tsSeparator4;
+        private ToolStripSeparator tsSeparator5;
+        private ToolStripSeparator tsSeparator6;
+        private ToolStripSeparator tsSeparator7;
+        private ToolStripSeparator tsSeparator8;
+        private ToolStripSeparator tsSeparator9;
+        private ToolStripSeparator tsSeparator10;
+        private ToolStripSeparator tsSeparator11;
+        private ToolStripSeparator tsSeparatorBms;
+        private ToolStripSeparator tsSeparatorBms2;
 
         #endregion
     }

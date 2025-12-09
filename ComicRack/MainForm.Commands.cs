@@ -64,36 +64,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         });
     }
 
-    public static void GenerateFrontCoverCache()
-    {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) =>
-        {
-            Program.ImagePool.GenerateFrontCoverThumbnail(cb);
-        });
-    }
-
-    private void SetBookmark()
+    public void SetBookmark()
     {
         BookmarkEditorWrapper bookmarkEditor = GetBookmarkEditor();
         if (bookmarkEditor.CanBookmark)
         {
             bookmarkEditor.Bookmark = SelectItemDialog.GetName<string>(Form.ActiveForm ?? this, TR.Default["Bookmark", "Bookmark"], bookmarkEditor.BookmarkProposal, null);
         }
-    }
-
-    private bool SetBookmarkAvailable()
-    {
-        return GetBookmarkEditor().CanBookmark;
-    }
-
-    private void RemoveBookmark()
-    {
-        GetBookmarkEditor().Bookmark = string.Empty;
-    }
-
-    private bool RemoveBookmarkAvailable()
-    {
-        return !string.IsNullOrEmpty(GetBookmarkEditor().Bookmark);
     }
 
     public bool SyncBrowser()

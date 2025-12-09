@@ -42,7 +42,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             e.Book.OpenedTime = DateTime.Now;
         }
         e.Book.NewPages = 0;
-        recentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
+        controller.RecentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
         if (e.Book.EditMode.IsLocalComic())
         {
             Win7.UpdateRecent(e.Book.FilePath);
@@ -104,46 +104,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         OpenSupportedFile(array[0]);
     }
 
-    private void OnOpenRecent(object sender, EventArgs e)
-    {
-        string text = ((ToolStripMenuItem)sender).Text;
-        int num = Convert.ToInt32(text.Substring(0, 2)) - 1;
-        OpenSupportedFile(recentFiles[num], Program.Settings.OpenInNewTab);
-    }
-
-    private void RecentFilesMenuOpening(object sender, EventArgs e)
-    {
-        int num = 0;
-        foreach (ToolStripMenuItem dropDownItem in miOpenRecent.DropDownItems)
-        {
-            if (dropDownItem.Image != null)
-            {
-                dropDownItem.Image.Dispose();
-            }
-        }
-        FormUtility.SafeToolStripClear(miOpenRecent.DropDownItems);
-        string[] array = recentFiles;
-        foreach (string text in array)
-        {
-            if (!File.Exists(text))
-            {
-                continue;
-            }
-            string text2 = ++num + " - " + FormUtility.FixAmpersand(FileUtility.GetSafeFileName(text));
-            using (IItemLock<ThumbnailImage> itemLock = Program.ImagePool.Thumbs.GetImage(Program.BookFactory.Create(text, CreateBookOption.DoNotAdd).GetFrontCoverThumbnailKey()))
-            {
-                try
-                {
-                    ToolStripMenuItem value = new ToolStripMenuItem(text2, (itemLock != null && itemLock.Item != null) ? itemLock.Item.Bitmap.Resize(16, 16) : null, OnOpenRecent);
-                    miOpenRecent.DropDownItems.Add(value);
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-    }
-
     private void ReaderFormFormClosing(object sender, FormClosingEventArgs e)
     {
         if (!shieldReaderFormClosing)
@@ -178,8 +138,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     fileTabs.Items.RemoveAt(num);
                 }
             }
-            FormUtility.SafeToolStripClear(miOpenNow.DropDownItems);
-            FormUtility.SafeToolStripClear(cmComics.DropDownItems, cmComics.DropDownItems.IndexOf(cmComicsSep) + 1);
+            menu.ClearComicsList();
             mainView.ClearFileTabs();
             Bitmap thumb = default(Bitmap);
             for (int i = 0; i < OpenBooks.Slots.Count; i++)
@@ -198,12 +157,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     text3 = keysConverter.ConvertToString(tmi.ShortcutKeys);
                     text2 = text2 + "\r\n(" + text3 + ")";
                 }
-                miOpenNow.DropDownItems.Add(tmi);
+                menu.AddOpenNow(tmi);
                 ToolStripMenuItem tmi2 = new ToolStripMenuItem(text);
                 tmi2.Click += OpenBooks_Clicked;
                 tmi2.Tag = i;
                 tmi2.ShortcutKeys = tmi.ShortcutKeys;
-                cmComics.DropDownItems.Add(tmi2);
+                menu.AddComic(tmi2);
                 TabBar.TabBarItem tbi = new ComicReaderTab(text, nav, Font, text3)
                 {
                     Tag = i,
@@ -265,7 +224,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     }
                 });
             }
-            string text4 = miAddTab.Text.Replace("&", string.Empty);
+            string text4 = menu.TabTitle;
             TabBar.TabBarItem tabBarItem = new TabBar.TabBarItem(text4)
             {
                 Tag = -1,
@@ -351,13 +310,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 fileTabs.SelectedTab = item;
             }
         }
-        foreach (ToolStripMenuItem item2 in from tmi in miOpenNow.DropDownItems.OfType<ToolStripMenuItem>()
+        foreach (ToolStripMenuItem item2 in from tmi in menu.OpenNow
                                             where tmi.Tag is int
                                             select tmi)
         {
             item2.Checked = OpenBooks.CurrentSlot == (int)item2.Tag;
         }
-        foreach (ToolStripMenuItem item3 in from tmi in cmComics.DropDownItems.OfType<ToolStripMenuItem>()
+        foreach (ToolStripMenuItem item3 in from tmi in menu.Comics
                                             where tmi.Tag is int
                                             select tmi)
         {
@@ -390,21 +349,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void tsCurrentPage_Click(object sender, EventArgs e)
-    {
-        Program.Settings.TrackCurrentPage = !Program.Settings.TrackCurrentPage;
-    }
-
-    private void tabContextMenu_Opening(object sender, CancelEventArgs e)
-    {
-        bool flag = ComicDisplay == null || ComicDisplay.Book == null || ComicDisplay.Book.Comic.EditMode.IsLocalComic();
-        ToolStripSeparator toolStripSeparator = sepBeforeRevealInBrowser;
-        ToolStripMenuItem toolStripMenuItem = cmRevealInExplorer;
-        bool flag3 = (cmCopyPath.Visible = flag);
-        bool visible = (toolStripMenuItem.Visible = flag3);
-        toolStripSeparator.Visible = visible;
-    }
-
     private void Application_Idle(object sender, EventArgs e)
     {
         OnUpdateGui();
@@ -432,24 +376,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 Program.QueueManager.AddBookToFileUpdate(e.Book);
             }
         }
-    }
-
-    private void MagnifySetupChanged(object sender, EventArgs e)
-    {
-        MagnifySetupControl magnifySetupControl = (MagnifySetupControl)sender;
-        ComicDisplay.MagnifierOpacity = magnifySetupControl.MagnifyOpaque;
-        ComicDisplay.MagnifierSize = magnifySetupControl.MagnifySize;
-        ComicDisplay.MagnifierZoom = magnifySetupControl.MagnifyZoom;
-        ComicDisplay.MagnifierStyle = magnifySetupControl.MagnifyStyle;
-        ComicDisplay.AutoHideMagnifier = magnifySetupControl.AutoHideMagnifier;
-        ComicDisplay.AutoMagnifier = magnifySetupControl.AutoMagnifier;
-    }
-
-    private void viewer_PageDisplayModeChanged(object sender, EventArgs e)
-    {
-        tbZoom.Text = $"{(int)(ComicDisplay.ImageZoom * 100f)}%";
-        tbRotate.Text = TR.Translate(ComicDisplay.ImageRotation);
-        tbRotate.Image = (ComicDisplay.ImageAutoRotate ? miAutoRotate.Image : miRotateRight.Image);
     }
 
     private void viewer_FirstPageReached(object sender, EventArgs e)
@@ -550,40 +476,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void fileMenu_DropDownOpening(object sender, EventArgs e)
-    {
-        miUpdateAllComicFiles.Visible = !Program.Settings.AutoUpdateComicsFiles;
-    }
-
-    private void editMenu_DropDownOpening(object sender, EventArgs e)
-    {
-        try
-        {
-            bool flag = ComicDisplay != null && ComicDisplay.Book != null;
-            IEditPage pageEditor = GetPageEditor();
-            EnumMenuUtility enumMenuUtility = pageTypeEditMenu;
-            bool enabled = (pageRotationEditMenu.Enabled = pageEditor.IsValid);
-            enumMenuUtility.Enabled = enabled;
-            pageTypeEditMenu.Value = (int)pageEditor.PageType;
-            pageRotationEditMenu.Value = (int)pageEditor.Rotation;
-            if (miUndo.Tag == null)
-            {
-                miUndo.Tag = miUndo.Text;
-            }
-            string undoLabel = Program.Database.Undo.UndoLabel;
-            miUndo.Text = (string)miUndo.Tag + (string.IsNullOrEmpty(undoLabel) ? string.Empty : (": " + undoLabel));
-            if (miRedo.Tag == null)
-            {
-                miRedo.Tag = miRedo.Text;
-            }
-            string text = Program.Database.Undo.RedoEntries.FirstOrDefault();
-            miRedo.Text = (string)miRedo.Tag + (string.IsNullOrEmpty(text) ? string.Empty : (": " + text));
-        }
-        catch (Exception)
-        {
-        }
-    }
-
     private void mainViewContainer_ExpandedChanged(object sender, EventArgs e)
     {
         OnGuiVisibilities();
@@ -652,31 +544,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         OnGuiVisibilities();
     }
 
-    private void tbBookmarks_DropDownOpening(object sender, EventArgs e)
-    {
-        UpdateBookmarkMenu(tbBookmarks.DropDownItems, 0);
-    }
-
-    private void cmBookmarks_DropDownOpening(object sender, EventArgs e)
-    {
-        UpdateBookmarkMenu(cmBookmarks.DropDownItems, 0);
-    }
-
-    private void tbPrevPage_DropDownOpening(object sender, EventArgs e)
-    {
-        UpdateBookmarkMenu(tbPrevPage.DropDownItems, -1);
-    }
-
-    private void tbNextPage_DropDownOpening(object sender, EventArgs e)
-    {
-        UpdateBookmarkMenu(tbNextPage.DropDownItems, 1);
-    }
-
-    private void miBookmarks_DropDownOpening(object sender, EventArgs e)
-    {
-        UpdateBookmarkMenu(miBookmarks.DropDownItems, 0);
-    }
-
     private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
     {
         if (notifyIcon.Tag is HiddenMessageBoxes)
@@ -708,11 +575,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void tbTools_DropDownOpening(object sender, EventArgs e)
-    {
-        tbUpdateWebComics.Visible = Program.Database.Books.FirstOrDefault((ComicBook cb) => cb.IsDynamicSource) != null;
-    }
-
     protected override void OnKeyUp(KeyEventArgs e)
     {
         if (AutoHideMainMenu && enableAutoHideMenu && menuDown && e.KeyCode == Keys.Menu && Machine.Ticks - menuAutoClosed > 500)
@@ -731,7 +593,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         base.OnKeyDown(e);
     }
 
-    private void mainMenuStrip_MenuDeactivate(object sender, EventArgs e)
+    public void OnMainMenuStripMenuDeactivate(object sender, EventArgs e)
     {
         if (AutoHideMainMenu && enableAutoHideMenu)
         {
@@ -740,94 +602,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void UpdateActivityTimerTick(object sender, EventArgs e)
-    {
-        ToolStripStatusLabel[] array = new ToolStripStatusLabel[5]
-        {
-                tsReadInfoActivity,
-                tsWriteInfoActivity,
-                tsScanActivity,
-                tsExportActivity,
-                tsDeviceSyncActivity
-        };
-        int num = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
-        tsScanActivity.Visible = Program.Scanner.IsScanning;
-        tsWriteInfoActivity.Visible = Program.QueueManager.IsInComicFileUpdate;
-        tsReadInfoActivity.Visible = Program.QueueManager.IsInComicFileRefresh;
-        tsPageActivity.Visible = Program.ImagePool.IsWorking;
-        bool isInComicConversion = Program.QueueManager.IsInComicConversion;
-        int pendingComicConversions = Program.QueueManager.PendingComicConversions;
-        int count = Program.QueueManager.ExportErrors.Count;
-        tsExportActivity.Visible = isInComicConversion || count > 0;
-        if (tsExportActivity.Visible)
-        {
-            Image image = ((count <= 0) ? exportAnimation : ((pendingComicConversions == 0) ? exportError : exportErrorAnimation));
-            tsExportActivity.Image = image;
-            string text = StringUtility.Format(ExportingComics, pendingComicConversions);
-            if (count > 0)
-            {
-                text += "\n";
-                text += StringUtility.Format(ExportingErrors, count);
-            }
-            tsExportActivity.ToolTipText = text;
-        }
-        bool isInDeviceSync = Program.QueueManager.IsInDeviceSync;
-        int pendingDeviceSyncs = Program.QueueManager.PendingDeviceSyncs;
-        int count2 = Program.QueueManager.DeviceSyncErrors.Count;
-        tsDeviceSyncActivity.Visible = isInDeviceSync || count2 > 0;
-        if (tsDeviceSyncActivity.Visible)
-        {
-            Image image2 = ((count2 <= 0) ? deviceSyncAnimation : ((pendingDeviceSyncs == 0) ? deviceSyncError : deviceSyncErrorAnimation));
-            tsDeviceSyncActivity.Image = image2;
-            string text2 = StringUtility.Format(DeviceSyncing, pendingDeviceSyncs);
-            if (count > 0)
-            {
-                text2 += "\n";
-                text2 += StringUtility.Format(DeviceSyncingErrors, count2);
-            }
-            tsDeviceSyncActivity.ToolTipText = text2;
-        }
-        Image image3 = null;
-        if (comicDisplay != null && comicDisplay.Book != null && !comicDisplay.Book.IsIndexRetrievalCompleted)
-        {
-            image3 = updatePages;
-        }
-        tsCurrentPage.Image = (Program.Settings.TrackCurrentPage ? null : trackPagesLockedImage);
-        tsPageCount.Image = image3;
-        int num2 = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
-        if (num2 != num)
-        {
-            int num3 = Numeric.HighestBit(num2);
-            if (num3 == -1)
-            {
-                Win7.SetOverlayIcon(null, null);
-            }
-            else
-            {
-                Win7.SetOverlayIcon(array[num3].Image as Bitmap, null);
-            }
-        }
-        tsServerActivity.Visible = Program.NetworkManager.HasActiveServers();
-        if (tsServerActivity.Visible)
-        {
-            tsServerActivity.ToolTipText = string.Format(TR.Messages["ServerActivity", "{0} Server(s) running"], Program.NetworkManager.RunningServers.Count);
-            tsServerActivity.Image = (Program.NetworkManager.RecentServerActivity() ? greenLight : grayLight);
-        }
-        bool flag = Program.Database != null && Program.Database.ComicStorage != null;
-        tsDataSourceState.Visible = flag;
-        if (flag)
-        {
-            tsDataSourceState.Image = (Program.Database.ComicStorage.IsConnected ? datasourceConnected : datasourceDisconnected);
-            tsDataSourceState.ToolTipText = (Program.Database.ComicStorage.IsConnected ? TR.Messages["DataSourceConnected", "Connected to data source"] : TR.Messages["DataSourceDisconnected", "Disconnected from data source!"]);
-        }
-    }
-
     private void NotifyIconMouseDoubleClick(object sender, MouseEventArgs e)
     {
         RestoreFromTray();
     }
 
-    private void StartMouseDisabledTimer()
+    public void StartMouseDisabledTimer()
     {
         ComicDisplay.MouseClickEnabled = false;
         mouseDisableTimer.Stop();
@@ -886,6 +666,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void quickOpenView_OpenFile(object sender, EventArgs e)
     {
-        ShowOpenDialog();
+        MainController.Commands.ShowOpenDialog();
     }
 }

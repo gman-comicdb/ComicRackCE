@@ -1,28 +1,46 @@
-﻿using cYo.Common.Presentation;
+﻿using cYo.Projects.ComicRack.Engine;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using static cYo.Projects.ComicRack.Viewer.MainController;
 
 namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class HelpMenu : UserControl
 {
-    public ToolStripMenuItem Item;
+    private MainController controller;
+
+    public ToolStripMenuItem CheckUpdate => miCheckUpdate;
 
     public HelpMenu()
     {
+        //this.controller = controller;
         InitializeComponent();
-        Item = helpMenuItem;
+    }
+
+    public void SetController(MainController controller)
+    {
+        this.controller = controller;
+        InitializeHelp(Program.Settings.HelpSystem);
+        Program.Settings.HelpSystemChanged += OnHelpSystemChanged;
+        InitializePluginHelp();
     }
 
     public static implicit operator ToolStripMenuItem(HelpMenu menu)
-        => menu.Item;
+        => menu.helpMenuItem;
+
+    //protected override void OnLoad(EventArgs e)
+    //{
+    //    InitializeHelp(Program.Settings.HelpSystem);
+    //    Program.Settings.HelpSystemChanged += OnHelpSystemChanged;
+    //    InitializePluginHelp();
+    //}
+
+    public void InitializeCommands()
+    {
+
+    }
 
     public void InitializeHelp(string helpSystem)
     {
@@ -55,5 +73,25 @@ public partial class HelpMenu : UserControl
                 Program.Settings.HelpSystem = name;
             })).Checked = Program.HelpSystem == name;
         }
+    }
+
+    public void InitializePluginHelp()
+    {
+        IEnumerable<PackageManager.Package> enumerable = from p in Program.ScriptPackages.GetPackages()
+                                                         where !string.IsNullOrEmpty(p.HelpLink)
+                                                         select p;
+        miHelpPlugins.Visible = enumerable.Count() > 0;
+        foreach (PackageManager.Package p2 in enumerable)
+        {
+            miHelpPlugins.DropDownItems.Add(p2.Name, p2.Image, delegate
+            {
+                Program.StartDocument(p2.HelpLink, p2.PackagePath);
+            });
+        }
+    }
+
+    public void OnHelpSystemChanged(object sender, EventArgs e)
+    {
+        InitializeHelp(Program.Settings.HelpSystem);
     }
 }

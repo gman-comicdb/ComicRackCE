@@ -1,20 +1,6 @@
-global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
+global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Forms;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -31,6 +17,8 @@ using cYo.Common.Threading;
 using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
+using cYo.Common.Windows.Forms.Theme;
+using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display.Forms;
@@ -40,14 +28,27 @@ using cYo.Projects.ComicRack.Engine.IO.Cache;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
+using cYo.Projects.ComicRack.Plugins.Theme;
 using cYo.Projects.ComicRack.Viewer.Config;
+using cYo.Projects.ComicRack.Viewer.Controls.MainForm;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
-using cYo.Common.Windows.Forms.Theme;
-using cYo.Common.Windows.Forms.Theme.Resources;
-using cYo.Projects.ComicRack.Plugins.Theme;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
@@ -916,7 +917,9 @@ namespace cYo.Projects.ComicRack.Viewer
 			}
 			NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);
 			MainForm = new MainForm();
-			MainForm.FormClosed += MainFormFormClosed;
+            MainController controller = new(MainForm);
+            MainForm.SetController(controller);
+            MainForm.FormClosed += MainFormFormClosed;
 			MainForm.FormClosing += (object s, FormClosingEventArgs e) =>
             {
                 bool flag2 = e.CloseReason == CloseReason.UserClosing;
@@ -959,7 +962,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			{
 				MainForm.ShowNews(always: false);
 			}
-			Application.Run(MainForm);
+            Application.Run(MainForm);
 		}
 
 		public static Dictionary<string, ImagePackage> CreateGenericsIcons(IEnumerable<string> folders, string searchPattern, string trigger, Func<string, IEnumerable<string>> mapKeys = null)

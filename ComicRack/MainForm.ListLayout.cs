@@ -17,35 +17,10 @@ namespace cYo.Projects.ComicRack.Viewer;
 public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
 {
     private void UpdateListConfigMenus()
-    {
-        UpdateListConfigMenus(miListLayouts.DropDownItems);
-    }
+        => MainController.Commands.UpdateListConfigMenus();
 
     public void UpdateListConfigMenus(ToolStripItemCollection items)
-    {
-        items.RemoveAll((ToolStripItem c) => c.Tag is ListConfiguration);
-        ToolStripSeparator toolStripSeparator = items.OfType<ToolStripSeparator>().LastOrDefault();
-        if (toolStripSeparator != null)
-        {
-            toolStripSeparator.Visible = Program.Settings.ListConfigurations.Count > 0;
-        }
-        int num = 0;
-        TR tR = TR.Load(base.Name);
-        foreach (ListConfiguration listConfiguration in Program.Settings.ListConfigurations)
-        {
-            ListConfiguration itemCfg = listConfiguration;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(StringUtility.Format(tR["SetLayoutMenu", "Set '{0}' Layout"], FormUtility.FixAmpersand(listConfiguration.Name)), null, delegate
-            {
-                SetListLayout(itemCfg.Config);
-            });
-            toolStripMenuItem.Tag = itemCfg;
-            if (num < 6)
-            {
-                toolStripMenuItem.ShortcutKeys = (Keys)(0x50000 | (117 + num++));
-            }
-            items.Add(toolStripMenuItem);
-        }
-    }
+        => MainController.Commands.UpdateListConfigMenus(items);
 
     public void SetListLayout(DisplayListConfig cfg)
     {

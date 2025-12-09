@@ -8,7 +8,7 @@ namespace cYo.Projects.ComicRack.Viewer;
 
 public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
 {
-    private BookmarkEditorWrapper GetBookmarkEditor()
+    public BookmarkEditorWrapper GetBookmarkEditor()
     {
         return new BookmarkEditorWrapper(FormUtility.FindActiveService<IEditBookmark>());
     }

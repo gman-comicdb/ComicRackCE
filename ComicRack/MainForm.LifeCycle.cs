@@ -121,6 +121,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             readerForm.Dispose();
             readerForm = null;
         }
+        if (menu != null) { menu.Dispose(); menu = null; }
+        if (controller != null) { controller = null; }
     }
 
     protected override void OnLayout(LayoutEventArgs levent)
@@ -179,7 +181,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     }
 
     #region Helpers [Commands, so can be manually triggered]
-    private async Task CheckForUpdateAsync(bool alwaysCheck = false)
+    public async Task CheckForUpdateAsync(bool alwaysCheck = false)
     {
         bool doNotCheckForUpdate = Program.Settings.HiddenMessageBoxes.HasFlag(HiddenMessageBoxes.DoNotCheckForUpdate);
 
@@ -264,7 +266,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ShowMainMenuNoComicOpen = Program.Settings.ShowMainMenuNoComicOpen;
         quickOpenView.ThumbnailSize = Program.Settings.QuickOpenThumbnailSize;
         ComicBookNavigator.TrackCurrentPage = Program.Settings.TrackCurrentPage;
-        tsCurrentPage.Image = (ComicBookNavigator.TrackCurrentPage ? null : Resources.Locked);
+        menu.UpdateCurrentPageImage();
         CoverViewItem.ThumbnailSizing = (Program.Settings.CoverThumbnailsSameSize ? CoverThumbnailSizing.Fit : CoverThumbnailSizing.None);
         ComicBook.NewBooksChecked = Program.Settings.NewBooksChecked;
         DeviceSyncFactory.SetExtraWifiDeviceAddresses(EngineConfiguration.Default.ExtraWifiDeviceAddresses + "," + Program.Settings.ExtraWifiDeviceAddresses);
@@ -272,23 +274,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     #endregion
 
     #region Helpers [only called by LifeCycle methods]
-    private void InitializePluginHelp()
-    {
-        IEnumerable<PackageManager.Package> enumerable = from p in Program.ScriptPackages.GetPackages()
-                                                         where !string.IsNullOrEmpty(p.HelpLink)
-                                                         select p;
-        miHelpPlugins.Visible = enumerable.Count() > 0;
-        foreach (PackageManager.Package p2 in enumerable)
-        {
-            miHelpPlugins.DropDownItems.Add(p2.Name, p2.Image, delegate
-            {
-                Program.StartDocument(p2.HelpLink, p2.PackagePath);
-            });
-        }
-    }
-
-    
-
     private void UpdateSafeBounds()
     {
         if (base.IsHandleCreated && base.WindowState == FormWindowState.Normal && base.FormBorderStyle != 0)

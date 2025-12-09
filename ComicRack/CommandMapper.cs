@@ -150,24 +150,16 @@ namespace cYo.Projects.ComicRack.Viewer
 		public void Add(CommandHandler clickHandler, bool isCheckedHandler, UpdateHandler updateHandler, params object[] senders)
 		{
 			if (isCheckedHandler)
-			{
 				Add(clickHandler, null, updateHandler, senders);
-			}
 			else
-			{
 				Add(clickHandler, updateHandler, null, senders);
-			}
 		}
 
 		public void Add(CommandHandler clickHandler, UpdateHandler enableHandler, params object[] senders)
-		{
-			Add(clickHandler, enableHandler, null, senders);
-		}
+			=> Add(clickHandler, enableHandler, null, senders);
 
 		public void Add(CommandHandler ch, params object[] senders)
-		{
-			Add(ch, null, senders);
-		}
+			=> Add(ch, null, senders);
 
 		public bool Handle(object sender)
 		{

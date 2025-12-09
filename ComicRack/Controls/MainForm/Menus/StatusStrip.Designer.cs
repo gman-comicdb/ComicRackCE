@@ -101,7 +101,6 @@ partial class StatusStrip
         this.tsDeviceSyncActivity.Size = new System.Drawing.Size(20, 19);
         this.tsDeviceSyncActivity.Text = "Exporting";
         this.tsDeviceSyncActivity.Visible = false;
-        this.tsDeviceSyncActivity.Click += new System.EventHandler(this.tsDeviceSyncActivity_Click);
         // 
         // tsExportActivity
         // 
@@ -115,7 +114,6 @@ partial class StatusStrip
         this.tsExportActivity.Size = new System.Drawing.Size(20, 19);
         this.tsExportActivity.Text = "Exporting";
         this.tsExportActivity.Visible = false;
-        this.tsExportActivity.Click += new System.EventHandler(this.tsExportActivity_Click);
         // 
         // tsReadInfoActivity
         // 
@@ -129,7 +127,6 @@ partial class StatusStrip
         this.tsReadInfoActivity.Size = new System.Drawing.Size(20, 19);
         this.tsReadInfoActivity.ToolTipText = "Reading info data from files...";
         this.tsReadInfoActivity.Visible = false;
-        this.tsReadInfoActivity.Click += new System.EventHandler(this.tsReadInfoActivity_Click);
         // 
         // tsWriteInfoActivity
         // 
@@ -143,7 +140,6 @@ partial class StatusStrip
         this.tsWriteInfoActivity.Size = new System.Drawing.Size(20, 19);
         this.tsWriteInfoActivity.ToolTipText = "Writing info data to files...";
         this.tsWriteInfoActivity.Visible = false;
-        this.tsWriteInfoActivity.Click += new System.EventHandler(this.tsUpdateInfoActivity_Click);
         // 
         // tsPageActivity
         // 
@@ -156,7 +152,6 @@ partial class StatusStrip
         this.tsPageActivity.Size = new System.Drawing.Size(20, 19);
         this.tsPageActivity.ToolTipText = "Getting Pages and Thumbnails...";
         this.tsPageActivity.Visible = false;
-        this.tsPageActivity.Click += new System.EventHandler(this.tsPageActivity_Click);
         // 
         // tsScanActivity
         // 
@@ -170,7 +165,6 @@ partial class StatusStrip
         this.tsScanActivity.Size = new System.Drawing.Size(20, 19);
         this.tsScanActivity.ToolTipText = "A scan is running...";
         this.tsScanActivity.Visible = false;
-        this.tsScanActivity.Click += new System.EventHandler(this.tsScanActivity_Click);
         // 
         // tsDataSourceState
         // 
@@ -204,7 +198,6 @@ partial class StatusStrip
         this.tsCurrentPage.Size = new System.Drawing.Size(37, 19);
         this.tsCurrentPage.Text = "Page";
         this.tsCurrentPage.ToolTipText = "Current Page of the open Book";
-        this.tsCurrentPage.Click += new System.EventHandler(this.tsCurrentPage_Click);
         // 
         // tsPageCount
         // 
@@ -224,7 +217,7 @@ partial class StatusStrip
         this.tsServerActivity.Name = "tsServerActivity";
         this.tsServerActivity.Size = new System.Drawing.Size(16, 19);
         this.tsServerActivity.Visible = false;
-        this.tsServerActivity.Click += new System.EventHandler(this.tsServerActivity_Click);
+        this.tsServerActivity.Tag = 1;
 
         //
         // HelpMenu

@@ -1,7 +1,10 @@
 ﻿using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Display;
+using cYo.Projects.ComicRack.Engine.Controls;
+using cYo.Projects.ComicRack.Viewer.Properties;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -9,38 +12,82 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class PageContextMenu : UserControl
 {
-    public ContextMenuStrip Item;
+    private MainController controller;
+
+    private EnumMenuUtility pageType;
+
+    private EnumMenuUtility pageRotation;
 
     public PageContextMenu()
     {
+        //this.controller = controller;
         InitializeComponent();
-        Item = pageContextMenuItem;
     }
 
-    public static implicit operator ContextMenuStrip(PageContextMenu menu)
-        => menu.Item;
-
-    private void pageContextMenu_Opening(object sender, CancelEventArgs e)
+    public void SetController(MainController controller)
     {
+        this.controller = controller;
+        pageContextMenuItem.Closed += OnContextMenuClosed;
+        pageContextMenuItem.Opening += OnContextMenuOpening;
+        cmBookmarks.DropDownOpening += MainController.EventHandlers.OnPageContextMenuBookmarksDropDownOpening;
+
+        pageType = controller.GetPageType(cmPageType);
+        pageRotation = controller.GetPageRotation(cmPageRotate);
+
+        pageType.ValueChanged += MainController.EventHandlers.OnPageTypeChanged;
+        pageRotation.ValueChanged += MainController.EventHandlers.OnPageRotationChanged;
+
+        contextRating.Items.Insert(contextRating.Items.Count - 2, new ToolStripSeparator());
+        RatingControl.InsertRatingControl(
+            contextRating,
+            contextRating.Items.Count - 2,
+            Resources.StarYellow,
+            controller.GetRatingEditor);
+        contextRating.Renderer = new MenuRenderer(Resources.StarYellow);
+    }
+
+    //protected override void OnLoad(EventArgs e)
+    //{
+    //    base.OnLoad(e);
+
+    //    pageType = controller.GetPageType(cmPageType);
+    //    pageRotation = controller.GetPageRotation(cmPageRotate);
+
+    //    pageType.ValueChanged += MainController.EventHandlers.OnPageTypeChanged;
+    //    pageRotation.ValueChanged += MainController.EventHandlers.OnPageRotationChanged;
+
+    //    contextRating.Items.Insert(contextRating.Items.Count - 2, new ToolStripSeparator());
+    //    RatingControl.InsertRatingControl(
+    //        contextRating,
+    //        contextRating.Items.Count - 2,
+    //        Resources.StarYellow,
+    //        controller.GetRatingEditor);
+    //    contextRating.Renderer = new MenuRenderer(Resources.StarYellow);
+    //}
+
+    public static implicit operator ContextMenuStrip(PageContextMenu menu)
+        => menu.pageContextMenuItem;
+
+    public void OnContextMenuOpening(object sender, CancelEventArgs e)
+    {
+        tsSeparatorComics.Visible = controller.OpenNow.Count() > 0;
         try
         {
-            if (ComicDisplay == null)
+            if (controller.ComicDisplay == null)
             {
                 e.Cancel = true;
                 return;
             }
-            if (ComicDisplay.SupressContextMenu)
+            if (controller.ComicDisplay.SupressContextMenu)
             {
-                ComicDisplay.SupressContextMenu = false;
+                controller.ComicDisplay.SupressContextMenu = false;
                 e.Cancel = true;
                 return;
             }
-            IEditPage pageEditor = GetPageEditor();
-            EnumMenuUtility enumMenuUtility = pageTypeContextMenu;
-            bool enabled = (pageRotationContextMenu.Enabled = pageEditor.IsValid);
-            enumMenuUtility.Enabled = enabled;
-            pageTypeContextMenu.Value = (int)pageEditor.PageType;
-            pageRotationContextMenu.Value = (int)pageEditor.Rotation;
+            IEditPage pageEditor = controller.GetPageEditor();
+            pageType.Enabled = pageEditor.IsValid;
+            pageType.Value = (int)pageEditor.PageType;
+            pageRotation.Value = (int)pageEditor.Rotation;
         }
         catch
         {
@@ -48,13 +95,23 @@ public partial class PageContextMenu : UserControl
         }
     }
 
-    private void pageContextMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+    public void OnContextMenuClosed(object sender, ToolStripDropDownClosedEventArgs e)
     {
-        StartMouseDisabledTimer();
+        MainController.Commands.StartMouseDisabledTimer();
     }
 
-    private void cmBookmarks_DropDownOpening(object sender, EventArgs e)
+    public void ClearComics()
     {
-        UpdateBookmarkMenu(cmBookmarks.DropDownItems, 0);
+        FormUtility.SafeToolStripClear(cmComics.DropDownItems, cmComics.DropDownItems.IndexOf(tsSeparatorComics) + 1);
+    }
+
+    public void AddComic(ToolStripMenuItem item)
+    {
+        cmComics.DropDownItems.Add(item);
+    }
+
+    public void UpdateMenu()
+    {
+        cmMagnify.Image = controller.ComicDisplay.MagnifierVisible ? Resources.Zoom : Resources.ZoomClear;
     }
 }

@@ -38,7 +38,7 @@ partial class TabContextMenu
         this.cmCloseAllToTheRight = new System.Windows.Forms.ToolStripMenuItem();
         this.tsSeparator1 = new System.Windows.Forms.ToolStripSeparator();
         this.cmSyncBrowser = new System.Windows.Forms.ToolStripMenuItem();
-        this.tsSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+        this.tsSeparatorReveal = new System.Windows.Forms.ToolStripSeparator();
         this.cmRevealInExplorer = new System.Windows.Forms.ToolStripMenuItem();
         this.cmCopyPath = new System.Windows.Forms.ToolStripMenuItem();
         this.SuspendLayout();
@@ -52,12 +52,11 @@ partial class TabContextMenu
         this.cmCloseAllToTheRight,
         this.tsSeparator1,
         this.cmSyncBrowser,
-        this.tsSeparator2,
+        this.tsSeparatorReveal,
         this.cmRevealInExplorer,
         this.cmCopyPath});
         this.tabContextMenuItem.Name = "tabContextMenu";
         this.tabContextMenuItem.Size = new System.Drawing.Size(221, 148);
-        this.tabContextMenuItem.Opening += new System.ComponentModel.CancelEventHandler(this.tabContextMenu_Opening);
         // 
         // cmClose
         // 
@@ -92,8 +91,8 @@ partial class TabContextMenu
         // 
         // tsSeparator2
         // 
-        this.tsSeparator2.Name = "sepBeforeRevealInBrowser";
-        this.tsSeparator2.Size = new System.Drawing.Size(217, 6);
+        this.tsSeparatorReveal.Name = "tsSeparatorReveal";
+        this.tsSeparatorReveal.Size = new System.Drawing.Size(217, 6);
         // 
         // cmRevealInExplorer
         // 
@@ -124,7 +123,7 @@ partial class TabContextMenu
     private ToolStripMenuItem cmCloseAllButThis;
     private ToolStripSeparator tsSeparator1;
     private ToolStripMenuItem cmSyncBrowser;
-    private ToolStripSeparator tsSeparator2;
+    private ToolStripSeparator tsSeparatorReveal;
     private ToolStripMenuItem cmCloseAllToTheRight;
     private ToolStripMenuItem cmRevealInExplorer;
     private ToolStripMenuItem cmCopyPath;
