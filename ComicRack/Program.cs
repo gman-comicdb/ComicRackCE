@@ -1064,7 +1064,11 @@ namespace cYo.Projects.ComicRack.Viewer
 			ExtendedSettings sw = default(ExtendedSettings);
 			MainForm.BeginInvoke(delegate
 			{
-				MainForm.RestoreToFront();
+                // Work-around for modern Windows preventing background application windows from stealing focus.
+                // Windows 10 is an arbitrary cut-off; this may affect earlier Windows versions post-XP
+                if (OsVersionEx.IsWindows10_1507OrGreater() && (MainForm.WindowState == FormWindowState.Normal || MainForm.WindowState == FormWindowState.Maximized))
+                    MainForm.WindowState = FormWindowState.Minimized;
+                MainForm.RestoreToFront();
 				try
 				{
 					sw = new ExtendedSettings();
