@@ -10,6 +10,7 @@ using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Threading;
+using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
@@ -161,6 +162,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			tsbLibrary.CaptionClick += tab_CaptionClick;
 			tsbFolders.CaptionClick += tab_CaptionClick;
 			tsbPages.CaptionClick += tab_CaptionClick;
+			tabStrip.MouseDown += MouseDragEventHandler.OnMouseDown;
 			LocalizeUtility.Localize(this, components);
 		}
 

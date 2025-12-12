@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using cYo.Common.Localize;
+using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Display;
@@ -43,8 +44,23 @@ namespace cYo.Projects.ComicRack.Viewer
 			LocalizeUtility.Localize(this, components);
 		}
 
+        private bool hideTitleBar = false;
 
-		protected override void OnResizeEnd(EventArgs e)
+        public bool HideTitleBar
+        {
+            get => hideTitleBar;
+            set
+            {
+                hideTitleBar = value;
+                if (!ComicDisplay.FullScreen)
+                    if (value)
+                        this.RemoveTitleBar();
+                    else
+                        this.ShowTitleBar();
+            }
+        }
+
+        protected override void OnResizeEnd(EventArgs e)
 		{
 			base.OnResizeEnd(e);
 			UpdateSafeBounds();
@@ -75,7 +91,5 @@ namespace cYo.Projects.ComicRack.Viewer
 				safeBounds = base.Bounds;
 			}
 		}
-
-
 	}
 }

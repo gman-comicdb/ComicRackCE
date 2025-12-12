@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.Runtime;
+using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
@@ -1135,7 +1136,8 @@ namespace cYo.Projects.ComicRack.Engine.Display
 			{
 				control.KeyDown += display_KeyDown;
 				control.MouseDown += display_MouseDown;
-				control.KeyUp += control_KeyUp;
+                control.MouseDown += MouseDragEventHandler.OnMouseDown;
+                control.KeyUp += control_KeyUp;
 				control.MouseWheel += display_MouseWheel;
 			}
 			IMouseHWheel mouseHWheel = display as IMouseHWheel;
@@ -1163,7 +1165,8 @@ namespace cYo.Projects.ComicRack.Engine.Display
 				{
 					control.KeyDown -= display_KeyDown;
 					control.MouseDown -= display_MouseDown;
-					control.KeyUp -= control_KeyUp;
+					control.MouseDown -= MouseDragEventHandler.OnMouseDown;
+                    control.KeyUp -= control_KeyUp;
 					control.MouseWheel -= display_MouseWheel;
 				}
 				IMouseHWheel mouseHWheel = display as IMouseHWheel;

@@ -3577,7 +3577,8 @@ namespace cYo.Projects.ComicRack.Viewer
 			cmComicsSep.Visible = miOpenNow.DropDownItems.Count > 0;
 			if (ReaderUndocked)
 			{
-				fileTabsVisibility.Visible = flag;
+				readerForm.HideTitleBar = MinimalGui;
+                fileTabsVisibility.Visible = flag;
 				fileTabs.TopPadding = 2;
 				mainView.TabBar.TopPadding = 6;
 				mainView.TabBar.BottomPadding = 0;
