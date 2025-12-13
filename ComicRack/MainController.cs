@@ -27,9 +27,11 @@ using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Config;
+using cYo.Projects.ComicRack.Viewer.Controllers;
 using cYo.Projects.ComicRack.Viewer.Controls;
 using cYo.Projects.ComicRack.Viewer.Controls.MainForm;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
+using cYo.Projects.ComicRack.Viewer.Manager;
 using cYo.Projects.ComicRack.Viewer.Menus;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using cYo.Projects.ComicRack.Viewer.Views;
@@ -42,12 +44,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Contexts;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static cYo.Projects.ComicRack.Viewer.MainForm;
-using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
+using System.Windows.Input;
+using CommandMapper = cYo.Projects.ComicRack.Viewer.Controllers.CommandMapper;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
@@ -57,40 +56,33 @@ public class MainController : IDisposable
     //private readonly ViewManager views;
     //private readonly ImagePool imagePool;
     //private readonly NetworkManager network;
-    private readonly MainForm main;
+    // TODO : replace with interface
+    private static MainForm MainForm => Program.MainForm;
+
+    //private static ComicDisplay ComicDisplay => MainForm.ComicDisplay;
 
     private MainMenuControl menu;
 
-    public async Task CheckForUpdateAsync(bool alwaysCheck = false)
-        => main.CheckForUpdateAsync(alwaysCheck);
-
     #region Moved from MainForm
-    public string[] RecentFiles = [];
+    public static string[] RecentFiles = [];
 
     private readonly CommandMapper commands = new CommandMapper();
     #endregion
 
     #region Exposing MainForm properties
-    public ComicDisplay ComicDisplay => main.ComicDisplay;
-    public NavigatorManager OpenBooks => main.OpenBooks;
+    public static ComicDisplay ComicDisplay => MainForm.ComicDisplay;
 
-    public IEditPage GetPageEditor() => main.GetPageEditor();
-    public IEditRating GetRatingEditor() => main.GetRatingEditor();
+    public static IEditPage GetPageEditor() => MainForm.GetPageEditor();
 
-    private BookmarkEditorWrapper GetBookmarkEditor() => main.GetBookmarkEditor();
+    public static IEditRating GetRatingEditor() => MainForm.GetRatingEditor();
+
+    private static IEditBookmark GetBookmarkEditor() => MainForm.GetBookmarkEditor();
     #endregion
 
     #region MenuControl
     public IEnumerable<ToolStripMenuItem> OpenNow => menu.OpenNow;
     #endregion
 
-    private readonly Dictionary<int, Image> pageRotationImages = new()
-    {
-        [0] = Resources.Rotate0Permanent,
-        [1] = Resources.Rotate90Permanent,
-        [2] = Resources.Rotate180Permanent,
-        [3] = Resources.Rotate270Permanent
-    };
 
     public MainController(
         //LibraryManager library,
@@ -103,9 +95,15 @@ public class MainController : IDisposable
         //this.views = views;
         //this.imagePool = imagePool;
         //this.network = network;
-        this.main = mainForm;
+        //MainForm = mainForm;
         EventHandlers.main = mainForm;
         Commands.main = mainForm;
+
+        new Controllers.CommandMapper(
+            typeof(CommandAction),
+            typeof(CommandAvailable),
+            typeof(CommandVisible),
+            typeof(CommandUpdate));
     }
 
     public void SetMenuControl(MainMenuControl menu)
@@ -118,71 +116,21 @@ public class MainController : IDisposable
         Commands.controller = this;
     }
 
-    // this now runs before MainForm.InitializeComponent()
-    public DropDownHost<MagnifySetupControl> GetMagnifierDropDown()
-    {
-        DropDownHost<MagnifySetupControl> dropDownHost = new DropDownHost<MagnifySetupControl>();
-        main.ComicDisplay.MagnifierOpacity = (dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque);
-        main.ComicDisplay.MagnifierSize = (dropDownHost.Control.MagnifySize = Program.Settings.MagnifySize);
-        main.ComicDisplay.MagnifierZoom = (dropDownHost.Control.MagnifyZoom = Program.Settings.MagnifyZoom);
-        main.ComicDisplay.MagnifierStyle = (dropDownHost.Control.MagnifyStyle = Program.Settings.MagnifyStyle);
-        main.ComicDisplay.AutoMagnifier = (dropDownHost.Control.AutoMagnifier = Program.Settings.AutoMagnifier);
-        main.ComicDisplay.AutoHideMagnifier = (dropDownHost.Control.AutoHideMagnifier = Program.Settings.AutoHideMagnifier);
-        dropDownHost.Control.ValuesChanged += OnMagnifierSetupChanged;
-        return dropDownHost;
-    }
-
-    private void OnMagnifierSetupChanged(object sender, EventArgs e)
-    {
-        MagnifySetupControl magnifySetupControl = (MagnifySetupControl)sender;
-        main.ComicDisplay.MagnifierOpacity = magnifySetupControl.MagnifyOpaque;
-        main.ComicDisplay.MagnifierSize = magnifySetupControl.MagnifySize;
-        main.ComicDisplay.MagnifierZoom = magnifySetupControl.MagnifyZoom;
-        main.ComicDisplay.MagnifierStyle = magnifySetupControl.MagnifyStyle;
-        main.ComicDisplay.AutoHideMagnifier = magnifySetupControl.AutoHideMagnifier;
-        main.ComicDisplay.AutoMagnifier = magnifySetupControl.AutoMagnifier;
-    }
-
     #region Main Menu Strip
     public void OnMainMenuStripMenuDeactivate(object sender, EventArgs e)
-        => main.OnMainMenuStripMenuDeactivate(sender, e);
+        => MainForm.OnMainMenuStripMenuDeactivate(sender, e);
     #endregion
 
     #region File Menu
-    public void OnOpenRecent(object sender, EventArgs e)
-    {
-        string text = ((ToolStripMenuItem)sender).Text;
-        int num = Convert.ToInt32(text.Substring(0, 2)) - 1;
-        main.OpenSupportedFile(RecentFiles[num], Program.Settings.OpenInNewTab);
-    }
+    
     #endregion
 
     #region Edit Menu
     public void OnEditMenuBookmarksDropDownOpening(object sender, EventArgs e)
     {
-        main.UpdateBookmarkMenu((sender as ToolStripMenuItem).DropDownItems, 0);
+        MainForm.UpdateBookmarkMenu((sender as ToolStripMenuItem).DropDownItems, 0);
     }
     #endregion
-
-    public EnumMenuUtility GetPageType(ToolStripDropDownItem tsdItem)
-    {
-        return new EnumMenuUtility(
-            tsdItem,
-            typeof(ComicPageType),
-            flagsMode: false,
-            images: null,
-            Keys.A | Keys.Shift | Keys.Alt);
-    }
-
-    public EnumMenuUtility GetPageRotation(ToolStripDropDownItem tsdItem)
-    {
-        return new EnumMenuUtility(
-            tsdItem,
-            typeof(ImageRotation),
-            flagsMode: false,
-            images: pageRotationImages,
-            Keys.D6 | Keys.Shift | Keys.Alt);
-    }
 
     public static class EventHandlers
     {
@@ -195,12 +143,12 @@ public class MainController : IDisposable
         #region Edit Menu + Context Menu
         public static void OnPageTypeChanged(object sender, EventArgs e)
         {
-            controller.GetPageEditor().PageType = (ComicPageType)(sender as EnumMenuUtility).Value;
+            MC.GetPageEditor().PageType = (ComicPageType)(sender as EnumMenuUtility).Value;
         }
 
         public static void OnPageRotationChanged(object sender, EventArgs e)
         {
-            controller.GetPageEditor().Rotation = (ImageRotation)(sender as EnumMenuUtility).Value;
+            MC.GetPageEditor().Rotation = (ImageRotation)(sender as EnumMenuUtility).Value;
         }
         #endregion
 
@@ -269,21 +217,6 @@ public class MainController : IDisposable
 
         public static MainMenuControl menu;
 
-        public static void ToggleUndockReader()
-            => main.ToggleUndockReader();
-
-        public static bool OpenNextComic(int relative)
-            => main.OpenNextComic(relative, OpenComicOptions.None);
-
-        public static bool OpenNextComic()
-            => OpenNextComic(1);
-
-        public static bool OpenPrevComic()
-            => OpenNextComic(-1);
-
-        public static bool OpenRandomComic()
-            => OpenNextComic(0);
-
         public static void ToggleBrowserFromReader()
         {
             if (!Program.ExtendedSettings.MouseSwitchesToFullLibrary && (main.ReaderUndocked || main.ViewDock == DockStyle.Fill))
@@ -292,102 +225,16 @@ public class MainController : IDisposable
                 main.ToggleBrowser(alwaysShow: false);
         }
 
-        public static void ToggleMinimalGui()
-            => main.MinimalGui = !main.MinimalGui;
-
-        public static void ToogleZoom(CommandKey key)
-            => main.ToggleZoom(key);
-
         public static void ShowOpenDialog()
             => main.ShowOpenDialog(menu.ComicTitle);
-
-        public static ComicBook AddNewBook(bool showDialog = true)
-            => main.AddNewBook(showDialog);
-
-        public static void AddFolderToLibrary()
-            => main.AddFolderToLibrary();
-
-        public static void ExportCurrentImage()
-            => main.ExportCurrentImage();
-
-        public static void UpdateComics()
-            => main.UpdateComics();
-
-        public static void GenerateFrontCoverCache()
-        {
-            Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) =>
-            {
-                Program.ImagePool.GenerateFrontCoverThumbnail(cb);
-            });
-        }
-
-        public static void SetBookmark()
-            => main.SetBookmark();
-
-        public static bool SetBookmarkAvailable()
-        {
-            return controller.GetBookmarkEditor().CanBookmark;
-        }
-
-        public static void RemoveBookmark()
-        {
-            controller.GetBookmarkEditor().Bookmark = string.Empty;
-        }
-
-        public static bool RemoveBookmarkAvailable()
-        {
-            return !string.IsNullOrEmpty(controller.GetBookmarkEditor().Bookmark);
-        }
-
-        public static void SyncBrowser()
-            => main.SyncBrowser();
-
-        public static void ShowPendingTasks()
-            => main.ShowPendingTasks();
 
         public static void StartFullScan()
         {
             Program.QueueManager.StartScan(all: true, Program.Settings.RemoveMissingFilesOnFullScan);
         }
 
-        public static void MenuSynchronizeDevices()
-            => main.MenuSynchronizeDevices();
-
-        public static void ShowAboutDialog()
-            => main.ShowAboutDialog();
-
-        public static void ShowInfo()
-            => main.ShowInfo();
-
-        public static void ShowNews()
-            => main.ShowNews(always: true);
-
-        public static void OpenRemoteLibrary()
-            => main.OpenRemoteLibrary();
-
-        public static void UpdateWebComics()
-            => main.UpdateWebComics();
-
-        public static void MenuRestart()
-            => main.MenuRestart();
-
-        public static void MenuClose()
-            => main.MenuClose();
-
         public static void StartMouseDisabledTimer()
             => main.StartMouseDisabledTimer();
-
-        public static void UpdateWorkspaceMenus(ToolStripItemCollection items)
-            => menu.UpdateWorkspaceMenus(items);
-
-        public static void UpdateWorkspaceMenus()
-            => menu.UpdateWorkspaceMenus();
-
-        public static void UpdateListConfigMenus(ToolStripItemCollection items)
-            => menu.UpdateListConfigMenus(items);
-
-        public static void UpdateListConfigMenus()
-            => menu.UpdateListConfigMenus();
 
         public static void SetWorkspace(DisplayWorkspace workspace, bool remember)
             => main.SetWorkspace(workspace, remember);
@@ -395,24 +242,15 @@ public class MainController : IDisposable
         public static void SetListLayout(DisplayListConfig cfg)
             => main.SetListLayout(cfg);
 
-        public static void Add(CommandHandler clickHandler, UpdateHandler enabledHandler, UpdateHandler checkedHandler, params object[] senders)
-            => main.AddCommand(clickHandler, enabledHandler, checkedHandler, senders);
-
-        public static void Add(CommandHandler clickHandler, bool isCheckedHandler, UpdateHandler updateHandler, params object[] senders)
-            => main.AddCommand(clickHandler, isCheckedHandler, updateHandler, senders);
-
-        public static void Add(CommandHandler clickHandler, UpdateHandler enableHandler, params object[] senders)
-            => main.AddCommand(clickHandler, enableHandler, null, senders);
-
-        public static void Add(CommandHandler ch, params object[] senders)
-            => main.AddCommand(ch, null, senders);
+        public static bool AddRemoteLibrary(ShareInformation info, MainView.AddRemoteLibraryOptions options)
+            => main.AddRemoteLibrary(info, options);
     }
 
     public void Dispose()
     {
-        if (main != null)
+        if (MainForm != null)
         {
-            main.Dispose();
+            MainForm.Dispose();
             //main = null;
         }
         if (menu != null)

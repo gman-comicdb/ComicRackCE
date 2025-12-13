@@ -21,7 +21,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     public void AddFolderToLibrary()
     {
@@ -39,16 +39,16 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     public void ExportCurrentImage()
     {
         if (ComicDisplay.Book == null || ComicDisplay.Book.Comic == null)
-        {
             return;
-        }
-        using (Image image = ComicDisplay.CreatePageImage())
-        {
-            if (image != null)
-            {
-                ExportImage(StringUtility.Format("{0} - {1} {2}", ComicDisplay.Book.Comic.Caption, TR.Default["Page", "Page"], ComicDisplay.Book.CurrentPage + 1), image);
-            }
-        }
+
+        using Image image = ComicDisplay.CreatePageImage();
+        if (image != null)
+            ExportImage(
+                StringUtility.Format("{0} - {1} {2}",
+                ComicDisplay.Book.Comic.Caption,
+                TR.Default["Page", "Page"],
+                ComicDisplay.Book.CurrentPage + 1),
+                image);
     }
 
     private void FocusQuickSearch()
@@ -148,9 +148,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     private static string AddExtension(string file, string ext)
     {
         if (!Path.HasExtension(file))
-        {
             return file + ext;
-        }
         return file;
     }
     #endregion

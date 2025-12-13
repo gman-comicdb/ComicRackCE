@@ -35,6 +35,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.pageContextMenuItem = new System.Windows.Forms.ContextMenuStrip(this.components);
 
             this.cmShowInfo = new System.Windows.Forms.ToolStripMenuItem();
+
             this.cmRating = new System.Windows.Forms.ToolStripMenuItem();
             this.contextRating = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmRate0 = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus
             this.cmNextBookmark = new System.Windows.Forms.ToolStripMenuItem();
 
             this.cmLastPageRead = new System.Windows.Forms.ToolStripMenuItem();
-
 
             this.cmComics = new System.Windows.Forms.ToolStripMenuItem();
             this.cmOpenComic = new System.Windows.Forms.ToolStripMenuItem();

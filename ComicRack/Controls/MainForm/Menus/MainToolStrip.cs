@@ -1,30 +1,23 @@
 ﻿using cYo.Common.Localize;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class MainToolStrip : UserControl
 {
-    private MainController controller;
-
     public MainToolStrip()
     {
         //this.controller = controller;
         InitializeComponent();
-    }
-
-    public void SetController(MainController controller)
-    {
-        this.controller = controller;
-
-        tbMagnify.DropDown = controller.GetMagnifierDropDown();
 
         tbPrevPage.DropDownOpening += MainController.EventHandlers.OnToolStripPrevPageDropDownOpening;
         tbNextPage.DropDownOpening += MainController.EventHandlers.OnToolStripNextPageDropDownOpening;
@@ -37,6 +30,12 @@ public partial class MainToolStrip : UserControl
     public static implicit operator ToolStrip(MainToolStrip menu)
         => menu.mainToolStripItem;
 
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+        tbMagnify.DropDown = GetMagnifierDropDown();
+    }
+
     public void OnToolStripToolsDropDownOpening(object sender, EventArgs e)
     {
         tbUpdateWebComics.Visible = Program.Database.Books.FirstOrDefault((ComicBook cb) => cb.IsDynamicSource) != null;
@@ -48,14 +47,11 @@ public partial class MainToolStrip : UserControl
         mainToolStripItem.DefaultDropDownDirection = ToolStripDropDownDirection.Default;
     }
 
-    public void UpdateWorkspaceMenus()
-        => MainController.Commands.UpdateWorkspaceMenus(tsWorkspaces.DropDownItems);
-
     public void OnPageDisplayModeChanged(object sender, EventArgs e)
     {
-        tbZoom.Text = $"{(int)(controller.ComicDisplay.ImageZoom * 100f)}%";
-        tbRotate.Text = TR.Translate(controller.ComicDisplay.ImageRotation);
-        tbRotate.Image = controller.ComicDisplay.ImageAutoRotate ? Resources.AutoRotate : Resources.RotateRight;
+        tbZoom.Text = $"{(int)(MC.ComicDisplay.ImageZoom * 100f)}%";
+        tbRotate.Text = TR.Translate(MC.ComicDisplay.ImageRotation);
+        tbRotate.Image = MC.ComicDisplay.ImageAutoRotate ? Resources.AutoRotate : Resources.RotateRight;
     }
 
     public void UpdateMenu(bool readerButtonsVisible)
@@ -81,21 +77,21 @@ public partial class MainToolStrip : UserControl
     }
 
     #region ToolStrip Helpers
-    private Image GetLayoutImage() => controller.ComicDisplay.PageLayout switch
+    private Image GetLayoutImage() => MC.ComicDisplay.PageLayout switch
     {
         PageLayoutMode.Double
-            => controller.ComicDisplay.RightToLeftReading ? Resources.TwoPageForcedRtl : Resources.TwoPageForced,
+            => MC.ComicDisplay.RightToLeftReading ? Resources.TwoPageForcedRtl : Resources.TwoPageForced,
         PageLayoutMode.DoubleAdaptive
-            => controller.ComicDisplay.RightToLeftReading ? Resources.TwoPageRtl : Resources.TwoPage,
+            => MC.ComicDisplay.RightToLeftReading ? Resources.TwoPageRtl : Resources.TwoPage,
         _
-            => controller.ComicDisplay.RightToLeftReading ? Resources.SinglePageRtl : Resources.SinglePage
+            => MC.ComicDisplay.RightToLeftReading ? Resources.SinglePageRtl : Resources.SinglePage
     };
 
     private Image GetFitModeImage()
     {
         try
         {
-            int imageFitMode = (int)controller.ComicDisplay.ImageFitMode;
+            int imageFitMode = (int)MC.ComicDisplay.ImageFitMode;
             foreach (ToolStripItem dropDownItem in tbFit.DropDownItems)
                 if (dropDownItem.Image != null && imageFitMode-- == 0)
                     return dropDownItem.Image;
@@ -108,4 +104,28 @@ public partial class MainToolStrip : UserControl
     }
     #endregion
 
+    // this now runs before MainForm.InitializeComponent()
+    public static DropDownHost<MagnifySetupControl> GetMagnifierDropDown()
+    {
+        DropDownHost<MagnifySetupControl> dropDownHost = new DropDownHost<MagnifySetupControl>();
+        MC.ComicDisplay.MagnifierOpacity = (dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque);
+        MC.ComicDisplay.MagnifierSize = (dropDownHost.Control.MagnifySize = Program.Settings.MagnifySize);
+        MC.ComicDisplay.MagnifierZoom = (dropDownHost.Control.MagnifyZoom = Program.Settings.MagnifyZoom);
+        MC.ComicDisplay.MagnifierStyle = (dropDownHost.Control.MagnifyStyle = Program.Settings.MagnifyStyle);
+        MC.ComicDisplay.AutoMagnifier = (dropDownHost.Control.AutoMagnifier = Program.Settings.AutoMagnifier);
+        MC.ComicDisplay.AutoHideMagnifier = (dropDownHost.Control.AutoHideMagnifier = Program.Settings.AutoHideMagnifier);
+        dropDownHost.Control.ValuesChanged += OnMagnifierSetupChanged;
+        return dropDownHost;
+    }
+
+    private static void OnMagnifierSetupChanged(object sender, EventArgs e)
+    {
+        MagnifySetupControl magnifySetupControl = (MagnifySetupControl)sender;
+        MC.ComicDisplay.MagnifierOpacity = magnifySetupControl.MagnifyOpaque;
+        MC.ComicDisplay.MagnifierSize = magnifySetupControl.MagnifySize;
+        MC.ComicDisplay.MagnifierZoom = magnifySetupControl.MagnifyZoom;
+        MC.ComicDisplay.MagnifierStyle = magnifySetupControl.MagnifyStyle;
+        MC.ComicDisplay.AutoHideMagnifier = magnifySetupControl.AutoHideMagnifier;
+        MC.ComicDisplay.AutoMagnifier = magnifySetupControl.AutoMagnifier;
+    }
 }

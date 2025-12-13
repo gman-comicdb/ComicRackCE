@@ -7,6 +7,7 @@ using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
+using cYo.Projects.ComicRack.Viewer.Manager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,94 +17,36 @@ using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     #region Properties
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rectangle ScriptOutputBounds
     {
-        get
-        {
-            return ScriptConsole?.SafeBounds ?? Rectangle.Empty;
-        }
+        get => ScriptConsole?.SafeBounds ?? Rectangle.Empty;
         set
         {
-            if (ScriptConsole != null)
-            {
-                if (value.IsEmpty)
-                {
-                    ScriptConsole.StartPosition = FormStartPosition.WindowsDefaultLocation;
-                }
-                else
-                {
+            if (ScriptConsole != null && value.IsEmpty)
+                ScriptConsole.StartPosition = FormStartPosition.WindowsDefaultLocation;
+            else if (!value.IsEmpty)
                     ScriptConsole.SafeBounds = value;
-                }
-            }
         }
     }
     #endregion
 
-    private void EditWorkspaceDisplaySettings()
+    public DisplayWorkspace Workspace
     {
-        DisplayWorkspace ws = new DisplayWorkspace();
-        StoreWorkspace(ws);
-        ComicDisplaySettingsDialog.Show(this, ComicDisplay.IsHardwareRenderer, ws, delegate
+        get
         {
-            SetWorkspaceDisplayOptions(ws);
-        });
-    }
-
-    private DisplayWorkspace CreateNewWorkspace()
-    {
-        DisplayWorkspace displayWorkspace = new DisplayWorkspace();
-        StoreWorkspace(displayWorkspace);
-        displayWorkspace.Name = lastWorkspaceName ?? TR.Default["Workspace", "Workspace"];
-        displayWorkspace.Type = lastWorkspaceType;
-        if (SaveWorkspaceDialog.Show(this, displayWorkspace))
-        {
-            return displayWorkspace;
-        }
-        return null;
-    }
-
-    private void SaveWorkspace()
-    {
-        DisplayWorkspace newWs = CreateNewWorkspace();
-        if (newWs != null)
-        {
-            lastWorkspaceName = newWs.Name;
-            lastWorkspaceType = newWs.Type;
-            int num = Program.Settings.Workspaces.FindIndex((DisplayWorkspace ws) => ws.Name == newWs.Name);
-            if (num != -1)
-            {
-                Program.Settings.Workspaces[num] = newWs;
-                return;
-            }
-            Program.Settings.Workspaces.Add(newWs);
-            UpdateWorkspaceMenus();
+            DisplayWorkspace workspace = new();
+            StoreWorkspace(workspace);
+            return workspace;
         }
     }
 
-    private void EditWorkspace()
-    {
-        if (Program.Settings.Workspaces.Count != 0)
-        {
-            IList<DisplayWorkspace> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Default["Workspaces"], Program.Settings.Workspaces, CreateNewWorkspace, null, (DisplayWorkspace w) =>
-            {
-                SetWorkspace(w, remember: true);
-            });
-            if (list != null)
-            {
-                Program.Settings.Workspaces.Clear();
-                Program.Settings.Workspaces.AddRange(list);
-                UpdateWorkspaceMenus();
-            }
-        }
-    }
-
-    private void UpdateWorkspaceMenus()
-        => MainController.Commands.UpdateWorkspaceMenus();
+    public void StoreWorkspace()
+        => StoreWorkspace(Program.Settings.CurrentWorkspace);
 
     public void SetWorkspace(DisplayWorkspace workspace, bool remember)
     {
@@ -118,8 +61,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             if (remember)
             {
-                lastWorkspaceName = workspace.Name;
-                lastWorkspaceType = workspace.Type;
+                WorkspaceManager.LastWorkspaceName = workspace.Name;
+                WorkspaceManager.LastWorkspaceType = workspace.Type;
             }
             ComicDisplay.FullScreen = false;
             if (workspace.IsWindowLayout)
@@ -153,57 +96,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 PreferencesDialog.SafeSize = workspace.PreferencesOutputSize;
                 Program.ExtendedSettings.StartHidden = false; //Sets it false so it respects normal setting after the first load
             }
-            SetWorkspaceDisplayOptions(workspace);
+            WorkspaceManager.SetWorkspaceDisplayOptions(workspace);
         }
         finally
         {
             ResumeLayout();
             VisibilityAnimator.EnableAnimation = (SizableContainer.EnableAnimation = enableAnimation);
-        }
-    }
-
-    private void SetWorkspaceDisplayOptions(DisplayWorkspace workspace)
-    {
-        if (workspace.IsComicPageLayout)
-        {
-            bool displayChangeAnimation = ComicDisplay.DisplayChangeAnimation;
-            ComicDisplay.DisplayChangeAnimation = false;
-            try
-            {
-                ComicDisplay.PageLayout = workspace.Layout.PageLayout;
-                ComicDisplay.TwoPageNavigation = workspace.Layout.TwoPageAutoScroll;
-                ComicDisplay.RightToLeftReading = workspace.RightToLeftReading;
-                ComicDisplay.ImageFitMode = workspace.Layout.PageDisplayMode;
-                ComicDisplay.ImageFitOnlyIfOversized = workspace.Layout.FitOnlyIfOversized;
-                ComicDisplay.ImageRotation = workspace.Layout.PageImageRotation;
-                ComicDisplay.ImageAutoRotate = workspace.Layout.AutoRotate;
-                try
-                {
-                    ComicDisplay.ImageZoom = workspace.Layout.PageZoom;
-                }
-                catch
-                {
-                    ComicDisplay.DisplayChangeAnimation = displayChangeAnimation;
-                }
-            }
-            finally
-            {
-                ComicDisplay.DisplayChangeAnimation = displayChangeAnimation;
-            }
-        }
-        if (workspace.IsComicPageDisplay)
-        {
-            ComicDisplay.RealisticPages = workspace.DrawRealisticPages;
-            ComicDisplay.BackColor = workspace.BackColor;
-            ComicDisplay.BackgroundTexture = workspace.BackgroundTexture;
-            ComicDisplay.PaperTexture = workspace.PaperTexture;
-            ComicDisplay.PaperTextureStrength = workspace.PaperTextureStrength;
-            ComicDisplay.ImageBackgroundMode = workspace.PageImageBackgroundMode;
-            ComicDisplay.PaperTextureLayout = workspace.PaperTextureLayout;
-            ComicDisplay.BackgroundImageLayout = workspace.BackgroundImageLayout;
-            ComicDisplay.PageTransitionEffect = workspace.PageTransitionEffect;
-            ComicDisplay.PageMargin = workspace.PageMargin;
-            ComicDisplay.PageMarginPercentWidth = workspace.PageMarginPercentWidth;
         }
     }
 
@@ -259,11 +157,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         workspace.ComicBookDialogOutputSize = ComicBookDialog.SafeSize;
     }
 
-    public void StoreWorkspace()
-    {
-        StoreWorkspace(Program.Settings.CurrentWorkspace);
-    }
-
+    // TODO : review if this belongs here or somewhere else, like FormUtility
     private Rectangle GetOnScreenBounds(Rectangle formBounds)
     {
         if (formBounds.IsEmpty)

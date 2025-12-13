@@ -1,5 +1,6 @@
 ﻿using cYo.Common;
 using cYo.Common.Collections;
+using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Runtime;
 using cYo.Common.Text;
@@ -9,6 +10,7 @@ using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Viewer.Config;
+using cYo.Projects.ComicRack.Viewer.Controllers;
 using cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 using System;
 using System.Collections.Generic;
@@ -19,11 +21,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Command = cYo.Projects.ComicRack.Viewer.Controllers.Command;
+using Menu = cYo.Projects.ComicRack.Viewer.Controllers.Menu;
 using StatusStrip = cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus.StatusStrip;
 
 namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm;
 
-public partial class MainMenuControl : UserControl
+public interface IMenuController
+{
+    MenuStrip MenuStrip { get; }
+
+    //ToolStrip ToolStrip { get; }
+
+    //System.Windows.Forms.StatusStrip StatusStrip { get; }
+
+    //void SetController(MainController controller);
+
+    //void InitializeCommands();
+
+    //void InitializeKeyboard();
+
+    //void UpdateMenuStrip();
+}
+
+public partial class MainMenuControl : UserControl, IMenuController
 {
     public MenuStrip MenuStrip { get; }
 
@@ -47,17 +68,14 @@ public partial class MainMenuControl : UserControl
 
     public TabContextMenu TabContextMenu { get; }
 
-    private MainController controller;
+    public static MainController Controller { get; private set; }
 
     #region MenuItem Property Forwarders
     public string ComicTitle => FileMenu.ComicTitle;
     public string TabTitle => FileMenu.TabTitle;
 
     public IEnumerable<ToolStripMenuItem> OpenNow => FileMenu.OpenNow;
-    public IEnumerable<ToolStripMenuItem> Comics => EditMenu.Comics;
-
-    public ToolStripMenuItem NextList => BrowseMenu.NextList;
-    public ToolStripMenuItem PreviousList => BrowseMenu.PreviousList;
+    public IEnumerable<ToolStripMenuItem> Comics => PageContextMenu.Comics;
 
     public ToolStripMenuItem CheckUpdate => HelpMenu.CheckUpdate;
     #endregion
@@ -86,121 +104,76 @@ public partial class MainMenuControl : UserControl
 
     public void SetController(MainController controller)
     {
-        this.controller = controller;
-        FileMenu.SetController(controller);
-        EditMenu.SetController(controller);
-        BrowseMenu.SetController(controller);
-        ReadMenu.SetController(controller);
-        DisplayMenu.SetController(controller);
-        HelpMenu.SetController(controller);
-
-        ToolStrip.SetController(controller);
-        StatusStrip.SetController(controller);
-        PageContextMenu.SetController(controller);
-        TabContextMenu.SetController(controller);
         controller.SetMenuControl(this);
     }
 
     public static implicit operator MenuStrip(MainMenuControl menu)
         => menu.mainMenuStrip;
 
-    public void InitializeCommands()
-    {
-        FileMenu.InitializeCommands();
-        EditMenu.InitializeCommands();
-        ReadMenu.InitializeCommands();
-    }
-
-    public void InitializeKeyboard()
-    {
-        BrowseMenu.InitializeKeyboard();
-        DisplayMenu.InitializeKeyboard();
-        EditMenu.InitializeKeyboard();
-        ReadMenu.InitializeKeyboard();
-    }
-
     public void UpdateMenu(bool readerItemsVisible, string statusText)
     {
-        DisplayMenu.UpdateMenu();
         PageContextMenu.UpdateMenu();
         StatusStrip.UpdateMenu(statusText);
         ToolStrip.UpdateMenu(readerItemsVisible);
     }
 
-    public void UpdateWorkspaceMenus(ToolStripItemCollection items)
+    public static void InitializeMenuState(ToolStripMenuItem menu)
     {
-        ToolStripSeparator toolStripSeparator = null;
-        for (int num = items.Count - 1; num > 0; num--)
+        foreach (ToolStripItem item in menu.DropDownItems)
         {
-            if (items[num] is ToolStripSeparator)
-            {
-                toolStripSeparator = items[num] as ToolStripSeparator;
-                break;
-            }
-            items.RemoveAt(num);
-        }
-        if (toolStripSeparator != null)
-        {
-            toolStripSeparator.Visible = Program.Settings.Workspaces.Count > 0;
-        }
-        int num2 = 0;
-        foreach (DisplayWorkspace workspace in Program.Settings.Workspaces)
-        {
-            DisplayWorkspace itemWs = workspace;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(FormUtility.FixAmpersand(workspace.Name), null, delegate
-            {
-                MainController.Commands.SetWorkspace(CloneUtility.Clone(itemWs), remember: true);
-            });
-            if (num2 < 6)
-            {
-                toolStripMenuItem.ShortcutKeys = (Keys)(0x50000 | (112 + num2++));
-            }
-            items.Add(toolStripMenuItem);
+            if (item.Tag is Command command)
+                if (command.EventHandler != null)
+                    item.Click += command.EventHandler;
+                else
+                    item.Click += (_, _) => command.Action();
         }
     }
 
-    public void UpdateListConfigMenus(ToolStripItemCollection items)
+    public static void UpdateMenuState(ToolStripMenuItem menu)
     {
-        items.RemoveAll((ToolStripItem c) => c.Tag is ListConfiguration);
-        ToolStripSeparator toolStripSeparator = items.OfType<ToolStripSeparator>().LastOrDefault();
-        if (toolStripSeparator != null)
+        foreach (ToolStripItem item in menu.DropDownItems)
         {
-            toolStripSeparator.Visible = Program.Settings.ListConfigurations.Count > 0;
-        }
-        int num = 0;
-        TR tR = TR.Load(base.Name);
-        foreach (ListConfiguration listConfiguration in Program.Settings.ListConfigurations)
-        {
-            ListConfiguration itemCfg = listConfiguration;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(StringUtility.Format(tR["SetLayoutMenu", "Set '{0}' Layout"], FormUtility.FixAmpersand(listConfiguration.Name)), null, delegate
+            if (item.Tag is Command command)
             {
-                MainController.Commands.SetListLayout(itemCfg.Config);
-            });
-            toolStripMenuItem.Tag = itemCfg;
-            if (num < 6)
-            {
-                toolStripMenuItem.ShortcutKeys = (Keys)(0x50000 | (117 + num++));
+                item.Enabled = command.CanExecute();
+                item.Visible = command.Show();
+
+                command.UpdateHandler?.Invoke(item);
             }
-            items.Add(toolStripMenuItem);
         }
+    }
+
+    public static void OnToolStripMenuDropDownOpening(object sender, EventArgs e)
+        => UpdateMenuState((ToolStripMenuItem)sender);
+    
+
+    public static EnumMenuUtility GetPageType(ToolStripDropDownItem tsItem)
+    {
+        return new EnumMenuUtility(
+            tsItem,
+            typeof(ComicPageType),
+            flagsMode: false,
+            images: null,
+            Keys.A | Keys.Shift | Keys.Alt);
+    }
+
+    public static EnumMenuUtility GetPageRotation(ToolStripDropDownItem tsItem)
+    {
+        return new EnumMenuUtility(
+            tsItem,
+            typeof(ImageRotation),
+            flagsMode: false,
+            images: CommandIcons.PageRotationImages,
+            Keys.D6 | Keys.Shift | Keys.Alt);
     }
 
     #region MenuItem Method Forwarders
-    public void UpdateWorkspaceMenus()
-    {
-        BrowseMenu.UpdateWorkspaceMenus();
-        ToolStrip.UpdateWorkspaceMenus();
-    }
 
     public void ClearComicsList()
     {
         FileMenu.ClearOpenNow();
         PageContextMenu.ClearComics();
     }
-
-    // BrowseMenu
-    public void UpdateListConfigMenus()
-        => BrowseMenu.UpdateWorkspaceMenus();
 
     // FileMenu
     public void CreatePluginMenuItems()

@@ -22,7 +22,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 namespace cYo.Projects.ComicRack.Viewer;
 
 // either has ComicBook parameter or returns ComicBook
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     public ComicBook GetBook(string file)
     {

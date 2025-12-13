@@ -28,7 +28,7 @@ using cYo.Projects.ComicRack.Viewer.Views;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     private void SettingsChanged(object sender, EventArgs e)
     {
@@ -42,7 +42,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             e.Book.OpenedTime = DateTime.Now;
         }
         e.Book.NewPages = 0;
-        controller.RecentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
+        MC.RecentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
         if (e.Book.EditMode.IsLocalComic())
         {
             Win7.UpdateRecent(e.Book.FilePath);
@@ -394,88 +394,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    private void backgroundSaveTimer_Tick(object sender, EventArgs e)
-    {
-        Program.DatabaseManager.SaveInBackground();
-    }
-
-    private void tsExportActivity_Click(object sender, EventArgs e)
-    {
-        if (Program.QueueManager.ExportErrors.Count != 0)
-        {
-            ShowErrorsDialog.ShowErrors(this, Program.QueueManager.ExportErrors, ShowErrorsDialog.ComicExporterConverter);
-        }
-        else
-        {
-            ShowPendingTasks();
-        }
-    }
-
-    private void tsDeviceSyncActivity_Click(object sender, EventArgs e)
-    {
-        if (Program.QueueManager.DeviceSyncErrors.Count != 0)
-        {
-            ShowErrorsDialog.ShowErrors(this, Program.QueueManager.DeviceSyncErrors, ShowErrorsDialog.DeviceSyncErrorConverter);
-        }
-        else
-        {
-            ShowPendingTasks();
-        }
-    }
-
-    private void tsPageActivity_Click(object sender, EventArgs e)
-    {
-        ShowPendingTasks();
-    }
-
-    private void tsReadInfoActivity_Click(object sender, EventArgs e)
-    {
-        ShowPendingTasks();
-    }
-
-    private void tsUpdateInfoActivity_Click(object sender, EventArgs e)
-    {
-        ShowPendingTasks();
-    }
-
-    private void tsScanActivity_Click(object sender, EventArgs e)
-    {
-        ShowPendingTasks();
-    }
-
-    private void tsServerActivity_Click(object sender, EventArgs e)
-    {
-        ShowPendingTasks(1);
-    }
-
-    private void pageContextMenu_Opening(object sender, CancelEventArgs e)
-    {
-        try
-        {
-            if (ComicDisplay == null)
-            {
-                e.Cancel = true;
-                return;
-            }
-            if (ComicDisplay.SupressContextMenu)
-            {
-                ComicDisplay.SupressContextMenu = false;
-                e.Cancel = true;
-                return;
-            }
-            IEditPage pageEditor = GetPageEditor();
-            EnumMenuUtility enumMenuUtility = pageTypeContextMenu;
-            bool enabled = (pageRotationContextMenu.Enabled = pageEditor.IsValid);
-            enumMenuUtility.Enabled = enabled;
-            pageTypeContextMenu.Value = (int)pageEditor.PageType;
-            pageRotationContextMenu.Value = (int)pageEditor.Rotation;
-        }
-        catch
-        {
-            e.Cancel = true;
-        }
-    }
-
     private void mainViewContainer_ExpandedChanged(object sender, EventArgs e)
     {
         OnGuiVisibilities();
@@ -637,26 +555,20 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     private void QuickOpenVisibleChanged(object sender, EventArgs e)
     {
         if (quickOpenView.Visible)
-        {
             quickListDirty = true;
-        }
     }
 
     private void QuickOpenBookActivated(object sender, EventArgs e)
     {
         ComicBook selectedBook = quickOpenView.SelectedBook;
         if (selectedBook != null)
-        {
             OpenBooks.Open(selectedBook, inNewSlot: false);
-        }
     }
 
     private void QuickOpenBooksChanged(object sender, SmartListChangedEventArgs<ComicBook> e)
     {
         if (e.Action == SmartListAction.Remove)
-        {
             quickListDirty = true;
-        }
     }
 
     private void quickOpenView_ShowBrowser(object sender, EventArgs e)

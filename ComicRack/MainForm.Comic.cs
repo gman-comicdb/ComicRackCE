@@ -7,13 +7,11 @@ using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display;
-using cYo.Projects.ComicRack.Plugins;
-using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Views;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     public void UpdateWebComics(bool refresh = false)
     {

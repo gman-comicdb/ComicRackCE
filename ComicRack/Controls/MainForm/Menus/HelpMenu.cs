@@ -1,34 +1,68 @@
-﻿using cYo.Projects.ComicRack.Engine;
+﻿using cYo.Common.Collections;
+using cYo.Projects.ComicRack.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using static cYo.Projects.ComicRack.Viewer.MainController;
+using Command = cYo.Projects.ComicRack.Viewer.Controllers.Command;
+using Menu = cYo.Projects.ComicRack.Viewer.Controllers.Menu;
 
 namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class HelpMenu : UserControl
 {
-    private MainController controller;
-
     public ToolStripMenuItem CheckUpdate => miCheckUpdate;
+
+    private static readonly Command Separator = Command.None;
+
+    public IList<Command> Commands =
+    [
+        Command.Help,
+        Command.WebHelp,
+        Separator,
+        Command.Plugins,
+        Separator,
+        Command.ChooseHelp,
+        Separator,
+        Command.QuickIntro,
+        Separator,
+        Command.WebHomepage,
+        Command.WebUserForum,
+        Separator,
+        Command.ShowNews,
+        Command.CheckUpdate,
+        Separator,
+        Command.ShowAbout
+    ];
 
     public HelpMenu()
     {
-        //this.controller = controller;
+        Commands.ForEach(cmd => cmd.Menu = Menu.File);
         InitializeComponent();
-    }
+        BindCommands();
+        MainMenuControl.InitializeMenuState(this);
 
-    public void SetController(MainController controller)
-    {
-        this.controller = controller;
         InitializeHelp(Program.Settings.HelpSystem);
         Program.Settings.HelpSystemChanged += OnHelpSystemChanged;
         InitializePluginHelp();
     }
 
-    public static implicit operator ToolStripMenuItem(HelpMenu menu)
-        => menu.helpMenuItem;
+    private void BindCommands()
+    {
+        miHelp.Tag = Command.Help;
+        miWebHelp.Tag = Command.WebHelp;
+        miHelpPlugins.Tag = Command.Plugins;
+        miChooseHelpSystem.Tag = Command.ChooseHelp;
+        miHelpQuickIntro.Tag = Command.QuickIntro;
+
+        miWebHome.Tag = Command.WebHomepage;
+        miWebUserForum.Tag = Command.WebUserForum;
+
+        miNews.Tag = Command.ShowNews;
+        miCheckUpdate.Tag = Command.CheckUpdate;
+
+        miAbout.Tag = Command.ShowAbout;
+    }
 
     //protected override void OnLoad(EventArgs e)
     //{
@@ -36,11 +70,6 @@ public partial class HelpMenu : UserControl
     //    Program.Settings.HelpSystemChanged += OnHelpSystemChanged;
     //    InitializePluginHelp();
     //}
-
-    public void InitializeCommands()
-    {
-
-    }
 
     public void InitializeHelp(string helpSystem)
     {
@@ -77,15 +106,15 @@ public partial class HelpMenu : UserControl
 
     public void InitializePluginHelp()
     {
-        IEnumerable<PackageManager.Package> enumerable = from p in Program.ScriptPackages.GetPackages()
-                                                         where !string.IsNullOrEmpty(p.HelpLink)
-                                                         select p;
-        miHelpPlugins.Visible = enumerable.Count() > 0;
-        foreach (PackageManager.Package p2 in enumerable)
+        IEnumerable<PackageManager.Package> packages = from package in Program.ScriptPackages.GetPackages()
+                                                         where !string.IsNullOrEmpty(package.HelpLink)
+                                                         select package;
+        miHelpPlugins.Visible = packages.Count() > 0;
+        foreach (PackageManager.Package package in packages)
         {
-            miHelpPlugins.DropDownItems.Add(p2.Name, p2.Image, delegate
+            miHelpPlugins.DropDownItems.Add(package.Name, package.Image, delegate
             {
-                Program.StartDocument(p2.HelpLink, p2.PackagePath);
+                Program.StartDocument(package.HelpLink, package.PackagePath);
             });
         }
     }
@@ -94,4 +123,6 @@ public partial class HelpMenu : UserControl
     {
         InitializeHelp(Program.Settings.HelpSystem);
     }
+
+    public static implicit operator ToolStripMenuItem(HelpMenu menu) => menu.helpMenuItem;
 }

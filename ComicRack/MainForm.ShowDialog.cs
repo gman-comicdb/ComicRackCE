@@ -19,9 +19,13 @@ using cYo.Projects.ComicRack.Viewer.Views;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
-    // ExportImage - SaveFileDialog
+    public void ShowLibrary() => mainView.ShowLibrary();
+
+    public void ShowFolders() => mainView.ShowFolders();
+
+    public void ShowPages() => mainView.ShowPages();
 
     public void ShowComicInfo(IEnumerable<ComicBook> books)
     {

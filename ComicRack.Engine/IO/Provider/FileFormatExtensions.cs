@@ -1,7 +1,9 @@
+using cYo.Common.Collections;
+using cYo.Common.Localize;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using cYo.Common.Localize;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
@@ -46,7 +48,16 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 			return stringBuilder.ToString();
 		}
 
-		public static IEnumerable<string> GetExtensions(this IEnumerable<FileFormat> formats)
+        public static IEnumerable<FileFormat> IncludeReadingList(this IEnumerable<FileFormat> formats)
+		{
+			return formats.AddLast(
+				new FileFormat(
+					TR.Load("FileFilter")["FormatReadingList", "ComicRack Reading List"],
+					10089, // TODO : replace magic number
+					".cbl"));
+        }
+
+        public static IEnumerable<string> GetExtensions(this IEnumerable<FileFormat> formats)
 		{
 			return formats.SelectMany((FileFormat ff) => ff.Extensions);
 		}

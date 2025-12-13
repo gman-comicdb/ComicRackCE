@@ -11,7 +11,7 @@ using cYo.Projects.ComicRack.Viewer.Views;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     public bool AddRemoteLibrary(ShareInformation info, MainView.AddRemoteLibraryOptions options)
     {

@@ -33,7 +33,7 @@ public partial class FileMenu : UserControl
         components = new System.ComponentModel.Container();
 
         this.menu = new System.Windows.Forms.MenuStrip();
-        this.fileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
         this.miOpenComic = new System.Windows.Forms.ToolStripMenuItem();
         this.miCloseComic = new System.Windows.Forms.ToolStripMenuItem();
         this.miCloseAllComics = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,7 +64,7 @@ public partial class FileMenu : UserControl
         // 
         // fileMenu
         // 
-        this.fileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+        this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
         this.miOpenComic,
         this.miCloseComic,
         this.miCloseAllComics,
@@ -90,10 +90,10 @@ public partial class FileMenu : UserControl
         this.miRestart,
         this.toolStripMenuItem24,
         this.miExit});
-        this.fileMenuItem.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-        this.fileMenuItem.Name = "fileMenu";
-        this.fileMenuItem.Size = new System.Drawing.Size(37, 20);
-        this.fileMenuItem.Text = "&File";
+        this.fileMenu.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+        this.fileMenu.Name = "fileMenu";
+        this.fileMenu.Size = new System.Drawing.Size(37, 20);
+        this.fileMenu.Text = "&File";
         
         // 
         // miOpenComic
@@ -275,7 +275,7 @@ public partial class FileMenu : UserControl
         // 
         // menu
         // 
-        this.menu.Items.Add(fileMenuItem);
+        this.menu.Items.Add(fileMenu);
         this.menu.Location = new System.Drawing.Point(0, 0);
         this.menu.Name = "menu";
         this.menu.Size = new System.Drawing.Size(744, 24);
@@ -293,7 +293,7 @@ public partial class FileMenu : UserControl
     }
 
     private MenuStrip menu;
-    private ToolStripMenuItem fileMenuItem;
+    private ToolStripMenuItem fileMenu;
     private ToolStripMenuItem miOpenComic;
     private ToolStripMenuItem miCloseComic;
     private ToolStripMenuItem miCloseAllComics;

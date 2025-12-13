@@ -26,9 +26,11 @@ using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Config;
+using cYo.Projects.ComicRack.Viewer.Controllers;
 using cYo.Projects.ComicRack.Viewer.Controls;
 using cYo.Projects.ComicRack.Viewer.Controls.MainForm;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
+using cYo.Projects.ComicRack.Viewer.Manager;
 using cYo.Projects.ComicRack.Viewer.Menus;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using cYo.Projects.ComicRack.Viewer.Views;
@@ -89,7 +91,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     #endregion
 
     #region string
-    private string lastWorkspaceName;
 
     const string NightlyDownloadLinkEXE = @"https://github.com/maforget/ComicRackCE/releases/download/nightly/ComicRackCESetup_nightly.exe";
     const string NightlyDownloadLinkZIP = @"https://github.com/maforget/ComicRackCE/releases/download/nightly/ComicRackCE_nightly.zip";
@@ -138,8 +139,6 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
 	private List<ComicBook> randomSelectedComics;
 
-	private WorkspaceType lastWorkspaceType = WorkspaceType.Default;
-
 	private ReaderForm readerForm;
 
 	private DockStyle savedBrowserDockStyle;
@@ -154,7 +153,10 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
 	private FormWindowState oldState = FormWindowState.Normal;
 
-	[DefaultValue(null)]
+    [DefaultValue(false)]
+	public bool TaskDialogWindow => taskDialog != null && !taskDialog.IsDisposed;
+
+    [DefaultValue(null)]
 	public ComicDisplay ComicDisplay
 	{
 		get
@@ -469,7 +471,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 		base.Size = base.Size.ScaleDpi();
 		
 		SystemEvents.DisplaySettingsChanging += (_, _) => StoreWorkspace();
-		SystemEvents.DisplaySettingsChanged += (_, _) => SetWorkspaceDisplayOptions(Program.Settings.CurrentWorkspace);
+		SystemEvents.DisplaySettingsChanged += (_, _) => WorkspaceManager.SetWorkspaceDisplayOptions(Program.Settings.CurrentWorkspace);
 
 		notifyIcon.MouseDoubleClick += NotifyIconMouseDoubleClick;
 		FormUtility.EnableRightClickSplitButtons(mainToolStrip.Items);
@@ -546,6 +548,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         return this.FindFirstService<IImportComicList>()?.ImportList(file);
     }
+
+	public bool OpenFile(string file, bool newSlot = false, int page = 0, bool fromShell = false)
+		=> OpenSupportedFile(file, newSlot, page, fromShell);
 
     public bool OpenSupportedFile(string file, bool newSlot = false, int page = 0, bool fromShell = false)
     {

@@ -16,10 +16,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IMain Main
 		{
-			get
-			{
-				return mainForm;
-			}
+			get => mainForm;
 			set
 			{
 				if (mainForm != value)
@@ -35,30 +32,22 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			InitializeComponent();
 		}
 
-		private void Application_Idle(object sender, EventArgs e)
-		{
-			OnIdle();
-		}
+		private void Application_Idle(object sender, EventArgs e) => OnIdle();
 
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
 			if (!base.DesignMode)
-			{
 				IdleProcess.Idle += Application_Idle;
-			}
 		}
 
 		protected virtual void OnIdle()
 		{
 		}
 
-		protected virtual void OnMainFormChanged()
-		{
-			SetMain(base.Controls, Main);
-		}
+		protected virtual void OnMainFormChanged() => SetMain(base.Controls, Main);
 
-		private static void SetMain(ControlCollection cc, IMain main)
+        private static void SetMain(ControlCollection cc, IMain main)
 		{
 			foreach (Control item in cc)
 			{
@@ -75,8 +64,6 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 		}
 
 		protected static void TranslateColumns(IEnumerable<IColumn> itemViewColumnCollection)
-		{
-			ComicListField.TranslateColumns(itemViewColumnCollection);
-		}
+			=> ComicListField.TranslateColumns(itemViewColumnCollection);
 	}
 }

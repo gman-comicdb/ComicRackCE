@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using cYo.Common.Collections;
+﻿using cYo.Common.Collections;
 using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
@@ -21,12 +13,21 @@ using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Plugins.Automation;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Dialogs;
+using cYo.Projects.ComicRack.Viewer.Manager;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using cYo.Projects.ComicRack.Viewer.Views;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     protected override void OnLoad(EventArgs e)
     {
@@ -61,15 +62,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         mainView.Main = this;
         IdleProcess.Idle += Application_Idle;
         Program.Settings.SettingsChanged += SettingsChanged;
-        controller.RecentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
-        menu.InitializeCommands();
+        MC.RecentFiles = Program.Database.GetRecentFiles(Settings.RecentFileCount).ToArray();
         InitializeCommands();
-        menu.InitializeKeyboard();
         InitializeKeyboard();
         UpdateSettings();
-        UpdateWorkspaceMenus();
         SetWorkspace(Program.Settings.GetWorkspace(Program.ExtendedSettings.Workspace) ?? Program.Settings.CurrentWorkspace, remember: false);
-        UpdateListConfigMenus();
         ResumeLayout(performLayout: true);
         IdleProcess.CancelIdle += (object a, CancelEventArgs b) =>
         {
@@ -174,14 +171,14 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         //commands.Add(ComicDisplay.DisplayLastPageRead, () => ComicDisplay.Book != null && ComicDisplay.Book.CurrentPage != ComicDisplay.Book.Comic.LastPageRead, miLastPageRead, tbLastPageRead, cmLastPageRead);
         //commands.Add(OpenBooks.PreviousSlot, () => OpenBooks.Slots.Count > 1, miPrevTab);
         //commands.Add(OpenBooks.NextSlot, () => OpenBooks.Slots.Count > 1, miNextTab);
-        commands.AddService(this, (ILibraryBrowser s) =>
-        {
-            s.BrowseNext();
-        }, (ILibraryBrowser s) => s.CanBrowseNext(), menu.NextList);
-        commands.AddService(this, (ILibraryBrowser s) =>
-        {
-            s.BrowsePrevious();
-        }, (ILibraryBrowser s) => s.CanBrowsePrevious(), menu.PreviousList);
+        //commands.AddService(this, (ILibraryBrowser s) =>
+        //{
+        //    s.BrowseNext();
+        //}, (ILibraryBrowser s) => s.CanBrowseNext(), menu.NextList);
+        //commands.AddService(this, (ILibraryBrowser s) =>
+        //{
+        //    s.BrowsePrevious();
+        //}, (ILibraryBrowser s) => s.CanBrowsePrevious(), menu.PreviousList);
         //commands.Add(delegate
         //{
         //    Program.Settings.AutoScrolling = !Program.Settings.AutoScrolling;

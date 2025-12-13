@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     public IEditRating GetRatingEditor()
     {

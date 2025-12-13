@@ -6,49 +6,27 @@ using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.Sync;
+using cYo.Projects.ComicRack.Viewer.Config;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
-	public interface IMain : IContainerControl
+	public interface IMain : IContainerControl, IWin32Window
 	{
-		Control Control
-		{
-			get;
-		}
+		Control Control { get; }
 
-		NavigatorManager OpenBooks
-		{
-			get;
-		}
+		NavigatorManager OpenBooks { get; }
 
-		ComicDisplay ComicDisplay
-		{
-			get;
-		}
+		ComicDisplay ComicDisplay { get; }
 
-		bool BrowserVisible
-		{
-			get;
-			set;
-		}
+        DisplayWorkspace Workspace { get; }
 
-		bool ReaderUndocked
-		{
-			get;
-			set;
-		}
+        bool BrowserVisible { get; set; }
 
-		bool MinimalGui
-		{
-			get;
-			set;
-		}
+		bool ReaderUndocked { get; set; }
 
-		DockStyle BrowserDock
-		{
-			get;
-			set;
-		}
+		bool MinimalGui { get; set; }
+
+		DockStyle BrowserDock { get; set; }
 
 		void ConvertComic(IEnumerable<ComicBook> books, ExportSetting setting);
 
@@ -72,7 +50,9 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		void UpdateWebComic(ComicBook comic, bool fullRefresh);
 
-		void StoreWorkspace();
+		void SetWorkspace(DisplayWorkspace workspace, bool remember);
+
+        void StoreWorkspace();
 
 		void ToggleBrowser();
 

@@ -17,8 +17,6 @@ namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class StatusStrip : UserControl
 {
-    private MainController controller;
-
     private static readonly string ExportingComics = TR.Load(typeof(Viewer.MainForm).Name)["ExportingComics", "Exporting Books: {0} queued"];
 
     private static readonly string ExportingErrors = TR.Load(typeof(Viewer.MainForm).Name)["ExportingErrors", "{0} errors. Click for details"];
@@ -64,22 +62,17 @@ public partial class StatusStrip : UserControl
     {
         //this.controller = controller;
         InitializeComponent();
-    }
-
-    public void SetController(MainController controller)
-    {
-        this.controller = controller;
         statusStripItem.Height = (int)tsText.Font.GetHeight() + FormUtility.ScaleDpiY(8);
 
-        tsDeviceSyncActivity.Click += MainController.EventHandlers.OnDeviceSyncActivityClick;
-        tsExportActivity.Click += MainController.EventHandlers.OnExportActivityClick;
-        tsCurrentPage.Click += MainController.EventHandlers.OnCurrentPageClick;
+        tsDeviceSyncActivity.Click += MC.EventHandlers.OnDeviceSyncActivityClick;
+        tsExportActivity.Click += MC.EventHandlers.OnExportActivityClick;
+        tsCurrentPage.Click += MC.EventHandlers.OnCurrentPageClick;
 
-        tsReadInfoActivity.Click += MainController.EventHandlers.OnGenericActivityClick;
-        tsWriteInfoActivity.Click += MainController.EventHandlers.OnGenericActivityClick;
-        tsPageActivity.Click += MainController.EventHandlers.OnGenericActivityClick;
-        tsScanActivity.Click += MainController.EventHandlers.OnGenericActivityClick;
-        tsServerActivity.Click += MainController.EventHandlers.OnGenericActivityClick;
+        tsReadInfoActivity.Click += MC.EventHandlers.OnGenericActivityClick;
+        tsWriteInfoActivity.Click += MC.EventHandlers.OnGenericActivityClick;
+        tsPageActivity.Click += MC.EventHandlers.OnGenericActivityClick;
+        tsScanActivity.Click += MC.EventHandlers.OnGenericActivityClick;
+        tsServerActivity.Click += MC.EventHandlers.OnGenericActivityClick;
     }
 
     public static implicit operator WinStatusStrip(StatusStrip menu)
@@ -141,7 +134,7 @@ public partial class StatusStrip : UserControl
 
         // Current Page + Page Count
         Image pageImage = null;
-        if (controller.ComicDisplay?.Book != null && !controller.ComicDisplay.Book.IsIndexRetrievalCompleted)
+        if (MC.ComicDisplay?.Book != null && !MC.ComicDisplay.Book.IsIndexRetrievalCompleted)
             pageImage = updatePages;
         tsCurrentPage.Image = (Program.Settings.TrackCurrentPage ? null : trackPagesLockedImage);
         tsPageCount.Image = pageImage;
@@ -173,12 +166,12 @@ public partial class StatusStrip : UserControl
 
     public void UpdateMenu(string statusText)
     {
-        string comicTitle = controller.ComicDisplay.Book?.Caption.Ellipsis(20, "...");
+        string comicTitle = MC.ComicDisplay.Book?.Caption.Ellipsis(20, "...");
         tsBook.Text = string.IsNullOrEmpty(comicTitle) ? TR.Default["None", "None"] : comicTitle;
 
-        tsCurrentPage.Text = controller.ComicDisplay.Book == null ? TR.Default["NotAvailable", "NA"]
-            : (controller.ComicDisplay.Book.CurrentPage + 1).ToString();
-        tsPageCount.Text = TotalPageInformation(controller.ComicDisplay.Book);
+        tsCurrentPage.Text = MC.ComicDisplay.Book == null ? TR.Default["NotAvailable", "NA"]
+            : (MC.ComicDisplay.Book.CurrentPage + 1).ToString();
+        tsPageCount.Text = TotalPageInformation(MC.ComicDisplay.Book);
         tsText.Text = statusText;
     }
 

@@ -18,11 +18,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static System.Windows.Forms.AxHost;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
     #region Toggle
     public void ToggleBrowser(bool alwaysShow, IComicBrowser cb = null)
@@ -301,7 +300,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         UpdateQuickList();
         IComicBrowser comicBrowser = mainView.FindActiveService<IComicBrowser>();
         ItemSizeInfo itemSizeInfo = this.FindActiveService<IItemSize>()?.GetItemSize();
-        string comicTitle = controller.ComicDisplay.Book?.Caption.Ellipsis(60, "...");
+        string comicTitle = ComicDisplay.Book?.Caption.Ellipsis(60, "...");
         menu.UpdateMenu(
             IsComicVisible || ComicDisplay.Book != null,
             FormUtility.FixAmpersand((comicBrowser != null) ? comicBrowser.SelectionInfo : string.Empty)

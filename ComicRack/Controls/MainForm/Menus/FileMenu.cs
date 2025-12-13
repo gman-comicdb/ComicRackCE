@@ -1,4 +1,5 @@
-﻿using cYo.Common.ComponentModel;
+﻿using cYo.Common.Collections;
+using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 using cYo.Common.IO;
 using cYo.Common.Windows;
@@ -7,42 +8,95 @@ using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Plugins;
+using cYo.Projects.ComicRack.Viewer.Controllers;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Command = cYo.Projects.ComicRack.Viewer.Controllers.Command;
+using Menu = cYo.Projects.ComicRack.Viewer.Controllers.Menu;
 
 namespace cYo.Projects.ComicRack.Viewer.Controls.MainForm.Menus;
 
 public partial class FileMenu : UserControl
 {
-    private MainController controller;
-
     public string ComicTitle => miOpenComic.Text.Replace("&", "");
 
     public string TabTitle => miAddTab.Text.Replace("&", string.Empty);
 
     public IEnumerable<ToolStripMenuItem> OpenNow => miOpenNow.DropDownItems.OfType<ToolStripMenuItem>();
 
-    //public FileMenu(MainController controller)
+    private static readonly Command Separator = Command.None;
+
+    public IList<Command> Commands =
+    [
+        Command.Open,
+        Command.Close,
+        Command.CloseAll,
+        Separator,
+        Command.AddTab,
+        Separator,
+        Command.AddFolder,
+        Command.ScanFolders,
+        Command.UpdateAllBooks,
+        Command.UpdateWebComics,
+        Command.SynchronizeDevices,
+        Command.GenerateCovers,
+        Command.ShowTasks,
+        Command.Automation,
+        Separator,
+        Command.NewComic,
+        Separator,
+        Command.OpenRemoteLibrary,
+        Separator,
+        Command.OpenBooks,
+        Command.RecentBooks,
+        Separator,
+        Command.Restart,
+        Separator,
+        Command.Exit
+    ];
+
+    public Dictionary<ToolStripItem, Command> Items = [];
+
     public FileMenu()
     {
-        //this.controller = controller;
+        Commands.ForEach(cmd => cmd.Menu = Menu.File);
         InitializeComponent();
-    }
+        BindCommands();
+        MainMenuControl.InitializeMenuState(this);
 
-    public void SetController(MainController controller)
-    {
-        this.controller = controller;
-        fileMenuItem.DropDownOpening += OnMenuDropDownOpening;
         miOpenRecent.DropDownOpening += OnRecentFilesDropDownOpening;
         miOpenRecent.DropDownItems.Add(new ToolStripMenuItem("dummy"));
+
+        fileMenu.DropDownOpening += MainMenuControl.OnToolStripMenuDropDownOpening;
     }
 
-    public static implicit operator ToolStripMenuItem(FileMenu menu)
-        => menu.fileMenuItem;
+    private void BindCommands()
+    {
+        miOpenComic.Tag = Command.Open;
+        miCloseComic.Tag = Command.Close;
+        miCloseAllComics.Tag = Command.CloseAll;
+        miAddTab.Tag = Command.AddTab;
+        miAddFolderToLibrary.Tag = Command.AddFolder;
+        miScan.Tag = Command.ScanFolders;
+        miUpdateAllComicFiles.Tag = Command.UpdateAllBooks;
+        miUpdateWebComics.Tag = Command.UpdateWebComics;
+        miCacheThumbnails.Tag = Command.GenerateCovers;
+        miSynchronizeDevices.Tag = Command.SynchronizeDevices;
+        miTasks.Tag = Command.ShowTasks;
+        miFileAutomation.Tag = Command.Automation;
+        miNewComic.Tag = Command.NewComic;
+        miOpenRemoteLibrary.Tag = Command.OpenRemoteLibrary;
+        miOpenNow.Tag = Command.OpenBooks;
+        miOpenRecent.Tag = Command.RecentBooks;
+        miRestart.Tag = Command.Restart;
+        miExit.Tag = Command.Exit;
+    }
 
     //protected override void OnLoad(EventArgs e)
     //{
@@ -51,21 +105,32 @@ public partial class FileMenu : UserControl
     //}
 
     public void CreatePluginMenuItems()
+        => CreatePluginMenuItems(fileMenu, miFileAutomation, fileMenu.DropDownItems.IndexOf(miNewComic));
+
+    public void CreatePluginMenuItems(ToolStripMenuItem menu, ToolStripMenuItem subMenu, int menuIndex)
     {
-        miFileAutomation.DropDownItems.AddRange(ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, PluginEngine.ScriptTypeLibrary, () => Program.Database.Books).ToArray());
-        miFileAutomation.Visible = miFileAutomation.DropDownItems.Count != 0;
-        int num = fileMenuItem.DropDownItems.IndexOf(miNewComic);
-        ToolStripMenuItem[] array = ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, PluginEngine.ScriptTypeNewBooks, () => Program.Database.Books).ToArray();
-        foreach (ToolStripMenuItem value in array)
+        subMenu.DropDownItems.AddRange(
+            ScriptUtility.CreateToolItems<ToolStripMenuItem>(
+                this, 
+                PluginEngine.ScriptTypeLibrary,
+                () => Program.Database.Books)
+            .ToArray());
+
+        ToolStripMenuItem[] newBookPlugins = ScriptUtility.CreateToolItems<ToolStripMenuItem>(
+            this,
+            PluginEngine.ScriptTypeNewBooks,
+            () => Program.Database.Books)
+            .ToArray();
+
+        foreach (ToolStripMenuItem plugin in newBookPlugins)
+            menu.DropDownItems.Insert(++menuIndex, plugin);
+
+        foreach (Plugins.Command command in ScriptUtility.Scripts.GetCommands(PluginEngine.ScriptTypeDrawThumbnailOverlay))
         {
-            fileMenuItem.DropDownItems.Insert(++num, value);
-        }
-        foreach (Command sc in ScriptUtility.Scripts.GetCommands(PluginEngine.ScriptTypeDrawThumbnailOverlay))
-        {
-            sc.PreCompile();
+            command.PreCompile();
             CoverViewItem.DrawCustomThumbnailOverlay += (ComicBook comic, Graphics graphics, Rectangle bounds, int flags) =>
             {
-                sc.Invoke(new object[4]
+                command.Invoke(new object[4]
                 {
                         comic,
                         graphics,
@@ -76,16 +141,6 @@ public partial class FileMenu : UserControl
         }
     }
 
-    public void OnMenuDropDownOpening(object sender, EventArgs e)
-    {
-        miOpenRecent.Enabled = controller.RecentFiles.Length != 0;
-        miOpenNow.Enabled = miOpenNow.DropDownItems.Count > 0;
-
-        miUpdateAllComicFiles.Visible = !Program.Settings.AutoUpdateComicsFiles;
-        miFileAutomation.Visible = miFileAutomation.DropDownItems.Count != 0;
-        miSynchronizeDevices.Visible = Program.Settings.Devices.Count > 0;
-    }
-
     public void OnRecentFilesDropDownOpening(object sender, EventArgs e)
     {
         int num = 0;
@@ -94,7 +149,7 @@ public partial class FileMenu : UserControl
                 dropDownItem.Image.Dispose();
         FormUtility.SafeToolStripClear(miOpenRecent.DropDownItems);
 
-        foreach (string path in controller.RecentFiles)
+        foreach (string path in MC.RecentFiles)
         {
             if (!File.Exists(path))
                 continue;
@@ -104,7 +159,11 @@ public partial class FileMenu : UserControl
             {
                 try
                 {
-                    ToolStripMenuItem value = new(displayPath, (itemLock != null && itemLock.Item != null) ? itemLock.Item.Bitmap.Resize(16, 16) : null, controller.OnOpenRecent);
+                    ToolStripMenuItem value = new(
+                        displayPath,
+                        (itemLock != null && itemLock.Item != null) ? itemLock.Item.Bitmap.Resize(16, 16) : null,
+                        OnOpenRecent
+                        );
                     miOpenRecent.DropDownItems.Add(value);
                 }
                 catch (Exception)
@@ -114,24 +173,11 @@ public partial class FileMenu : UserControl
         }
     }
 
-    public void InitializeCommands()
+    public void OnOpenRecent(object sender, EventArgs e)
     {
-        MainController.Commands.Add(MainController.Commands.ShowOpenDialog, miOpenComic);
-        MainController.Commands.Add(controller.OpenBooks.Close, () => controller.OpenBooks.Slots.Count > 0, miCloseComic);
-        MainController.Commands.Add(controller.OpenBooks.CloseAll, () => controller.OpenBooks.Slots.Count > 0, miCloseAllComics);
-        MainController.Commands.Add(controller.OpenBooks.AddSlot, miAddTab);
-        MainController.Commands.Add(() => MainController.Commands.AddNewBook(), miNewComic);
-
-        MainController.Commands.Add(MainController.Commands.AddFolderToLibrary, miAddFolderToLibrary);
-        MainController.Commands.Add(MainController.Commands.StartFullScan, miScan);
-        MainController.Commands.Add(MainController.Commands.UpdateComics, miUpdateAllComicFiles);
-        MainController.Commands.Add(MainController.Commands.GenerateFrontCoverCache, miCacheThumbnails);
-        MainController.Commands.Add(MainController.Commands.MenuSynchronizeDevices, miSynchronizeDevices);
-        MainController.Commands.Add(MainController.Commands.UpdateWebComics, miUpdateWebComics);
-        MainController.Commands.Add(() => MainController.Commands.ShowPendingTasks(), miTasks);
-        MainController.Commands.Add(MainController.Commands.MenuRestart, miRestart);
-        MainController.Commands.Add(MainController.Commands.MenuClose, miExit);
-        MainController.Commands.Add(MainController.Commands.OpenRemoteLibrary, miOpenRemoteLibrary);
+        string displayPath = ((ToolStripMenuItem)sender).Text;
+        int index = Convert.ToInt32(displayPath.Substring(0, 2)) - 1;
+        Program.MainForm.OpenSupportedFile(MC.RecentFiles[index], Program.Settings.OpenInNewTab);
     }
 
     public void ClearOpenNow()
@@ -143,4 +189,6 @@ public partial class FileMenu : UserControl
     {
         miOpenNow.DropDownItems.Add(item);
     }
+
+    public static implicit operator ToolStripMenuItem(FileMenu menu) => menu.fileMenu;
 }

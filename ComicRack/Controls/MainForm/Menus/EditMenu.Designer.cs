@@ -45,25 +45,23 @@ partial class EditMenu : UserControl
         this.miRating = new System.Windows.Forms.ToolStripMenuItem();
         this.contextRating = new System.Windows.Forms.ContextMenuStrip(this.components);
         this.miRate0 = new System.Windows.Forms.ToolStripMenuItem();
-
         this.miRate1 = new System.Windows.Forms.ToolStripMenuItem();
         this.miRate2 = new System.Windows.Forms.ToolStripMenuItem();
         this.miRate3 = new System.Windows.Forms.ToolStripMenuItem();
         this.miRate4 = new System.Windows.Forms.ToolStripMenuItem();
         this.miRate5 = new System.Windows.Forms.ToolStripMenuItem();
-
         this.miQuickRating = new System.Windows.Forms.ToolStripMenuItem();
+
         this.miPageType = new System.Windows.Forms.ToolStripMenuItem();
+
         this.miPageRotate = new System.Windows.Forms.ToolStripMenuItem();
+
         this.miBookmarks = new System.Windows.Forms.ToolStripMenuItem();
         this.miSetBookmark = new System.Windows.Forms.ToolStripMenuItem();
         this.miRemoveBookmark = new System.Windows.Forms.ToolStripMenuItem();
-
         this.miPrevBookmark = new System.Windows.Forms.ToolStripMenuItem();
         this.miNextBookmark = new System.Windows.Forms.ToolStripMenuItem();
-
         this.miLastPageRead = new System.Windows.Forms.ToolStripMenuItem();
-
 
         this.miCopyPage = new System.Windows.Forms.ToolStripMenuItem();
         this.miExportPage = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,22 +71,6 @@ partial class EditMenu : UserControl
         this.miDevices = new System.Windows.Forms.ToolStripMenuItem();
         this.miPreferences = new System.Windows.Forms.ToolStripMenuItem();
         this.miRandomFromList = new System.Windows.Forms.ToolStripMenuItem();
-
-        this.cmPageRotate = new System.Windows.Forms.ToolStripMenuItem();
-
-        this.cmComics = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmOpenComic = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmCloseComic = new System.Windows.Forms.ToolStripMenuItem();
-
-        this.cmPrevFromList = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmNextFromList = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmRandomFromList = new System.Windows.Forms.ToolStripMenuItem();
-
-
-        this.cmRotate0 = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmRotate90 = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmRotate180 = new System.Windows.Forms.ToolStripMenuItem();
-        this.cmRotate270 = new System.Windows.Forms.ToolStripMenuItem();
 
         this.tsSeparator1 = new System.Windows.Forms.ToolStripSeparator();
         this.tsSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -154,12 +136,46 @@ partial class EditMenu : UserControl
         this.miRedo.Size = new System.Drawing.Size(220, 22);
         this.miRedo.Text = "&Redo";
         // 
+        // tsSeparator2
+        // 
+        this.tsSeparator2.Name = "tsSeparator2";
+        this.tsSeparator2.Size = new System.Drawing.Size(217, 6);
+        // 
+        // contextRating
+        // 
+        this.contextRating.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+        this.miRate0,
+        this.tsSeparator8,
+        this.miRate1,
+        this.miRate2,
+        this.miRate3,
+        this.miRate4,
+        this.miRate5,
+        this.tsSeparator9,
+        this.miQuickRating});
+        this.contextRating.Name = "contextRating";
+        this.contextRating.OwnerItem = this.miRating;
+        this.contextRating.Size = new System.Drawing.Size(286, 170);
+        // 
         // miRating
         // 
         this.miRating.DropDown = this.contextRating;
         this.miRating.Name = "miRating";
         this.miRating.Size = new System.Drawing.Size(220, 22);
         this.miRating.Text = "My R&ating";
+        // 
+        // miRate0
+        // 
+        this.miRate0.Name = "miRate0";
+        this.miRate0.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift)
+        | System.Windows.Forms.Keys.D0)));
+        this.miRate0.Size = new System.Drawing.Size(285, 22);
+        this.miRate0.Text = "None";
+        // 
+        // tsSeparator8
+        // 
+        this.tsSeparator8.Name = "tsSeparator8";
+        this.tsSeparator8.Size = new System.Drawing.Size(217, 6);
         // 
         // miRate1
         // 
@@ -200,6 +216,11 @@ partial class EditMenu : UserControl
         | System.Windows.Forms.Keys.D5)));
         this.miRate5.Size = new System.Drawing.Size(285, 22);
         this.miRate5.Text = "***** (5 Stars)";
+        // 
+        // tsSeparator9
+        // 
+        this.tsSeparator9.Name = "tsSeparator9";
+        this.tsSeparator9.Size = new System.Drawing.Size(217, 6);
         // 
         // miQuickRating
         // 
@@ -281,6 +302,11 @@ partial class EditMenu : UserControl
         this.miLastPageRead.Size = new System.Drawing.Size(249, 22);
         this.miLastPageRead.Text = "L&ast Page Read";
         // 
+        // tsSeparator3
+        // 
+        this.tsSeparator3.Name = "tsSeparator3";
+        this.tsSeparator3.Size = new System.Drawing.Size(217, 6);
+        // 
         // miCopyPage
         // 
         this.miCopyPage.Image = global::cYo.Projects.ComicRack.Viewer.Properties.Resources.Copy;
@@ -296,6 +322,11 @@ partial class EditMenu : UserControl
         | System.Windows.Forms.Keys.C)));
         this.miExportPage.Size = new System.Drawing.Size(220, 22);
         this.miExportPage.Text = "&Export Page...";
+        // 
+        // tsSeparator4
+        // 
+        this.tsSeparator4.Name = "tsSeparator4";
+        this.tsSeparator4.Size = new System.Drawing.Size(217, 6);
         // 
         // miViewRefresh
         // 
@@ -320,49 +351,10 @@ partial class EditMenu : UserControl
         this.miPreferences.Size = new System.Drawing.Size(220, 22);
         this.miPreferences.Text = "&Preferences...";
         // 
-        // contextRating
-        // 
-        this.contextRating.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-        this.miRate0,
-        this.tsSeparator8,
-        this.miRate1,
-        this.miRate2,
-        this.miRate3,
-        this.miRate4,
-        this.miRate5,
-        this.tsSeparator9,
-        this.miQuickRating});
-        this.contextRating.Name = "contextRating";
-        this.contextRating.OwnerItem = this.miRating;
-        this.contextRating.Size = new System.Drawing.Size(286, 170);
-        // 
-        // miRate0
-        // 
-        this.miRate0.Name = "miRate0";
-        this.miRate0.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift)
-        | System.Windows.Forms.Keys.D0)));
-        this.miRate0.Size = new System.Drawing.Size(285, 22);
-        this.miRate0.Text = "None";
-        // 
         // tsSeparator1
         // 
         this.tsSeparator1.Name = "tsSeparator1";
         this.tsSeparator1.Size = new System.Drawing.Size(217, 6);
-        // 
-        // tsSeparator2
-        // 
-        this.tsSeparator2.Name = "tsSeparator2";
-        this.tsSeparator2.Size = new System.Drawing.Size(217, 6);
-        // 
-        // tsSeparator3
-        // 
-        this.tsSeparator3.Name = "tsSeparator3";
-        this.tsSeparator3.Size = new System.Drawing.Size(217, 6);
-        // 
-        // tsSeparator4
-        // 
-        this.tsSeparator4.Name = "tsSeparator4";
-        this.tsSeparator4.Size = new System.Drawing.Size(217, 6);
         // 
         // tsSeparator5
         // 
@@ -379,21 +371,10 @@ partial class EditMenu : UserControl
         this.tsSeparator7.Name = "tsSeparator7";
         this.tsSeparator7.Size = new System.Drawing.Size(217, 6);
         // 
-        // tsSeparator8
-        // 
-        this.tsSeparator8.Name = "tsSeparator8";
-        this.tsSeparator8.Size = new System.Drawing.Size(217, 6);
-        // 
-        // tsSeparator9
-        // 
-        this.tsSeparator9.Name = "tsSeparator9";
-        this.tsSeparator9.Size = new System.Drawing.Size(217, 6);
-        // 
         // tsSeparator10
         // 
         this.tsSeparator10.Name = "tsSeparator10";
         this.tsSeparator10.Size = new System.Drawing.Size(217, 6);
-
         // 
         // tsSeparatorBms
         // 
@@ -452,22 +433,10 @@ partial class EditMenu : UserControl
     private ToolStripMenuItem miLastPageRead;
     private ToolStripMenuItem miCopyPage;
     private ToolStripMenuItem miExportPage;
-    private ToolStripMenuItem cmComics;
-    private ToolStripMenuItem cmOpenComic;
-    private ToolStripMenuItem cmCloseComic;
 
-    private ToolStripMenuItem cmPrevFromList;
-    private ToolStripMenuItem cmNextFromList;
-    private ToolStripMenuItem cmPageRotate;
-
-    private ToolStripMenuItem cmRotate0;
-    private ToolStripMenuItem cmRotate90;
-    private ToolStripMenuItem cmRotate180;
-    private ToolStripMenuItem cmRotate270;
     private ToolStripMenuItem miPageRotate;
 
     private ToolStripMenuItem miRandomFromList;
-    private ToolStripMenuItem cmRandomFromList;
     private ToolStripMenuItem miUpdateAllComicFiles;
 
     private ToolStripMenuItem miUndo;

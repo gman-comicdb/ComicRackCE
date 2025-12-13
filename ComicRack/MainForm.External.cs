@@ -12,9 +12,12 @@ using cYo.Projects.ComicRack.Viewer.Views;
 namespace cYo.Projects.ComicRack.Viewer;
 
 // only references are not from MainForm
-public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig, IApplication, IBrowser
+public partial class MainForm
 {
-    public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries.Replace("\n", "").Replace("\r", "").Split(';', StringSplitOptions.RemoveEmptyEntries);
+    public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries
+        .Replace("\n", "")
+        .Replace("\r", "")
+        .Split(';', StringSplitOptions.RemoveEmptyEntries);
 
     public void SelectComics(IEnumerable<ComicBook> books)
     {
@@ -24,9 +27,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     public void ShowComic()
     {
         if (!ReaderUndocked && mainViewContainer.Dock == DockStyle.Fill)
-        {
             mainView.ShowView(books.CurrentSlot);
-        }
     }
 
     void IApplication.SynchronizeDevices()
@@ -35,13 +36,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         Program.QueueManager.SynchronizeDevices();
     }
 
-    public IDictionary<string, string> GetComicFields()
-    {
-        return ComicBook.GetTranslatedWritableStringProperties();
-    }
+    public IDictionary<string, string> GetComicFields() => ComicBook.GetTranslatedWritableStringProperties();
 
-    public string ReadInternet(string text)
-    {
-        return HttpAccess.ReadText(text);
-    }
+    public string ReadInternet(string uri) => HttpAccess.ReadText(uri);
 }

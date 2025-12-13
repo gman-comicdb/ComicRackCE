@@ -1,6 +1,7 @@
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
 global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
 global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
+global using MC = cYo.Projects.ComicRack.Viewer.MainController;
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -917,7 +918,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			}
 			NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);
 			MainForm = new MainForm();
-            MainController controller = new(MainForm);
+            MC controller = new(MainForm);
             MainForm.SetController(controller);
             MainForm.FormClosed += MainFormFormClosed;
 			MainForm.FormClosing += (object s, FormClosingEventArgs e) =>
