@@ -128,7 +128,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			books = books.ToArray();
 			if (ask)
 			{
-				using (Image image = Program.MakeBooksImage(books, new Size(256, 128), 5, onlyMemory: false))
+				using (Image image = AppUtility.MakeBooksImage(books, new Size(256, 128), 5, onlyMemory: false))
 				{
 					QuestionResult questionResult = QuestionDialog.AskQuestion(Window, TR.Messages["AskMoveBin", "Are you sure you want to move these files to the Recycle Bin?"], TR.Messages["Remove", "Remove"], (Program.Settings.RemoveFilesfromDatabase ? "!" : string.Empty) + TR.Messages["AlsoRemoveFromLibrary", "&Additionally remove the books from the Library (all information not stored in the files will be lost)"], image);
 					if (questionResult.HasFlag(QuestionResult.Cancel))

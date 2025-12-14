@@ -2616,5 +2616,19 @@ namespace cYo.Projects.ComicRack.Engine.Display.Forms
 			base.Name = "BookView";
 			ResumeLayout(false);
 		}
-	}
+
+		public static void InitializeHardwareSettings(bool disableHardware, bool forceHardware, bool disableMipMapping)
+		{
+            if (disableHardware)
+                HardwareAcceleration = HardwareAccelerationType.Disabled;
+            else
+                HardwareAcceleration = !forceHardware
+                    ? HardwareAccelerationType.Enabled
+                    : HardwareAccelerationType.Forced;
+
+            if (disableMipMapping)
+                HardwareSettings.MipMapping = false;
+        }
+
+    }
 }

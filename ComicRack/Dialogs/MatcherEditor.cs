@@ -1,16 +1,19 @@
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using cYo.Common;
+using cYo.Common.Collections;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Viewer.Properties;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
@@ -147,7 +150,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
 		private void btMatcher_Click(object sender, EventArgs e)
 		{
-			Program.CreateComicBookMatchersMenu(delegate(ComicBookValueMatcher newMatcher)
+			CreateComicBookMatchersMenu(delegate(ComicBookValueMatcher newMatcher)
 			{
 				if (newMatcher != null && !(newMatcher.GetType() == currentComicBookMatcher.GetType()))
 				{
@@ -181,8 +184,50 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			}
 		}
 
+        public static ContextMenuStrip CreateComicBookMatchersMenu(Action<ComicBookValueMatcher> action, int minUsage = 20)
+        {
+            ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+            Type[] source = (from m in GetUsedComicBookMatchers(5)
+                             select m.GetType()).ToArray();
 
-		protected override void OnLayout(LayoutEventArgs e)
+            foreach (ComicBookValueMatcher availableComicBookMatcher in GetAvailableComicBookMatchers())
+            {
+                ComicBookValueMatcher i = availableComicBookMatcher;
+                contextMenuBuilder.Add(availableComicBookMatcher.Description, topLevel: false, chk: false, delegate
+                {
+                    action(i);
+                }, null, source.Contains(availableComicBookMatcher.GetType()) ? DateTime.MaxValue : DateTime.MinValue);
+            }
+
+            ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+            contextMenuStrip.Items.AddRange(contextMenuBuilder.Create(20));
+            return contextMenuStrip;
+        }
+
+        public static IEnumerable<ComicBookValueMatcher> GetUsedComicBookMatchers(int minUsage)
+        {
+            return from n in AppServices.Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany(
+                    (ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>(
+                        (object o) => (!(o is ComicBookGroupMatcher))
+                            ? null
+                            : ((ComicBookGroupMatcher)o).Matchers
+                        )
+                    )
+                   select n.GetType() into n
+                   group n by n into g
+                   where g.Count() >= minUsage
+                   select g into t
+                   select Activator.CreateInstance(t.First()) as ComicBookValueMatcher into n
+                   orderby n.Description
+                   select n;
+        }
+
+        public static IEnumerable<ComicBookValueMatcher> GetAvailableComicBookMatchers()
+        {
+            return ComicBookValueMatcher.GetAvailableMatchers().OfType<ComicBookValueMatcher>();
+        }
+
+        protected override void OnLayout(LayoutEventArgs e)
 		{
 			base.OnLayout(e);
 			if (base.IsHandleCreated)

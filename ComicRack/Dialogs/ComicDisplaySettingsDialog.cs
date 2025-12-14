@@ -1,14 +1,9 @@
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
+using cYo.Common.IO;
 using cYo.Common.Localize;
+using cYo.Common.Runtime;
 using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
@@ -16,6 +11,13 @@ using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Viewer.Config;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
@@ -209,7 +211,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			btBrowseTexture.Top = cbBackgroundTexture.Top;
 			cpBackgroundColor.FillKnownColors(includingSystem: false);
 			cbBackgroundTexture.Items.Add(new TextureFileItem());
-			string[] array = Program.LoadDefaultBackgroundTextures();
+			string[] array = LoadDefaultBackgroundTextures();
 			foreach (string file in array)
 			{
 				cbBackgroundTexture.Items.Add(new TextureFileItem(file, custom: false));
@@ -218,7 +220,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			{
 				Default = TR.Default["Default", "Default"]
 			});
-			string[] array2 = Program.LoadDefaultPaperTextures();
+			string[] array2 = LoadDefaultPaperTextures();
 			foreach (string file2 in array2)
 			{
 				cbPaperTexture.Items.Add(new TextureFileItem(file2, custom: false));
@@ -401,5 +403,21 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			}
 		}
 
-	}
+        // ComicDisplaySettingsDialog
+        public static string[] LoadDefaultBackgroundTextures()
+        {
+            return (from s in FileUtility.GetFiles(IniFile.GetDefaultLocations(AppConstants.DefaultBackgroundTexturesPath), SearchOption.AllDirectories, ".jpg", ".gif", ".png")
+                    orderby s
+                    select s).ToArray();
+        }
+
+        // ComicDisplaySettingsDialog
+        public static string[] LoadDefaultPaperTextures()
+        {
+            return (from s in FileUtility.GetFiles(IniFile.GetDefaultLocations(AppConstants.DefaultPaperTexturesPath), SearchOption.AllDirectories, ".jpg", ".gif", ".png")
+                    orderby s
+                    select s).ToArray();
+        }
+
+    }
 }

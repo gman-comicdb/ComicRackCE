@@ -4,6 +4,7 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <OutputType>WinExe</OutputType>
         <RootNamespace>cYo.Projects.ComicRack.Viewer</RootNamespace>
+        
         <FileAlignment>4096</FileAlignment>
         <StartupObject>cYo.Projects.ComicRack.Viewer.Program</StartupObject>
         <PublishUrl>publish\</PublishUrl>

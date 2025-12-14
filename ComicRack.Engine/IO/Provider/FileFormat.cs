@@ -1,9 +1,10 @@
+using cYo.Common.Text;
+using cYo.Common.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using cYo.Common.Win32;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
@@ -157,5 +158,33 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
 		{
 			return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
 		}
-	}
+
+        public static bool RegisterFormats(string formats, string typeId, string docName)
+        {
+            try
+            {
+                bool overwrite = formats.Contains("!");
+                foreach (string item in formats.Remove("!").Split(',').RemoveEmpty())
+                {
+                    bool flag = !item.Contains("-");
+                    string name = item.Remove("-");
+                    FileFormat fileFormat = Providers.Readers.GetSourceFormats().FirstOrDefault((FileFormat sf) => sf.Name == name);
+                    if (fileFormat != null)
+                        if (flag)
+                            fileFormat.RegisterShell(typeId, docName, overwrite);
+                        else
+                            fileFormat.UnregisterShell(typeId);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                ShellRegister.RefreshShell();
+            }
+        }
+    }
 }

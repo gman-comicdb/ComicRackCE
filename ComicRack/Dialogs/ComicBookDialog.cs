@@ -906,12 +906,12 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Program.StartDocument(linkLabel.Text);
+            AppUtility.StartDocument(linkLabel.Text);
         }
 
         private void btLinkFile_Click(object sender, EventArgs e)
         {
-            string text = Program.ShowComicOpenDialog(this, btLinkFile.Text.Replace("&", string.Empty), includeReadingLists: false);
+            string text = AppUtility.ShowComicOpenDialog(this, btLinkFile.Text.Replace("&", string.Empty), includeReadingLists: false);
             if (text != null)
             {
                 LinkFile(text);
@@ -979,7 +979,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void btThumbnail_Click(object sender, EventArgs e)
         {
-            string value = Program.LoadCustomThumbnail(null, this, btThumbnail.Text.Replace("&", string.Empty));
+            string value = AppUtility.LoadCustomThumbnail(null, this, btThumbnail.Text.Replace("&", string.Empty));
             if (!string.IsNullOrEmpty(value))
             {
                 CustomThumbnailKey = value;
@@ -988,7 +988,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void LoadThumbnail(string file)
         {
-            string value = Program.LoadCustomThumbnail(file);
+            string value = AppUtility.LoadCustomThumbnail(file);
             if (!string.IsNullOrEmpty(value))
             {
                 CustomThumbnailKey = value;

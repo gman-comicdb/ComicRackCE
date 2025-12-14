@@ -114,7 +114,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             numMemThumbSize.Maximum = 500m;
             lbLanguages.Items.Add(new TRInfo());
             lbLanguages.Items.Add(new TRInfo("en"));
-            TRInfo[] installedLanguages = Program.InstalledLanguages;
+            TRInfo[] installedLanguages = AppConfig.InstalledLanguages;
             foreach (TRInfo item in installedLanguages)
             {
                 lbLanguages.Items.Add(item);
@@ -416,7 +416,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void btOpenFolder_Click(object sender, EventArgs e)
         {
-            Program.ShowExplorer(lbPaths.SelectedItem as string);
+            AppUtility.ShowExplorer(lbPaths.SelectedItem as string);
         }
 
         private void btScan_Click(object sender, EventArgs e)
@@ -597,7 +597,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 {
                     AutomaticProgressDialog.Process(this, TR.Messages["DatabaseBackup", "Database Backup"], TR.Messages["DatabaseBackupText", "Creating and saving the Backup File"], 1000, delegate
                     {
-                        Program.DatabaseManager.BackupTo(dlg.FileName, Program.Paths.CustomThumbnailPath);
+                        AppServices.DatabaseManager.BackupTo(dlg.FileName, AppConfig.Paths.CustomThumbnailPath);
                     }, AutomaticProgressDialogOptions.None);
                 }
                 catch
@@ -630,7 +630,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void btTranslate_Click(object sender, EventArgs e)
         {
-            Program.StartDocument(Program.DefaultLocalizePage);
+            AppUtility.StartDocument(AppConstants.DefaultLocalizePage);
         }
 
         private void memCacheUpate_Tick(object sender, EventArgs e)
@@ -657,7 +657,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             foreach (ListViewItem selectedItem in lvPackages.SelectedItems)
             {
                 NeedsRestart = true;
-                if (!Program.ScriptPackages.Uninstall(selectedItem.Tag as PackageManager.Package))
+                if (!AppConfig.ScriptPackages.Uninstall(selectedItem.Tag as PackageManager.Package))
                 {
                     MessageBox.Show(this, TR.Messages["FailedRemovePackage", "Failed to uninstall package. Please restart ComicRack and try again!"], TR.Messages["Attention", "Attention"], MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
@@ -673,7 +673,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 PackageManager.Package package = listViewItem.Tag as PackageManager.Package;
                 if (package.PackageType == PackageManager.PackageType.Installed)
                 {
-                    Program.ShowExplorer(package.PackagePath);
+                    AppUtility.ShowExplorer(package.PackagePath);
                 }
             }
         }
@@ -776,7 +776,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private void miDefaultKeyboardLayout_Click(object sender, EventArgs e)
         {
-            keyboardShortcutEditor.Shortcuts.SetKeyMapping(Program.DefaultKeyboardMapping);
+            keyboardShortcutEditor.Shortcuts.SetKeyMapping(AppConfig.DefaultKeyboardMapping);
             keyboardShortcutEditor.RefreshList();
         }
 
@@ -840,11 +840,11 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 
         private bool InstallPlugin(string f)
         {
-            if (Program.ScriptPackages.PackageFileExists(f) && !QuestionDialog.Ask(this, DuplicatePackageText, TR.Default["Yes", "Yes"]))
+            if (AppConfig.ScriptPackages.PackageFileExists(f) && !QuestionDialog.Ask(this, DuplicatePackageText, TR.Default["Yes", "Yes"]))
             {
                 return false;
             }
-            bool flag = Program.ScriptPackages.Install(f);
+            bool flag = AppConfig.ScriptPackages.Install(f);
             NeedsRestart |= flag;
             return flag;
         }
@@ -857,7 +857,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                                         select f)
             {
                 int index = lbFormats.Items.Add(item);
-                lbFormats.SetItemChecked(index, item.IsShellRegistered(Program.ComicRackTypeId));
+                lbFormats.SetItemChecked(index, item.IsShellRegistered(AppConstants.ComicRackTypeId));
             }
         }
 
@@ -966,7 +966,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                     {
                         AutomaticProgressDialog.Process(this, TR.Messages["DatabaseRestore", "Database Restore"], TR.Messages["DatabaseRestoreText", "Restoring database from Backup file"], 1000, delegate
                         {
-                            Program.DatabaseManager.RestoreFrom(BackupFile, Program.Paths.CustomThumbnailPath);
+                            AppServices.DatabaseManager.RestoreFrom(BackupFile, AppConfig.Paths.CustomThumbnailPath);
                         }, AutomaticProgressDialogOptions.None);
                     }
                     catch (Exception)
@@ -1004,8 +1004,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 			Program.Settings.CurrentWorkspace.PreferencesOutputSize = SafeSize;
             SaveBackupManagerOptions();
 			SaveVirtualTags();
-            Program.RefreshAllWindows();
-            Program.ForAllForms(delegate (Form f)
+            AppUtility.RefreshAllWindows();
+            AppUtility.ForAllForms(delegate (Form f)
             {
                 f.FindServices<ISettingsChanged>().ForEach(delegate (ISettingsChanged s)
                 {
@@ -1138,11 +1138,11 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 FileFormat fileFormat = (FileFormat)lbFormats.Items[i];
                 if (lbFormats.GetItemChecked(i))
                 {
-                    fileFormat.RegisterShell(Program.ComicRackTypeId, Program.ComicRackDocumentName, Program.Settings.OverwriteAssociations);
+                    fileFormat.RegisterShell(AppConstants.ComicRackTypeId, AppConstants.ComicRackDocumentName, Program.Settings.OverwriteAssociations);
                 }
                 else
                 {
-                    fileFormat.UnregisterShell(Program.ComicRackTypeId);
+                    fileFormat.UnregisterShell(AppConstants.ComicRackTypeId);
                 }
             }
         }
@@ -1213,7 +1213,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
         private void RefreshPackageList()
         {
             lvPackages.Items.Clear();
-            foreach (PackageManager.Package item in (from p in Program.ScriptPackages.GetPackages()
+            foreach (PackageManager.Package item in (from p in AppConfig.ScriptPackages.GetPackages()
                                                      orderby p.PackageType
                                                      select p).Reverse())
             {
@@ -1307,7 +1307,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 }
                 else
                 {
-                    Program.ScriptPackages.RemovePending();
+                    AppConfig.ScriptPackages.RemovePending();
                 }
                 return flag;
             }
@@ -1467,7 +1467,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
 		private void btnVTagsHelp_Click(object sender, EventArgs e)
 		{
             const string VTagWiki = @"https://github.com/maforget/ComicRackCE/wiki/Virtual-Tags";
-            Program.StartDocument(VTagWiki);
+            AppUtility.StartDocument(VTagWiki);
 		}
 		#endregion
 

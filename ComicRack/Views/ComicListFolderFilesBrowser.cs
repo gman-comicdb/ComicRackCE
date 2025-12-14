@@ -234,7 +234,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 		private void RemoveFavorite()
 		{
 			ItemViewItem itemViewItem = ((favView.FocusedItem == null) ? null : (favView.FocusedItem as ItemViewItem));
-			if (itemViewItem != null && Program.AskQuestion(this, TR.Messages["AskRemoveFavorite", "Do you really want to remove this Favorite Folder link?"], TR.Messages["Remove", "Remove"], HiddenMessageBoxes.RemoveFavorite))
+			if (itemViewItem != null && AppUtility.AskQuestion(this, TR.Messages["AskRemoveFavorite", "Do you really want to remove this Favorite Folder link?"], TR.Messages["Remove", "Remove"], HiddenMessageBoxes.RemoveFavorite))
 			{
 				Program.Settings.FavoriteFolders.Remove(itemViewItem.Tag as string);
 				favView.Items.Remove(itemViewItem);

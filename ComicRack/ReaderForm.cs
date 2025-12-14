@@ -58,7 +58,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
-			if (e.CloseReason == CloseReason.UserClosing && !Program.AskQuestion(this, TR.Messages["CloseExternalReader", "This will only close the reader Window and not the open Book(s)!"], TR.Default["OK", "OK"], HiddenMessageBoxes.CloseExternalReader, TR.Messages["DontShowAgain", "Do not show this again"]))
+			if (e.CloseReason == CloseReason.UserClosing && !AppUtility.AskQuestion(this, TR.Messages["CloseExternalReader", "This will only close the reader Window and not the open Book(s)!"], TR.Default["OK", "OK"], HiddenMessageBoxes.CloseExternalReader, TR.Messages["DontShowAgain", "Do not show this again"]))
 			{
 				e.Cancel = true;
 			}

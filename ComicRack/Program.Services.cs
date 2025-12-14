@@ -12,29 +12,18 @@ public static partial class Program
 {
     // Program.StartupProgress
     // Program.StartNew
-    private static Splash splash;
+    //private static Splash splash;
 
-    /// <summary>
-    /// The GUI. All of it.
-    /// </summary>
-    public static MainForm MainForm { get; private set; }
-    public static ScriptOutputForm ScriptConsole { get; set; }
-    public static NewsStorage News { get; private set; }
+    
+    //public static ScriptOutputForm ScriptConsole => AppServices.ScriptConsole;
+    //public static NewsStorage News => AppServices.News;
 
-    // NetWorkManager
-    public static NetworkManager NetworkManager { get; private set; }
+    
 
     // CacheManager
-    public static CacheManager CacheManager { get; private set; }
-    public static ImagePool ImagePool => CacheManager.ImagePool;
-    public static FileCache InternetCache => CacheManager.InternetCache;
+    //public static CacheManager CacheManager => AppServices.CacheManager;
+    
 
     // DatabaseManager
-    public static readonly DatabaseManager DatabaseManager = new(); // field
-    public static ComicBookFactory BookFactory => DatabaseManager.BookFactory;
-    public static ComicDatabase Database => DatabaseManager.Database;
-
-    // QueueManager
-    public static QueueManager QueueManager { get; private set; }
-    public static ComicScanner Scanner => QueueManager.Scanner;
+    //public static DatabaseManager DatabaseManager => AppServices.DatabaseManager; // field
 }

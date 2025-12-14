@@ -1245,7 +1245,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls
 						cms.Items.Add(new ToolStripSeparator());
 						cms.Items.Add(Comic.Web, null, delegate
 						{
-							Program.StartDocument(Comic.Web);
+							AppUtility.StartDocument(Comic.Web);
 						});
 					}
 				});

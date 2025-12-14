@@ -722,7 +722,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		public static ScriptOutputForm ScriptConsole
 		{
-			get => Program.ScriptConsole != null ? Program.ScriptConsole : null;
+			get => AppServices.ScriptConsole != null ? AppServices.ScriptConsole : null;
 		}
 
 		public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries.Replace("\n", "").Replace("\r", "").Split(';', StringSplitOptions.RemoveEmptyEntries);
@@ -779,7 +779,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			statusStripVisibility = new VisibilityAnimator(components, statusStrip);
 			LocalizeUtility.Localize(this, components);
 			quickOpenView.Caption = TR.Load(base.Name)[quickOpenView.Name, quickOpenView.Caption];
-			Program.StartupProgress(TR.Messages["InitScripts", "Initializing Scripts"], 70);
+            Bootstrap.UpdateStartupProgress(TR.Messages["InitScripts", "Initializing Scripts"], 70);
 			if (ScriptUtility.Initialize(this, this, this, ComicDisplay, this, OpenBooks))
 			{
 				miFileAutomation.DropDownItems.AddRange(ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, PluginEngine.ScriptTypeLibrary, () => Program.Database.Books).ToArray());
@@ -805,7 +805,7 @@ namespace cYo.Projects.ComicRack.Viewer
 					};
 				}
 			}
-			Program.StartupProgress(TR.Messages["InitGUI", "Initializing User Interface"], 80);
+            Bootstrap.UpdateStartupProgress(TR.Messages["InitGUI", "Initializing User Interface"], 80);
 		}
 
 		private void UpdateSettings()
@@ -935,10 +935,10 @@ namespace cYo.Projects.ComicRack.Viewer
 			base.OnShown(e);
 			Win7.Initialize();
 			if (!string.IsNullOrEmpty(Program.ExtendedSettings.InstallPlugin))
-			{
 				ShowPreferences(Program.ExtendedSettings.InstallPlugin);
-			}
-		}
+			else if (Program.Settings.NewsStartup)
+				ShowNews(always: false);
+        }
 
 		protected override void OnLoad(EventArgs e)
 		{
@@ -1036,9 +1036,9 @@ namespace cYo.Projects.ComicRack.Viewer
 			{
 				b.Cancel = !IdleProcess.ShouldProcess(this) && !IdleProcess.ShouldProcess(readerForm);
 			};
-			Program.StartupProgress(TR.Messages["LoadComic", "Opening Files"], 90);
+			Bootstrap.UpdateStartupProgress(TR.Messages["LoadComic", "Opening Files"], 90);
 			Refresh();
-			foreach (string commandLineFile in Program.CommandLineFiles)
+			foreach (string commandLineFile in AppConfig.CommandLineFiles)
 			{
 				if (File.Exists(commandLineFile))
 				{
@@ -1053,7 +1053,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			if (Program.Settings.ShowQuickManual)
 			{
 				Program.Settings.ShowQuickManual = false;
-				books.Open(Program.QuickHelpManualFile, OpenComicOptions.OpenInNewSlot | OpenComicOptions.NoFileUpdate);
+				books.Open(AppConstants.QuickHelpManualFile, OpenComicOptions.OpenInNewSlot | OpenComicOptions.NoFileUpdate);
 			}
 			if (!string.IsNullOrEmpty(Program.ExtendedSettings.ImportList))
 			{
@@ -1113,7 +1113,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			{
 				IEnumerable<ComicBook> dirtyTempList = Program.BookFactory.TemporaryBooks.Where((ComicBook cb) => cb.ComicInfoIsDirty);
 				int dirtyCount = dirtyTempList.Count();
-				if (dirtyCount != 0 && Program.AskQuestion(this, TR.Messages["AskDirtyItems", "Save changed information for Books that are not in the database?\nAll changes not saved now will be lost!"], TR.Default["Save", "Save"], HiddenMessageBoxes.AskDirtyItems, TR.Messages["AlwaysSaveDirty", "Always save changes"], TR.Default["No", "No"]))
+				if (dirtyCount != 0 && AppUtility.AskQuestion(this, TR.Messages["AskDirtyItems", "Save changed information for Books that are not in the database?\nAll changes not saved now will be lost!"], TR.Default["Save", "Save"], HiddenMessageBoxes.AskDirtyItems, TR.Messages["AlwaysSaveDirty", "Always save changes"], TR.Default["No", "No"]))
 				{
 					AutomaticProgressDialog.Process(this, TR.Messages["SaveInfo", "Saving Book Information"], TR.Messages["SaveInfoText", "Please wait while all unsaved information is stored!"], 5000, delegate
 					{
@@ -1468,22 +1468,22 @@ namespace cYo.Projects.ComicRack.Viewer
 			}, () => GetRatingEditor().IsValid(), miQuickRating, cmQuickRating);
 			commands.Add(delegate
 			{
-				if (!Program.Help.Execute("HelpMain"))
+				if (!AppConfig.Help.Execute("HelpMain"))
 				{
-					Program.StartDocument(Program.DefaultWiki);
+					AppUtility.StartDocument(AppConstants.DefaultWiki);
 				}
 			}, miWebHelp);
 			commands.Add(delegate
 			{
-				books.Open(Program.QuickHelpManualFile, OpenComicOptions.OpenInNewSlot | OpenComicOptions.NoFileUpdate);
+				books.Open(AppConstants.QuickHelpManualFile, OpenComicOptions.OpenInNewSlot | OpenComicOptions.NoFileUpdate);
 			}, miHelpQuickIntro);
 			commands.Add(delegate
 			{
-				Program.StartDocument(Program.DefaultWebSite);
+				AppUtility.StartDocument(AppConstants.DefaultWebSite);
 			}, miWebHome);
 			commands.Add(delegate
 			{
-				Program.StartDocument(Program.DefaultUserForm);
+				AppUtility.StartDocument(AppConstants.DefaultUserForm);
 			}, miWebUserForum);
 			commands.Add(ShowAboutDialog, miAbout, tbAbout);
 			commands.Add(ShowNews, miNews);
@@ -1511,7 +1511,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			}, () => ComicDisplay.Book != null && ComicDisplay.Book.Comic.EditMode.IsLocalComic(), cmCopyPath);
 			commands.Add(delegate
 			{
-				Program.ShowExplorer(ComicDisplay.Book.Comic.FilePath);
+                AppUtility.ShowExplorer(ComicDisplay.Book.Comic.FilePath);
 			}, () => ComicDisplay.Book != null && ComicDisplay.Book.Comic.EditMode.IsLocalComic(), cmRevealInExplorer);
 			commands.Add(() => _ = CheckForUpdateAsync(true), miCheckUpdate);
 		}
@@ -1739,7 +1739,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			}));
 			group = "Other";
 			ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("Exit", group, "Exit", ControlExit, CommandKey.Q));
-			Program.DefaultKeyboardMapping = ComicDisplay.KeyboardMap.GetKeyMapping().ToArray();
+            AppConfig.DefaultKeyboardMapping = ComicDisplay.KeyboardMap.GetKeyMapping().ToArray();
 			ComicDisplay.KeyboardMap.SetKeyMapping(Program.Settings.ReaderKeyboardMapping);
 			mainKeys.Commands.Add(new KeyboardCommand("FocusQuickSearch", "General", "FQS", FocusQuickSearch, CommandKey.F | CommandKey.Ctrl));
 			mainKeys.Commands.Add(new KeyboardCommand("BrowsePrevious", "General", "Previous List",
@@ -1848,15 +1848,15 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		public void MenuRestart()
 		{
-			Program.Restart = true;
+			AppConfig.Restart = true;
 			MenuClose();
 		}
 
 		public void UpdateFeeds()
 		{
-			using (ItemMonitor.Lock(Program.News))
+			using (ItemMonitor.Lock(AppServices.News))
 			{
-				Program.News.UpdateFeeds(Program.NewsIntervalMinutes);
+                AppServices.News.UpdateFeeds(AppConstants.NewsIntervalMinutes);
 			}
 		}
 
@@ -1865,17 +1865,17 @@ namespace cYo.Projects.ComicRack.Viewer
 			if (always)
 			{
 				AutomaticProgressDialog.Process(this, TR.Messages["RetrieveNews", "Retrieving News"], TR.Messages["RetrieveNewsText", "Refreshing subscribed News Channels"], 1000, UpdateFeeds, AutomaticProgressDialogOptions.EnableCancel);
-				NewsDialog.ShowNews(this, Program.News);
+				NewsDialog.ShowNews(this, AppServices.News);
 				return;
 			}
 			ThreadUtility.RunInBackground("Read News", delegate
 			{
 				UpdateFeeds();
-				if (Program.News.HasUnread)
+				if (AppServices.News.HasUnread)
 				{
 					this.BeginInvoke(delegate
 					{
-						NewsDialog.ShowNews(this, Program.News);
+						NewsDialog.ShowNews(this, AppServices.News);
 					});
 				}
 			});
@@ -2211,7 +2211,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		public void ShowOpenDialog()
 		{
-			string text = Program.ShowComicOpenDialog(Form.ActiveForm ?? this, miOpenComic.Text.Replace("&", ""), includeReadingLists: true);
+			string text = AppUtility.ShowComicOpenDialog(Form.ActiveForm ?? this, miOpenComic.Text.Replace("&", ""), includeReadingLists: true);
 			if (text != null)
 			{
 				OpenSupportedFile(text, Program.Settings.OpenInNewTab);
@@ -2339,14 +2339,14 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		public void ConvertComic(IEnumerable<ComicBook> books, ExportSetting setting)
 		{
-			ExportSetting exportSetting = setting ?? ExportComicsDialog.Show(this, Program.ExportComicRackPresets, Program.Settings.ExportUserPresets, Program.Settings.CurrentExportSetting ?? new ExportSetting());
+			ExportSetting exportSetting = setting ?? ExportComicsDialog.Show(this, AppConfig.ExportComicRackPresets, Program.Settings.ExportUserPresets, Program.Settings.CurrentExportSetting ?? new ExportSetting());
 			if (exportSetting == null)
 			{
 				return;
 			}
 			bool flag = books.All((ComicBook b) => b.EditMode.IsLocalComic());
 			Program.Settings.CurrentExportSetting = exportSetting;
-			if (flag && (exportSetting.Target == ExportTarget.ReplaceSource || exportSetting.DeleteOriginal) && !Program.AskQuestion(this, TR.Messages["AskExport", "You have chosen to delete or replace existing files during export. Are you sure you want to continue?\nThe deleted files will be moved to the Recycle Bin during export. Please make sure there is enough disk space available and the eComics are not located on a network drive!"], TR.Messages["Export", "Export"], HiddenMessageBoxes.ConvertComics))
+			if (flag && (exportSetting.Target == ExportTarget.ReplaceSource || exportSetting.DeleteOriginal) && !AppUtility.AskQuestion(this, TR.Messages["AskExport", "You have chosen to delete or replace existing files during export. Are you sure you want to continue?\nThe deleted files will be moved to the Recycle Bin during export. Please make sure there is enough disk space available and the eComics are not located on a network drive!"], TR.Messages["Export", "Export"], HiddenMessageBoxes.ConvertComics))
 			{
 				return;
 			}
@@ -2734,7 +2734,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		public void SetListLayoutToAll(DisplayListConfig dlc = null)
 		{
-			if (!Program.AskQuestion(this, TR.Messages["AskSetAllLists", "Are you sure you want to set all Lists to the current layout?"], TR.Messages["Set", "Set"], HiddenMessageBoxes.SetAllListLayouts))
+			if (!AppUtility.AskQuestion(this, TR.Messages["AskSetAllLists", "Are you sure you want to set all Lists to the current layout?"], TR.Messages["Set", "Set"], HiddenMessageBoxes.SetAllListLayouts))
 			{
 				return;
 			}
@@ -3158,7 +3158,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		private void InitializePluginHelp()
 		{
-			IEnumerable<PackageManager.Package> enumerable = from p in Program.ScriptPackages.GetPackages()
+			IEnumerable<PackageManager.Package> enumerable = from p in AppConfig.ScriptPackages.GetPackages()
 															 where !string.IsNullOrEmpty(p.HelpLink)
 															 select p;
 			miHelpPlugins.Visible = enumerable.Count() > 0;
@@ -3166,14 +3166,14 @@ namespace cYo.Projects.ComicRack.Viewer
 			{
 				miHelpPlugins.DropDownItems.Add(p2.Name, p2.Image, delegate
 				{
-					Program.StartDocument(p2.HelpLink, p2.PackagePath);
+					AppUtility.StartDocument(p2.HelpLink, p2.PackagePath);
 				});
 			}
 		}
 
 		private void InitializeHelp(string helpSystem)
 		{
-			Program.HelpSystem = helpSystem;
+            AppConfig.HelpSystem = helpSystem;
 			miWebHelp.DropDownItems.Clear();
 			miHelp.Visible = false;
 			if (miHelp.DropDownItems.Contains(miWebHelp))
@@ -3182,7 +3182,7 @@ namespace cYo.Projects.ComicRack.Viewer
 				helpMenu.DropDownItems.Insert(helpMenu.DropDownItems.IndexOf(miHelp) + 1, miWebHelp);
 			}
 			miHelp.DropDownItems.Clear();
-			ToolStripItem[] array = Program.Help.GetCustomHelpMenu().ToArray();
+			ToolStripItem[] array = AppConfig.Help.GetCustomHelpMenu().ToArray();
 			if (array.Length != 0)
 			{
 				helpMenu.DropDownItems.Remove(miWebHelp);
@@ -3191,7 +3191,7 @@ namespace cYo.Projects.ComicRack.Viewer
 				miHelp.DropDownItems.Add(new ToolStripSeparator());
 				miHelp.DropDownItems.AddRange(array);
 			}
-			IEnumerable<string> helpSystems = Program.HelpSystems;
+			IEnumerable<string> helpSystems = AppConfig.Help.HelpSystems;
 			miChooseHelpSystem.Visible = helpSystems.Count() > 1;
 			miChooseHelpSystem.DropDownItems.Clear();
 			foreach (string item in helpSystems)
@@ -3200,7 +3200,7 @@ namespace cYo.Projects.ComicRack.Viewer
 				((ToolStripMenuItem)miChooseHelpSystem.DropDownItems.Add(name, null, delegate
 				{
 					Program.Settings.HelpSystem = name;
-				})).Checked = Program.HelpSystem == name;
+				})).Checked = AppConfig.HelpSystem == name;
 			}
 		}
 
@@ -3401,7 +3401,7 @@ namespace cYo.Projects.ComicRack.Viewer
 
 		private void backgroundSaveTimer_Tick(object sender, EventArgs e)
 		{
-			Program.DatabaseManager.SaveInBackground();
+            AppServices.DatabaseManager.SaveInBackground();
 		}
 
 		private void tsExportActivity_Click(object sender, EventArgs e)
@@ -4481,9 +4481,9 @@ namespace cYo.Projects.ComicRack.Viewer
 					return;
 
 				if (qr.HasFlag(QuestionResult.Ok) && qr.HasFlag(QuestionResult.Option2))
-					Program.StartDocument(NightlyDownloadLinkZIP);
+					AppUtility.StartDocument(NightlyDownloadLinkZIP);
 				else if (qr.HasFlag(QuestionResult.Ok))
-					Program.StartDocument(NightlyDownloadLinkEXE);
+					AppUtility.StartDocument(NightlyDownloadLinkEXE);
 			}
 		}
 	}

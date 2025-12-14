@@ -87,7 +87,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 						{
 							moveToRecycleBin = (Program.Settings.MoveFilesToRecycleBin ? "!" : string.Empty) + TR.Messages["MoveBin", "&Also move the files to the Recycle Bin"];
 						}
-						booksImage = Program.MakeBooksImage(books, new Size(256, 128), 5, onlyMemory: false);
+						booksImage = AppUtility.MakeBooksImage(books, new Size(256, 128), 5, onlyMemory: false);
 					}
 					if (cbl is ComicLibraryListItem || (editableComicBookListProvider == null && filteredComicBookList == null))
 					{
@@ -1367,7 +1367,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 					saveFileDialog.Filter = TR.Load("FileFilter")["ReadingListSaveFilter", "ComicRack Reading List|*.cbl|ComicRack Reading List (Single Entries)|*.cbl"];
 					saveFileDialog.DefaultExt = ".cbl";
 					saveFileDialog.FileName = FileUtility.MakeValidFilename(shareableComicListItem.Name);
-					foreach (string favoritePath in Program.GetFavoritePaths())
+					foreach (string favoritePath in GetFavoritePaths())
 					{
 						saveFileDialog.CustomPlaces.Add(favoritePath);
 					}
@@ -1501,7 +1501,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 				openFileDialog.Filter = TR.Load("FileFilter")["ReadingListLoad", "ComicRack Reading List|*.cbl|Xml File|*.xml|All Files|*.*"];
 				openFileDialog.CheckFileExists = true;
 				openFileDialog.Multiselect = true;
-				foreach (string favoritePath in Program.GetFavoritePaths())
+				foreach (string favoritePath in GetFavoritePaths())
 				{
 					openFileDialog.CustomPlaces.Add(favoritePath);
 				}
@@ -1526,7 +1526,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			if (selectedNode != null && !selectedNode.IsEditing)
 			{
 				ComicListItemCollection nodeComicListCollection = GetNodeComicListCollection((selectedNode.Tag is ComicListItemFolder) ? selectedNode.Parent : selectedNode);
-				if (nodeComicListCollection != null && Program.AskQuestion(this, TR.Messages["AskRemoveItem", "Do you really want to remove this item?"], TR.Messages["Remove", "Remove"], HiddenMessageBoxes.RemoveList) && nodeComicListCollection.Remove(selectedNode.Tag as ComicListItem) && selectedNode.Parent != null)
+				if (nodeComicListCollection != null && AppUtility.AskQuestion(this, TR.Messages["AskRemoveItem", "Do you really want to remove this item?"], TR.Messages["Remove", "Remove"], HiddenMessageBoxes.RemoveList) && nodeComicListCollection.Remove(selectedNode.Tag as ComicListItem) && selectedNode.Parent != null)
 				{
 					tvQueries.SelectedNode = selectedNode.Parent;
 				}
@@ -1722,5 +1722,10 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 				Library.CommitComicListCacheChanges((ComicListItem cli) => FindItemNode(cli)?.IsVisible ?? false);
 			}
 		}
-	}
+
+        public static IEnumerable<string> GetFavoritePaths()
+        {
+            return AppConfig.Settings.FavoriteFolders.Concat(AppServices.Database.WatchFolders.Select((WatchFolder wf) => wf.Folder)).Distinct();
+        }
+    }
 }

@@ -497,15 +497,15 @@ namespace cYo.Projects.ComicRack.Viewer.Controls
 			switch (itemView.ItemViewMode)
 			{
 			case ItemViewMode.Thumbnail:
-				height = height.Clamp(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight));
+				height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinThumbHeight), FormUtility.ScaleDpiY(AppConstants.MaxThumbHeight));
 				itemView.ItemThumbSize = new Size(height, height);
 				break;
 			case ItemViewMode.Tile:
-				height = height.Clamp(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight));
+				height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinTileHeight), FormUtility.ScaleDpiY(AppConstants.MaxTileHeight));
 				itemView.ItemTileSize = new Size(height * 2, height);
 				break;
 			case ItemViewMode.Detail:
-				height = height.Clamp(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight));
+				height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinRowHeight), FormUtility.ScaleDpiY(AppConstants.MaxRowHeight));
 				itemView.ItemRowHeight = height;
 				break;
 			}

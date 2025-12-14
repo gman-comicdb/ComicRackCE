@@ -1788,7 +1788,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 				return;
 			}
 			viewableItem = itemView.GetStackItems(viewableItem).FirstOrDefault();
-			string text = Program.LoadCustomThumbnail(null, this, miSetStackThumbnail.Text.Replace("&", string.Empty));
+			string text = AppUtility.LoadCustomThumbnail(null, this, miSetStackThumbnail.Text.Replace("&", string.Empty));
 			if (text != null)
 			{
 				if (stacksConfig == null)
@@ -2537,11 +2537,11 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			switch (itemView.ItemViewMode)
 			{
 				case ItemViewMode.Thumbnail:
-					return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight), itemView.ItemThumbSize.Height);
+					return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinThumbHeight), FormUtility.ScaleDpiY(AppConstants.MaxThumbHeight), itemView.ItemThumbSize.Height);
 				case ItemViewMode.Tile:
-					return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight), itemView.ItemTileSize.Height);
+					return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinTileHeight), FormUtility.ScaleDpiY(AppConstants.MaxTileHeight), itemView.ItemTileSize.Height);
 				case ItemViewMode.Detail:
-					return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight), itemView.ItemRowHeight);
+					return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinRowHeight), FormUtility.ScaleDpiY(AppConstants.MaxRowHeight), itemView.ItemRowHeight);
 				default:
 					return null;
 			}
@@ -2552,15 +2552,15 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			switch (itemView.ItemViewMode)
 			{
 				case ItemViewMode.Thumbnail:
-					height = height.Clamp(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight));
+					height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinThumbHeight), FormUtility.ScaleDpiY(AppConstants.MaxThumbHeight));
 					itemView.ItemThumbSize = new Size(height, height);
 					break;
 				case ItemViewMode.Tile:
-					height = height.Clamp(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight));
+					height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinTileHeight), FormUtility.ScaleDpiY(AppConstants.MaxTileHeight));
 					itemView.ItemTileSize = new Size(height * 2, height);
 					break;
 				case ItemViewMode.Detail:
-					height = height.Clamp(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight));
+					height = height.Clamp(FormUtility.ScaleDpiY(AppConstants.MinRowHeight), FormUtility.ScaleDpiY(AppConstants.MaxRowHeight));
 					itemView.ItemRowHeight = height;
 					break;
 			}
@@ -2638,7 +2638,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			CoverViewItem coverViewItem = itemView.FocusedItem as CoverViewItem;
 			if (coverViewItem != null && !string.IsNullOrEmpty(coverViewItem.Comic.Web))
 			{
-				Program.StartDocument(coverViewItem.Comic.Web);
+				AppUtility.StartDocument(coverViewItem.Comic.Web);
 			}
 		}
 
@@ -2710,7 +2710,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			ComicBook comicBook = GetBookList(ComicBookFilterType.IsNotFileless | ComicBookFilterType.Selected).FirstOrDefault();
 			if (comicBook != null)
 			{
-				Program.ShowExplorer(comicBook.FilePath);
+                AppUtility.ShowExplorer(comicBook.FilePath);
 			}
 		}
 
@@ -2802,7 +2802,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 
 		public void ClearComicData()
 		{
-			if (Program.AskQuestion(this, TR.Messages["AskClearComicData", "Do you want to remove all entered data from the selected Books (can be reverted with Undo)?"], TR.Default["Clear"], HiddenMessageBoxes.AskClearData, null, TR.Default["No"]))
+			if (AppUtility.AskQuestion(this, TR.Messages["AskClearComicData", "Do you want to remove all entered data from the selected Books (can be reverted with Undo)?"], TR.Default["Clear"], HiddenMessageBoxes.AskClearData, null, TR.Default["No"]))
 			{
 				Program.Database.Undo.SetMarker(miClearData.Text);
 				GetBookList(ComicBookFilterType.Selected).ForEachProgress(delegate (ComicBook cb)
@@ -2960,10 +2960,10 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			// Ref (long path): https://nietras.com/2025/05/26/windows-short-path-names/
 			string filePath = comicBook.FilePath.Length > 260 ? FileMethods.GetShortName(comicBook.FilePath) : comicBook.FilePath;
 			string args = string.IsNullOrEmpty(ep.Arguments) ? $"\"{filePath}\"" : $"{ep.Arguments} \"{filePath}\"";
-			Program.StartProgram(ep.Path, args);
+			AppUtility.StartProgram(ep.Path, args);
 		}
 
-		private void LayoutMenuOpening(object sender, CancelEventArgs e)
+        private void LayoutMenuOpening(object sender, CancelEventArgs e)
 		{
 			try
 			{
@@ -2985,7 +2985,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 				toolStripItem.Dispose();
 			}
 			bool enabled = AllSelectedLinked();
-			AddConverterEntries(Program.ExportComicRackPresets, enabled);
+			AddConverterEntries(AppConfig.ExportComicRackPresets, enabled);
 			AddConverterEntries(Program.Settings.ExportUserPresets, enabled);
 		}
 

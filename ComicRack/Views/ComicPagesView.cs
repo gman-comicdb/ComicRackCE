@@ -204,11 +204,11 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			switch (pagesView.ItemView.ItemViewMode)
 			{
 			case ItemViewMode.Thumbnail:
-				return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight), pagesView.ItemView.ItemThumbSize.Height);
+				return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinThumbHeight), FormUtility.ScaleDpiY(AppConstants.MaxThumbHeight), pagesView.ItemView.ItemThumbSize.Height);
 			case ItemViewMode.Tile:
-				return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight), pagesView.ItemView.ItemTileSize.Height);
+				return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinTileHeight), FormUtility.ScaleDpiY(AppConstants.MaxTileHeight), pagesView.ItemView.ItemTileSize.Height);
 			case ItemViewMode.Detail:
-				return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight), pagesView.ItemView.ItemRowHeight);
+				return new ItemSizeInfo(FormUtility.ScaleDpiY(AppConstants.MinRowHeight), FormUtility.ScaleDpiY(AppConstants.MaxRowHeight), pagesView.ItemView.ItemRowHeight);
 			default:
 				return null;
 			}
