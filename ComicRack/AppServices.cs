@@ -3,11 +3,13 @@ using cYo.Common.Text;
 using cYo.Common.Threading;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Backup;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 using cYo.Projects.ComicRack.Engine.Sync;
 using cYo.Projects.ComicRack.Plugins;
+using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Properties;
 using Microsoft.Win32;
 using System;
@@ -41,6 +43,8 @@ public static class AppServices
     public static QueueManager QueueManager { get; private set; }
     public static ComicScanner Scanner => QueueManager.Scanner;
 
+    public static BackupManager BackupManager { get; private set; }
+
     public static void RunMainForm() => Application.Run(MainForm);
 
     #region Bootstrap    
@@ -66,6 +70,13 @@ public static class AppServices
         CacheManager = new CacheManager(DatabaseManager, AppConfig.Paths, AppConfig.Settings, Resources.ResourceManager);
         QueueManager = new QueueManager(DatabaseManager, CacheManager, AppConfig.Settings, AppConfig.Settings.Devices);
         QueueManager.ComicScanned += BootstrapEventHandlers.OnComicScannedIgnoreFile;
+        BackupManager = new BackupManager(
+            AppConfig.Settings.BackupManager,
+            AppConfig.Paths,
+            AppConstants.DefaultSettingsFile,
+            AppConstants.DefaultListsFile,
+            AppConstants.DefaultIconPackagesPath);
+        if (AppConfig.Settings.BackupManager.OnStartup) BackupManager.RunBackup();
         DatabaseManager.BackgroundSaveInterval = dbBackgroundSaving;
 
         AppConfig.Settings.IgnoredCoverImagesChanged += BootstrapEventHandlers.OnIgnoredCoverImagesChanged;
@@ -150,6 +161,7 @@ public static class AppServices
             AppConfig.Settings.Save(AppConstants.DefaultSettingsFile);
             ImagePool.Dispose();
             DatabaseManager.Dispose();
+            if (AppConfig.Settings.BackupManager.OnExit) BackupManager.RunBackup(false);
         }
         catch (Exception ex)
         {

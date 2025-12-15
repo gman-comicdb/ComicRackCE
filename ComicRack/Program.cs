@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer;
 
-public static partial class Program
+public static class Program
 {
     public static Settings Settings => AppConfig.Settings;
 
@@ -22,7 +22,7 @@ public static partial class Program
 
     public static DefaultLists Lists => AppConfig.Lists;
 
-    /// <summaryThe GUI. All of it.</summary>
+    /// <summary>The GUI. All of it.</summary>
     public static MainForm MainForm => AppServices.MainForm;
 
     // NetworkManager

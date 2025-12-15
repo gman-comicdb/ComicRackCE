@@ -2,8 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>cYo.Projects.ComicRack.Engine</RootNamespace>
-    
+    <RootNamespace>cYo.Projects.ComicRack.Engine</RootNamespace>   
     <FileAlignment>4096</FileAlignment>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>

@@ -3887,7 +3887,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			tsWriteInfoActivity.Visible = Program.QueueManager.IsInComicFileUpdate;
 			tsReadInfoActivity.Visible = Program.QueueManager.IsInComicFileRefresh;
 			tsPageActivity.Visible = Program.ImagePool.IsWorking;
-			tsBackupActivity.Visible = Program.BackupManager.IsInBackupProcess;
+			tsBackupActivity.Visible = AppServices.BackupManager.IsInBackupProcess;
 			bool isInComicConversion = Program.QueueManager.IsInComicConversion;
 			int pendingComicConversions = Program.QueueManager.PendingComicConversions;
 			int count = Program.QueueManager.ExportErrors.Count;
