@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-
 using cYo.Common.Localize;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;

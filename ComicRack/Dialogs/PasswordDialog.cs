@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
-
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 

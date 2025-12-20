@@ -1,7 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Common.Localize;
 using cYo.Common.Win32;

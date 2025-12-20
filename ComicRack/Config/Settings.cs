@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Cryptography;
 using cYo.Common.Drawing;
 using cYo.Common.Mathematics;
 using cYo.Common.Threading;

@@ -1,15 +1,11 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Common.Localize;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Display;
-using cYo.Projects.ComicRack.Engine.Display.Forms;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Views;
 

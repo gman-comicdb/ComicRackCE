@@ -13,9 +13,6 @@ using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
-using cYo.Projects.ComicRack.Viewer.Properties;
-
-using static IronPython.Modules._ast;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 

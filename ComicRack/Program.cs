@@ -1,6 +1,9 @@
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
 global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
+// does nothing to prevent running Code Cleanup from applying rule
+#pragma warning disable IDE0005 // Remove unnecessary using directives
 global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
+#pragma warning restore IDE0005
 
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,6 @@ using cYo.Common.Drawing;
 using cYo.Common.IO;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
-using cYo.Common.Net;
 using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Text;

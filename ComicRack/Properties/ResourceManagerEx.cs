@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-using cYo.Common.Localize;
 using cYo.Common.Windows.Forms.Theme;
 
 namespace cYo.Projects.ComicRack.Viewer.Properties;

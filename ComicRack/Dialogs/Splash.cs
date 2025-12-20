@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
-using cYo.Common.Net;
 using cYo.Common.Runtime;
 using cYo.Common.Threading;
 using cYo.Common.Windows.Forms;

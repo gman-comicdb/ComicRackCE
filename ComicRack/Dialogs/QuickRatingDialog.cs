@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 using cYo.Common.ComponentModel;
@@ -7,10 +5,7 @@ using cYo.Common.Drawing;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Controls;
-using cYo.Projects.ComicRack.Engine.Drawing;
 using cYo.Projects.ComicRack.Engine.IO;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
