@@ -335,10 +335,7 @@ public partial class DeviceEditControl : UserControlEx
         tvSharedLists.EndUpdate();
         blockCheck = false;
         SetButtonStates();
-        if (library != null)
-        {
-            library.CommitComicListCacheChanges();
-        }
+        library?.CommitComicListCacheChanges();
     }
 
     private void SetButtonStates()

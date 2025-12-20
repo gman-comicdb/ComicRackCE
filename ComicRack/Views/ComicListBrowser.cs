@@ -101,10 +101,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     protected virtual IComicBookListProvider GetNewBookList()
     {
-        if (base.Main != null)
-        {
-            base.Main.StoreWorkspace();
-        }
+        base.Main?.StoreWorkspace();
         return BookList;
     }
 

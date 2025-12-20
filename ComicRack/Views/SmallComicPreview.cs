@@ -110,10 +110,7 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
     {
         if (comicBook == null)
         {
-            if (pageViewer.Book != null)
-            {
-                pageViewer.Book.Dispose();
-            }
+            pageViewer.Book?.Dispose();
             pageViewer.Book = null;
         }
         else if (pageViewer.Book == null || comicBook.FilePath != pageViewer.Book.Comic.FilePath)

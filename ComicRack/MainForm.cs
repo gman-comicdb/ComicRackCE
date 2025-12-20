@@ -677,7 +677,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public static ScriptOutputForm ScriptConsole
     {
-        get => Program.ScriptConsole != null ? Program.ScriptConsole : null;
+        get => Program.ScriptConsole ?? null;
     }
 
     public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries.Replace("\n", "").Replace("\r", "").Split(';', StringSplitOptions.RemoveEmptyEntries);
@@ -2810,10 +2810,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         int num = 0;
         foreach (ToolStripMenuItem dropDownItem in miOpenRecent.DropDownItems)
         {
-            if (dropDownItem.Image != null)
-            {
-                dropDownItem.Image.Dispose();
-            }
+            dropDownItem.Image?.Dispose();
         }
         FormUtility.SafeToolStripClear(miOpenRecent.DropDownItems);
         string[] array = recentFiles;
@@ -3759,7 +3756,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         UpdateQuickList();
         miOpenRecent.Enabled = recentFiles.Length != 0;
-        string text = ((ComicDisplay.Book == null) ? null : ComicDisplay.Book.Caption.Ellipsis(60, "..."));
+        string text = (ComicDisplay.Book?.Caption.Ellipsis(60, "..."));
         tsBook.Text = (string.IsNullOrEmpty(text) ? None : text);
         if (readerForm != null && !MinimizedToTray)
         {

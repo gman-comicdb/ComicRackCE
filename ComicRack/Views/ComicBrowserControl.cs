@@ -1821,10 +1821,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
                 ItemView.BeginUpdate();
                 try
                 {
-                    if (stacksConfig != null)
-                    {
-                        stacksConfig.SetStackViewConfig(Program.Settings.CommonListStackLayout ? BookList.Name : currentStackName, itemView.ViewConfig);
-                    }
+                    stacksConfig?.SetStackViewConfig(Program.Settings.CommonListStackLayout ? BookList.Name : currentStackName, itemView.ViewConfig);
                     itemView.StackDisplayEnabled = true;
                     if (preStackConfig != null)
                     {
@@ -3125,10 +3122,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private void ShowBookInList(ComicListItem list, ComicBook cb)
     {
-        if (base.Main != null)
-        {
-            base.Main.ShowBookInList(Library, list, cb, switchToList: true);
-        }
+        base.Main?.ShowBookInList(Library, list, cb, switchToList: true);
     }
 
     private void AddNoneEntry(ToolStripItemCollection ic)

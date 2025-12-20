@@ -80,18 +80,12 @@ public partial class DevicesEditDialog : FormEx
 
     private void miDeviceCopy_Click(object sender, EventArgs e)
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDevice.CopyShareSettings();
-        }
+        CurrentDevice?.CopyShareSettings();
     }
 
     private void miDevicePaste_Click(object sender, EventArgs e)
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDevice.PasteSharedSettings();
-        }
+        CurrentDevice?.PasteSharedSettings();
     }
 
     private void miDeviceCopyToAll_Click(object sender, EventArgs e)

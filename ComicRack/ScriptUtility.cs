@@ -174,10 +174,7 @@ public static class ScriptUtility
     {
         try
         {
-            if (Scripts != null)
-            {
-                Scripts.Invoke(hook, p);
-            }
+            Scripts?.Invoke(hook, p);
         }
         catch (Exception)
         {

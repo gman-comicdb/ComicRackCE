@@ -429,10 +429,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
                 {
                     RemoveList(l, null);
                 });
-                if (comicExplorerView.ComicBrowser.Library != null)
-                {
-                    comicExplorerView.ComicBrowser.Library.Dispose();
-                }
+                comicExplorerView.ComicBrowser.Library?.Dispose();
                 comicExplorerView.Dispose();
                 using (ItemMonitor.Lock(connectedMachines))
                 {
@@ -631,10 +628,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             if (!flag)
             {
                 lastBrowser = tabStripButton;
-                if (comicViewer != null)
-                {
-                    comicViewer.Hide();
-                }
+                comicViewer?.Hide();
             }
             tabStrip.SelectedTab = tabStripButton;
             return selectedTab == tabStripButton;

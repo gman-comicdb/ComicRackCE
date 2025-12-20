@@ -683,10 +683,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         finally
         {
             itemView.AllowDrop = false;
-            if (dragCursor != null)
-            {
-                dragCursor.Dispose();
-            }
+            dragCursor?.Dispose();
             dragCursor = null;
             dragPages = null;
         }

@@ -301,7 +301,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
     {
         get
         {
-            return StatsProvider == null ? null : StatsProvider.GetSeriesStats(Comic);
+            return StatsProvider?.GetSeriesStats(Comic);
         }
     }
 

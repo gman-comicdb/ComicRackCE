@@ -786,10 +786,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         finally
         {
-            if (dragCursor != null)
-            {
-                dragCursor.Dispose();
-            }
+            dragCursor?.Dispose();
             dragCursor = null;
             dragNode = null;
         }
@@ -1199,10 +1196,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void RenameNode()
     {
-        if (tvQueries.SelectedNode != null)
-        {
-            tvQueries.SelectedNode.BeginEdit();
-        }
+        tvQueries.SelectedNode?.BeginEdit();
     }
 
     private void ExpandCollapseAllNodes()

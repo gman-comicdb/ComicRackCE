@@ -957,10 +957,7 @@ public static class Program
         MainForm.Show();
         MainForm.Update();
         MainForm.Activate();
-        if (splash != null)
-        {
-            splash.Invoke(splash.Close);
-        }
+        splash?.Invoke(splash.Close);
         ThreadUtility.RunInBackground("Starting Network", NetworkManager.Start);
         ThreadUtility.RunInBackground("Generate Language Pack Info", delegate
         {
