@@ -25,10 +25,21 @@ insert_final_newline = false
 # Indentation and spacing
 trim_trailing_whitespace = true
 
+# Using default setting of true + silent instead of + suggestion
+csharp_style_prefer_implicitly_typed_lambda_expression = true:silent
+
+# Use collection initializers or expressions - might change semantics
+dotnet_diagnostic.IDE0028.severity = none
+
+# Use collection expression for fluent - Add(), AddRange(), AsSpan(), ToList(), and ToArray()
+dotnet_diagnostic.IDE0305.severity = none
+
 [*.{cs,vb}]
 # Expression-level preferences
 dotnet_style_prefer_collection_expression = when_types_exactly_match:suggestion
+
 dotnet_style_prefer_simplified_boolean_expressions = true:silent
+
 csharp_style_prefer_primary_constructors = true:silent
 
 csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
@@ -40,13 +51,6 @@ csharp_style_expression_bodied_properties = when_on_single_line:suggestion
 csharp_prefer_simple_using_statement = true:silent
 
 # Naming rules
-dotnet_naming_rule.private_fields_should_be_camelcase.severity = suggestion
-dotnet_naming_rule.private_fields_should_be_camelcase.symbols = private_fields
-dotnet_naming_rule.private_fields_should_be_camelcase.style = camelcase
-
-dotnet_naming_rule.private_static_fields_should_be_camelcase.severity = suggestion
-dotnet_naming_rule.private_static_fields_should_be_camelcase.symbols = private_static_fields
-dotnet_naming_rule.private_static_fields_should_be_camelcase.style = camelcase
 
 dotnet_naming_rule.types_and_namespaces_should_be_pascalcase.severity = silent
 
@@ -57,6 +61,8 @@ dotnet_naming_rule.local_variables_should_be_camelcase.severity = silent
 dotnet_naming_rule.local_constants_should_be_camelcase.severity = silent
 dotnet_naming_rule.parameters_should_be_camelcase.severity = silent
 dotnet_naming_rule.public_fields_should_be_pascalcase.severity = silent
+dotnet_naming_rule.private_fields_should_be__camelcase.severity = silent
+dotnet_naming_rule.private_static_fields_should_be_s_camelcase.severity = silent
 dotnet_naming_rule.public_constant_fields_should_be_pascalcase.severity = silent
 dotnet_naming_rule.private_constant_fields_should_be_pascalcase.severity = silent
 dotnet_naming_rule.public_static_readonly_fields_should_be_pascalcase.severity = silent
@@ -171,7 +177,7 @@ csharp_style_deconstructed_variable_declaration = true:suggestion
 csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_prefer_index_operator = true:suggestion
-csharp_style_prefer_local_over_anonymous_function = true:suggestion
+#csharp_style_prefer_local_over_anonymous_function = true:suggestion
 csharp_style_prefer_null_check_over_type_check = true:suggestion
 csharp_style_prefer_range_operator = true:suggestion
 csharp_style_prefer_tuple_swap = true:suggestion
@@ -276,12 +282,12 @@ dotnet_naming_rule.public_fields_should_be_pascalcase.symbols = public_fields
 dotnet_naming_rule.public_fields_should_be_pascalcase.style = pascalcase
 
 #dotnet_naming_rule.private_fields_should_be__camelcase.severity = suggestion
-#dotnet_naming_rule.private_fields_should_be__camelcase.symbols = private_fields
-#dotnet_naming_rule.private_fields_should_be__camelcase.style = _camelcase
+dotnet_naming_rule.private_fields_should_be__camelcase.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be__camelcase.style = _camelcase
 
 #dotnet_naming_rule.private_static_fields_should_be_s_camelcase.severity = suggestion
-#dotnet_naming_rule.private_static_fields_should_be_s_camelcase.symbols = private_static_fields
-#dotnet_naming_rule.private_static_fields_should_be_s_camelcase.style = s_camelcase
+dotnet_naming_rule.private_static_fields_should_be_s_camelcase.symbols = private_static_fields
+dotnet_naming_rule.private_static_fields_should_be_s_camelcase.style = s_camelcase
 
 #dotnet_naming_rule.public_constant_fields_should_be_pascalcase.severity = suggestion
 dotnet_naming_rule.public_constant_fields_should_be_pascalcase.symbols = public_constant_fields
