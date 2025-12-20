@@ -40,11 +40,7 @@ public partial class QuickOpenView : CaptionControl
         public int Compare(ComicBook cx, ComicBook cy)
         {
             int num = cy.OpenedTime.CompareTo(cx.OpenedTime);
-            if (num != 0)
-            {
-                return num;
-            }
-            return cy.AddedTime.CompareTo(cx.AddedTime);
+            return num != 0 ? num : cy.AddedTime.CompareTo(cx.AddedTime);
         }
     }
 

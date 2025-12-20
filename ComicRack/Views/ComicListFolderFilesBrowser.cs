@@ -31,11 +31,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
     {
         get
         {
-            if (tvFolders == null || tvFolders.Nodes.Count <= 0)
-            {
-                return cachedCurrentFolder;
-            }
-            return tvFolders.GetSelectedNodePath();
+            return tvFolders == null || tvFolders.Nodes.Count <= 0 ? cachedCurrentFolder : tvFolders.GetSelectedNodePath();
         }
         set
         {

@@ -126,11 +126,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
         public bool IsValid()
         {
-            if (books != null)
-            {
-                return !books.IsEmpty();
-            }
-            return false;
+            return books != null ? !books.IsEmpty() : false;
         }
 
         public void SetRating(float rating)
@@ -181,11 +177,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (editor != null)
-                {
-                    return editor.IsValid;
-                }
-                return false;
+                return editor != null ? editor.IsValid : false;
             }
         }
 
@@ -193,11 +185,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (!IsValid)
-                {
-                    return ComicPageType.Story;
-                }
-                return editor.PageType;
+                return !IsValid ? ComicPageType.Story : editor.PageType;
             }
             set
             {
@@ -212,11 +200,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (!IsValid)
-                {
-                    return ImageRotation.None;
-                }
-                return editor.Rotation;
+                return !IsValid ? ImageRotation.None : editor.Rotation;
             }
             set
             {
@@ -241,11 +225,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (editor != null)
-                {
-                    return editor.CanBookmark;
-                }
-                return false;
+                return editor != null ? editor.CanBookmark : false;
             }
         }
 
@@ -253,11 +233,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (!CanBookmark)
-                {
-                    return string.Empty;
-                }
-                return editor.BookmarkProposal;
+                return !CanBookmark ? string.Empty : editor.BookmarkProposal;
             }
         }
 
@@ -265,11 +241,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             get
             {
-                if (!CanBookmark)
-                {
-                    return string.Empty;
-                }
-                return editor.Bookmark;
+                return !CanBookmark ? string.Empty : editor.Bookmark;
             }
             set
             {
@@ -525,11 +497,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (!ReaderUndocked)
-            {
-                return undockedReaderBounds;
-            }
-            return readerForm.SafeBounds;
+            return !ReaderUndocked ? undockedReaderBounds : readerForm.SafeBounds;
         }
         set
         {
@@ -550,11 +518,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (!ReaderUndocked)
-            {
-                return undockedReaderState;
-            }
-            return readerForm.WindowState;
+            return !ReaderUndocked ? undockedReaderState : readerForm.WindowState;
         }
         set
         {
@@ -649,11 +613,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (!ReaderUndocked && BrowserDock == DockStyle.Fill)
-            {
-                return mainView.IsComicVisible;
-            }
-            return true;
+            return !ReaderUndocked && BrowserDock == DockStyle.Fill ? mainView.IsComicVisible : true;
         }
     }
 
@@ -661,11 +621,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (!ReaderUndocked && BrowserDock != DockStyle.Fill)
-            {
-                return mainViewContainer.Expanded;
-            }
-            return savedBrowserVisible;
+            return !ReaderUndocked && BrowserDock != DockStyle.Fill ? mainViewContainer.Expanded : savedBrowserVisible;
         }
         set
         {
@@ -683,11 +639,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (!ReaderUndocked)
-            {
-                return mainViewContainer.Dock;
-            }
-            return savedBrowserDockStyle;
+            return !ReaderUndocked ? mainViewContainer.Dock : savedBrowserDockStyle;
         }
         set
         {
@@ -2165,11 +2117,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private static string AddExtension(string file, string ext)
     {
-        if (!Path.HasExtension(file))
-        {
-            return file + ext;
-        }
-        return file;
+        return !Path.HasExtension(file) ? file + ext : file;
     }
 
     private void ControlExit()
@@ -2470,11 +2418,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         StoreWorkspace(displayWorkspace);
         displayWorkspace.Name = lastWorkspaceName ?? TR.Default["Workspace", "Workspace"];
         displayWorkspace.Type = lastWorkspaceType;
-        if (SaveWorkspaceDialog.Show(this, displayWorkspace))
-        {
-            return displayWorkspace;
-        }
-        return null;
+        return SaveWorkspaceDialog.Show(this, displayWorkspace) ? displayWorkspace : null;
     }
 
     private void SaveWorkspace()
@@ -2779,11 +2723,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return null;
         }
         string name = SelectItemDialog.GetName(this, TR.Messages["SaveListLayout", "Save List Layout"], TR.Default["Layout", "Layout"], Program.Settings.ListConfigurations);
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return new ListConfiguration(name)
+        return string.IsNullOrEmpty(name)
+            ? null
+            : new ListConfiguration(name)
         {
             Config = comicBrowser.ListConfig
         };
@@ -3808,11 +3750,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             return NotAvailable;
         }
-        if (nav.IsIndexRetrievalCompleted || nav.IndexPagesRetrieved == nav.Comic.PageCount)
-        {
-            return nav.Comic.PagesAsText;
-        }
-        return $"{nav.Comic.PagesAsText} ({nav.IndexPagesRetrieved})";
+        return nav.IsIndexRetrievalCompleted || nav.IndexPagesRetrieved == nav.Comic.PageCount
+            ? nav.Comic.PagesAsText
+            : $"{nav.Comic.PagesAsText} ({nav.IndexPagesRetrieved})";
     }
 
     private void OnUpdateGui()
@@ -4102,11 +4042,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             mainView.ShowLibrary(library);
         }
-        if (!libraryBrowser.SelectList(list.Id))
-        {
-            return false;
-        }
-        return this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false;
+        return !libraryBrowser.SelectList(list.Id) ? false : this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false;
     }
 
     void IApplication.Restart()
@@ -4149,11 +4085,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             using (IItemLock<PageImage> itemLock = Program.ImagePool.GetPage(cb.GetPageKey(page, BitmapAdjustment.Empty), cb))
             {
-                if (itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null)
-                {
-                    return null;
-                }
-                return itemLock.Item.Bitmap.Clone() as Bitmap;
+                return itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null ? null : itemLock.Item.Bitmap.Clone() as Bitmap;
             }
         }
         catch
@@ -4168,11 +4100,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             using (IItemLock<ThumbnailImage> itemLock = Program.ImagePool.GetThumbnail(cb.GetThumbnailKey(page), cb))
             {
-                if (itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null)
-                {
-                    return null;
-                }
-                return itemLock.Item.Bitmap.Clone() as Bitmap;
+                return itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null ? null : itemLock.Item.Bitmap.Clone() as Bitmap;
             }
         }
         catch

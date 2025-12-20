@@ -118,30 +118,20 @@ public class PageViewItem : ThumbnailViewItem
     {
         ComicPageInfo pageInfo = PageInfo;
         Size imageSize = new Size(pageInfo.ImageWidth, pageInfo.ImageHeight);
-        if (imageSize.Width <= 0 || imageSize.Height <= 0)
-        {
-            return base.GetEstimatedSize(canvasSize);
-        }
-        return ThumbRenderer.GetSafeScaledImageSize(imageSize, canvasSize);
+        return imageSize.Width <= 0 || imageSize.Height <= 0
+            ? base.GetEstimatedSize(canvasSize)
+            : ThumbRenderer.GetSafeScaledImageSize(imageSize, canvasSize);
     }
 
     public override ItemViewStates GetOwnerDrawnStates(ItemViewMode displayType)
     {
-        if (displayType == ItemViewMode.Tile)
-        {
-            return ItemViewStates.Selected | ItemViewStates.Hot;
-        }
-        return base.GetOwnerDrawnStates(displayType);
+        return displayType == ItemViewMode.Tile ? ItemViewStates.Selected | ItemViewStates.Hot : base.GetOwnerDrawnStates(displayType);
     }
 
     protected override Size MeasureItem(Graphics graphics, Size defaultSize, ItemViewMode displayType)
     {
         defaultSize = base.MeasureItem(graphics, defaultSize, displayType);
-        if (displayType == ItemViewMode.Thumbnail)
-        {
-            return AddBorder(GetThumbnailSizeSafe(defaultSize));
-        }
-        return defaultSize;
+        return displayType == ItemViewMode.Thumbnail ? AddBorder(GetThumbnailSizeSafe(defaultSize)) : defaultSize;
     }
 
     protected override Size MeasureColumn(Graphics graphics, IColumn header, Size defaultSize)
@@ -312,11 +302,7 @@ public class PageViewItem : ThumbnailViewItem
     {
         if (!(property == "Key"))
         {
-            if (property == "Page")
-            {
-                return PageAsText;
-            }
-            return PageInfo.GetStringValue(property);
+            return property == "Page" ? PageAsText : PageInfo.GetStringValue(property);
         }
         return Key;
     }

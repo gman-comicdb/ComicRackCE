@@ -80,11 +80,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
     {
         get
         {
-            if (comicViewer != null)
-            {
-                return comicViewer.Visible;
-            }
-            return false;
+            return comicViewer != null ? comicViewer.Visible : false;
         }
     }
 
@@ -118,11 +114,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
     {
         get
         {
-            if (tabStrip.SelectedTab != null)
-            {
-                return tabStrip.SelectedTab.Tag is int;
-            }
-            return false;
+            return tabStrip.SelectedTab != null ? tabStrip.SelectedTab.Tag is int : false;
         }
     }
 

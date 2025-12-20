@@ -142,11 +142,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages())
-            {
-                return itemView.SelectedCount == 1;
-            }
-            return false;
+            return Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount == 1 : false;
         }
     }
 
@@ -158,11 +154,9 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             {
                 return null;
             }
-            if (!string.IsNullOrEmpty(Bookmark))
-            {
-                return Bookmark;
-            }
-            return string.Format("{0} {1}", TR.Default["Page", "Page"], itemView.SelectedItems.First().Text);
+            return !string.IsNullOrEmpty(Bookmark)
+                ? Bookmark
+                : string.Format("{0} {1}", TR.Default["Page", "Page"], itemView.SelectedItems.First().Text);
         }
     }
 
@@ -170,11 +164,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (!CanBookmark)
-            {
-                return null;
-            }
-            return GetSelectedPages().First().Bookmark;
+            return !CanBookmark ? null : GetSelectedPages().First().Bookmark;
         }
         set
         {
@@ -190,11 +180,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages())
-            {
-                return itemView.SelectedCount > 0;
-            }
-            return false;
+            return Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount > 0 : false;
         }
     }
 
@@ -204,11 +190,9 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (!HasValidPages)
-            {
-                return ComicPageType.Other;
-            }
-            return (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
+            return !HasValidPages
+                ? ComicPageType.Other
+                : (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
                     select pvi.PageInfo).FirstOrDefault().PageType;
         }
         set
@@ -227,11 +211,9 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (!HasValidPages)
-            {
-                return ImageRotation.None;
-            }
-            return (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
+            return !HasValidPages
+                ? ImageRotation.None
+                : (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
                     select pvi.PageInfo).FirstOrDefault().Rotation;
         }
         set
@@ -679,11 +661,9 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private bool IsPageSorted()
     {
-        if (itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending)
-        {
-            return itemView.GroupColumn == null;
-        }
-        return false;
+        return itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending
+            ? itemView.GroupColumn == null
+            : false;
     }
 
     private void itemView_ItemDrag(object sender, ItemDragEventArgs e)

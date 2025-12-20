@@ -47,11 +47,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
     {
         get
         {
-            if (BookList != null)
-            {
-                return BookList.Id;
-            }
-            return Guid.Empty;
+            return BookList != null ? BookList.Id : Guid.Empty;
         }
     }
 

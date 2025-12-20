@@ -34,11 +34,7 @@ public class DragDropContainer
     {
         get
         {
-            if (books != null)
-            {
-                return books.Books.Count > 0;
-            }
-            return false;
+            return books != null ? books.Books.Count > 0 : false;
         }
     }
 
@@ -50,11 +46,7 @@ public class DragDropContainer
     {
         get
         {
-            if (!IsBookContainer)
-            {
-                return IsFilesContainer;
-            }
-            return true;
+            return !IsBookContainer ? IsFilesContainer : true;
         }
     }
 
@@ -150,10 +142,8 @@ public class DragDropContainer
         {
             return new DragDropContainer(data.GetData(typeof(ComicBookContainer)) as ComicBookContainer, data.GetData(ComicBookMatcher.ClipboardFormat) as ComicBookMatcher);
         }
-        if (data.GetDataPresent(DataFormats.FileDrop))
-        {
-            return new DragDropContainer((string[])data.GetData(DataFormats.FileDrop));
-        }
-        return new DragDropContainer();
+        return data.GetDataPresent(DataFormats.FileDrop)
+            ? new DragDropContainer((string[])data.GetData(DataFormats.FileDrop))
+            : new DragDropContainer();
     }
 }

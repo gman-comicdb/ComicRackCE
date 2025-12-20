@@ -29,11 +29,7 @@ public static class EditControlUtility
     {
         if (int.TryParse(control.Text, out var result))
         {
-            if (result >= 0)
-            {
-                return result;
-            }
-            return -1;
+            return result >= 0 ? result : -1;
         }
         return -1;
     }
@@ -42,11 +38,7 @@ public static class EditControlUtility
     {
         if (float.TryParse(control.Text, out var result))
         {
-            if (!(result < 0f))
-            {
-                return result;
-            }
-            return -1f;
+            return !(result < 0f) ? result : -1f;
         }
         return -1f;
     }
@@ -163,11 +155,7 @@ public static class EditControlUtility
         {
             return YesNo.Yes;
         }
-        if (!string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase))
-        {
-            return YesNo.Unknown;
-        }
-        return YesNo.No;
+        return !string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase) ? YesNo.Unknown : YesNo.No;
     }
 
     public static MangaYesNo GetMangaYesNo(string text)
@@ -180,11 +168,7 @@ public static class EditControlUtility
         {
             return MangaYesNo.YesAndRightToLeft;
         }
-        if (string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase))
-        {
-            return MangaYesNo.No;
-        }
-        return MangaYesNo.Unknown;
+        return string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase) ? MangaYesNo.No : MangaYesNo.Unknown;
     }
 
     public static void InitializeYesNo(ComboBox cb, bool withEmpty = true)

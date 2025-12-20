@@ -50,11 +50,7 @@ public partial class RemoteConnectionView : SubView
     {
         get
         {
-            if (Tab == null)
-            {
-                return null;
-            }
-            return Tab.Image;
+            return Tab == null ? null : Tab.Image;
         }
         set
         {

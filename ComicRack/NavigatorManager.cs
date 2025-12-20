@@ -332,11 +332,7 @@ public class NavigatorManager : IOpenBooksManager
             return string.Empty;
         }
         ComicBookNavigator itemOrDefault = slots.GetItemOrDefault(i);
-        if (itemOrDefault != null)
-        {
-            return itemOrDefault.Comic.Caption;
-        }
-        return TR.Default["None", "None"];
+        return itemOrDefault != null ? itemOrDefault.Comic.Caption : TR.Default["None", "None"];
     }
 
     protected virtual void OnBookOpened(BookEventArgs e)

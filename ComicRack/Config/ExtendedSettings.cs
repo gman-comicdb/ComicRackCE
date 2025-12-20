@@ -458,10 +458,7 @@ public class ExtendedSettings
     {
         get
         {
-            if (UseDarkMode)
-                return Themes.Dark;
-
-            return theme;
+            return UseDarkMode ? Themes.Dark : theme;
         }
         set => theme = value;
     }

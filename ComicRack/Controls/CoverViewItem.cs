@@ -183,11 +183,9 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
     {
         get
         {
-            if (string.IsNullOrEmpty(customThumbnailKey) || !base.View.IsStack(this))
-            {
-                return Comic.GetFrontCoverThumbnailKey();
-            }
-            return Comic.GetThumbnailKey(0, customThumbnailKey);
+            return string.IsNullOrEmpty(customThumbnailKey) || !base.View.IsStack(this)
+                ? Comic.GetFrontCoverThumbnailKey()
+                : Comic.GetThumbnailKey(0, customThumbnailKey);
         }
     }
 
@@ -303,11 +301,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
     {
         get
         {
-            if (StatsProvider == null)
-            {
-                return null;
-            }
-            return StatsProvider.GetSeriesStats(Comic);
+            return StatsProvider == null ? null : StatsProvider.GetSeriesStats(Comic);
         }
     }
 
@@ -368,11 +362,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public override ItemViewStates GetOwnerDrawnStates(ItemViewMode mode)
     {
-        if (mode != ItemViewMode.Detail)
-        {
-            return ItemViewStates.All;
-        }
-        return base.GetOwnerDrawnStates(mode);
+        return mode != ItemViewMode.Detail ? ItemViewStates.All : base.GetOwnerDrawnStates(mode);
     }
 
     protected override void Dispose(bool disposing)
@@ -406,11 +396,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
     protected override Size GetDefaultMaximumSize(Size defaultSize)
     {
         int height = defaultSize.Height;
-        if (ThumbnailSizing == CoverThumbnailSizing.None)
-        {
-            return new Size(height * 2, height);
-        }
-        return new Size(height * 1000, height);
+        return ThumbnailSizing == CoverThumbnailSizing.None ? new Size(height * 2, height) : new Size(height * 1000, height);
     }
 
     protected override Size MeasureColumn(Graphics graphics, IColumn header, Size defaultSize)
@@ -900,11 +886,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
         }
         if (newValue < 1)
         {
-            if (oldValue <= newValue)
-            {
-                return 1;
-            }
-            return -1;
+            return oldValue <= newValue ? 1 : -1;
         }
         return newValue;
     }
@@ -1607,20 +1589,12 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public bool Contains(Point pt)
     {
-        if (drawnRect.HasValue)
-        {
-            return drawnRect.Value.Contains(pt);
-        }
-        return true;
+        return drawnRect.HasValue ? drawnRect.Value.Contains(pt) : true;
     }
 
     public bool IntersectsWith(Rectangle rc)
     {
-        if (drawnRect.HasValue)
-        {
-            return drawnRect.Value.IntersectsWith(rc);
-        }
-        return true;
+        return drawnRect.HasValue ? drawnRect.Value.IntersectsWith(rc) : true;
     }
 
     protected virtual void OnRefreshComicData()

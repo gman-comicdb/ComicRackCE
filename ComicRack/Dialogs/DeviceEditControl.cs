@@ -425,11 +425,7 @@ public partial class DeviceEditControl : UserControlEx
 
     private static DeviceSyncSettings.SharedList GetSharedList(TreeNode node)
     {
-        if (node == null)
-        {
-            return null;
-        }
-        return (node.Tag as TagElement)?.List;
+        return node == null ? null : ((node.Tag as TagElement)?.List);
     }
 
     private static void SetSharedList(TreeNode node, DeviceSyncSettings.SharedList list)
@@ -446,11 +442,7 @@ public partial class DeviceEditControl : UserControlEx
 
     private static ComicListItem GetComicListItem(TreeNode node)
     {
-        if (node == null)
-        {
-            return null;
-        }
-        return (node.Tag as TagElement)?.Item;
+        return node == null ? null : ((node.Tag as TagElement)?.Item);
     }
 
     private ComicListItem GetSelectedComicListItem()

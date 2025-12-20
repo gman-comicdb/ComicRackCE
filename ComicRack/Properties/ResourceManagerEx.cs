@@ -55,18 +55,12 @@ internal class ResourceManagerEx : System.Resources.ResourceManager
 
     public override object GetObject(string name, CultureInfo culture)
     {
-        if (!isThemed)
-            return base.GetObject(name, culture);
-
-        return GetDarkObject(name, culture);
+        return !isThemed ? base.GetObject(name, culture) : GetDarkObject(name, culture);
     }
 
     private object GetDarkObject(string name, CultureInfo culture)
     {
-        if (darkResources.TryGetValue(name, out string darkValue))
-            return base.GetObject(darkValue, culture);
-
-        return base.GetObject(name, culture);
+        return darkResources.TryGetValue(name, out string darkValue) ? base.GetObject(darkValue, culture) : base.GetObject(name, culture);
         //return base.GetObject($"{triggerWord}{name}", culture) ?? base.GetObject(name, culture); // If the Dark variant doesn't exist return the regular version
     }
 

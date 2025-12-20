@@ -1141,11 +1141,7 @@ public static class Program
         }
         if (!string.IsNullOrEmpty(ExtendedSettings.RegisterFormats))
         {
-            if (!RegisterFormats(ExtendedSettings.RegisterFormats))
-            {
-                return 1;
-            }
-            return 0;
+            return !RegisterFormats(ExtendedSettings.RegisterFormats) ? 1 : 0;
         }
         TR.ResourceFolder = new PackedLocalize(TR.ResourceFolder);
         NativeLibraryHelper.RegisterDirectory(); //Add the resources directory to the search path for natives dll's

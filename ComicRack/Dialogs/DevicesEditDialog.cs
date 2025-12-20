@@ -40,11 +40,7 @@ public partial class DevicesEditDialog : FormEx
         get
         {
             TabPage tabPage = tabDevices.SelectedTab;
-            if (tabPage != null)
-            {
-                return tabPage.Tag as DeviceEditControl;
-            }
-            return null;
+            return tabPage != null ? tabPage.Tag as DeviceEditControl : null;
         }
     }
 

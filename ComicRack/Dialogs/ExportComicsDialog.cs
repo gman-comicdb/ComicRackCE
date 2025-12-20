@@ -59,11 +59,7 @@ public partial class ExportComicsDialog : FormEx
         get
         {
             object selectedItem = cbComicFormat.SelectedItem;
-            if (!(selectedItem is string))
-            {
-                return ((FileFormat)selectedItem).Id;
-            }
-            return 0;
+            return !(selectedItem is string) ? ((FileFormat)selectedItem).Id : 0;
         }
         set
         {

@@ -158,13 +158,11 @@ public static class ScriptUtility
 
     public static IEnumerable<T> CreateToolItems<T>(Control parent, string scriptType, Func<IEnumerable<ComicBook>> books, Func<Command, bool> predicate = null) where T : ToolStripItem, new()
     {
-        if (Scripts == null)
-        {
-            return Enumerable.Empty<T>();
-        }
-        return from command in Scripts.GetCommands(scriptType)
+        return Scripts == null
+            ? Enumerable.Empty<T>()
+            : (from command in Scripts.GetCommands(scriptType)
                where predicate == null || predicate(command)
-               select CreateToolItem<T>(parent, command, books);
+               select CreateToolItem<T>(parent, command, books));
     }
 
     public static void ShowError(IWin32Window parent, Exception ex)

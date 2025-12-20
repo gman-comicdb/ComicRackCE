@@ -1641,11 +1641,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IEditableComicBookListProvider editableComicBookListProvider = BookList.QueryService<IEditableComicBookListProvider>();
         if (ComicEditMode.CanEditList() && editableComicBookListProvider != null && !editableComicBookListProvider.IsLibrary)
         {
-            if (mustBeOrdered)
-            {
-                return IsViewSortedByPosition();
-            }
-            return true;
+            return mustBeOrdered ? IsViewSortedByPosition() : true;
         }
         return false;
     }
@@ -1978,11 +1974,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         ComicBookGroupMatcher currentMatcher = GetCurrentMatcher(withStack: true, withSelector);
         IEnumerable<ComicBook> books = BookList.GetBooks();
-        if (currentMatcher != null)
-        {
-            return currentMatcher.Match(books);
-        }
-        return books;
+        return currentMatcher != null ? currentMatcher.Match(books) : books;
     }
 
     private ComicBookGroupMatcher GetCurrentMatcher(bool withStack, bool withSelector)
@@ -2458,11 +2450,9 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool IsViewSortedByPosition()
     {
-        if (itemView.SortColumn != null && itemView.SortColumn.Id == 100 && itemView.ItemSortOrder == SortOrder.Ascending && itemView.GroupColumn == null)
-        {
-            return !itemView.IsStacked;
-        }
-        return false;
+        return itemView.SortColumn != null && itemView.SortColumn.Id == 100 && itemView.ItemSortOrder == SortOrder.Ascending && itemView.GroupColumn == null
+            ? !itemView.IsStacked
+            : false;
     }
 
     private void SetDropEffects(DragEventArgs e)
@@ -2569,11 +2559,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     public Guid GetBookListId()
     {
-        if (BookList != null)
-        {
-            return BookList.Id;
-        }
-        return Guid.Empty;
+        return BookList != null ? BookList.Id : Guid.Empty;
     }
 
     public void RefreshInformation()
@@ -2778,11 +2764,9 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool CanRemoveBooks()
     {
-        if (itemView.InplaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null)
-        {
-            return BookList.QueryService<IRemoveBooks>() != null;
-        }
-        return false;
+        return itemView.InplaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null
+            ? BookList.QueryService<IRemoveBooks>() != null
+            : false;
     }
 
     private void RemoveBooks()
@@ -3501,10 +3485,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             args = SelectItemDialog.GetName(this, "Set Program Argument", string.Empty) ?? string.Empty;
         }
 
-        if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(path))
-            return new ExternalProgram(name, path);
-
-        return null;
+        return !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(path) ? new ExternalProgram(name, path) : null;
     }
 
     private bool EditExternalProgram(ExternalProgram ep)

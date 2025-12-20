@@ -254,11 +254,7 @@ public partial class ListLayoutDialog : FormEx
 
     private int SelectedColumnIndex()
     {
-        if (lvColumns.SelectedIndices.Count <= 0)
-        {
-            return -1;
-        }
-        return lvColumns.SelectedIndices[0];
+        return lvColumns.SelectedIndices.Count <= 0 ? -1 : lvColumns.SelectedIndices[0];
     }
 
     private void SetTileTextElements(ComicTextElements texts)

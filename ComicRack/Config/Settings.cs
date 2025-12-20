@@ -2640,11 +2640,9 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public DisplayWorkspace GetWorkspace(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return workspaces.FirstOrDefault((DisplayWorkspace ws) => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
+        return string.IsNullOrEmpty(name)
+            ? null
+            : workspaces.FirstOrDefault((DisplayWorkspace ws) => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
     }
 
     public void AddPasswordToCache(string remote, string password)
@@ -2665,11 +2663,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     {
         int hash = remote.GetHashCode();
         PasswordCacheEntry passwordCacheEntry = passwordCache.Find((PasswordCacheEntry e) => e.RemoteId == hash);
-        if (passwordCacheEntry == null)
-        {
-            return string.Empty;
-        }
-        return passwordCacheEntry.Password;
+        return passwordCacheEntry == null ? string.Empty : passwordCacheEntry.Password;
     }
 
     public DisplayListConfig GetRemoteViewConfig(Guid id, DisplayListConfig defaultConfig)

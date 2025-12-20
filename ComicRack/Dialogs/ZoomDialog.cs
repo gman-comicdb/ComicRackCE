@@ -33,11 +33,7 @@ public partial class ZoomDialog : FormEx
         using (ZoomDialog zoomDialog = new ZoomDialog())
         {
             zoomDialog.Zoom = zoom;
-            if (zoomDialog.ShowDialog(parent) == DialogResult.OK)
-            {
-                return zoomDialog.Zoom;
-            }
-            return zoom;
+            return zoomDialog.ShowDialog(parent) == DialogResult.OK ? zoomDialog.Zoom : zoom;
         }
     }
 

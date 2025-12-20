@@ -28,10 +28,6 @@ public abstract class CoverViewItemComparer : Comparer<CoverViewItem>, IComparer
         {
             return -1;
         }
-        if (y == null)
-        {
-            return 1;
-        }
-        return OnCompare(x, y);
+        return y == null ? 1 : OnCompare(x, y);
     }
 }

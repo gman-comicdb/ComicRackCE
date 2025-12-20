@@ -231,11 +231,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
     {
         get
         {
-            if (Library != null)
-            {
-                return Library.EditMode;
-            }
-            return ComicsEditModes.Default;
+            return Library != null ? Library.EditMode : ComicsEditModes.Default;
         }
     }
 
@@ -369,20 +365,12 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private TreeNode FindItemNode(Guid id)
     {
-        if (!nodeMap.TryGetValue(id, out var value))
-        {
-            return null;
-        }
-        return value;
+        return !nodeMap.TryGetValue(id, out var value) ? null : value;
     }
 
     private TreeNode FindItemNode(IComicBookListProvider item)
     {
-        if (item == null)
-        {
-            return null;
-        }
-        return FindItemNode(item.Id);
+        return item == null ? null : FindItemNode(item.Id);
     }
 
     [Conditional("BIGITEMS")]
@@ -523,11 +511,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             return EditSmartListItem(selectedNode, selectedNode.Tag as ComicSmartListItem);
         }
-        if (selectedNode.Tag is ComicListItemFolder || selectedNode.Tag is ComicIdListItem)
-        {
-            return EditListItem(selectedNode.Tag as ComicListItem);
-        }
-        return false;
+        return selectedNode.Tag is ComicListItemFolder || selectedNode.Tag is ComicIdListItem
+            ? EditListItem(selectedNode.Tag as ComicListItem)
+            : false;
     }
 
     private bool EditListItem(ComicListItem cli)
@@ -637,11 +623,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private ComicListItem GetCurrentNodeComicList()
     {
-        if (tvQueries.SelectedNode != null)
-        {
-            return (ComicListItem)tvQueries.SelectedNode.Tag;
-        }
-        return null;
+        return tvQueries.SelectedNode != null ? (ComicListItem)tvQueries.SelectedNode.Tag : null;
     }
 
     private ComicListItemCollection GetCurrentNodeComicListCollection()
@@ -659,11 +641,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             return ((ComicListItemFolder)sn.Tag).Items;
         }
-        if (sn.Parent != null)
-        {
-            return ((ComicListItemFolder)sn.Parent.Tag).Items;
-        }
-        return Library.ComicLists;
+        return sn.Parent != null ? ((ComicListItemFolder)sn.Parent.Tag).Items : Library.ComicLists;
     }
 
     private void OpenWindow()

@@ -32,11 +32,7 @@ public partial class ListEditorDialog : FormEx
     {
         get
         {
-            if (lvItems.SelectedItems.Count != 0)
-            {
-                return lvItems.SelectedItems[0].Tag;
-            }
-            return null;
+            return lvItems.SelectedItems.Count != 0 ? lvItems.SelectedItems[0].Tag : null;
         }
     }
 

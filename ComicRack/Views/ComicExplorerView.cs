@@ -242,11 +242,9 @@ public partial class ComicExplorerView : SubView, ISidebar
     {
         get
         {
-            if (pluginContainer.Dock == DockStyle.Right)
-            {
-                return new Size(pluginContainer.ExpandedWidth, infoBrowserSize.Height);
-            }
-            return new Size(infoBrowserSize.Width, pluginContainer.ExpandedWidth);
+            return pluginContainer.Dock == DockStyle.Right
+                ? new Size(pluginContainer.ExpandedWidth, infoBrowserSize.Height)
+                : new Size(infoBrowserSize.Width, pluginContainer.ExpandedWidth);
         }
         set
         {

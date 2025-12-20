@@ -219,11 +219,7 @@ public class DisplayWorkspace : IComparable<DisplayWorkspace>, INamed, IDescript
     {
         get
         {
-            if (!Screen.PrimaryScreen.IsLandscape())
-            {
-                return PortraitLayout;
-            }
-            return LandscapeLayout;
+            return !Screen.PrimaryScreen.IsLandscape() ? PortraitLayout : LandscapeLayout;
         }
     }
 

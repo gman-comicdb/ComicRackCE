@@ -79,20 +79,12 @@ public partial class ComicDisplaySettingsDialog : FormEx
             {
                 return Default;
             }
-            if (!IsCustom)
-            {
-                return Name;
-            }
-            return Path.GetFileName(base.Item);
+            return !IsCustom ? Name : Path.GetFileName(base.Item);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is TextureFileItem)
-            {
-                return ((TextureFileItem)obj).Item == base.Item;
-            }
-            return false;
+            return obj is TextureFileItem ? ((TextureFileItem)obj).Item == base.Item : false;
         }
 
         public override int GetHashCode()

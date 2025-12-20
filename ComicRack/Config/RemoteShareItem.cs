@@ -40,21 +40,13 @@ public class RemoteShareItem
 
     public override string ToString()
     {
-        if (!string.IsNullOrEmpty(Name))
-        {
-            return Name;
-        }
-        return Uri;
+        return !string.IsNullOrEmpty(Name) ? Name : Uri;
     }
 
     public override bool Equals(object obj)
     {
         RemoteShareItem remoteShareItem = obj as RemoteShareItem;
-        if (remoteShareItem != null && remoteShareItem.Name == Name)
-        {
-            return remoteShareItem.Uri == Uri;
-        }
-        return false;
+        return remoteShareItem != null && remoteShareItem.Name == Name ? remoteShareItem.Uri == Uri : false;
     }
 
     public override int GetHashCode()
