@@ -2357,13 +2357,9 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             {
                 e.Effect = DragDropEffects.Move;
             }
-            else if (editableComicBookListProvider.IsLibrary && dragBookContainer.IsFilesContainer)
-            {
-                e.Effect = DragDropEffects.Link;
-            }
             else
             {
-                e.Effect = e.AllowedEffect;
+                e.Effect = editableComicBookListProvider.IsLibrary && dragBookContainer.IsFilesContainer ? DragDropEffects.Link : e.AllowedEffect;
             }
         }
         if (e.Effect == DragDropEffects.None)
@@ -3206,25 +3202,20 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IDisplayListConfig displayListConfig = bookList.QueryService<IDisplayListConfig>();
         if (displayListConfig != null)
         {
-            if (stackItem is CoverViewItem coverViewItem)
-            {
-                displayListConfig.Display = new DisplayListConfig(preStackConfig, ThumbnailConfig, null, stacksConfig, backgroundImageSource)
+            displayListConfig.Display = stackItem is CoverViewItem coverViewItem
+                ? new DisplayListConfig(preStackConfig, ThumbnailConfig, null, stacksConfig, backgroundImageSource)
                 {
                     ScrollPosition = preStackScrollPosition,
                     FocusedComicId = preStackFocusedId,
                     StackedComicId = coverViewItem.Comic.Id,
                     StackScrollPosition = itemView.ScrollPosition,
                     StackFocusedComicId = GetFocusedId()
-                };
-            }
-            else
-            {
-                displayListConfig.Display = new DisplayListConfig(itemView.ViewConfig, ThumbnailConfig, null, stacksConfig, backgroundImageSource)
+                }
+                : new DisplayListConfig(itemView.ViewConfig, ThumbnailConfig, null, stacksConfig, backgroundImageSource)
                 {
                     ScrollPosition = itemView.ScrollPosition,
                     FocusedComicId = GetFocusedId()
                 };
-            }
             displayListConfig.Display.QuickSearch = QuickSearch;
             displayListConfig.Display.QuickSearchType = QuickSearchType;
             displayListConfig.Display.ShowOptionType = ShowOptionType;

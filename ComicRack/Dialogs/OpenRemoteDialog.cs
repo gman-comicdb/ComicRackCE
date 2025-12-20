@@ -90,14 +90,7 @@ public partial class OpenRemoteDialog : FormEx
 
     private void cbServer_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (cbServer.SelectedIndex == -1)
-        {
-            CurrentItem = null;
-        }
-        else
-        {
-            CurrentItem = cbServer.SelectedItem as RemoteShareItem;
-        }
+        CurrentItem = cbServer.SelectedIndex == -1 ? null : cbServer.SelectedItem as RemoteShareItem;
     }
 
     private void cbServer_TextUpdate(object sender, EventArgs e)

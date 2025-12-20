@@ -3674,14 +3674,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             readerForm.Visible = books.OpenCount > 0;
             readerForm.Text = tsBook.Text;
         }
-        if (ComicDisplay.Book == null || string.IsNullOrEmpty(text))
-        {
-            Text = Application.ProductName;
-        }
-        else
-        {
-            Text = Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? text : ComicDisplay.Book.Comic.FileName);
-        }
+        Text = ComicDisplay.Book == null || string.IsNullOrEmpty(text)
+            ? Application.ProductName
+            : Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? text : ComicDisplay.Book.Comic.FileName);
         tsCurrentPage.Text = ((ComicDisplay.Book == null) ? NotAvailable : (ComicDisplay.Book.CurrentPage + 1).ToString());
         tsPageCount.Text = TotalPageInformation(ComicDisplay.Book);
         IComicBrowser comicBrowser = mainView.FindActiveService<IComicBrowser>();

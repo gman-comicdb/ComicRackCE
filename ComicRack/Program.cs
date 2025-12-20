@@ -823,14 +823,9 @@ public static class Program
                 }
                 ToolStripManager.Renderer = renderer;
             }
-            if (ExtendedSettings.DisableHardware)
-            {
-                ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-            }
-            else
-            {
-                ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-            }
+            ImageDisplayControl.HardwareAcceleration = ExtendedSettings.DisableHardware
+                ? ImageDisplayControl.HardwareAccelerationType.Disabled
+                : (!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced;
             if (ExtendedSettings.DisableMipMapping)
             {
                 ImageDisplayControl.HardwareSettings.MipMapping = false;

@@ -100,14 +100,9 @@ public partial class RemoteConnectionView : SubView
                     {
                         using (PasswordDialog passwordDialog = new PasswordDialog())
                         {
-                            if (firstTime)
-                            {
-                                passwordDialog.Description = StringUtility.Format(TR.Messages["PasswordNeeded", "A password is needed for the remote Library '{0}':"], Client.ShareInformation.Name);
-                            }
-                            else
-                            {
-                                passwordDialog.Description = StringUtility.Format(TR.Messages["WrongPassword", "The specified password for the Library'{0}' is not correct. Please try again:"], Client.ShareInformation.Name);
-                            }
+                            passwordDialog.Description = firstTime
+                                ? StringUtility.Format(TR.Messages["PasswordNeeded", "A password is needed for the remote Library '{0}':"], Client.ShareInformation.Name)
+                                : StringUtility.Format(TR.Messages["WrongPassword", "The specified password for the Library'{0}' is not correct. Please try again:"], Client.ShareInformation.Name);
                             if (passwordDialog.ShowDialog(this) == DialogResult.Cancel)
                             {
                                 cancelConnection = true;

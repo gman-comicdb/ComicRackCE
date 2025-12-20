@@ -85,14 +85,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
             Button button = btPrev;
             bool visible = (btNext.Visible = value);
             button.Visible = visible;
-            if (value)
-            {
-                btDesigner.Left = btNext.Right + (btNext.Left - btPrev.Right);
-            }
-            else
-            {
-                btDesigner.Left = btPrev.Left;
-            }
+            btDesigner.Left = value ? btNext.Right + (btNext.Left - btPrev.Right) : btPrev.Left;
         }
     }
 

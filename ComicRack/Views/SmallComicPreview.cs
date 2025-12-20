@@ -113,14 +113,7 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
             }
             pageViewer.Book = NavigatorManager.OpenComic(comicBook, 0, OpenComicOptions.DisableAll);
         }
-        if (pageViewer.Book != null)
-        {
-            pageViewer.Text = string.Empty;
-        }
-        else
-        {
-            pageViewer.Text = ((comicBook == null || comicBook.IsLinked) ? noneSelectedText : previewOnlyForComics);
-        }
+        pageViewer.Text = pageViewer.Book != null ? string.Empty : (comicBook == null || comicBook.IsLinked) ? noneSelectedText : previewOnlyForComics;
     }
 
     public void RefreshDisplay()

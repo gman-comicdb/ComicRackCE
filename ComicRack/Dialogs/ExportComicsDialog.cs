@@ -275,14 +275,7 @@ public partial class ExportComicsDialog : FormEx
     private void cbNamingTemplate_SelectedIndexChanged(object sender, EventArgs e)
     {
         int selectedIndex = cbNamingTemplate.SelectedIndex;
-        if (selectedIndex != 1)
-        {
-            txCustomName.Text = string.Empty;
-        }
-        else
-        {
-            txCustomName.Text = EngineConfiguration.Default.ComicExportFileNameFormat;
-        }
+        txCustomName.Text = selectedIndex != 1 ? string.Empty : EngineConfiguration.Default.ComicExportFileNameFormat;
     }
 
     private void BuildPresetsList()

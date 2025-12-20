@@ -226,14 +226,7 @@ public partial class PreferencesDialog : FormEx
     private void tbSystemMemory_ValueChanged(object sender, EventArgs e)
     {
         int num = tbMaximumMemoryUsage.Value * MaximumMemoryStepSize;
-        if (num == Settings.UnlimitedSystemMemory)
-        {
-            lblMaximumMemoryUsageValue.Text = TR.Default["Unlimited"];
-        }
-        else
-        {
-            lblMaximumMemoryUsageValue.Text = $"{num} MB";
-        }
+        lblMaximumMemoryUsageValue.Text = num == Settings.UnlimitedSystemMemory ? TR.Default["Unlimited"] : $"{num} MB";
     }
 
     private void lbPaths_DragDrop(object sender, DragEventArgs e)
@@ -297,14 +290,9 @@ public partial class PreferencesDialog : FormEx
                 DatabaseScanNotify(sender, e);
             }))
             {
-                if (string.IsNullOrEmpty(e.File))
-                {
-                    lblScan.Text = string.Empty;
-                }
-                else
-                {
-                    lblScan.Text = StringUtility.Format(LocalizeUtility.GetText(this, "Scanning", "Scanning '{0}' ..."), e.File);
-                }
+                lblScan.Text = string.IsNullOrEmpty(e.File)
+                    ? string.Empty
+                    : StringUtility.Format(LocalizeUtility.GetText(this, "Scanning", "Scanning '{0}' ..."), e.File);
                 SetScanButtonText();
             }
         }
