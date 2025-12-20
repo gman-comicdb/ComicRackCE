@@ -34,6 +34,9 @@ dotnet_diagnostic.IDE0028.severity = none
 # Use collection expression for fluent - Add(), AddRange(), AsSpan(), ToList(), and ToArray()
 dotnet_diagnostic.IDE0305.severity = none
 
+# Use collection expression for new
+dotnet_diagnostic.IDE0306.severity = none
+
 [*.{cs,vb}]
 # Expression-level preferences
 dotnet_style_prefer_collection_expression = when_types_exactly_match:suggestion
@@ -41,6 +44,8 @@ dotnet_style_prefer_collection_expression = when_types_exactly_match:suggestion
 dotnet_style_prefer_simplified_boolean_expressions = true:silent
 
 csharp_style_prefer_primary_constructors = true:silent
+
+csharp_style_prefer_local_over_anonymous_function = true:silent
 
 csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
 csharp_style_expression_bodied_indexers = when_on_single_line:suggestion
