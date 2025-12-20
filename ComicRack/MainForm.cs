@@ -2878,7 +2878,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             FormUtility.SafeToolStripClear(miOpenNow.DropDownItems);
             FormUtility.SafeToolStripClear(cmComics.DropDownItems, cmComics.DropDownItems.IndexOf(cmComicsSep) + 1);
             mainView.ClearFileTabs();
-            Bitmap thumb = default(Bitmap);
+            Bitmap thumb = default;
             for (int i = 0; i < OpenBooks.Slots.Count; i++)
             {
                 string text = FormUtility.FixAmpersand(OpenBooks.GetSlotCaption(i));
@@ -4315,7 +4315,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                                              select cli.Clone() as ShareableComicListItem).ToList();
         if (list.Count == 0 || !Program.ExtendedSettings.ReplaceDefaultListsInQuickOpen)
         {
-            defaultQuickOpenLists = defaultQuickOpenLists ?? new ShareableComicListItem[3]
+            defaultQuickOpenLists ??= new ShareableComicListItem[3]
             {
                 ComicLibrary.DefaultReadingList(Program.Database),
                 ComicLibrary.DefaultRecentlyReadList(Program.Database),

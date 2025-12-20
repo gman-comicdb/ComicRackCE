@@ -1063,7 +1063,7 @@ public static class Program
 
     private static void StartLast(string[] args)
     {
-        ExtendedSettings sw = default(ExtendedSettings);
+        ExtendedSettings sw = default;
         MainForm.BeginInvoke(delegate
         {
             MainForm.RestoreToFront();

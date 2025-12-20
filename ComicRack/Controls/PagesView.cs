@@ -629,7 +629,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             itemView.BackgroundImage = null;
             backgroundImage?.Dispose();
             ComicBookNavigator newNav = book;
-            Bitmap bmp = default(Bitmap);
+            Bitmap bmp = default;
             ThreadUtility.RunInBackground("Create pages backdrop", delegate
             {
                 try
