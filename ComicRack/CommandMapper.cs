@@ -54,7 +54,7 @@ public class CommandMapper : Component
         }
     }
 
-    private readonly Dictionary<object, HandleItem> ht = new Dictionary<object, HandleItem>();
+    private readonly Dictionary<object, HandleItem> ht = new();
 
     private bool enable = true;
 
@@ -90,7 +90,7 @@ public class CommandMapper : Component
     {
         foreach (object obj in senders)
         {
-            HandleItem hi = new HandleItem(obj, clickHandler, enabledHandler, checkedHandler);
+            HandleItem hi = new(obj, clickHandler, enabledHandler, checkedHandler);
             ht[obj] = hi;
             if (obj is ToolStripItem toolStripItem)
             {

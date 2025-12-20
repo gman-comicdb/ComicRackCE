@@ -38,7 +38,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         get
         {
-            DeviceSyncSettings deviceSyncSettings = new DeviceSyncSettings
+            DeviceSyncSettings deviceSyncSettings = new()
             {
                 DeviceName = DeviceName,
                 DeviceKey = DeviceKey,
@@ -326,7 +326,7 @@ public partial class DeviceEditControl : UserControlEx
     private void SetButtonStates()
     {
         IEnumerable<TreeNode> source = tvSharedLists.AllNodes();
-        IEnumerable<TreeNode> source2 = ((tvSharedLists.SelectedNode == null) ? Enumerable.Empty<TreeNode>() : tvSharedLists.SelectedNode.Nodes.All().AddFirst(tvSharedLists.SelectedNode));
+        IEnumerable<TreeNode> source2 = ((tvSharedLists.SelectedNode == null) ? [] : tvSharedLists.SelectedNode.Nodes.All().AddFirst(tvSharedLists.SelectedNode));
         btSelectAll.Enabled = source.Any((TreeNode n) => !n.Checked);
         btSelectNone.Enabled = source.Any((TreeNode n) => n.Checked);
         btSelectList.Enabled = source2.Any((TreeNode n) => !n.Checked);

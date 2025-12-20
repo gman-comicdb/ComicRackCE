@@ -44,12 +44,12 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
             bounds = bounds.Pad(Level * Image.Width, 0);
             gr.DrawImage(Image, Image.Size.Align(bounds, ContentAlignment.MiddleLeft));
             bounds = bounds.Pad(Image.Width + ImageSpacing, 0);
-            using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap)
+            using (StringFormat format = new(StringFormatFlags.NoWrap)
             {
                 LineAlignment = StringAlignment.Center
             })
             {
-                using (SolidBrush brush = new SolidBrush(foreColor))
+                using (SolidBrush brush = new(foreColor))
                 {
                     gr.DrawString(base.Item, font, brush, bounds, format);
                 }

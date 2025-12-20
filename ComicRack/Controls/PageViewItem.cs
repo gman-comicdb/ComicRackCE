@@ -111,7 +111,7 @@ public class PageViewItem : ThumbnailViewItem
     protected override Size GetEstimatedSize(Size canvasSize)
     {
         ComicPageInfo pageInfo = PageInfo;
-        Size imageSize = new Size(pageInfo.ImageWidth, pageInfo.ImageHeight);
+        Size imageSize = new(pageInfo.ImageWidth, pageInfo.ImageHeight);
         return imageSize.Width <= 0 || imageSize.Height <= 0
             ? base.GetEstimatedSize(canvasSize)
             : ThumbRenderer.GetSafeScaledImageSize(imageSize, canvasSize);
@@ -158,7 +158,7 @@ public class PageViewItem : ThumbnailViewItem
         {
             list = list.SafeAdd(ThumbnailViewItem.DeletedStateImage);
         }
-        using (StringFormat stringFormat = new StringFormat())
+        using (StringFormat stringFormat = new())
         {
             using (IItemLock<ThumbnailImage> itemLock = ((comicListField == null || comicListField.DisplayProperty == "Thumbnail") ? GetThumbnail(drawInfo) : null))
             {
@@ -186,7 +186,7 @@ public class PageViewItem : ThumbnailViewItem
                     case ItemViewMode.Thumbnail:
                         {
                             Animate(image);
-                            ThumbRenderer thumbRenderer = new ThumbRenderer(image, thumbnailDrawingOptions | ThumbnailDrawingOptions.EnablePageNumber)
+                            ThumbRenderer thumbRenderer = new(image, thumbnailDrawingOptions | ThumbnailDrawingOptions.EnablePageNumber)
                             {
                                 PageNumber = Page + 1,
                                 ImageOpacity = base.Opacity,
@@ -204,7 +204,7 @@ public class PageViewItem : ThumbnailViewItem
                     case ItemViewMode.Tile:
                         {
                             Animate(image);
-                            ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(image, thumbnailDrawingOptions)
+                            ThumbTileRenderer thumbTileRenderer = new(image, thumbnailDrawingOptions)
                             {
                                 Font = font,
                                 Border = base.Border,

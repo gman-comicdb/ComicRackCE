@@ -22,7 +22,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 {
     private class TextureFileItem : ComboBoxSkinner.ComboBoxItem<string>
     {
-        private Regex rxFormatCode = new Regex("\\s*\\[(?<code>[CSTZ])\\]\\z", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
+        private Regex rxFormatCode = new("\\s*\\[(?<code>[CSTZ])\\]\\z", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
 
         private bool failed;
 
@@ -134,9 +134,9 @@ public partial class ComicDisplaySettingsDialog : FormEx
             catch (Exception)
             {
             }
-            using (SolidBrush brush = new SolidBrush(foreColor))
+            using (SolidBrush brush = new(foreColor))
             {
-                using (StringFormat stringFormat = new StringFormat(StringFormatFlags.NoWrap)
+                using (StringFormat stringFormat = new(StringFormatFlags.NoWrap)
                 {
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
@@ -335,7 +335,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
     private string GetTexture()
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Filter = TR.Load("FileFilter")["PageImageSave", "JPEG Image|*.jpg|Windows Bitmap Image|*.bmp|PNG Image|*.png|GIF Image|*.gif|TIFF Image|*.tif"];
             openFileDialog.CheckFileExists = true;
@@ -349,7 +349,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
     public static bool Show(IWin32Window parent, bool enableHardware, DisplayWorkspace ws, Action<DisplayWorkspace> apply)
     {
-        using (ComicDisplaySettingsDialog comicDisplaySettingsDialog = new ComicDisplaySettingsDialog())
+        using (ComicDisplaySettingsDialog comicDisplaySettingsDialog = new())
         {
             comicDisplaySettingsDialog.Update(ws);
             comicDisplaySettingsDialog.ApplyAction = apply;

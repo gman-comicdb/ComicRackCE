@@ -219,7 +219,7 @@ public partial class Splash : LayeredForm
         str = $"{str}V {Application.ProductVersion}{GitVersion.GetCurrentVersionInfo()}";
         str += $" {Marshal.SizeOf(typeof(IntPtr)) * 8} bit";
         Size size = e.Graphics.MeasureString(str, Font).ToSize();
-        using (StringFormat stringFormat = new StringFormat
+        using (StringFormat stringFormat = new()
         {
             Alignment = StringAlignment.Far
         })

@@ -130,12 +130,12 @@ public partial class DevicesEditDialog : FormEx
 
     private TabPage AddTab(DeviceSyncSettings pd)
     {
-        TabPage tb = new TabPage(pd.DeviceName)
+        TabPage tb = new(pd.DeviceName)
         {
             Padding = new Padding(10),
             UseVisualStyleBackColor = true
         };
-        DeviceEditControl se = new DeviceEditControl
+        DeviceEditControl se = new()
         {
             Settings = pd,
             Dock = DockStyle.Fill
@@ -166,7 +166,7 @@ public partial class DevicesEditDialog : FormEx
 
     public static bool Show(IWin32Window parent, IList<DeviceSyncSettings> portableDevices, DeviceSyncSettings device = null, Guid? listId = null)
     {
-        using (DevicesEditDialog devicesEditDialog = new DevicesEditDialog())
+        using (DevicesEditDialog devicesEditDialog = new())
         {
             devicesEditDialog.Devices = portableDevices;
             if (device != null)

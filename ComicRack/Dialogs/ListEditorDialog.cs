@@ -172,7 +172,7 @@ public partial class ListEditorDialog : FormEx
     public static IList<T> Show<T>(IWin32Window parent, string caption, IList<T> items, Func<T> newAction = null, Func<T, bool> editAction = null, Action<T> activateAction = null, Action<T> setAllAction = null) where T : class
     {
         items = (IList<T>)items.ToList<T>();
-        using (ListEditorDialog dlg = new ListEditorDialog())
+        using (ListEditorDialog dlg = new())
         {
             dlg.Text = caption;
             dlg.Items = (IList)items;

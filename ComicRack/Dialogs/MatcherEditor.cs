@@ -31,11 +31,11 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
 
     public const int MaxLevel = 5;
 
-    public static readonly ValuePair<Color, Regex>[] ColorRegex = new ValuePair<Color, Regex>[2]
-    {
-        new ValuePair<Color, Regex>(Color.Red, new Regex("\\{[a-z]+\\}", RegexOptions.IgnoreCase | RegexOptions.Compiled)),
-        new ValuePair<Color, Regex>(Color.Blue, new Regex("\\{(" + ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties).ToListString("|") + ")\\}", RegexOptions.Compiled))
-    };
+    public static readonly ValuePair<Color, Regex>[] ColorRegex =
+    [
+        new(Color.Red, new Regex("\\{[a-z]+\\}", RegexOptions.IgnoreCase | RegexOptions.Compiled)),
+        new(Color.Blue, new Regex("\\{(" + ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties).ToListString("|") + ")\\}", RegexOptions.Compiled))
+    ];
 
     private ComicBookValueMatcher currentComicBookMatcher;
     private readonly ComicBookMatcherCollection matchers;
@@ -170,7 +170,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
     private void rtfMatchValue_DoubleClick(object sender, EventArgs e)
     {
         TextBoxBase textBoxBase = sender as TextBoxBase;
-        using (ValueEditorDialog valueEditorDialog = new ValueEditorDialog())
+        using (ValueEditorDialog valueEditorDialog = new())
         {
             valueEditorDialog.SyntaxColoring(ColorRegex);
             valueEditorDialog.MatchValue = textBoxBase.Text;
@@ -269,7 +269,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
     {
         if (level <= MaxLevel)
         {
-            ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+            ComicBookGroupMatcher comicBookGroupMatcher = new();
             comicBookGroupMatcher.Matchers.Add(currentComicBookMatcher.Clone() as ComicBookMatcher);
             matchers.Insert(matchers.IndexOf(currentComicBookMatcher) + 1, comicBookGroupMatcher);
         }

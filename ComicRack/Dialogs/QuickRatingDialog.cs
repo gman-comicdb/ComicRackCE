@@ -60,7 +60,7 @@ public partial class QuickRatingDialog : FormEx
         {
             return false;
         }
-        using (QuickRatingDialog quickRatingDialog = new QuickRatingDialog())
+        using (QuickRatingDialog quickRatingDialog = new())
         {
             quickRatingDialog.Text = quickRatingDialog.Text + " - " + book.CaptionWithoutTitle;
             quickRatingDialog.txReview.Text = book.Review;

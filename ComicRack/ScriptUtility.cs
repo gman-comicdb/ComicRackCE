@@ -32,12 +32,12 @@ public static class ScriptUtility
 
         protected override IEnumerable<SearchResult> OnSearch(string hint, string text, int limit)
         {
-            Dictionary<string, string> source = Command.Invoke(new object[3]
-            {
+            Dictionary<string, string> source = Command.Invoke(
+            [
                 hint,
                 text,
                 limit
-            }) as Dictionary<string, string>;
+            ]) as Dictionary<string, string>;
             return source.Select((KeyValuePair<string, string> kvp) => new SearchResult
             {
                 Name = kvp.Key,
@@ -47,12 +47,12 @@ public static class ScriptUtility
 
         protected override string OnGenericSearchLink(string hint, string text)
         {
-            Dictionary<string, string> source = Command.Invoke(new object[3]
-            {
+            Dictionary<string, string> source = Command.Invoke(
+            [
                 hint,
                 text,
                 -1
-            }) as Dictionary<string, string>;
+            ]) as Dictionary<string, string>;
             return source.Select((KeyValuePair<string, string> kvp) => kvp.Value).FirstOrDefault();
         }
     }
@@ -67,7 +67,7 @@ public static class ScriptUtility
         if (!Enabled)
             return false;
 
-        PluginEnvironment env = new PluginEnvironment(mainWindow, app, browser, comicDisplay, config, openBooks, ThemePlugin.Default);
+        PluginEnvironment env = new(mainWindow, app, browser, comicDisplay, config, openBooks, ThemePlugin.Default);
         Scripts.Initialize(env, Program.Paths.ScriptPath);
         Scripts.Initialize(env, Program.Paths.ScriptPathSecondary);
         Scripts.CommandStates = Program.Settings.PluginsStates;
@@ -93,10 +93,10 @@ public static class ScriptUtility
             ComicBook[] array = books().ToArray();
             using (new WaitCursor(parent))
             {
-                command.Invoke(new object[1]
-                {
+                command.Invoke(
+                [
                     books().ToArray()
-                });
+                ]);
             }
         }
         catch (Exception ex)
@@ -107,7 +107,7 @@ public static class ScriptUtility
 
     public static T CreateToolItem<T>(Control parent, Command command, Func<IEnumerable<ComicBook>> books) where T : ToolStripItem, new()
     {
-        T val = new T();
+        T val = new();
         val.Text = command.GetLocalizedName();
         T val2 = val;
         val2.Image = command.CommandImage;
@@ -151,7 +151,7 @@ public static class ScriptUtility
     public static IEnumerable<T> CreateToolItems<T>(Control parent, string scriptType, Func<IEnumerable<ComicBook>> books, Func<Command, bool> predicate = null) where T : ToolStripItem, new()
     {
         return Scripts == null
-            ? Enumerable.Empty<T>()
+            ? []
             : (from command in Scripts.GetCommands(scriptType)
                where predicate == null || predicate(command)
                select CreateToolItem<T>(parent, command, books));
@@ -181,7 +181,7 @@ public static class ScriptUtility
         }
         catch (Exception)
         {
-            return Enumerable.Empty<Command>();
+            return [];
         }
     }
 

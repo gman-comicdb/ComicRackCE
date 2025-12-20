@@ -27,7 +27,7 @@ public partial class ZoomDialog : FormEx
 
     public static float Show(IWin32Window parent, float zoom)
     {
-        using (ZoomDialog zoomDialog = new ZoomDialog())
+        using (ZoomDialog zoomDialog = new())
         {
             zoomDialog.Zoom = zoom;
             return zoomDialog.ShowDialog(parent) == DialogResult.OK ? zoomDialog.Zoom : zoom;

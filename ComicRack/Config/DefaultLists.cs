@@ -56,7 +56,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetComicFieldList(Func<ComicBook, string> autoCompleteHandler, bool sort = false)
     {
-        AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+        AutoCompleteStringCollection autoCompleteStringCollection = new();
         foreach (ComicBook item in getBooks())
         {
             autoCompleteStringCollection.Add(autoCompleteHandler(item));
@@ -147,7 +147,7 @@ public class DefaultLists
 
     private static IEnumerable<string> LoadDefaultTextList(IEnumerable<string> files, string section)
     {
-        List<string> list = new List<string>();
+        List<string> list = new();
         foreach (string file in files)
         {
             try

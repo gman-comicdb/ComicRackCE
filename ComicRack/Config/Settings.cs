@@ -108,13 +108,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public const int UnlimitedSystemMemory = 4096;
 
-    private List<ListConfiguration> listConfigurations = new List<ListConfiguration>();
+    private List<ListConfiguration> listConfigurations = new();
 
-    private List<ExternalProgram> externalPrograms = new List<ExternalProgram>();
+    private List<ExternalProgram> externalPrograms = new();
 
-    private DisplayWorkspace currentWorkspace = new DisplayWorkspace();
+    private DisplayWorkspace currentWorkspace = new();
 
-    private readonly List<DisplayWorkspace> workspaces = new List<DisplayWorkspace>();
+    private readonly List<DisplayWorkspace> workspaces = new();
 
     private string pasteProperties = "Series";
 
@@ -130,17 +130,17 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private int lastExportPageFilterIndex = 1;
 
-    private readonly SmartList<string> favoriteFolders = new SmartList<string>();
+    private readonly SmartList<string> favoriteFolders = new();
 
-    private readonly MruList<RemoteShareItem> remoteShares = new MruList<RemoteShareItem>();
+    private readonly MruList<RemoteShareItem> remoteShares = new();
 
-    private readonly SmartList<ComicLibraryServerConfig> shares = new SmartList<ComicLibraryServerConfig>();
+    private readonly SmartList<ComicLibraryServerConfig> shares = new();
 
     private bool lookForShared = true;
 
     private bool autoConnectShares = true;
 
-    private readonly SmartList<PasswordCacheEntry> passwordCache = new SmartList<PasswordCacheEntry>();
+    private readonly SmartList<PasswordCacheEntry> passwordCache = new();
 
     private string extraWifiDeviceAddresses = string.Empty;
 
@@ -150,7 +150,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private BitmapAdjustment globalColorAdjustment = BitmapAdjustment.Empty;
 
-    private Size magnifySize = new Size(300, 200);
+    private Size magnifySize = new(300, 200);
 
     private float magnifyOpaque = 1f;
 
@@ -172,7 +172,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private float mouseWheelSpeed = 2f;
 
-    private readonly List<StringPair> readerKeyboardMapping = new List<StringPair>();
+    private readonly List<StringPair> readerKeyboardMapping = new();
 
     private string ignoredCoverImages;
 
@@ -200,7 +200,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private bool newsStartup = true;
 
-    private readonly List<string> lastOpenFiles = new List<string>();
+    private readonly List<string> lastOpenFiles = new();
 
     private bool openLastPage = true;
 
@@ -318,21 +318,21 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private bool overwriteAssociations;
 
-    private readonly List<RemoteViewConfig> remoteViewConfigList = new List<RemoteViewConfig>();
+    private readonly List<RemoteViewConfig> remoteViewConfigList = new();
 
-    private readonly List<RemoteExplorerViewSettings> remoteExplorerViewSettingsList = new List<RemoteExplorerViewSettings>();
+    private readonly List<RemoteExplorerViewSettings> remoteExplorerViewSettingsList = new();
 
-    private readonly List<string> quickSearchList = new List<string>();
+    private readonly List<string> quickSearchList = new();
 
-    private readonly List<string> libraryQuickSearchList = new List<string>();
+    private readonly List<string> libraryQuickSearchList = new();
 
-    private readonly MruList<string> keyboardLayouts = new MruList<string>();
+    private readonly MruList<string> keyboardLayouts = new();
 
-    private readonly MruList<string> thumbnailFiles = new MruList<string>();
+    private readonly MruList<string> thumbnailFiles = new();
 
-    private readonly ExportSettingCollection exportUserPresets = new ExportSettingCollection();
+    private readonly ExportSettingCollection exportUserPresets = new();
 
-    private readonly SmartList<DeviceSyncSettings> devices = new SmartList<DeviceSyncSettings>();
+    private readonly SmartList<DeviceSyncSettings> devices = new();
 
     public List<ListConfiguration> ListConfigurations
     {
@@ -1946,10 +1946,10 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool AutoShowQuickReview { get; set; }
 
-    private List<VirtualTag> virtualTags = new List<VirtualTag>();
+    private List<VirtualTag> virtualTags = new();
     public List<VirtualTag> VirtualTags => virtualTags;
 
-    private BackupManagerOptions backupManager = new BackupManagerOptions();
+    private BackupManagerOptions backupManager = new();
     public BackupManagerOptions BackupManager
     {
         get => backupManager;

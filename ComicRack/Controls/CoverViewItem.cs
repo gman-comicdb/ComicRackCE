@@ -264,7 +264,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public static CoverViewItem Create(ComicBook comic, int position, IComicBookStatsProvider statsProvider)
     {
-        CoverViewItem coverViewItem = new CoverViewItem
+        CoverViewItem coverViewItem = new()
         {
             Position = position,
             Comic = comic,
@@ -300,7 +300,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             return base.GetEstimatedSize(canvasSize);
         }
         ComicPageInfo page = Comic.GetPage(Comic.FrontCoverPageIndex);
-        Size size = new Size(page.ImageWidth, page.ImageHeight);
+        Size size = new(page.ImageWidth, page.ImageHeight);
         if (size.Width <= 0 || size.Height <= 0)
         {
             return base.GetEstimatedSize(canvasSize);
@@ -446,7 +446,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             list = list.SafeAdd(ThumbnailViewItem.DeletedStateImage);
         }
         ThumbnailRatingMode ratingMode = ((!Program.Settings.NumericRatingThumbnails) ? ((!EngineConfiguration.Default.RatingStarsBelowThumbnails) ? ThumbnailRatingMode.StarsOverlay : ThumbnailRatingMode.StarsBelow) : ThumbnailRatingMode.Tags);
-        using (StringFormat stringFormat = new StringFormat())
+        using (StringFormat stringFormat = new())
         {
             drawnRect = null;
             int height = ((drawInfo.DisplayType == ItemViewMode.Detail) ? 256 : rectangle.Height);
@@ -500,7 +500,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                         case ItemViewMode.Thumbnail:
                             {
                                 Animate(image);
-                                ThumbIconRenderer thumbIconRenderer = new ThumbIconRenderer(image, thumbnailDrawingOptions);
+                                ThumbIconRenderer thumbIconRenderer = new(image, thumbnailDrawingOptions);
                                 thumbIconRenderer.Border = base.Border;
                                 thumbIconRenderer.ForeColor = textColor;
                                 thumbIconRenderer.PageCount = Comic.PageCount;
@@ -514,10 +514,10 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                                 {
                             Comic.CurrentPage,
                             Comic.LastPageRead
-                                } : new int[1]
-                                {
+                                } :
+                                [
                             StackReadPercent
-                                });
+                                ]);
                                 thumbIconRenderer.BackImage = backImage;
                                 thumbIconRenderer.ImageOpacity = base.Opacity;
                                 ThumbIconRenderer thumbIconRenderer2 = thumbIconRenderer;
@@ -555,7 +555,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                         case ItemViewMode.Tile:
                             {
                                 Animate(image);
-                                ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(image, thumbnailDrawingOptions);
+                                ThumbTileRenderer thumbTileRenderer = new(image, thumbnailDrawingOptions);
                                 thumbTileRenderer.ImageOpacity = base.Opacity;
                                 thumbTileRenderer.Font = font;
                                 thumbTileRenderer.Border = base.Border;
@@ -572,10 +572,10 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                                 {
                             Comic.CurrentPage,
                             Comic.LastPageRead
-                                } : new int[1]
-                                {
+                                } :
+                                [
                             StackReadPercent
-                                });
+                                ]);
                                 thumbTileRenderer.BackImage = backImage;
                                 thumbTileRenderer.Icons = Comic.GetIcons();
                                 ThumbTileRenderer thumbTileRenderer2 = thumbTileRenderer;
@@ -869,7 +869,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
         {
             return 0;
         }
-        Rectangle src = new Rectangle(rc.Right - FormUtility.ScaleDpiX(11), rc.Top + 3, FormUtility.ScaleDpiX(11), rc.Height - 5);
+        Rectangle src = new(rc.Right - FormUtility.ScaleDpiX(11), rc.Top + 3, FormUtility.ScaleDpiX(11), rc.Height - 5);
         SpinButton.Draw(gr, src, styleMode: false);
         AddClickRegion(src, delegate (Rectangle rect, Point pt)
         {
@@ -894,7 +894,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
     private void DrawRating(Graphics gr, ComicListField clf, Rectangle rc, float rating, Image image, Action<ComicBook, float> setFunction = null)
     {
         Rectangle bounds = rc.Pad(2, 4, 2, 4);
-        RatingRenderer r = new RatingRenderer(image, bounds)
+        RatingRenderer r = new(image, bounds)
         {
             Fast = base.View.InScrollOrResize
         };
@@ -993,7 +993,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     private void CreateThumbnailLines(ICollection<TextLine> lines, Font f, Color textColor)
     {
-        StringFormat stringFormat = new StringFormat
+        StringFormat stringFormat = new()
         {
             Alignment = StringAlignment.Center
         };
@@ -1039,7 +1039,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     private ComicBook CreateStackInfo()
     {
-        ComicBook comicBook = new ComicBook
+        ComicBook comicBook = new()
         {
             Series = base.View.GetStackCaption(this),
             Count = base.View.GetStackCount(this)
@@ -1129,14 +1129,14 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
         string text = $"- {Comic.PreferredFrontCover + 1}/{Comic.FrontCoverCount} +";
         Font font = FC.Get("Arial", 7f);
         thumbnailBounds.Inflate(-2, -2);
-        Rectangle rectangle = new Rectangle(Point.Empty, graphics.MeasureString(text, font).ToSize());
+        Rectangle rectangle = new(Point.Empty, graphics.MeasureString(text, font).ToSize());
         rectangle.Inflate(2, 2);
         rectangle = rectangle.Align(thumbnailBounds, ContentAlignment.BottomCenter);
         using (graphics.AntiAlias())
         {
             using (GraphicsPath path = rectangle.ConvertToPath(4, 4))
             {
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center
@@ -1561,7 +1561,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             {
                 gr.SetClip(bounds, CombineMode.Intersect);
                 gr.TranslateTransform(bounds.X, bounds.Y);
-                Rectangle bounds2 = new Rectangle(0, 0, bounds.Width + 1, bounds.Height + 1);
+                Rectangle bounds2 = new(0, 0, bounds.Width + 1, bounds.Height + 1);
                 int flags = BitUtility.CreateMask(base.Hot, base.Selected, base.View.IsStack(this));
                 CoverViewItem.DrawCustomThumbnailOverlay(Comic, gr, bounds2, flags);
             }

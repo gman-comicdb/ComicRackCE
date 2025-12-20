@@ -42,7 +42,7 @@ public partial class ShowErrorsDialog : FormEx
         {
             return;
         }
-        ShowErrorsDialog dlg = new ShowErrorsDialog();
+        ShowErrorsDialog dlg = new();
         try
         {
             foreach (T error in errors)

@@ -6,7 +6,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListFilesBrowser : ComicListBrowser
 {
-    private readonly FolderComicListProvider folderBooks = new FolderComicListProvider();
+    private readonly FolderComicListProvider folderBooks = new();
 
     public bool IncludeSubFolders
     {

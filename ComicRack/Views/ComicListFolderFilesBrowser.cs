@@ -17,7 +17,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDisplayWorkspace
 {
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
     private string cachedCurrentFolder = string.Empty;
 
@@ -187,7 +187,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
             {
                 return;
             }
-            List<string> list = new List<string>();
+            List<string> list = new();
             favView.Items.Clear();
             foreach (string favoriteFolder in Program.Settings.FavoriteFolders)
             {

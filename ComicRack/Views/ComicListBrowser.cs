@@ -11,7 +11,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListBrowser : SubView, IRefreshDisplay
 {
-    protected readonly CursorList<IComicBookListProvider> history = new CursorList<IComicBookListProvider>();
+    protected readonly CursorList<IComicBookListProvider> history = new();
 
     private IComicBookListProvider bookList;
 

@@ -177,9 +177,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
     }
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
-    private readonly Dictionary<Guid, TreeNode> nodeMap = new Dictionary<Guid, TreeNode>();
+    private readonly Dictionary<Guid, TreeNode> nodeMap = new();
 
     private bool treeDirty;
 
@@ -731,7 +731,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         dragCursor = treeSkin.GetDragCursor(dragNode, 64, cursorLocation);
         try
         {
-            DataObjectEx dataObjectEx = new DataObjectEx();
+            DataObjectEx dataObjectEx = new();
             dataObjectEx.SetData(dragNode);
             if (dragNode.Tag is ShareableComicListItem sc)
             {
@@ -824,7 +824,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         cmEditDevices.Tag = null;
         foreach (DeviceSyncSettings device in Program.Settings.Devices)
         {
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(device.DeviceName + "...")
+            ToolStripMenuItem toolStripMenuItem = new(device.DeviceName + "...")
             {
                 Checked = (device.Lists.FirstOrDefault((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id) != null)
             };
@@ -1192,7 +1192,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             string name = TR.Load(base.Name)["NewSmartList", "New Smart List"];
             TreeNode selectedNode = tvQueries.SelectedNode;
-            ComicSmartListItem item = new ComicSmartListItem(name, string.Empty);
+            ComicSmartListItem item = new(name, string.Empty);
             currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
             FillListTree();
             tvQueries.SelectedNode = FindItemNode(item);
@@ -1213,7 +1213,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         ComicListItemCollection currentNodeComicListCollection = GetCurrentNodeComicListCollection();
         if (currentNodeComicListCollection != null)
         {
-            ComicListItemFolder item = new ComicListItemFolder(TR.Load(base.Name)["NewFolder", "New Folder"]);
+            ComicListItemFolder item = new(TR.Load(base.Name)["NewFolder", "New Folder"]);
             if (EditListDialog.Edit(this, item))
             {
                 currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
@@ -1227,7 +1227,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         ComicListItemCollection currentNodeComicListCollection = GetCurrentNodeComicListCollection();
         if (currentNodeComicListCollection != null)
         {
-            ComicIdListItem item = new ComicIdListItem(TR.Load(base.Name)["NewList", "New List"]);
+            ComicIdListItem item = new(TR.Load(base.Name)["NewList", "New List"]);
             if (EditListDialog.Edit(this, item))
             {
                 currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
@@ -1252,7 +1252,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         try
         {
-            DataObject dataObject = new DataObject();
+            DataObject dataObject = new();
             if (comicListItem is ComicSmartListItem)
             {
                 dataObject.SetText(comicListItem.ToString());
@@ -1277,7 +1277,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         if (shareableComicListItem is ComicListItemFolder comicListItemFolder)
         {
             // TODO: Maybe add a way to also export the folder as a single list containing all items.
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            using (FolderBrowserDialog dialog = new())
             {
                 dialog.Description = miExportReadingList.Text.Replace("&", "");
                 dialog.ShowNewFolderButton = true;
@@ -1290,7 +1290,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         else
         {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            using (SaveFileDialog saveFileDialog = new())
             {
                 saveFileDialog.Title = miExportReadingList.Text.Replace("&", "");
                 saveFileDialog.Filter = TR.Load("FileFilter")["ReadingListSaveFilter", "ComicRack Reading List|*.cbl|ComicRack Reading List (Single Entries)|*.cbl"];
@@ -1411,7 +1411,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         string text = Clipboard.GetText();
         try
         {
-            ComicSmartListItem item = new ComicSmartListItem(TR.Load(base.Name)["NewList", "New List"], text, Library);
+            ComicSmartListItem item = new(TR.Load(base.Name)["NewList", "New List"], text, Library);
             currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
         }
         catch (Exception ex)
@@ -1422,7 +1422,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void ImportLists()
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = miImportReadingList.Text.Replace("&", "");
             openFileDialog.Filter = TR.Load("FileFilter")["ReadingListLoad", "ComicRack Reading List|*.cbl|Xml File|*.xml|All Files|*.*"];
@@ -1471,7 +1471,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             try
             {
-                HashSet<string> collection = new HashSet<string>(quickSearch.AutoCompleteList.Cast<string>());
+                HashSet<string> collection = new(quickSearch.AutoCompleteList.Cast<string>());
                 Program.Settings.LibraryQuickSearchList.Clear();
                 Program.Settings.LibraryQuickSearchList.AddRange(collection);
             }
@@ -1504,7 +1504,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 }
                 else
                 {
-                    List<ComicBook> newBooks = new List<ComicBook>();
+                    List<ComicBook> newBooks = new();
                     ComicIdListItem idli = null;
                     AutomaticProgressDialog.Process(this, TR.Messages["ImportReadingList", "Import Reading List"], TR.Messages["MatchBooksWithLibrary", "Matching list with Library"], 3000, delegate
                     {

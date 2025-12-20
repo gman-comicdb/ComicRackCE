@@ -13,7 +13,7 @@ namespace cYo.Projects.ComicRack.Viewer.Properties;
 internal class ResourceManagerEx : System.Resources.ResourceManager
 {
     private readonly bool isThemed;
-    private readonly Dictionary<string, string> darkResources = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> darkResources = new();
     private readonly string triggerWord = string.Empty;
 
     public ResourceManagerEx(Type resourceType, Themes theme = Themes.Default)

@@ -43,7 +43,7 @@ public class LibraryTreeSkin : NiceTreeSkin
         }
         Graphics graphics = di.Graphics;
         Font font = FC.Get(di.Font, di.Font.Size * 0.75f);
-        Rectangle rc = new Rectangle(di.LabelBounds.Right + 4, di.ItemBounds.Top, di.ItemBounds.Right - di.LabelBounds.Right - 4, di.ItemBounds.Height);
+        Rectangle rc = new(di.LabelBounds.Right + 4, di.ItemBounds.Top, di.ItemBounds.Right - di.LabelBounds.Right - 4, di.ItemBounds.Height);
         int num = (Program.Settings.LibraryGaugesFormat.HasFlag(LibraryGauges.Numeric) ? DrawMarkers(graphics, rc, font, comicListItem, 0, onlyMeasure: true) : int.MaxValue);
         if (num < rc.Width)
         {
@@ -96,7 +96,7 @@ public class LibraryTreeSkin : NiceTreeSkin
         }
         string text = n.ToString();
         int num = ((fixedSize == 0) ? ((int)gr.MeasureString(text, font, 200).Width + 4) : fixedSize);
-        Rectangle rectangle = new Rectangle(bounds.Right - num, bounds.Y + 1, num, bounds.Height - 2);
+        Rectangle rectangle = new(bounds.Right - num, bounds.Y + 1, num, bounds.Height - 2);
         if (!onlyMeasure)
         {
             int num2 = (roundLeft ? 1 : 0);
@@ -112,7 +112,7 @@ public class LibraryTreeSkin : NiceTreeSkin
             {
                 using (Brush brush2 = new SolidBrush(textColor))
                 {
-                    using (StringFormat format = new StringFormat
+                    using (StringFormat format = new()
                     {
                         Alignment = StringAlignment.Center,
                         LineAlignment = StringAlignment.Center

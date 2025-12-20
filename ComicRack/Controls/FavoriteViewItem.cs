@@ -21,7 +21,7 @@ public class FavoriteViewItem : ThumbnailViewItem
 
     public override string Text => ComicListItem.Name;
 
-    public override ThumbnailKey ThumbnailKey => new ThumbnailKey(this, ComicListItem.Id.ToString(), 0, ImageRotation.None);
+    public override ThumbnailKey ThumbnailKey => new(this, ComicListItem.Id.ToString(), 0, ImageRotation.None);
 
     public override ItemViewStates GetOwnerDrawnStates(ItemViewMode displayType)
     {
@@ -56,8 +56,8 @@ public class FavoriteViewItem : ThumbnailViewItem
         }
         using (IItemLock<ThumbnailImage> itemLock = GetThumbnail(memoryOnly: false))
         {
-            ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(itemLock?.Item.GetThumbnail(bounds.Height), thumbnailDrawingOptions);
-            using (StringFormat format = new StringFormat
+            ThumbTileRenderer thumbTileRenderer = new(itemLock?.Item.GetThumbnail(bounds.Height), thumbnailDrawingOptions);
+            using (StringFormat format = new()
             {
                 Trimming = StringTrimming.EllipsisPath
             })
@@ -95,7 +95,7 @@ public class FavoriteViewItem : ThumbnailViewItem
 
     private static Bitmap GetListImage(IEnumerable<ComicBook> books, Size sz, int dx, int dy)
     {
-        List<Bitmap> list = new List<Bitmap>();
+        List<Bitmap> list = new();
         int count = dx * dy;
         try
         {
@@ -116,7 +116,7 @@ public class FavoriteViewItem : ThumbnailViewItem
 
     public static FavoriteViewItem Create(ComicListItem item)
     {
-        FavoriteViewItem favoriteViewItem = new FavoriteViewItem();
+        FavoriteViewItem favoriteViewItem = new();
         favoriteViewItem.ComicListItem = item;
         return favoriteViewItem;
     }

@@ -92,7 +92,7 @@ public partial class ComicDataPasteDialog : FormEx
         IEnumerable<string> checks = null;
         int count = books.Count();
         string[] array = (Program.Settings.ShowCustomBookFields ? Program.Database.CustomValues.Where((string k) => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray() : null);
-        using (ComicDataPasteDialog comicDataPasteDialog = new ComicDataPasteDialog())
+        using (ComicDataPasteDialog comicDataPasteDialog = new())
         {
             comicDataPasteDialog.SetChecks(data, Program.Settings.PasteProperties.Split(';'));
             comicDataPasteDialog.Text = StringUtility.Format(comicDataPasteDialog.Text, count);

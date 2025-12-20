@@ -19,11 +19,11 @@ public partial class DeleteItemDialog : FormEx
 
     public static List<T> GetList<T>(IWin32Window parent, string caption, IEnumerable<T> list) where T : class
     {
-        using (DeleteItemDialog deleteItemDialog = new DeleteItemDialog())
+        using (DeleteItemDialog deleteItemDialog = new())
         {
             deleteItemDialog.Text = StringUtility.Format(deleteItemDialog.Text, caption);
             deleteItemDialog.lbCaption.Text = $"{caption}:";
-            List<T> list2 = new List<T>(list);
+            List<T> list2 = new(list);
             list2.Sort();
             deleteItemDialog.cbItems.Items.AddRange(list2.ToArray());
             deleteItemDialog.cbItems.Items.Add(new ComboBoxSkinner.ComboBoxSeparator("All"));
@@ -32,7 +32,7 @@ public partial class DeleteItemDialog : FormEx
             {
                 return null;
             }
-            List<T> list3 = new List<T>();
+            List<T> list3 = new();
             if (deleteItemDialog.cbItems.SelectedItem is ComboBoxSkinner.ComboBoxSeparator)
             {
                 list3.AddRange(list);

@@ -98,7 +98,7 @@ public partial class RemoteConnectionView : SubView
                 {
                     this.Invoke(delegate
                     {
-                        using (PasswordDialog passwordDialog = new PasswordDialog())
+                        using (PasswordDialog passwordDialog = new())
                         {
                             passwordDialog.Description = firstTime
                                 ? StringUtility.Format(TR.Messages["PasswordNeeded", "A password is needed for the remote Library '{0}':"], Client.ShareInformation.Name)
@@ -132,7 +132,7 @@ public partial class RemoteConnectionView : SubView
             }
             InvokeAction(delegate
             {
-                ComicListLibraryBrowser cllb = new ComicListLibraryBrowser(cl);
+                ComicListLibraryBrowser cllb = new(cl);
                 TabBar.TabBarItem tsb = base.Tag as TabBar.TabBarItem;
                 ComicExplorerView ev = View.AddExplorerView(cl, cllb, tsb, Program.Settings.GetRemoteExplorerViewSetting(cl.Id));
                 ev.Main = base.Main;

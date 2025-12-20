@@ -265,13 +265,13 @@ public partial class PreferencesDialog : FormEx
 
     private void btConfigScript_Click(object sender, EventArgs e)
     {
-        (btConfigScript.Tag as Command)?.Invoke(new object[0], catchErrors: true);
+        (btConfigScript.Tag as Command)?.Invoke([], catchErrors: true);
     }
 
     private void lbPaths_DrawItemText(object sender, DrawItemEventArgs e)
     {
         CheckedListBoxEx checkedListBoxEx = (CheckedListBoxEx)sender;
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             LineAlignment = StringAlignment.Center,
             Trimming = StringTrimming.EllipsisPath
@@ -327,7 +327,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder containing Books");
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -348,7 +348,7 @@ public partial class PreferencesDialog : FormEx
         {
             return;
         }
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder containing Books");
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -362,7 +362,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddLibraryFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectScriptFolder", "Please select a script library folder");
             folderBrowserDialog.ShowNewFolderButton = false;
@@ -408,7 +408,7 @@ public partial class PreferencesDialog : FormEx
     {
         e.DrawThemeBackground();
         string s = lbPaths.Items[e.Index] as string;
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             Trimming = StringTrimming.EllipsisPath
         })
@@ -528,7 +528,7 @@ public partial class PreferencesDialog : FormEx
             bounds.X += FormUtility.ScaleDpiX(20);
             bounds.Width -= FormUtility.ScaleDpiX(20);
             string[] array = tRInfo.ToString().Split('\t');
-            using (StringFormat stringFormat = new StringFormat(StringFormatFlags.NoWrap)
+            using (StringFormat stringFormat = new(StringFormatFlags.NoWrap)
             {
                 Trimming = StringTrimming.Character,
                 LineAlignment = StringAlignment.Center
@@ -554,7 +554,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btBackupDatabase_Click(object sender, EventArgs e)
     {
-        SaveFileDialog dlg = new SaveFileDialog();
+        SaveFileDialog dlg = new();
         try
         {
             dlg.Title = btBackupDatabase.Text.Replace(".", string.Empty);
@@ -588,7 +588,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btRestoreDatabase_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btRestoreDatabase.Text.Replace(".", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["ComicRackBackup", "ComicRack Backup|*.zip"];
@@ -612,7 +612,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btInstallPackage_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btInstallPackage.Text.Replace(".", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["ScriptPackageOpen", "ComicRack Plugin|*.crplugin|Script Archive|*.zip"];
@@ -693,7 +693,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btExportKeyboard_Click(object sender, EventArgs e)
     {
-        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+        using (SaveFileDialog saveFileDialog = new())
         {
             saveFileDialog.Title = btExportKeyboard.Text.Replace("&", string.Empty);
             saveFileDialog.FileName = TR.Load("FileFilter")["KeyboardLayout", "Keyboard Layout"] + ".xml";
@@ -719,7 +719,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btLoadKeyboard_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btImportKeyboard.Text.Replace("&", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["KeyboardLayoutFilter", "Keyboard Layout|*.xml"];
@@ -1065,11 +1065,11 @@ public partial class PreferencesDialog : FormEx
 
     private void AddSharePage(ComicLibraryServerConfig cfg)
     {
-        TabPage tab = new TabPage(cfg.Name)
+        TabPage tab = new(cfg.Name)
         {
             UseVisualStyleBackColor = true
         };
-        ServerEditControl sc = new ServerEditControl
+        ServerEditControl sc = new()
         {
             Dock = DockStyle.Fill,
             Config = cfg,
@@ -1152,18 +1152,18 @@ public partial class PreferencesDialog : FormEx
             UpdateDiskCacheStatus(sender, e);
         }))
         {
-            lblInternetCacheUsage.Text = string.Format("({0}/{1})", Program.InternetCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            lblInternetCacheUsage.Text = string.Format("({0}/{1})", Program.InternetCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.InternetCache.Size
-            }));
-            lblPageCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblPageCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Pages.DiskCache.Size
-            }));
-            lblThumbCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblThumbCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Thumbs.DiskCache.Size
-            }));
+            ]));
         }
     }
 
@@ -1171,14 +1171,14 @@ public partial class PreferencesDialog : FormEx
     {
         if (!this.BeginInvokeIfRequired(UpdateMemoryCacheStatus))
         {
-            lblPageMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            lblPageMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Pages.MemoryCache.Size
-            }));
-            lblThumbMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblThumbMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Thumbs.MemoryCache.Size
-            }));
+            ]));
         }
     }
 
@@ -1242,7 +1242,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddShare_Click(object sender, EventArgs e)
     {
-        ComicLibraryServerConfig comicLibraryServerConfig = new ComicLibraryServerConfig();
+        ComicLibraryServerConfig comicLibraryServerConfig = new();
         comicLibraryServerConfig.Name = $"{Environment.UserName}'s Library";
         if (tabShares.TabCount > 1)
         {
@@ -1263,7 +1263,7 @@ public partial class PreferencesDialog : FormEx
 
     public static bool Show(IWin32Window parent, KeyboardShortcuts commands, PluginEngine pe, string autoInstallPlugin = null)
     {
-        using (PreferencesDialog preferencesDialog = new PreferencesDialog())
+        using (PreferencesDialog preferencesDialog = new())
         {
             preferencesDialog.keyboardShortcutEditor.Shortcuts = commands;
             preferencesDialog.Plugins = pe;
@@ -1314,12 +1314,12 @@ public partial class PreferencesDialog : FormEx
     private void CreateValueContextMenu()
     {
         components = new Container();
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        ContextMenuBuilder contextMenuBuilder = new();
         foreach (string item in ComicBook.GetProperties(false))
         {
             contextMenuBuilder.Add(item, topLevel: false, chk: false, SetCaptionField, item, DateTime.MinValue);
         }
-        ContextMenuStrip cm = new ContextMenuStrip(components);
+        ContextMenuStrip cm = new(components);
         cm.Items.AddRange(contextMenuBuilder.Create(20));
         btInsertValue.Click += (sender, e) => cm.Show(btInsertValue, 0, btInsertValue.Height);
     }
@@ -1444,7 +1444,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btBackupLocation_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder to save your backups in");
             folderBrowserDialog.ShowNewFolderButton = true;

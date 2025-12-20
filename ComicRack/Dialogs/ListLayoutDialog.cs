@@ -251,7 +251,7 @@ public partial class ListLayoutDialog : FormEx
 
     public static bool Show(IWin32Window parent, DisplayListConfig displayListConfig, ItemViewMode mode, Action<DisplayListConfig> apply = null)
     {
-        using (ListLayoutDialog listLayoutDialog = new ListLayoutDialog())
+        using (ListLayoutDialog listLayoutDialog = new())
         {
             listLayoutDialog.apply = apply;
             listLayoutDialog.DisplayListConfig = displayListConfig;

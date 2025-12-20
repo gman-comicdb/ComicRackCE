@@ -176,7 +176,7 @@ public partial class OpenRemoteDialog : FormEx
 
     public static RemoteShareItem GetShare(IWin32Window parent, RemoteShareItem share, IEnumerable<RemoteShareItem> list, bool showPublic)
     {
-        using (OpenRemoteDialog openRemoteDialog = new OpenRemoteDialog())
+        using (OpenRemoteDialog openRemoteDialog = new())
         {
             openRemoteDialog.cbServer.Items.AddRange(list.ToArray());
             if (share != null)

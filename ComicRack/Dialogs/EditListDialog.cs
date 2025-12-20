@@ -32,7 +32,7 @@ public partial class EditListDialog : FormEx
 
     public static bool Edit(IWin32Window parent, ComicListItem item)
     {
-        using (EditListDialog editListDialog = new EditListDialog())
+        using (EditListDialog editListDialog = new())
         {
             ComicListItemFolder comicListItemFolder = item as ComicListItemFolder;
             ShareableComicListItem shareableComicListItem = item as ShareableComicListItem;

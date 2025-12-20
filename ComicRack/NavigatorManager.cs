@@ -21,7 +21,7 @@ public class NavigatorManager : IOpenBooksManager
 {
     private int currentSlot = -1;
 
-    private readonly SmartList<ComicBookNavigator> slots = new SmartList<ComicBookNavigator>();
+    private readonly SmartList<ComicBookNavigator> slots = new();
 
     private readonly IComicDisplay comicDisplay;
 

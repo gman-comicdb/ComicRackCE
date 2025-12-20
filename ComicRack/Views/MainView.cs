@@ -40,7 +40,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     private ComicPagesView pagesView;
 
-    private readonly TabBar.TabBarItem tsbLibrary = new TabBar.TabBarItem("Library")
+    private readonly TabBar.TabBarItem tsbLibrary = new("Library")
     {
         Name = "tsbLibrary",
         Image = Resources.Library,
@@ -48,7 +48,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly TabBar.TabBarItem tsbFolders = new TabBar.TabBarItem("Folders")
+    private readonly TabBar.TabBarItem tsbFolders = new("Folders")
     {
         Name = "tsbFolders",
         Image = Resources.FileBrowser,
@@ -56,7 +56,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly TabBar.TabBarItem tsbPages = new TabBar.TabBarItem("Pages")
+    private readonly TabBar.TabBarItem tsbPages = new("Pages")
     {
         Name = "tsbPages",
         Image = Resources.ComicPage,
@@ -64,15 +64,15 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
-    private readonly List<ComicBrowserForm> openBrowsers = new List<ComicBrowserForm>();
+    private readonly List<ComicBrowserForm> openBrowsers = new();
 
     private TabBar.TabBarItem lastBrowser;
 
     private Control comicViewer;
 
-    private readonly HashSet<string> connectedMachines = new HashSet<string>();
+    private readonly HashSet<string> connectedMachines = new();
 
     private readonly VisibilityAnimator tabStripVisibility;
 
@@ -318,8 +318,8 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         RemoveRemoteLibrary(client.ShareInformation.Uri);
         try
         {
-            RemoteConnectionView remoteConnectionView = new RemoteConnectionView(this, client, options);
-            TabBar.TabBarItem tabBarItem = new TabBar.TabBarItem(client.ShareInformation.Name)
+            RemoteConnectionView remoteConnectionView = new(this, client, options);
+            TabBar.TabBarItem tabBarItem = new(client.ShareInformation.Name)
             {
                 Tag = remoteConnectionView,
                 Image = (client.ShareInformation.IsProtected ? Resources.RemoteDatabaseLocked : Resources.RemoteDatabase),
@@ -632,7 +632,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public ComicExplorerView AddExplorerView(ComicLibrary library, ComicListBrowser clb, TabBar.TabBarItem tsb, ComicExplorerViewSettings settings = null)
     {
-        ComicExplorerView ev = new ComicExplorerView
+        ComicExplorerView ev = new()
         {
             ComicListBrowser = clb
         };
@@ -688,7 +688,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public void AddListWindow(Image windowIcon, IComicBookListProvider bookList)
     {
-        ComicBrowserForm comicBrowserForm = new ComicBrowserForm
+        ComicBrowserForm comicBrowserForm = new()
         {
             Text = bookList.Name,
             ShowInTaskbar = false
@@ -710,8 +710,8 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             int number = NumberedString.MaxNumber(from tb in tabStrip.Items
                                                   where NumberedString.StripNumber(tb.Text) == name
                                                   select tb.Text);
-            TabBar.TabBarItem tsb = new TabBar.TabBarItem(NumberedString.Format(name, number));
-            ComicBrowserView comicBrowserView = new ComicBrowserView();
+            TabBar.TabBarItem tsb = new(NumberedString.Format(name, number));
+            ComicBrowserView comicBrowserView = new();
             Bitmap bitmap = tabImage.Clone() as Bitmap;
             bitmap.ToGrayScale();
             tsb.Image = bitmap;

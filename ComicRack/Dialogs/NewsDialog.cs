@@ -136,7 +136,7 @@ public partial class NewsDialog : FormEx
 
     public static void ShowNews(IWin32Window parentForm, NewsStorage storage)
     {
-        using (NewsDialog newsDialog = new NewsDialog())
+        using (NewsDialog newsDialog = new())
         {
             newsDialog.News = storage;
             newsDialog.FillList();

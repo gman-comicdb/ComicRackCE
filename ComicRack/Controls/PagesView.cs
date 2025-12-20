@@ -29,7 +29,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 {
     private volatile bool listDirty;
 
-    private readonly CommandMapper command = new CommandMapper();
+    private readonly CommandMapper command = new();
 
     private EnumMenuUtility pageMenu;
 
@@ -265,7 +265,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             }, () => itemView.SelectedCount > 0, miPagePositionFar);
             pageMenu = new EnumMenuUtility(miPageType, typeof(ComicPageType), flagsMode: false, null, Keys.A | Keys.Shift | Keys.Alt);
             pageMenu.ValueChanged += PageMenuValueChanged;
-            Dictionary<int, Image> dictionary = new Dictionary<int, Image>();
+            Dictionary<int, Image> dictionary = new();
             dictionary.Add(0, Resources.Rotate0Permanent);
             dictionary.Add(1, Resources.Rotate90Permanent);
             dictionary.Add(2, Resources.Rotate180Permanent);
@@ -415,7 +415,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
                     ComicPageInfo cpi = nav.Comic.GetPage(i);
                     if (cpi.IsTypeOf(PageFilter))
                     {
-                        PageViewItem pageViewItem = new PageViewItem(nav, cpi.ImageIndex);
+                        PageViewItem pageViewItem = new(nav, cpi.ImageIndex);
                         itemView.Items.Add(pageViewItem);
                         if (selectedPages != null && selectedPages.FindIndex((ComicPageInfo c) => c.ImageIndex == cpi.ImageIndex) != -1)
                         {
@@ -659,7 +659,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private DataObjectEx CreateDataObjectFromPages(IEnumerable<ComicPageInfo> dragPages)
     {
-        DataObjectEx dataObjectEx = new DataObjectEx();
+        DataObjectEx dataObjectEx = new();
         ComicBook comic = Book.Comic;
         foreach (ComicPageInfo dragPage in dragPages)
         {

@@ -39,11 +39,11 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private readonly IEnumerable<ComicBook> books;
 
-    private readonly List<TextBox> listFields = new List<TextBox>();
+    private readonly List<TextBox> listFields = new();
 
-    private readonly List<TextBox> customFields = new List<TextBox>();
+    private readonly List<TextBox> customFields = new();
 
-    private readonly Dictionary<Control, HashSet<string>> oldLists = new Dictionary<Control, HashSet<string>>();
+    private readonly Dictionary<Control, HashSet<string>> oldLists = new();
 
     public MultipleComicBooksDialog(IEnumerable<ComicBook> books)
     {
@@ -246,7 +246,7 @@ public partial class MultipleComicBooksDialog : FormEx
             string key = customField.Tag.ToString();
             SetText(customField, "{" + key + "}", delegate
             {
-                AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+                AutoCompleteStringCollection autoCompleteStringCollection = new();
                 autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany((ComicBook cb) => cb.GetCustomValues())
                                                        where p.Key.Equals(key, StringComparison.OrdinalIgnoreCase)
                                                        select p.Value).ToArray());
@@ -258,7 +258,7 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private void Store()
     {
-        List<StoreInfo> list = new List<StoreInfo>();
+        List<StoreInfo> list = new();
         foreach (CheckBox control2 in this.GetControls<CheckBox>())
         {
             if (control2.CheckState == CheckState.Unchecked)
@@ -273,7 +273,7 @@ public partial class MultipleComicBooksDialog : FormEx
             string text = control.Text;
             string text2 = control.Tag as string;
             PropertyInfo propertyInfo = (text2.StartsWith("{") ? null : typeof(ComicBook).GetProperty(text2));
-            StoreInfo storeInfo = new StoreInfo
+            StoreInfo storeInfo = new()
             {
                 PropertyName = text2,
                 PropertyInfo = propertyInfo,
@@ -382,7 +382,7 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private CheckBox MakeCheckBox(Control c)
     {
-        CheckBox checkBox = new CheckBox();
+        CheckBox checkBox = new();
         c.Parent.Controls.Add(checkBox);
         checkBox.AutoSize = true;
         checkBox.Visible = true;
@@ -585,7 +585,7 @@ public partial class MultipleComicBooksDialog : FormEx
         {
             Func<IEnumerable<string>> allItems = delegate
             {
-                HashSet<string> hashSet = new HashSet<string>
+                HashSet<string> hashSet = new()
                 {
                     string.Empty
                 };

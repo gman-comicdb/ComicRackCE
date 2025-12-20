@@ -183,7 +183,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private long selectedSize;
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
     private readonly Image groupUp = Resources.GroupUp;
 
@@ -255,7 +255,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private DragDropContainer dragBookContainer;
 
-    private readonly ManualResetEvent abortBuildMenu = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent abortBuildMenu = new(initialState: false);
 
     private Thread buildMenuThread;
 
@@ -539,7 +539,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             int count = itemView.Items.Count;
             int selectedCount = itemView.SelectedCount;
             IComicBookListProvider comicBookListProvider = BookList;
@@ -564,10 +564,10 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             if (totalSize != 0L)
             {
                 stringBuilder.Append(" / ");
-                stringBuilder.AppendFormat(string.Format(new FileLengthFormat(), "{0}", new object[1]
-                {
+                stringBuilder.AppendFormat(string.Format(new FileLengthFormat(), "{0}",
+                [
                     totalSize
-                }));
+                ]));
             }
             if (selectedCount != 0)
             {
@@ -590,10 +590,10 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             if (selectedSize != 0L)
             {
                 stringBuilder.Append(" / ");
-                stringBuilder.AppendFormat(string.Format(new FileLengthFormat(), "{0}", new object[1]
-                {
+                stringBuilder.AppendFormat(string.Format(new FileLengthFormat(), "{0}",
+                [
                     selectedSize
-                }));
+                ]));
             }
             return stringBuilder.ToString();
         }
@@ -1000,7 +1000,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         commands.Add(RemoveStackThumbnail, true, miRemoveStackThumbnail);
         miAutomation.DropDownItems.AddRange(ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, "Books", () => GetBookList(ComicBookFilterType.Selected)).ToArray());
         miAutomation.Visible = miAutomation.DropDownItems.Count != 0;
-        List<ToolStripItem> list = new List<ToolStripItem>();
+        List<ToolStripItem> list = new();
         list.AddRange(ScriptUtility.CreateToolItems<ToolStripButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), (Command c) => c.Image != null && c.Configure == null));
         list.AddRange(ScriptUtility.CreateToolItems<ToolStripSplitButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), (Command c) => c.Image != null && c.Configure != null));
         if (list.Count != 0)
@@ -1248,15 +1248,15 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         if (quickSearchCueTexts == null)
         {
-            quickSearchCueTexts = new string[6]
-            {
+            quickSearchCueTexts =
+            [
                 miSearchAll.Text,
                 miSearchSeries.Text,
                 miSearchWriter.Text,
                 miSearchArtists.Text,
                 miSearchDescriptive.Text,
                 miSearchFile.Text
-            };
+            ];
             for (int i = 0; i < quickSearchCueTexts.Length; i++)
             {
                 quickSearchCueTexts[i] = TR.Default["Search", "Search"] + " " + quickSearchCueTexts[i].Replace("&", string.Empty);
@@ -1503,7 +1503,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         VirtualTagsCollection.RegisterSettings(Program.Settings);
 
         //Create the list of columns that we want to show, based on our Virtual Tags settings
-        Dictionary<int, ItemViewColumn> dictionary = new Dictionary<int, ItemViewColumn>();
+        Dictionary<int, ItemViewColumn> dictionary = new();
         foreach (var vtag in VirtualTagsCollection.Tags.Values)
         {
             if (vtag != null && vtag.IsEnabled)
@@ -1764,7 +1764,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             try
             {
                 stackItem = item;
-                HashSet<ComicBook> hashSet = new HashSet<ComicBook>();
+                HashSet<ComicBook> hashSet = new();
                 IViewableItem[] stackItems = itemView.GetStackItems(item);
                 for (int i = 0; i < stackItems.Length; i++)
                 {
@@ -1867,7 +1867,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         if (BookList == null)
         {
-            return Enumerable.Empty<ComicBook>();
+            return [];
         }
         ComicBookGroupMatcher currentMatcher = GetCurrentMatcher(withStack: true, withSelector);
         IEnumerable<ComicBook> books = BookList.GetBooks();
@@ -1876,7 +1876,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private ComicBookGroupMatcher GetCurrentMatcher(bool withStack, bool withSelector)
     {
-        ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+        ComicBookGroupMatcher comicBookGroupMatcher = new();
         if (stackFilter != null && withStack)
         {
             comicBookGroupMatcher.Matchers.Add(stackFilter);
@@ -2018,7 +2018,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         catch (NullReferenceException)
         {
-            return Enumerable.Empty<ComicBook>();
+            return [];
         }
     }
 
@@ -2060,7 +2060,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             return;
         }
         string name = string.Empty;
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem("")
+        ComicSmartListItem comicSmartListItem = new("")
         {
             BaseListId = BookList.Id,
             MatcherMode = currentMatcher.MatcherMode
@@ -2207,8 +2207,8 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         {
             return;
         }
-        ComicBookContainer comicBookContainer = new ComicBookContainer();
-        ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+        ComicBookContainer comicBookContainer = new();
+        ComicBookGroupMatcher comicBookGroupMatcher = new();
         comicBookContainer.Books.AddRange(GetBookList(ComicBookFilterType.Selected));
         if (comicBookContainer.Books.Count == 0)
         {
@@ -2223,7 +2223,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             IViewableItem[] array3 = array;
             foreach (IViewableItem item in array3)
             {
-                ComicBookGroupMatcher comicBookGroupMatcher2 = new ComicBookGroupMatcher
+                ComicBookGroupMatcher comicBookGroupMatcher2 = new()
                 {
                     MatcherMode = MatcherMode.And
                 };
@@ -2270,9 +2270,9 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             {
                 dragDropEffects |= DragDropEffects.Move;
             }
-            DataObject dataObject = new DataObject();
+            DataObject dataObject = new();
             dataObject.SetData(comicBookContainer);
-            StringCollection stringCollection = new StringCollection();
+            StringCollection stringCollection = new();
             stringCollection.AddRange(comicBookContainer.GetBookFiles().ToArray());
             dataObject.SetFileDropList(stringCollection);
             if (comicBookGroupMatcher.Matchers.Count > 0)
@@ -2888,7 +2888,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             }
             ComicIdListItem li = item;
             int childLevel = comicLibrary.ComicLists.GetChildLevel((ComicListItem)li);
-            string str = new string(' ', childLevel * 4);
+            string str = new(' ', childLevel * 4);
             if (num == listMenuSize)
             {
                 toolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("...")
@@ -2919,7 +2919,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         {
             ComicListItemFolder li = item;
             int childLevel = Library.ComicLists.GetChildLevel((ComicListItem)li);
-            string str = new string(' ', childLevel * 4);
+            string str = new(' ', childLevel * 4);
             toolStripDropDownItem.DropDownItems.Add(str + li.Name, GetComicListImage(li), delegate
             {
                 DuplicateList(li);
@@ -2969,7 +2969,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
                         break;
 
                     ComicListItem li = item;
-                    string prefix = new string(' ', Library.ComicLists.GetChildLevel(li) * 4);
+                    string prefix = new(' ', Library.ComicLists.GetChildLevel(li) * 4);
                     this.Invoke(delegate
                     {
                         ToolStripMenuItem value = ((count != maxLists)
@@ -3098,7 +3098,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             //}
             if (VisualStyleRenderer.IsSupported && VisualStyleRenderer.IsElementDefined(normal))
             {
-                VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(normal);
+                VisualStyleRenderer visualStyleRenderer = new(normal);
                 //visualStyleRenderer.DrawBackground(e.Graphics, e.Bounds);
                 visualStyleRenderer.DrawThemeBackground(e.Graphics, e.Bounds);
             }
@@ -3174,7 +3174,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         {
             try
             {
-                HashSet<string> collection = new HashSet<string>(tsQuickSearch.TextBox.AutoCompleteList.Cast<string>());
+                HashSet<string> collection = new(tsQuickSearch.TextBox.AutoCompleteList.Cast<string>());
                 Program.Settings.QuickSearchList.Clear();
                 Program.Settings.QuickSearchList.AddRange(collection);
             }
@@ -3271,7 +3271,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     public bool SelectComics(IEnumerable<ComicBook> books)
     {
         bool flag = true;
-        HashSet<ComicBook> hashSet = new HashSet<ComicBook>(books);
+        HashSet<ComicBook> hashSet = new(books);
         UpdatePending();
         itemView.SelectAll(selectionState: false);
         foreach (CoverViewItem displayedItem in itemView.DisplayedItems)
@@ -3322,7 +3322,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         string name = "", path = "", args = "";
 
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Filter = "Executable (*.EXE, *.BAT, *.CMD, *.PS1)|*.exe;*.bat;*.cmd;*.ps1|All files (*.*)|*.*";
             openFileDialog.Multiselect = false;

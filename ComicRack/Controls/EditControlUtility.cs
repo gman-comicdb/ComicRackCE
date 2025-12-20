@@ -96,7 +96,7 @@ public static class EditControlUtility
         {
             Func<IEnumerable<string>> allItems = delegate
             {
-                HashSet<string> hashSet = new HashSet<string>
+                HashSet<string> hashSet = new()
                 {
                     string.Empty
                 };

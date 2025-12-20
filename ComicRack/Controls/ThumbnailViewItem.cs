@@ -43,13 +43,13 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     private volatile float opacity = 1f;
 
-    private Size border = new Size(4, 4);
+    private Size border = new(4, 4);
 
     private volatile bool disposed;
 
     private static Timer animationTimer;
 
-    private static readonly LinkedList<ThumbnailViewItem> animatedItems = new LinkedList<ThumbnailViewItem>();
+    private static readonly LinkedList<ThumbnailViewItem> animatedItems = new();
 
     private static long animationTime;
 

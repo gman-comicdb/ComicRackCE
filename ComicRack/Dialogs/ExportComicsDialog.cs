@@ -22,9 +22,9 @@ public partial class ExportComicsDialog : FormEx
 {
     private readonly EnumMenuUtility enumUtil;
 
-    private ExportSettingCollection defaultPresets = new ExportSettingCollection();
+    private ExportSettingCollection defaultPresets = new();
 
-    private ExportSettingCollection userPresets = new ExportSettingCollection();
+    private ExportSettingCollection userPresets = new();
 
     private static List<bool> expandedStates;
 
@@ -148,7 +148,7 @@ public partial class ExportComicsDialog : FormEx
     {
         LocalizeUtility.UpdateRightToLeft(this);
         InitializeComponent();
-        if (Environment.Is64BitProcess) this.cbPageFormat.Items.AddRange(new object[] { "HEIF", "AVIF" });
+        if (Environment.Is64BitProcess) this.cbPageFormat.Items.AddRange(["HEIF", "AVIF"]);
         LocalizeUtility.Localize(this, null);
         foreach (ComboBox control in this.GetControls<ComboBox>())
         {
@@ -243,7 +243,7 @@ public partial class ExportComicsDialog : FormEx
 
     private void btChooseFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = TR.Load(base.Name)["SelectExportFolder", "Please select the Export Folder"];
             folderBrowserDialog.SelectedPath = txFolder.Text;
@@ -303,7 +303,7 @@ public partial class ExportComicsDialog : FormEx
 
     public static ExportSetting Show(IWin32Window parent, ExportSettingCollection defaultPresets, ExportSettingCollection userPresets, ExportSetting setting)
     {
-        using (ExportComicsDialog exportComicsDialog = new ExportComicsDialog())
+        using (ExportComicsDialog exportComicsDialog = new())
         {
             exportComicsDialog.DefaultPresets = defaultPresets;
             exportComicsDialog.UserPresets = userPresets;

@@ -26,7 +26,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
     private readonly Image groupDown = Resources.GroupDown;
     private readonly Image sortUp = Resources.SortUp;
     private readonly Image sortDown = Resources.SortDown;
-    private readonly CommandMapper command = new CommandMapper();
+    private readonly CommandMapper command = new();
     private EnumMenuUtility filterMenu;
 
     [Browsable(false)]

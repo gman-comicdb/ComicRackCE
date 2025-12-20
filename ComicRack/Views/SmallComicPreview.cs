@@ -11,7 +11,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 {
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
     private readonly string noneSelectedText;
 

@@ -31,7 +31,7 @@ public partial class DeviceSelectDialog : FormEx
     {
         foreach (ISyncProvider syncProvider in syncProviders)
         {
-            ListViewItem listViewItem = new ListViewItem(syncProvider.Device.Name)
+            ListViewItem listViewItem = new(syncProvider.Device.Name)
             {
                 Tag = syncProvider
             };
@@ -50,9 +50,9 @@ public partial class DeviceSelectDialog : FormEx
 
     public static ISyncProvider SelectProvider(IWin32Window parent, IEnumerable<DeviceSyncSettings> devices)
     {
-        using (DeviceSelectDialog deviceSelectDialog = new DeviceSelectDialog())
+        using (DeviceSelectDialog deviceSelectDialog = new())
         {
-            List<ISyncProvider> syncProviders = new List<ISyncProvider>();
+            List<ISyncProvider> syncProviders = new();
             AutomaticProgressDialog.Process(parent, TR.Messages["DiscoveringDevicesCaption", "Discovering connected devices"], TR.Messages["DiscoveringDevicesDescription", "Searching all connected Devices for installed ComicRack clients"], 1000, delegate
             {
                 syncProviders.AddRange(DeviceSyncFactory.Discover());

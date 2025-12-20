@@ -44,7 +44,7 @@ public partial class QuickOpenView : CaptionControl
         }
     }
 
-    private readonly ThumbnailConfig tc = new ThumbnailConfig
+    private readonly ThumbnailConfig tc = new()
     {
         HideCaptions = true
     };
@@ -87,7 +87,7 @@ public partial class QuickOpenView : CaptionControl
 
     public void AddGroup(IGroupInfo group, IEnumerable<ComicBook> books, int maxCount)
     {
-        HashSet<Guid> h = new HashSet<Guid>(from item in itemView.Items.OfType<CoverViewItem>()
+        HashSet<Guid> h = new(from item in itemView.Items.OfType<CoverViewItem>()
                                             select item.Comic.Id);
         int i = itemView.Items.Count;
         foreach (CoverViewItem item in from cb in (from cb in books.OrderBy((ComicBook cb) => cb, new ComicBookOpenedSorter())

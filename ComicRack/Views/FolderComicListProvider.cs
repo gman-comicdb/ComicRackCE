@@ -21,7 +21,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     private bool includeSubFolders;
 
-    private volatile List<ComicBook> currentBooks = new List<ComicBook>();
+    private volatile List<ComicBook> currentBooks = new();
 
     public IWin32Window Window { get; set; }
 
@@ -79,7 +79,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     protected List<ComicBook> GetFolderBookList(string folder)
     {
-        List<ComicBook> list = new List<ComicBook>();
+        List<ComicBook> list = new();
         try
         {
             IEnumerable<string> fileExtensions = Providers.Readers.GetFileExtensions();

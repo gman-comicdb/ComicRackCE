@@ -19,7 +19,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class FolderViewItem : ThumbnailViewItem
 {
-    public override ThumbnailKey ThumbnailKey => new ThumbnailKey(this, Text, 0, ImageRotation.None);
+    public override ThumbnailKey ThumbnailKey => new(this, Text, 0, ImageRotation.None);
 
     public override ItemViewStates GetOwnerDrawnStates(ItemViewMode displayType)
     {
@@ -54,8 +54,8 @@ public class FolderViewItem : ThumbnailViewItem
         }
         using (IItemLock<ThumbnailImage> itemLock = GetThumbnail(memoryOnly: false))
         {
-            ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(itemLock?.Item.GetThumbnail(bounds.Height), thumbnailDrawingOptions);
-            using (StringFormat format = new StringFormat
+            ThumbTileRenderer thumbTileRenderer = new(itemLock?.Item.GetThumbnail(bounds.Height), thumbnailDrawingOptions);
+            using (StringFormat format = new()
             {
                 Trimming = StringTrimming.EllipsisPath
             })
@@ -93,7 +93,7 @@ public class FolderViewItem : ThumbnailViewItem
 
     private static Bitmap GetFolderImage(string folder, Size sz, int dx, int dy)
     {
-        List<Bitmap> list = new List<Bitmap>();
+        List<Bitmap> list = new();
         int count = dx * dy;
         try
         {

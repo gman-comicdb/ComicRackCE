@@ -153,7 +153,7 @@ public partial class OpenWithDialog : FormEx
     public static IList<T> Show<T>(IWin32Window parent, string caption, IList<T> items, Func<T> newAction = null, Func<T, bool> editAction = null, Func<T, bool> overrideAction = null) where T : class
     {
         items = (IList<T>)items.ToList<T>();
-        using (OpenWithDialog dlg = new OpenWithDialog())
+        using (OpenWithDialog dlg = new())
         {
             dlg.Text = caption;
             dlg.Items = (IList)items;

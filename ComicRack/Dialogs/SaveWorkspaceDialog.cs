@@ -24,7 +24,7 @@ public partial class SaveWorkspaceDialog : FormEx
 
     public static bool Show(IWin32Window parent, DisplayWorkspace ws)
     {
-        using (SaveWorkspaceDialog saveWorkspaceDialog = new SaveWorkspaceDialog())
+        using (SaveWorkspaceDialog saveWorkspaceDialog = new())
         {
             saveWorkspaceDialog.txtName.Text = ws.Name;
             saveWorkspaceDialog.chkWindowLayouts.Checked = ws.IsWindowLayout;

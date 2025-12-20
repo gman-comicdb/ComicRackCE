@@ -21,7 +21,7 @@ public partial class ServerEditControl : UserControlEx
         get
         {
             LibraryShareMode selectedIndex = (LibraryShareMode)cbShare.SelectedIndex;
-            ComicLibraryServerConfig comicLibraryServerConfig = new ComicLibraryServerConfig
+            ComicLibraryServerConfig comicLibraryServerConfig = new()
             {
                 Name = txSharedName.Text,
                 LibraryShareMode = selectedIndex,

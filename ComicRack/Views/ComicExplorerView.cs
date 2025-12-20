@@ -18,7 +18,7 @@ public partial class ComicExplorerView : SubView, ISidebar
 {
     private ComicListBrowser comicListBrowser;
 
-    private ComicBook[] comicInfoBooks = new ComicBook[0];
+    private ComicBook[] comicInfoBooks = [];
 
     private Size infoBrowserSize;
 
@@ -75,7 +75,7 @@ public partial class ComicExplorerView : SubView, ISidebar
     {
         get
         {
-            ComicExplorerViewSettings comicExplorerViewSettings = new ComicExplorerViewSettings();
+            ComicExplorerViewSettings comicExplorerViewSettings = new();
             try
             {
                 comicExplorerViewSettings.BrowserSplit = SplitterDistance;
@@ -271,7 +271,7 @@ public partial class ComicExplorerView : SubView, ISidebar
         {
             cb.BookChanged -= previewBookChanged;
         });
-        comicInfoBooks = new ComicBook[0];
+        comicInfoBooks = [];
         if (!flag && !info)
         {
             return;

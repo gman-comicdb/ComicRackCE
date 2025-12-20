@@ -33,7 +33,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     private ComicSmartListItem smartComicList;
 
-    private CursorList<UndoItem> undoList = new CursorList<UndoItem>();
+    private CursorList<UndoItem> undoList = new();
 
     private string coloredText;
 
@@ -123,7 +123,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
         this.RestorePosition();
         LocalizeUtility.Localize(this, typeof(SmartListDialog).Name, components);
         LocalizeUtility.Localize(TR.Load("TextBoxContextMenu"), cmEdit);
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        ContextMenuBuilder contextMenuBuilder = new();
         foreach (IComicBookValueMatcher availableMatcher in ComicBookValueMatcher.GetAvailableMatchers())
         {
             contextMenuBuilder.Add(availableMatcher.Description, topLevel: false, chk: false, OnInsertQuery, availableMatcher, DateTime.MinValue);
@@ -237,8 +237,8 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
                     }
                     string t = token.Text.Substring(0, rtfQuery.SelectionStart - token.Index);
                     t = token.Text.Trim('[', ']', ' ', ',', '"', ';');
-                    ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
-                    ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+                    ContextMenuStrip contextMenuStrip = new();
+                    ContextMenuBuilder contextMenuBuilder = new();
                     foreach (IComicBookValueMatcher item in from m in ComicBookValueMatcher.GetAvailableMatchers()
                                                             where m.DescriptionNeutral.StartsWith(t, StringComparison.OrdinalIgnoreCase)
                                                             select m)
@@ -342,7 +342,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
     {
         try
         {
-            ComicSmartListItem comicSmartListItem = new ComicSmartListItem(string.Empty, rtfQuery.Text, Library);
+            ComicSmartListItem comicSmartListItem = new(string.Empty, rtfQuery.Text, Library);
             rtfQuery.Text = comicSmartListItem.ToString();
             Colorize(all: true, forced: true);
         }

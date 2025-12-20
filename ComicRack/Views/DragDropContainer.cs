@@ -16,9 +16,9 @@ public class DragDropContainer
 
     private ComicBookMatcher matcher;
 
-    private readonly IEnumerable<string> filesOrFolders = Enumerable.Empty<string>();
+    private readonly IEnumerable<string> filesOrFolders = [];
 
-    private readonly IEnumerable<string> readingLists = Enumerable.Empty<string>();
+    private readonly IEnumerable<string> readingLists = [];
 
     public ComicBookContainer Books => books;
 
@@ -73,7 +73,7 @@ public class DragDropContainer
                                                 orderby t.Series, t.Volume
                                                 select t).Take(maxEntries).Select(t =>
                                             {
-                                                ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher
+                                                ComicBookGroupMatcher comicBookGroupMatcher = new()
                                                 {
                                                     Matchers =
                                                     {
@@ -105,7 +105,7 @@ public class DragDropContainer
         {
             return null;
         }
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem(Books.Name ?? Books.Books[0].ShadowSeries)
+        ComicSmartListItem comicSmartListItem = new(Books.Name ?? Books.Books[0].ShadowSeries)
         {
             MatcherMode = MatcherMode.Or
         };
@@ -119,7 +119,7 @@ public class DragDropContainer
         {
             return null;
         }
-        ComicIdListItem comicIdListItem = new ComicIdListItem(Books.Name);
+        ComicIdListItem comicIdListItem = new(Books.Name);
         comicIdListItem.AddRange(Books.Books);
         return comicIdListItem;
     }
