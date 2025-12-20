@@ -1,12 +1,11 @@
 using System;
 
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+[Flags]
+public enum ShellFileDeleteOptions
 {
-    [Flags]
-    public enum ShellFileDeleteOptions
-    {
-        None = 0x0,
-        NoRecycleBin = 0x1,
-        Confirmation = 0x2
-    }
+    None = 0x0,
+    NoRecycleBin = 0x1,
+    Confirmation = 0x2
 }

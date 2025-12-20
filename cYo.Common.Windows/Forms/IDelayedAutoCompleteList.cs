@@ -1,14 +1,13 @@
 using System;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public interface IDelayedAutoCompleteList
 {
-    public interface IDelayedAutoCompleteList
-    {
-        void SetLazyAutoComplete(Func<AutoCompleteStringCollection> predicate);
+    void SetLazyAutoComplete(Func<AutoCompleteStringCollection> predicate);
 
-        void ResetLazyAutoComplete();
+    void ResetLazyAutoComplete();
 
-        void BuildAutoComplete();
-    }
+    void BuildAutoComplete();
 }

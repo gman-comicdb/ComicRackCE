@@ -6,58 +6,57 @@ using System.Linq;
 
 using cYo.Common.Windows.Forms;
 
-namespace cYo.Projects.ComicRack.Engine.Controls
+namespace cYo.Projects.ComicRack.Engine.Controls;
+
+public class ComicPageControl : UserControlEx
 {
-    public class ComicPageControl : UserControlEx
+    private bool pendingUpdate;
+
+    private ComicBook[] pendingBooks;
+
+    [DefaultValue(null)]
+    public virtual Image Icon
     {
-        private bool pendingUpdate;
+        get;
+        set;
+    }
 
-        private ComicBook[] pendingBooks;
+    public void MarkAsDirty()
+    {
+        pendingUpdate = true;
+    }
 
-        [DefaultValue(null)]
-        public virtual Image Icon
+    public void ShowInfo(IEnumerable<ComicBook> books)
+    {
+        pendingBooks = null;
+        if (base.Visible)
         {
-            get;
-            set;
+            OnShowInfo(books);
+            pendingUpdate = false;
+            pendingBooks = null;
         }
-
-        public void MarkAsDirty()
+        else
         {
             pendingUpdate = true;
+            pendingBooks = books.ToArray();
         }
+    }
 
-        public void ShowInfo(IEnumerable<ComicBook> books)
+    protected override void OnVisibleChanged(EventArgs e)
+    {
+        base.OnVisibleChanged(e);
+        if (base.Visible)
         {
+            if (pendingUpdate)
+            {
+                OnShowInfo(pendingBooks ?? new ComicBook[0]);
+            }
+            pendingUpdate = false;
             pendingBooks = null;
-            if (base.Visible)
-            {
-                OnShowInfo(books);
-                pendingUpdate = false;
-                pendingBooks = null;
-            }
-            else
-            {
-                pendingUpdate = true;
-                pendingBooks = books.ToArray();
-            }
         }
+    }
 
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            base.OnVisibleChanged(e);
-            if (base.Visible)
-            {
-                if (pendingUpdate)
-                {
-                    OnShowInfo(pendingBooks ?? new ComicBook[0]);
-                }
-                pendingUpdate = false;
-                pendingBooks = null;
-            }
-        }
-
-        protected virtual void OnShowInfo(IEnumerable<ComicBook> books)
-        {
-        }
+    protected virtual void OnShowInfo(IEnumerable<ComicBook> books)
+    {
     }
 }

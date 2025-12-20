@@ -1,6 +1,5 @@
-namespace cYo.Common.Mathematics
+namespace cYo.Common.Mathematics;
+
+public static class Trigonometry
 {
-    public static class Trigonometry
-    {
-    }
 }

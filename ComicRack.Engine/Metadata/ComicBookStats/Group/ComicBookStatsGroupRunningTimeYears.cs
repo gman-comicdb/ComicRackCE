@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookStatsGroupRunningTimeYears : SingleGrouper<ComicBookSeriesStatistics>
 {
-    public class ComicBookStatsGroupRunningTimeYears : SingleGrouper<ComicBookSeriesStatistics>
+    public override IGroupInfo GetGroup(ComicBookSeriesStatistics item)
     {
-        public override IGroupInfo GetGroup(ComicBookSeriesStatistics item)
-        {
-            return ItemGroupCount.GetNumberGroup(item.RunningTimeYears);
-        }
+        return ItemGroupCount.GetNumberGroup(item.RunningTimeYears);
     }
 }

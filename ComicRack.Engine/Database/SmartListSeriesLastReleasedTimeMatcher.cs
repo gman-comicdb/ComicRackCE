@@ -1,20 +1,19 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+[Serializable]
+[Description("Series: Book released")]
+[ComicBookMatcherHint("Series", "Volume", "FilePath", "EnableProposed", "ReleasedTime", DisableOptimizedUpdate = true)]
+public class SmartListSeriesLastReleasedTimeMatcher : ComicBookDateMatcher
 {
-    [Serializable]
-    [Description("Series: Book released")]
-    [ComicBookMatcherHint("Series", "Volume", "FilePath", "EnableProposed", "ReleasedTime", DisableOptimizedUpdate = true)]
-    public class SmartListSeriesLastReleasedTimeMatcher : ComicBookDateMatcher
+    protected override DateTime GetValue(ComicBook comicBook)
     {
-        protected override DateTime GetValue(ComicBook comicBook)
+        if (base.StatsProvider != null)
         {
-            if (base.StatsProvider != null)
-            {
-                return base.StatsProvider.GetSeriesStats(comicBook).LastReleasedTime;
-            }
-            return DateTime.MinValue;
+            return base.StatsProvider.GetSeriesStats(comicBook).LastReleasedTime;
         }
+        return DateTime.MinValue;
     }
 }

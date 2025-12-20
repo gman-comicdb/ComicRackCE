@@ -7,135 +7,134 @@ using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Display;
 
-namespace cYo.Projects.ComicRack.Engine.Controls
+namespace cYo.Projects.ComicRack.Engine.Controls;
+
+public partial class MagnifySetupControl : UserControlEx
 {
-    public partial class MagnifySetupControl : UserControlEx
+    private TrackBarLite tbWidth;
+    private TrackBarLite tbHeight;
+    private TrackBarLite tbOpaque;
+    private TrackBarLite tbZoom;
+
+    public int MagnifyWidth
     {
-        private TrackBarLite tbWidth;
-        private TrackBarLite tbHeight;
-        private TrackBarLite tbOpaque;
-        private TrackBarLite tbZoom;
-
-        public int MagnifyWidth
+        get
         {
-            get
-            {
-                return tbWidth.Value;
-            }
-            set
-            {
-                tbWidth.Value = value;
-            }
+            return tbWidth.Value;
         }
-
-        public int MagnifyHeight
+        set
         {
-            get
-            {
-                return tbHeight.Value;
-            }
-            set
-            {
-                tbHeight.Value = value;
-            }
+            tbWidth.Value = value;
         }
+    }
 
-        public float MagnifyOpaque
+    public int MagnifyHeight
+    {
+        get
         {
-            get
-            {
-                return (float)tbOpaque.Value / 100f;
-            }
-            set
-            {
-                tbOpaque.Value = (int)(value * 100f);
-            }
+            return tbHeight.Value;
         }
-
-        public float MagnifyZoom
+        set
         {
-            get
-            {
-                return (float)tbZoom.Value / 100f;
-            }
-            set
-            {
-                tbZoom.Value = (int)(value * 100f);
-            }
+            tbHeight.Value = value;
         }
+    }
 
-        public Size MagnifySize
+    public float MagnifyOpaque
+    {
+        get
         {
-            get
-            {
-                return new Size(MagnifyWidth, MagnifyHeight);
-            }
-            set
-            {
-                MagnifyWidth = value.Width;
-                MagnifyHeight = value.Height;
-            }
+            return (float)tbOpaque.Value / 100f;
         }
-
-        public MagnifierStyle MagnifyStyle
+        set
         {
-            get
-            {
-                if (!chkSimpleStyle.Checked)
-                {
-                    return MagnifierStyle.Glass;
-                }
-                return MagnifierStyle.Simple;
-            }
-            set
-            {
-                chkSimpleStyle.Checked = value == MagnifierStyle.Simple;
-            }
+            tbOpaque.Value = (int)(value * 100f);
         }
+    }
 
-        public bool AutoHideMagnifier
+    public float MagnifyZoom
+    {
+        get
         {
-            get
-            {
-                return chkAutoHideMagnifier.Checked;
-            }
-            set
-            {
-                chkAutoHideMagnifier.Checked = value;
-            }
+            return (float)tbZoom.Value / 100f;
         }
-
-        public bool AutoMagnifier
+        set
         {
-            get
-            {
-                return chkAutoMagnifier.Checked;
-            }
-            set
-            {
-                chkAutoMagnifier.Checked = value;
-            }
+            tbZoom.Value = (int)(value * 100f);
         }
+    }
 
-        public event EventHandler ValuesChanged;
-
-        public MagnifySetupControl()
+    public Size MagnifySize
+    {
+        get
         {
-            InitializeComponent();
-            LocalizeUtility.Localize(this, components);
+            return new Size(MagnifyWidth, MagnifyHeight);
         }
-
-        private void ControlValuesChanged(object sender, EventArgs e)
+        set
         {
-            OnValuesChanged();
+            MagnifyWidth = value.Width;
+            MagnifyHeight = value.Height;
         }
+    }
 
-        private void OnValuesChanged()
+    public MagnifierStyle MagnifyStyle
+    {
+        get
         {
-            if (this.ValuesChanged != null)
+            if (!chkSimpleStyle.Checked)
             {
-                this.ValuesChanged(this, EventArgs.Empty);
+                return MagnifierStyle.Glass;
             }
+            return MagnifierStyle.Simple;
+        }
+        set
+        {
+            chkSimpleStyle.Checked = value == MagnifierStyle.Simple;
+        }
+    }
+
+    public bool AutoHideMagnifier
+    {
+        get
+        {
+            return chkAutoHideMagnifier.Checked;
+        }
+        set
+        {
+            chkAutoHideMagnifier.Checked = value;
+        }
+    }
+
+    public bool AutoMagnifier
+    {
+        get
+        {
+            return chkAutoMagnifier.Checked;
+        }
+        set
+        {
+            chkAutoMagnifier.Checked = value;
+        }
+    }
+
+    public event EventHandler ValuesChanged;
+
+    public MagnifySetupControl()
+    {
+        InitializeComponent();
+        LocalizeUtility.Localize(this, components);
+    }
+
+    private void ControlValuesChanged(object sender, EventArgs e)
+    {
+        OnValuesChanged();
+    }
+
+    private void OnValuesChanged()
+    {
+        if (this.ValuesChanged != null)
+        {
+            this.ValuesChanged(this, EventArgs.Empty);
         }
     }
 }

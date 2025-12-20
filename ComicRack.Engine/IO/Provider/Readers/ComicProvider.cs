@@ -5,121 +5,120 @@ using System.Linq;
 using cYo.Common.IO;
 using cYo.Common.Reflection;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers;
+
+public abstract class ComicProvider : ImageProvider, IInfoStorage
 {
-    public abstract class ComicProvider : ImageProvider, IInfoStorage
+    private static readonly string[] supportedTypes = new string[]
     {
-        private static readonly string[] supportedTypes = new string[]
-        {
-            "jpg",
-            "jpeg",
-            "jif",
-            "jiff",
-            "gif",
-            "png",
-            "tif",
-            "tiff",
-            "bmp",
-            "djvu",
-            "webp",
-            "heic",
-            "heif",
-            "avif",
-            "jp2",
-            "j2k",
+        "jpg",
+        "jpeg",
+        "jif",
+        "jiff",
+        "gif",
+        "png",
+        "tif",
+        "tiff",
+        "bmp",
+        "djvu",
+        "webp",
+        "heic",
+        "heif",
+        "avif",
+        "jp2",
+        "j2k",
 			//"jxl",
 		};
 
-        public bool UpdateEnabled => GetType().GetAttributes<FileFormatAttribute>().FirstOrDefault((FileFormatAttribute f) => f.Format.Supports(base.Source))?.EnableUpdate ?? false;
+    public bool UpdateEnabled => GetType().GetAttributes<FileFormatAttribute>().FirstOrDefault((FileFormatAttribute f) => f.Format.Supports(base.Source))?.EnableUpdate ?? false;
 
-        private bool disableNtfs = false;
-        protected bool DisableNtfs
+    private bool disableNtfs = false;
+    protected bool DisableNtfs
+    {
+        get
         {
-            get
+            if (disableNtfs)
+                return true;
+
+            return EngineConfiguration.Default.DisableNTFS;
+        }
+
+        set => disableNtfs = value;
+    }
+
+    protected bool DisableSidecar
+    {
+        get;
+        set;
+    }
+
+    public ComicInfo LoadInfo(InfoLoadingMethod method)
+    {
+        using (LockSource(readOnly: true))
+        {
+            ComicInfo comicInfo = (DisableNtfs ? null : NtfsInfoStorage.LoadInfo(base.Source));
+            if (comicInfo == null && !DisableSidecar)
             {
-                if (disableNtfs)
-                    return true;
-
-                return EngineConfiguration.Default.DisableNTFS;
+                comicInfo = ComicInfo.LoadFromSidecar(base.Source);
             }
-
-            set => disableNtfs = value;
-        }
-
-        protected bool DisableSidecar
-        {
-            get;
-            set;
-        }
-
-        public ComicInfo LoadInfo(InfoLoadingMethod method)
-        {
-            using (LockSource(readOnly: true))
+            if (comicInfo != null && method == InfoLoadingMethod.Fast)
             {
-                ComicInfo comicInfo = (DisableNtfs ? null : NtfsInfoStorage.LoadInfo(base.Source));
-                if (comicInfo == null && !DisableSidecar)
-                {
-                    comicInfo = ComicInfo.LoadFromSidecar(base.Source);
-                }
-                if (comicInfo != null && method == InfoLoadingMethod.Fast)
-                {
-                    return comicInfo;
-                }
-                ComicInfo comicInfo2 = OnLoadInfo();
-                return comicInfo2 ?? comicInfo;
+                return comicInfo;
             }
+            ComicInfo comicInfo2 = OnLoadInfo();
+            return comicInfo2 ?? comicInfo;
         }
+    }
 
-        public bool StoreInfo(ComicInfo comicInfo)
+    public bool StoreInfo(ComicInfo comicInfo)
+    {
+        bool flag = false;
+        using (LockSource(readOnly: false))
         {
-            bool flag = false;
-            using (LockSource(readOnly: false))
+            if (UpdateEnabled)
             {
-                if (UpdateEnabled)
+                if (!OnStoreInfo(comicInfo))
                 {
-                    if (!OnStoreInfo(comicInfo))
-                    {
-                        return false;
-                    }
-                    flag = true;
+                    return false;
                 }
-                if (!DisableNtfs)
-                {
-                    flag |= NtfsInfoStorage.StoreInfo(base.Source, comicInfo);
-                }
-                return flag;
+                flag = true;
             }
+            if (!DisableNtfs)
+            {
+                flag |= NtfsInfoStorage.StoreInfo(base.Source, comicInfo);
+            }
+            return flag;
         }
+    }
 
-        protected virtual ComicInfo OnLoadInfo()
-        {
-            return null;
-        }
+    protected virtual ComicInfo OnLoadInfo()
+    {
+        return null;
+    }
 
-        protected virtual bool OnStoreInfo(ComicInfo comicInfo)
-        {
+    protected virtual bool OnStoreInfo(ComicInfo comicInfo)
+    {
+        return false;
+    }
+
+    protected virtual bool IsSupportedImage(ProviderImageInfo file)
+    {
+        if (IsImageThumbnailFolder(file.Name))
             return false;
-        }
 
-        protected virtual bool IsSupportedImage(ProviderImageInfo file)
-        {
-            if (IsImageThumbnailFolder(file.Name))
-                return false;
+        string fileExt = Path.GetExtension(FileUtility.MakeValidFilename(file.Name));
+        return supportedTypes.Any((string ext) => string.Equals(fileExt, "." + ext, StringComparison.OrdinalIgnoreCase));
+    }
 
-            string fileExt = Path.GetExtension(FileUtility.MakeValidFilename(file.Name));
-            return supportedTypes.Any((string ext) => string.Equals(fileExt, "." + ext, StringComparison.OrdinalIgnoreCase));
-        }
+    private static bool IsImageThumbnailFolder(string file)
+    {
+        string[] ignore = { ".DS_Store\\", "__MACOSX\\" };
+        return ignore.Any(item => file.Contains(item));
+    }
 
-        private static bool IsImageThumbnailFolder(string file)
-        {
-            string[] ignore = { ".DS_Store\\", "__MACOSX\\" };
-            return ignore.Any(item => file.Contains(item));
-        }
-
-        private static bool IsFileTooSmall(long size)
-        {
-            long minSize = 256;
-            return size < minSize;
-        }
+    private static bool IsFileTooSmall(long size)
+    {
+        long minSize = 256;
+        return size < minSize;
     }
 }

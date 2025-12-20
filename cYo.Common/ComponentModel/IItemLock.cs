@@ -1,24 +1,23 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IItemLock<T> : IDisposable
 {
-    public interface IItemLock<T> : IDisposable
+    T Item
     {
-        T Item
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        object LockObject
-        {
-            get;
-        }
+    object LockObject
+    {
+        get;
+    }
 
-        object Tag
-        {
-            get;
-            set;
-        }
+    object Tag
+    {
+        get;
+        set;
     }
 }

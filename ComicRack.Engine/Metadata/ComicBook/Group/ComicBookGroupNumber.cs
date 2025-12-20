@@ -1,16 +1,15 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupNumber : SingleComicGrouper
 {
-    public class ComicBookGroupNumber : SingleComicGrouper
+    public override IGroupInfo GetGroup(ComicBook item)
     {
-        public override IGroupInfo GetGroup(ComicBook item)
+        if (item.CompareNumber.IsNumber)
         {
-            if (item.CompareNumber.IsNumber)
-            {
-                return ItemGroupCount.GetNumberGroup((int)item.CompareNumber.Number);
-            }
-            return SingleComicGrouper.GetNameGroup(item.CompareNumber.Text);
+            return ItemGroupCount.GetNumberGroup((int)item.CompareNumber.Number);
         }
+        return SingleComicGrouper.GetNameGroup(item.CompareNumber.Text);
     }
 }

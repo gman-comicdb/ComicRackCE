@@ -1,7 +1,6 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public interface IImageKeyProvider
 {
-    public interface IImageKeyProvider
-    {
-        ImageKey GetImageKey(int page);
-    }
+    ImageKey GetImageKey(int page);
 }

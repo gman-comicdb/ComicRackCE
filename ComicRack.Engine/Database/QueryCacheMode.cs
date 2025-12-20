@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public enum QueryCacheMode
 {
-    public enum QueryCacheMode
-    {
-        Disabled,
-        InstantUpdate,
-        DelayedUpdate
-    }
+    Disabled,
+    InstantUpdate,
+    DelayedUpdate
 }

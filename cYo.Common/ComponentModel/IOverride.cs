@@ -1,10 +1,9 @@
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IOverride
 {
-    public interface IOverride
+    bool Override
     {
-        bool Override
-        {
-            get;
-        }
+        get;
     }
 }

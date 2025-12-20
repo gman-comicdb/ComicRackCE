@@ -1,4 +1,3 @@
-namespace cYo.Projects.ComicRack.Engine.Database
-{
-    public delegate void ComicListChangedEventHandler(object sender, ComicListItemChangedEventArgs e);
-}
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public delegate void ComicListChangedEventHandler(object sender, ComicListItemChangedEventArgs e);

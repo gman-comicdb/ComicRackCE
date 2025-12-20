@@ -1,8 +1,7 @@
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public enum BitmapCursorOverlayEffect
 {
-    public enum BitmapCursorOverlayEffect
-    {
-        None,
-        Plus
-    }
+    None,
+    Plus
 }

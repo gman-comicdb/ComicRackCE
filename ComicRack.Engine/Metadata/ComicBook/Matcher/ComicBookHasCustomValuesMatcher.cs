@@ -2,20 +2,19 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Has Custom Values")]
+[ComicBookMatcherHint("CustomValuesStore")]
+public class ComicBookHasCustomValuesMatcher : ComicBookYesNoMatcher
 {
-    [Serializable]
-    [Description("Has Custom Values")]
-    [ComicBookMatcherHint("CustomValuesStore")]
-    public class ComicBookHasCustomValuesMatcher : ComicBookYesNoMatcher
+    protected override YesNo GetValue(ComicBook comicBook)
     {
-        protected override YesNo GetValue(ComicBook comicBook)
+        if (!comicBook.GetCustomValues().Any())
         {
-            if (!comicBook.GetCustomValues().Any())
-            {
-                return YesNo.No;
-            }
-            return YesNo.Yes;
+            return YesNo.No;
         }
+        return YesNo.Yes;
     }
 }

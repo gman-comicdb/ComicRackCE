@@ -1,23 +1,22 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public class ServiceRequestEventArgs : EventArgs
 {
-    public class ServiceRequestEventArgs : EventArgs
+    private readonly Type serviceType;
+
+    public Type ServiceType => serviceType;
+
+    public object Service
     {
-        private readonly Type serviceType;
+        get;
+        set;
+    }
 
-        public Type ServiceType => serviceType;
-
-        public object Service
-        {
-            get;
-            set;
-        }
-
-        public ServiceRequestEventArgs(Type serviceType, object service)
-        {
-            this.serviceType = serviceType;
-            Service = service;
-        }
+    public ServiceRequestEventArgs(Type serviceType, object service)
+    {
+        this.serviceType = serviceType;
+        Service = service;
     }
 }

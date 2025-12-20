@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupCharacters : ComicBookStringGrouper<ComicBookCharactersMatcher>
 {
-    public class ComicBookGroupCharacters : ComicBookStringGrouper<ComicBookCharactersMatcher>
+    public override IGroupInfo GetGroup(ComicBook item)
     {
-        public override IGroupInfo GetGroup(ComicBook item)
-        {
-            return SingleComicGrouper.GetNameGroup(item.Characters);
-        }
+        return SingleComicGrouper.GetNameGroup(item.Characters);
     }
 }

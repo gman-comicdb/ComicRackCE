@@ -1,9 +1,8 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum ItemViewMode
 {
-    public enum ItemViewMode
-    {
-        Thumbnail,
-        Tile,
-        Detail
-    }
+    Thumbnail,
+    Tile,
+    Detail
 }

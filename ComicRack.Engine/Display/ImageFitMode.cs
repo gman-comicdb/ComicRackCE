@@ -1,12 +1,11 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum ImageFitMode
 {
-    public enum ImageFitMode
-    {
-        Original,
-        Fit,
-        FitWidth,
-        FitWidthAdaptive,
-        FitHeight,
-        BestFit
-    }
+    Original,
+    Fit,
+    FitWidth,
+    FitWidthAdaptive,
+    FitHeight,
+    BestFit
 }

@@ -1,36 +1,35 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public class Disposer : DisposableObject
 {
-    public class Disposer : DisposableObject
+    private readonly Action method;
+
+    private readonly bool eatErrors;
+
+    public Disposer(Action method, bool eatErrors = false)
     {
-        private readonly Action method;
+        this.method = method;
+        this.eatErrors = eatErrors;
+    }
 
-        private readonly bool eatErrors;
-
-        public Disposer(Action method, bool eatErrors = false)
+    protected override void Dispose(bool disposing)
+    {
+        try
         {
-            this.method = method;
-            this.eatErrors = eatErrors;
+            if (disposing)
+            {
+                method();
+            }
         }
-
-        protected override void Dispose(bool disposing)
+        catch
         {
-            try
+            if (!eatErrors)
             {
-                if (disposing)
-                {
-                    method();
-                }
+                throw;
             }
-            catch
-            {
-                if (!eatErrors)
-                {
-                    throw;
-                }
-            }
-            base.Dispose(disposing);
         }
+        base.Dispose(disposing);
     }
 }

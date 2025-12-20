@@ -1,9 +1,8 @@
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+public enum BarkType
 {
-    public enum BarkType
-    {
-        DomainException,
-        ThreadException,
-        Lock
-    }
+    DomainException,
+    ThreadException,
+    Lock
 }

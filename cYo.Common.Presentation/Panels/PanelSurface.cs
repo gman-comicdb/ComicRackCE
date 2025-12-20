@@ -2,26 +2,25 @@ using System.Drawing;
 
 using cYo.Common.ComponentModel;
 
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public class PanelSurface : DisposableObject
 {
-    public class PanelSurface : DisposableObject
+    private readonly Graphics graphics;
+
+    public Graphics Graphics => graphics;
+
+    public PanelSurface(Bitmap bitmap)
     {
-        private readonly Graphics graphics;
+        graphics = Graphics.FromImage(bitmap);
+    }
 
-        public Graphics Graphics => graphics;
-
-        public PanelSurface(Bitmap bitmap)
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            graphics = Graphics.FromImage(bitmap);
+            graphics.Dispose();
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                graphics.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        base.Dispose(disposing);
     }
 }

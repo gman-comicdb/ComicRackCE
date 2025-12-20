@@ -1,84 +1,83 @@
 using System;
 using System.IO;
 
-namespace cYo.Common.IO
+namespace cYo.Common.IO;
+
+public class XorStream : Stream
 {
-    public class XorStream : Stream
+    private int mask;
+
+    private Stream stream;
+
+    public override bool CanRead => stream.CanRead;
+
+    public override bool CanSeek => stream.CanSeek;
+
+    public override bool CanWrite => false;
+
+    public override long Length => stream.Length;
+
+    public override long Position
     {
-        private int mask;
-
-        private Stream stream;
-
-        public override bool CanRead => stream.CanRead;
-
-        public override bool CanSeek => stream.CanSeek;
-
-        public override bool CanWrite => false;
-
-        public override long Length => stream.Length;
-
-        public override long Position
+        get
         {
-            get
-            {
-                return stream.Position;
-            }
-            set
-            {
-                stream.Position = value;
-            }
+            return stream.Position;
         }
-
-        public XorStream(Stream stream, int mask)
+        set
         {
-            this.stream = stream;
-            this.mask = mask;
+            stream.Position = value;
         }
+    }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && stream != null)
-            {
-                stream.Dispose();
-                stream = null;
-            }
-            base.Dispose(disposing);
-        }
+    public XorStream(Stream stream, int mask)
+    {
+        this.stream = stream;
+        this.mask = mask;
+    }
 
-        public override void Close()
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && stream != null)
         {
-            base.Close();
-            stream.Close();
+            stream.Dispose();
+            stream = null;
         }
+        base.Dispose(disposing);
+    }
 
-        public override void Flush()
-        {
-            stream.Flush();
-        }
+    public override void Close()
+    {
+        base.Close();
+        stream.Close();
+    }
 
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            return stream.Seek(offset, origin);
-        }
+    public override void Flush()
+    {
+        stream.Flush();
+    }
 
-        public override void SetLength(long value)
-        {
-            stream.SetLength(value);
-        }
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        return stream.Seek(offset, origin);
+    }
 
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            int num = stream.Read(buffer, offset, count);
-            for (int i = 0; i < num; i++)
-            {
-                buffer[offset + i] ^= (byte)mask;
-            }
-            return num;
-        }
+    public override void SetLength(long value)
+    {
+        stream.SetLength(value);
+    }
 
-        public override void Write(byte[] buffer, int offset, int count)
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        int num = stream.Read(buffer, offset, count);
+        for (int i = 0; i < num; i++)
         {
-            throw new NotSupportedException();
+            buffer[offset + i] ^= (byte)mask;
         }
+        return num;
+    }
+
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        throw new NotSupportedException();
     }
 }

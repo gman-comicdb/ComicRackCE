@@ -1,16 +1,15 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Year")]
+[ComicBookMatcherHint("Year", "FilePath", "EnableProposed")]
+public class ComicBookYearMatcher : ComicBookNumericMatcher
 {
-    [Serializable]
-    [Description("Year")]
-    [ComicBookMatcherHint("Year", "FilePath", "EnableProposed")]
-    public class ComicBookYearMatcher : ComicBookNumericMatcher
+    protected override float GetValue(ComicBook comicBook)
     {
-        protected override float GetValue(ComicBook comicBook)
-        {
-            return comicBook.ShadowYear;
-        }
+        return comicBook.ShadowYear;
     }
 }

@@ -3,82 +3,81 @@ using System;
 using System.Diagnostics;
 using System.ServiceModel;
 
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
+public class SingleInstance : ISingleInstance
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
-    public class SingleInstance : ISingleInstance
+    private readonly string name;
+
+    private readonly Action<string[]> StartNew;
+
+    private readonly Action<string[]> StartLast;
+
+    public SingleInstance(string name, Action<string[]> startNew, Action<string[]> startLast)
     {
-        private readonly string name;
+        this.name = name;
+        StartNew = startNew;
+        StartLast = startLast;
+    }
 
-        private readonly Action<string[]> StartNew;
-
-        private readonly Action<string[]> StartLast;
-
-        public SingleInstance(string name, Action<string[]> startNew, Action<string[]> startLast)
+    public void Run(string[] args)
+    {
+        string arg = name;
+        string text = $"net.pipe://localhost/{arg}";
+        ServiceHost serviceHost = null;
+        try
         {
-            this.name = name;
-            StartNew = startNew;
-            StartLast = startLast;
+            serviceHost = new ServiceHost(this, new Uri(text));
+            serviceHost.AddServiceEndpoint(typeof(ISingleInstance), new NetNamedPipeBinding(), "SI");
+            serviceHost.Open();
+            try
+            {
+                StartNew(args);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Failed to start Program: " + ex.Message);
+            }
+            return;
         }
-
-        public void Run(string[] args)
+        catch (Exception)
         {
-            string arg = name;
-            string text = $"net.pipe://localhost/{arg}";
-            ServiceHost serviceHost = null;
+        }
+        finally
+        {
             try
             {
-                serviceHost = new ServiceHost(this, new Uri(text));
-                serviceHost.AddServiceEndpoint(typeof(ISingleInstance), new NetNamedPipeBinding(), "SI");
-                serviceHost.Open();
-                try
-                {
-                    StartNew(args);
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine("Failed to start Program: " + ex.Message);
-                }
-                return;
-            }
-            catch (Exception)
-            {
-            }
-            finally
-            {
-                try
-                {
-                    serviceHost.Close();
-                }
-                catch
-                {
-                }
-            }
-            try
-            {
-                ChannelFactory<ISingleInstance> channelFactory = new ChannelFactory<ISingleInstance>(new NetNamedPipeBinding(), text + "/SI");
-                ISingleInstance singleInstance = channelFactory.CreateChannel();
-                singleInstance.InvokeLast(args);
+                serviceHost.Close();
             }
             catch
             {
             }
         }
-
-        public void InvokeLast(string[] args)
+        try
         {
-            if (StartLast != null)
-            {
-                StartLast(args);
-            }
+            ChannelFactory<ISingleInstance> channelFactory = new ChannelFactory<ISingleInstance>(new NetNamedPipeBinding(), text + "/SI");
+            ISingleInstance singleInstance = channelFactory.CreateChannel();
+            singleInstance.InvokeLast(args);
         }
-
-        public void InvokeNew(string[] args)
+        catch
         {
-            if (StartNew != null)
-            {
-                StartNew(args);
-            }
+        }
+    }
+
+    public void InvokeLast(string[] args)
+    {
+        if (StartLast != null)
+        {
+            StartLast(args);
+        }
+    }
+
+    public void InvokeNew(string[] args)
+    {
+        if (StartNew != null)
+        {
+            StartNew(args);
         }
     }
 }

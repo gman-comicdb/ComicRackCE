@@ -1,17 +1,16 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Viewer.Views
+namespace cYo.Projects.ComicRack.Viewer.Views;
+
+public interface ILibraryBrowser
 {
-    public interface ILibraryBrowser
-    {
-        bool SelectList(Guid listId);
+    bool SelectList(Guid listId);
 
-        bool CanBrowsePrevious();
+    bool CanBrowsePrevious();
 
-        bool CanBrowseNext();
+    bool CanBrowseNext();
 
-        void BrowsePrevious();
+    void BrowsePrevious();
 
-        void BrowseNext();
-    }
+    void BrowseNext();
 }

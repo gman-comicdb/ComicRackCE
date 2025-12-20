@@ -8,189 +8,188 @@ using System.Xml.Serialization;
 using cYo.Common;
 using cYo.Common.Collections;
 
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+[Serializable]
+public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallback, ICloneable
 {
-    [Serializable]
-    public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallback, ICloneable
+    private readonly ComicListItemCollection items = new ComicListItemCollection();
+
+    [XmlArrayItem("Item")]
+    public ComicListItemCollection Items => items;
+
+    [XmlAttribute]
+    [DefaultValue(false)]
+    public bool Collapsed
     {
-        private readonly ComicListItemCollection items = new ComicListItemCollection();
+        get;
+        set;
+    }
 
-        [XmlArrayItem("Item")]
-        public ComicListItemCollection Items => items;
+    [XmlAttribute]
+    [DefaultValue(false)]
+    public bool Temporary
+    {
+        get;
+        set;
+    }
 
-        [XmlAttribute]
-        [DefaultValue(false)]
-        public bool Collapsed
+    [XmlAttribute]
+    [DefaultValue(ComicFolderCombineMode.Or)]
+    public ComicFolderCombineMode CombineMode
+    {
+        get;
+        set;
+    }
+
+    [XmlIgnore]
+    public override ComicLibrary Library
+    {
+        get
         {
-            get;
-            set;
+            return base.Library;
         }
-
-        [XmlAttribute]
-        [DefaultValue(false)]
-        public bool Temporary
+        set
         {
-            get;
-            set;
-        }
-
-        [XmlAttribute]
-        [DefaultValue(ComicFolderCombineMode.Or)]
-        public ComicFolderCombineMode CombineMode
-        {
-            get;
-            set;
-        }
-
-        [XmlIgnore]
-        public override ComicLibrary Library
-        {
-            get
+            base.Library = value;
+            Items.ForEach(delegate (ComicListItem cli)
             {
-                return base.Library;
+                cli.Library = value;
+            });
+        }
+    }
+
+    public override string ImageKey
+    {
+        get
+        {
+            if (!Temporary)
+            {
+                return "Folder";
             }
-            set
+            return "TempFolder";
+        }
+    }
+
+    public ComicListItemFolder()
+    {
+        items.Changed += items_Changed;
+    }
+
+    public ComicListItemFolder(string name)
+        : this()
+    {
+        base.Name = name;
+    }
+
+    public ComicListItemFolder(ComicListItemFolder item)
+        : this(item.Name)
+    {
+        base.Description = item.Description;
+        base.Display = item.Display;
+        CombineMode = item.CombineMode;
+        foreach (ComicListItem item2 in item.Items)
+        {
+            if (item2 is ICloneable)
             {
-                base.Library = value;
-                Items.ForEach(delegate (ComicListItem cli)
-                {
-                    cli.Library = value;
-                });
+                Items.Add(((ICloneable)item2).Clone<ComicListItem>());
             }
         }
+    }
 
-        public override string ImageKey
+    public override bool IsUpdateNeeded(string propertyHint)
+    {
+        return false;
+    }
+
+    protected override IEnumerable<ComicBook> OnCacheMatch(IEnumerable<ComicBook> cbl)
+    {
+        switch (CombineMode)
         {
-            get
-            {
-                if (!Temporary)
+            case ComicFolderCombineMode.And:
+                foreach (ComicBook item in cbl.Where((ComicBook cb) => Items.All((ComicListItem list) => list.GetCache().Contains(cb))))
                 {
-                    return "Folder";
+                    yield return item;
                 }
-                return "TempFolder";
-            }
+                yield break;
+            case ComicFolderCombineMode.Empty:
+                yield break;
         }
-
-        public ComicListItemFolder()
+        foreach (ComicBook item2 in cbl.Where((ComicBook cb) => Items.Any((ComicListItem list) => list.GetCache().Contains(cb))))
         {
-            items.Changed += items_Changed;
+            yield return item2;
         }
+    }
 
-        public ComicListItemFolder(string name)
-            : this()
+    public override bool Filter(string filter)
+    {
+        return Items.Any((ComicListItem cli) => cli.Filter(filter));
+    }
+
+    private void items_Changed(object sender, SmartListChangedEventArgs<ComicListItem> e)
+    {
+        ResetCache();
+        switch (e.Action)
         {
-            base.Name = name;
+            case SmartListAction.Insert:
+                e.Item.Changed += Item_Changed;
+                e.Item.Parent = this;
+                e.Item.Library = Library;
+                OnChanged(ComicListItemChange.Added, e.Item);
+                break;
+            case SmartListAction.Remove:
+                e.Item.Changed -= Item_Changed;
+                e.Item.Parent = null;
+                e.Item.Library = null;
+                OnChanged(ComicListItemChange.Removed, e.Item);
+                break;
         }
+    }
 
-        public ComicListItemFolder(ComicListItemFolder item)
-            : this(item.Name)
+    private void Item_Changed(object sender, ComicListItemChangedEventArgs e)
+    {
+        ResetCache();
+        OnChanged(e);
+    }
+
+    protected override IEnumerable<ComicBook> OnGetBooks()
+    {
+        IEnumerable<ComicBook> enumerable = null;
+        switch (CombineMode)
         {
-            base.Description = item.Description;
-            base.Display = item.Display;
-            CombineMode = item.CombineMode;
-            foreach (ComicListItem item2 in item.Items)
-            {
-                if (item2 is ICloneable)
+            default:
+                foreach (ComicListItem item in Items)
                 {
-                    Items.Add(((ICloneable)item2).Clone<ComicListItem>());
+                    enumerable = ((enumerable == null) ? item.GetBooks() : enumerable.Union(item.GetBooks(), ComicBook.GuidEquality));
+                    if (Library != null && enumerable.Count() == Library.BookCount)
+                    {
+                        break;
+                    }
                 }
-            }
-        }
-
-        public override bool IsUpdateNeeded(string propertyHint)
-        {
-            return false;
-        }
-
-        protected override IEnumerable<ComicBook> OnCacheMatch(IEnumerable<ComicBook> cbl)
-        {
-            switch (CombineMode)
-            {
-                case ComicFolderCombineMode.And:
-                    foreach (ComicBook item in cbl.Where((ComicBook cb) => Items.All((ComicListItem list) => list.GetCache().Contains(cb))))
+                break;
+            case ComicFolderCombineMode.And:
+                foreach (ComicListItem item2 in Items)
+                {
+                    enumerable = ((enumerable == null) ? item2.GetBooks() : enumerable.Intersect(item2.GetBooks(), ComicBook.GuidEquality));
+                    if (enumerable.IsEmpty())
                     {
-                        yield return item;
+                        break;
                     }
-                    yield break;
-                case ComicFolderCombineMode.Empty:
-                    yield break;
-            }
-            foreach (ComicBook item2 in cbl.Where((ComicBook cb) => Items.Any((ComicListItem list) => list.GetCache().Contains(cb))))
-            {
-                yield return item2;
-            }
+                }
+                break;
+            case ComicFolderCombineMode.Empty:
+                break;
         }
+        return enumerable ?? Enumerable.Empty<ComicBook>();
+    }
 
-        public override bool Filter(string filter)
-        {
-            return Items.Any((ComicListItem cli) => cli.Filter(filter));
-        }
+    void IDeserializationCallback.OnDeserialization(object sender)
+    {
+        items.Changed += items_Changed;
+    }
 
-        private void items_Changed(object sender, SmartListChangedEventArgs<ComicListItem> e)
-        {
-            ResetCache();
-            switch (e.Action)
-            {
-                case SmartListAction.Insert:
-                    e.Item.Changed += Item_Changed;
-                    e.Item.Parent = this;
-                    e.Item.Library = Library;
-                    OnChanged(ComicListItemChange.Added, e.Item);
-                    break;
-                case SmartListAction.Remove:
-                    e.Item.Changed -= Item_Changed;
-                    e.Item.Parent = null;
-                    e.Item.Library = null;
-                    OnChanged(ComicListItemChange.Removed, e.Item);
-                    break;
-            }
-        }
-
-        private void Item_Changed(object sender, ComicListItemChangedEventArgs e)
-        {
-            ResetCache();
-            OnChanged(e);
-        }
-
-        protected override IEnumerable<ComicBook> OnGetBooks()
-        {
-            IEnumerable<ComicBook> enumerable = null;
-            switch (CombineMode)
-            {
-                default:
-                    foreach (ComicListItem item in Items)
-                    {
-                        enumerable = ((enumerable == null) ? item.GetBooks() : enumerable.Union(item.GetBooks(), ComicBook.GuidEquality));
-                        if (Library != null && enumerable.Count() == Library.BookCount)
-                        {
-                            break;
-                        }
-                    }
-                    break;
-                case ComicFolderCombineMode.And:
-                    foreach (ComicListItem item2 in Items)
-                    {
-                        enumerable = ((enumerable == null) ? item2.GetBooks() : enumerable.Intersect(item2.GetBooks(), ComicBook.GuidEquality));
-                        if (enumerable.IsEmpty())
-                        {
-                            break;
-                        }
-                    }
-                    break;
-                case ComicFolderCombineMode.Empty:
-                    break;
-            }
-            return enumerable ?? Enumerable.Empty<ComicBook>();
-        }
-
-        void IDeserializationCallback.OnDeserialization(object sender)
-        {
-            items.Changed += items_Changed;
-        }
-
-        public override object Clone()
-        {
-            return new ComicListItemFolder(this);
-        }
+    public override object Clone()
+    {
+        return new ComicListItemFolder(this);
     }
 }

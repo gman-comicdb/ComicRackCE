@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.Display.Forms
+namespace cYo.Projects.ComicRack.Engine.Display.Forms;
+
+public enum PanelType
 {
-    public enum PanelType
-    {
-        BlackGlass = 0,
-        BlueGlass = 1,
-        Default = 0
-    }
+    BlackGlass = 0,
+    BlueGlass = 1,
+    Default = 0
 }

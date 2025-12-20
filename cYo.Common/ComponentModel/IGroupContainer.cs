@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace cYo.Common.ComponentModel
-{
-    public interface IGroupContainer<T> : IGroupInfo, IComparable<IGroupInfo>
-    {
-        IGroupInfo Info
-        {
-            get;
-            set;
-        }
+namespace cYo.Common.ComponentModel;
 
-        List<T> Items
-        {
-            get;
-        }
+public interface IGroupContainer<T> : IGroupInfo, IComparable<IGroupInfo>
+{
+    IGroupInfo Info
+    {
+        get;
+        set;
+    }
+
+    List<T> Items
+    {
+        get;
     }
 }

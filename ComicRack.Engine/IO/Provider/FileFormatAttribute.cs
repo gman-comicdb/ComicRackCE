@@ -1,48 +1,47 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class FileFormatAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class FileFormatAttribute : Attribute
+    public FileFormat Format
     {
-        public FileFormat Format
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public bool Dynamic
+    public bool Dynamic
+    {
+        get
         {
-            get
-            {
-                return Format.Dynamic;
-            }
-            set
-            {
-                Format.Dynamic = value;
-            }
+            return Format.Dynamic;
         }
+        set
+        {
+            Format.Dynamic = value;
+        }
+    }
 
-        public bool EnableUpdate
+    public bool EnableUpdate
+    {
+        get
         {
-            get
-            {
-                return Format.SupportsUpdate;
-            }
-            set
-            {
-                Format.SupportsUpdate = value;
-            }
+            return Format.SupportsUpdate;
         }
+        set
+        {
+            Format.SupportsUpdate = value;
+        }
+    }
 
-        public FileFormatAttribute(FileFormat format)
-        {
-            Format = format;
-        }
+    public FileFormatAttribute(FileFormat format)
+    {
+        Format = format;
+    }
 
-        public FileFormatAttribute(string name, int id, string extensions)
-            : this(new FileFormat(name, id, extensions))
-        {
-        }
+    public FileFormatAttribute(string name, int id, string extensions)
+        : this(new FileFormat(name, id, extensions))
+    {
     }
 }

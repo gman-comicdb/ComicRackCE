@@ -1,17 +1,16 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IFilteredComicBookList
 {
-    public interface IFilteredComicBookList
+    bool ShowFiltered
     {
-        bool ShowFiltered
-        {
-            get;
-            set;
-        }
-
-        bool IsFiltered(ComicBook ci);
-
-        void SetFiltered(ComicBook ci, bool filtered);
-
-        void ClearFiltered();
+        get;
+        set;
     }
+
+    bool IsFiltered(ComicBook ci);
+
+    void SetFiltered(ComicBook ci, bool filtered);
+
+    void ClearFiltered();
 }

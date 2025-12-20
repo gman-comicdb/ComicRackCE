@@ -1,25 +1,24 @@
 using System.IO;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Writers
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Writers;
+
+[FileFormat("Image Folder", KnownFileFormats.FOLDER, ".")]
+public class FolderStorageProvider : PackedStorageProvider
 {
-    [FileFormat("Image Folder", KnownFileFormats.FOLDER, ".")]
-    public class FolderStorageProvider : PackedStorageProvider
+    private string target;
+
+    protected override void OnCreateFile(string target, StorageSetting setting)
     {
-        private string target;
+        this.target = target;
+        Directory.CreateDirectory(target);
+    }
 
-        protected override void OnCreateFile(string target, StorageSetting setting)
-        {
-            this.target = target;
-            Directory.CreateDirectory(target);
-        }
+    protected override void AddEntry(string name, byte[] data)
+    {
+        File.WriteAllBytes(Path.Combine(target, name), data);
+    }
 
-        protected override void AddEntry(string name, byte[] data)
-        {
-            File.WriteAllBytes(Path.Combine(target, name), data);
-        }
-
-        protected override void OnCloseFile()
-        {
-        }
+    protected override void OnCloseFile()
+    {
     }
 }

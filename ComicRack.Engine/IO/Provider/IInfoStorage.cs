@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
-{
-    public interface IInfoStorage
-    {
-        bool StoreInfo(ComicInfo comicInfo);
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
 
-        ComicInfo LoadInfo(InfoLoadingMethod method);
-    }
+public interface IInfoStorage
+{
+    bool StoreInfo(ComicInfo comicInfo);
+
+    ComicInfo LoadInfo(InfoLoadingMethod method);
 }

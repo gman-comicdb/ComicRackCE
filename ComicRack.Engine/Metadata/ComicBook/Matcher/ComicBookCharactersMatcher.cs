@@ -1,16 +1,15 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Characters")]
+[ComicBookMatcherHint("Characters")]
+public class ComicBookCharactersMatcher : ComicBookStringMatcher
 {
-    [Serializable]
-    [Description("Characters")]
-    [ComicBookMatcherHint("Characters")]
-    public class ComicBookCharactersMatcher : ComicBookStringMatcher
+    protected override string GetValue(ComicBook comicBook)
     {
-        protected override string GetValue(ComicBook comicBook)
-        {
-            return comicBook.Characters;
-        }
+        return comicBook.Characters;
     }
 }

@@ -1,10 +1,9 @@
-namespace cYo.Common.Presentation.Ceco
+namespace cYo.Common.Presentation.Ceco;
+
+public enum VerticalAlignment
 {
-    public enum VerticalAlignment
-    {
-        None,
-        Top,
-        Middle,
-        Bottom
-    }
+    None,
+    Top,
+    Middle,
+    Bottom
 }

@@ -1,26 +1,25 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+[Serializable]
+public class LiteComponent : DisposableObject, ILiteComponent, IDisposable
 {
-    [Serializable]
-    public class LiteComponent : DisposableObject, ILiteComponent, IDisposable
+    [field: NonSerialized]
+    public event EventHandler<ServiceRequestEventArgs> ServiceRequest;
+
+    public virtual T QueryService<T>() where T : class
     {
-        [field: NonSerialized]
-        public event EventHandler<ServiceRequestEventArgs> ServiceRequest;
+        ServiceRequestEventArgs serviceRequestEventArgs = new ServiceRequestEventArgs(typeof(T), this as T);
+        OnServiceRequest(serviceRequestEventArgs);
+        return serviceRequestEventArgs.Service as T;
+    }
 
-        public virtual T QueryService<T>() where T : class
+    protected virtual void OnServiceRequest(ServiceRequestEventArgs e)
+    {
+        if (this.ServiceRequest != null)
         {
-            ServiceRequestEventArgs serviceRequestEventArgs = new ServiceRequestEventArgs(typeof(T), this as T);
-            OnServiceRequest(serviceRequestEventArgs);
-            return serviceRequestEventArgs.Service as T;
-        }
-
-        protected virtual void OnServiceRequest(ServiceRequestEventArgs e)
-        {
-            if (this.ServiceRequest != null)
-            {
-                this.ServiceRequest(this, e);
-            }
+            this.ServiceRequest(this, e);
         }
     }
 }

@@ -1,38 +1,37 @@
-namespace cYo.Common.Presentation.Ceco.Format
+namespace cYo.Common.Presentation.Ceco.Format;
+
+public class LineBreak : Span
 {
-    public class LineBreak : Span
+    private float lineScale = 1f;
+
+    public float LineScale
     {
-        private float lineScale = 1f;
-
-        public float LineScale
+        get
         {
-            get
-            {
-                return lineScale;
-            }
-            set
-            {
-                lineScale = value;
-            }
+            return lineScale;
         }
-
-        public bool Clear
+        set
         {
-            get;
-            set;
+            lineScale = value;
         }
+    }
 
-        public override int FlowBreakOffset => (int)((float)Font.Height * lineScale);
+    public bool Clear
+    {
+        get;
+        set;
+    }
 
-        public override FlowBreak FlowBreak => FlowBreak.After;
+    public override int FlowBreakOffset => (int)((float)Font.Height * lineScale);
 
-        public LineBreak()
-        {
-        }
+    public override FlowBreak FlowBreak => FlowBreak.After;
 
-        public LineBreak(float lineScale)
-        {
-            this.lineScale = lineScale;
-        }
+    public LineBreak()
+    {
+    }
+
+    public LineBreak(float lineScale)
+    {
+        this.lineScale = lineScale;
     }
 }

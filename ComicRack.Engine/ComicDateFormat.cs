@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum ComicDateFormat
 {
-    public enum ComicDateFormat
-    {
-        Long,
-        Short,
-        Relative
-    }
+    Long,
+    Short,
+    Relative
 }

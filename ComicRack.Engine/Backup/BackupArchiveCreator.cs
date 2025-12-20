@@ -13,115 +13,114 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using SysPath = System.IO.Path;
 
-namespace cYo.Projects.ComicRack.Engine.Backup
+namespace cYo.Projects.ComicRack.Engine.Backup;
+
+/// <summary>
+/// Creates backup archives.
+/// </summary>
+internal class BackupArchiveCreator
 {
-    /// <summary>
-    /// Creates backup archives.
-    /// </summary>
-    internal class BackupArchiveCreator
+    private readonly string appName;
+
+    public BackupArchiveCreator()
     {
-        private readonly string appName;
+        this.appName = GetApplicationName();
+    }
 
-        public BackupArchiveCreator()
+    public void CreateBackup(string backupLocation, IEnumerable<BackupFileEntry> files, IEnumerable<BackupOptions> backupTypes)
+    {
+        if (!files.Any())
+            return;
+
+        string backupFile = GenerateBackupFilePath(backupLocation);
+
+        try
         {
-            this.appName = GetApplicationName();
-        }
+            if (!Directory.Exists(backupLocation))
+                Directory.CreateDirectory(backupLocation);
 
-        public void CreateBackup(string backupLocation, IEnumerable<BackupFileEntry> files, IEnumerable<BackupOptions> backupTypes)
-        {
-            if (!files.Any())
-                return;
-
-            string backupFile = GenerateBackupFilePath(backupLocation);
-
-            try
+            using (ZipFile zipFile = ZipFile.Create(backupFile))
             {
-                if (!Directory.Exists(backupLocation))
-                    Directory.CreateDirectory(backupLocation);
+                zipFile.BeginUpdate();
+                zipFile.SetComment(CreateBackupComment(backupTypes));
 
-                using (ZipFile zipFile = ZipFile.Create(backupFile))
+                foreach (var file in files)
                 {
-                    zipFile.BeginUpdate();
-                    zipFile.SetComment(CreateBackupComment(backupTypes));
-
-                    foreach (var file in files)
-                    {
-                        zipFile.Add(file.Path, file.RelativePath);
-                    }
-
-                    zipFile.CommitUpdate();
+                    zipFile.Add(file.Path, file.RelativePath);
                 }
-            }
-            catch (Exception)
-            {
-                throw;
+
+                zipFile.CommitUpdate();
             }
         }
-
-        private string GenerateBackupFilePath(string backupLocation)
+        catch (Exception)
         {
-            return Path.Combine(backupLocation, $"{appName} Backup - {FileUtility.MakeValidFilename($"{DateTime.Now:s}")}.zip");
-        }
-
-        private string CreateBackupComment(IEnumerable<BackupOptions> backupTypes)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine($"ComicRack Backup done on {DateTime.Now:s}");
-            sb.AppendLine();
-            sb.AppendLine("Includes:");
-
-            foreach (var type in backupTypes)
-            {
-                sb.AppendLine(type.ToString());
-            }
-
-            return sb.ToString();
-        }
-
-        private static string GetApplicationName()
-        {
-            return Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
+            throw;
         }
     }
 
-    /// <summary>
-    /// Represents a file to be backed up with its path information.
-    /// </summary>
-    internal class BackupFileEntry
+    private string GenerateBackupFilePath(string backupLocation)
     {
-        private readonly string CommonApplicationDataPath = IniFile.CommonApplicationDataFolder;
-        public string Path { get; set; }
-        public string BasePath { get; set; }
+        return Path.Combine(backupLocation, $"{appName} Backup - {FileUtility.MakeValidFilename($"{DateTime.Now:s}")}.zip");
+    }
 
-        public string RelativePath
+    private string CreateBackupComment(IEnumerable<BackupOptions> backupTypes)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"ComicRack Backup done on {DateTime.Now:s}");
+        sb.AppendLine();
+        sb.AppendLine("Includes:");
+
+        foreach (var type in backupTypes)
         {
-            get
-            {
-                if (Path.StartsWith(BasePath))
-                {
-                    return Path.Substring(BasePath.Length);
-                }
-                else
-                {
-                    //string dir = SysPath.GetDirectoryName(Path);
-                    //var test = Path.Substring(SysPath.GetPathRoot(Path).Length); // Removes the root and keeps the rest of the folder structure.
-                    //var test2 = Path.Substring(Directory.GetParent(Path).FullName.Length); // This just uses the filename, so it may overwrite another file
-                    //var test3 = Path.Substring(Directory.GetParent(dir).FullName.Length); // keeps the parent folder & filename
-                    //var test4 = test.Replace(productAppData, ""); // Removes the company & product name from the path
+            sb.AppendLine(type.ToString());
+        }
 
-                    string productAppData = SysPath.Combine(Application.CompanyName, Application.ProductName);  // Usually cYo\ComicRack Community Edition to remove from path names
-                    string relativePath = Path.StartsWith(CommonApplicationDataPath)
-                        ? $"ProgramData\\{Path.Substring(CommonApplicationDataPath.Length)}" // When in ProgramData force ProgramData as the archive root folder
-                        : Path.Substring(SysPath.GetPathRoot(Path).Length).Replace(productAppData, ""); // Removes the root and keeps the rest of the folder structure while taking out the company & product name from the path
-                    return relativePath;
-                }
+        return sb.ToString();
+    }
+
+    private static string GetApplicationName()
+    {
+        return Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
+    }
+}
+
+/// <summary>
+/// Represents a file to be backed up with its path information.
+/// </summary>
+internal class BackupFileEntry
+{
+    private readonly string CommonApplicationDataPath = IniFile.CommonApplicationDataFolder;
+    public string Path { get; set; }
+    public string BasePath { get; set; }
+
+    public string RelativePath
+    {
+        get
+        {
+            if (Path.StartsWith(BasePath))
+            {
+                return Path.Substring(BasePath.Length);
+            }
+            else
+            {
+                //string dir = SysPath.GetDirectoryName(Path);
+                //var test = Path.Substring(SysPath.GetPathRoot(Path).Length); // Removes the root and keeps the rest of the folder structure.
+                //var test2 = Path.Substring(Directory.GetParent(Path).FullName.Length); // This just uses the filename, so it may overwrite another file
+                //var test3 = Path.Substring(Directory.GetParent(dir).FullName.Length); // keeps the parent folder & filename
+                //var test4 = test.Replace(productAppData, ""); // Removes the company & product name from the path
+
+                string productAppData = SysPath.Combine(Application.CompanyName, Application.ProductName);  // Usually cYo\ComicRack Community Edition to remove from path names
+                string relativePath = Path.StartsWith(CommonApplicationDataPath)
+                    ? $"ProgramData\\{Path.Substring(CommonApplicationDataPath.Length)}" // When in ProgramData force ProgramData as the archive root folder
+                    : Path.Substring(SysPath.GetPathRoot(Path).Length).Replace(productAppData, ""); // Removes the root and keeps the rest of the folder structure while taking out the company & product name from the path
+                return relativePath;
             }
         }
+    }
 
-        public BackupFileEntry(string basePath, string path)
-        {
-            BasePath = basePath;
-            Path = path;
-        }
+    public BackupFileEntry(string basePath, string path)
+    {
+        BasePath = basePath;
+        Path = path;
     }
 }

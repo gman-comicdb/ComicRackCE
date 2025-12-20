@@ -7,115 +7,141 @@ using System.Net.Sockets;
 using cYo.Common.ComponentModel;
 using cYo.Common.Xml;
 
-namespace cYo.Common.Net
+namespace cYo.Common.Net;
+
+public class Broadcaster<T> : DisposableObject, IBroadcast<T>
 {
-    public class Broadcaster<T> : DisposableObject, IBroadcast<T>
+    private int port;
+
+    private bool listen;
+
+    private UdpClient listener;
+
+    private IPEndPoint listenerEP;
+
+    public int Port
     {
-        private int port;
-
-        private bool listen;
-
-        private UdpClient listener;
-
-        private IPEndPoint listenerEP;
-
-        public int Port
+        get
         {
-            get
+            return port;
+        }
+        set
+        {
+            if (port != value)
             {
-                return port;
-            }
-            set
-            {
-                if (port != value)
+                port = value;
+                if (listen)
                 {
-                    port = value;
-                    if (listen)
-                    {
-                        StopListening();
-                        StartListening();
-                    }
+                    StopListening();
+                    StartListening();
                 }
             }
         }
+    }
 
-        public bool Listen
+    public bool Listen
+    {
+        get
         {
-            get
+            return listen;
+        }
+        set
+        {
+            if (listen != value)
             {
-                return listen;
-            }
-            set
-            {
-                if (listen != value)
+                listen = value;
+                if (listen)
                 {
-                    listen = value;
-                    if (listen)
-                    {
-                        StartListening();
-                    }
-                    else
-                    {
-                        StopListening();
-                    }
+                    StartListening();
+                }
+                else
+                {
+                    StopListening();
                 }
             }
         }
+    }
 
-        public IEnumerable<IPEndPoint> LocalEndpoints => from ipa in Dns.GetHostAddresses(string.Empty)
-                                                         where ipa.AddressFamily == AddressFamily.InterNetwork
-                                                         select new IPEndPoint(ipa, 0);
+    public IEnumerable<IPEndPoint> LocalEndpoints => from ipa in Dns.GetHostAddresses(string.Empty)
+                                                     where ipa.AddressFamily == AddressFamily.InterNetwork
+                                                     select new IPEndPoint(ipa, 0);
 
-        public event EventHandler<BroadcastEventArgs<T>> Recieved;
+    public event EventHandler<BroadcastEventArgs<T>> Recieved;
 
-        public Broadcaster()
+    public Broadcaster()
+    {
+    }
+
+    public Broadcaster(int port)
+    {
+        this.port = port;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
+            StopListening();
         }
+        base.Dispose(disposing);
+    }
 
-        public Broadcaster(int port)
+    private bool StartListening()
+    {
+        if (listener != null)
         {
-            this.port = port;
+            return true;
         }
-
-        protected override void Dispose(bool disposing)
+        try
         {
-            if (disposing)
+            listener = new UdpClient(port);
+            listenerEP = new IPEndPoint(IPAddress.Any, port);
+            listener.EnableBroadcast = true;
+            listener.BeginReceive(OnReceivedData, this);
+            return true;
+        }
+        catch (Exception)
+        {
+            StopListening();
+            return false;
+        }
+    }
+
+    private void StopListening()
+    {
+        try
+        {
+            UdpClient udpClient = listener;
+            if (udpClient != null)
             {
-                StopListening();
+                listener = null;
+                udpClient.Close();
             }
-            base.Dispose(disposing);
         }
-
-        private bool StartListening()
+        catch (Exception)
         {
-            if (listener != null)
+        }
+        finally
+        {
+            listener = null;
+        }
+    }
+
+    protected virtual void OnReceivedData(IAsyncResult ar)
+    {
+        try
+        {
+            if (listener == null)
             {
-                return true;
+                return;
             }
             try
             {
-                listener = new UdpClient(port);
-                listenerEP = new IPEndPoint(IPAddress.Any, port);
-                listener.EnableBroadcast = true;
-                listener.BeginReceive(OnReceivedData, this);
-                return true;
-            }
-            catch (Exception)
-            {
-                StopListening();
-                return false;
-            }
-        }
-
-        private void StopListening()
-        {
-            try
-            {
-                UdpClient udpClient = listener;
-                if (udpClient != null)
+                byte[] bytes = listener.EndReceive(ar, ref listenerEP);
+                if (LocalEndpoints.FirstOrDefault((IPEndPoint ep) => ep.Address.Equals(listenerEP.Address)) == null)
                 {
-                    listener = null;
-                    udpClient.Close();
+                    T data = XmlUtility.Load<T>(bytes);
+                    OnRecieved(new BroadcastEventArgs<T>(data, listenerEP.Address));
                 }
             }
             catch (Exception)
@@ -123,67 +149,40 @@ namespace cYo.Common.Net
             }
             finally
             {
-                listener = null;
+                listener.BeginReceive(OnReceivedData, this);
             }
         }
-
-        protected virtual void OnReceivedData(IAsyncResult ar)
+        catch
         {
-            try
-            {
-                if (listener == null)
-                {
-                    return;
-                }
-                try
-                {
-                    byte[] bytes = listener.EndReceive(ar, ref listenerEP);
-                    if (LocalEndpoints.FirstOrDefault((IPEndPoint ep) => ep.Address.Equals(listenerEP.Address)) == null)
-                    {
-                        T data = XmlUtility.Load<T>(bytes);
-                        OnRecieved(new BroadcastEventArgs<T>(data, listenerEP.Address));
-                    }
-                }
-                catch (Exception)
-                {
-                }
-                finally
-                {
-                    listener.BeginReceive(OnReceivedData, this);
-                }
-            }
-            catch
-            {
-            }
         }
+    }
 
-        protected virtual void OnRecieved(BroadcastEventArgs<T> bea)
+    protected virtual void OnRecieved(BroadcastEventArgs<T> bea)
+    {
+        if (this.Recieved != null)
         {
-            if (this.Recieved != null)
-            {
-                this.Recieved(this, bea);
-            }
+            this.Recieved(this, bea);
         }
+    }
 
-        public bool Broadcast(T data)
+    public bool Broadcast(T data)
+    {
+        try
         {
-            try
+            foreach (IPEndPoint localEndpoint in LocalEndpoints)
             {
-                foreach (IPEndPoint localEndpoint in LocalEndpoints)
+                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                 {
-                    using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
-                    {
-                        socket.Bind(localEndpoint);
-                        socket.EnableBroadcast = true;
-                        socket.SendTo(XmlUtility.Store(data, compressed: true), new IPEndPoint(IPAddress.Broadcast, port));
-                    }
+                    socket.Bind(localEndpoint);
+                    socket.EnableBroadcast = true;
+                    socket.SendTo(XmlUtility.Store(data, compressed: true), new IPEndPoint(IPAddress.Broadcast, port));
                 }
-                return true;
             }
-            catch
-            {
-                return false;
-            }
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

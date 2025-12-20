@@ -5,89 +5,88 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace cYo.Common.Drawing
+namespace cYo.Common.Drawing;
+
+public class ColorSchema : IXmlSerializable
 {
-    public class ColorSchema : IXmlSerializable
+    private readonly Dictionary<string, Color> table = new Dictionary<string, Color>();
+
+    private string name;
+
+    public string Name
     {
-        private readonly Dictionary<string, Color> table = new Dictionary<string, Color>();
-
-        private string name;
-
-        public string Name
+        get
         {
-            get
+            return name;
+        }
+        set
+        {
+            name = value;
+        }
+    }
+
+    public Color this[string name]
+    {
+        get
+        {
+            if (!table.TryGetValue(name, out var value))
             {
-                return name;
+                return Color.Empty;
             }
-            set
+            return value;
+        }
+        set
+        {
+            table[name] = value;
+        }
+    }
+
+    public ColorSchema(string name)
+    {
+        this.name = name;
+    }
+
+    public ColorSchema()
+        : this(string.Empty)
+    {
+    }
+
+    public XmlSchema GetSchema()
+    {
+        return null;
+    }
+
+    public void ReadXml(XmlReader reader)
+    {
+        ColorConverter colorConverter = new ColorConverter();
+        name = reader.GetAttribute("name");
+        reader.ReadStartElement();
+        while (reader.IsStartElement())
+        {
+            string key = reader.Name;
+            string text = reader.ReadElementContentAsString();
+            try
             {
-                name = value;
+                table[key] = (Color)colorConverter.ConvertFromInvariantString(text);
+            }
+            catch (Exception)
+            {
+                table[key] = Color.Red;
             }
         }
+        reader.ReadEndElement();
+    }
 
-        public Color this[string name]
+    public void WriteXml(XmlWriter writer)
+    {
+        ColorConverter colorConverter = new ColorConverter();
+        if (!string.IsNullOrEmpty(name))
         {
-            get
-            {
-                if (!table.TryGetValue(name, out var value))
-                {
-                    return Color.Empty;
-                }
-                return value;
-            }
-            set
-            {
-                table[name] = value;
-            }
+            writer.WriteAttributeString("name", name);
         }
-
-        public ColorSchema(string name)
+        foreach (string key in table.Keys)
         {
-            this.name = name;
-        }
-
-        public ColorSchema()
-            : this(string.Empty)
-        {
-        }
-
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader)
-        {
-            ColorConverter colorConverter = new ColorConverter();
-            name = reader.GetAttribute("name");
-            reader.ReadStartElement();
-            while (reader.IsStartElement())
-            {
-                string key = reader.Name;
-                string text = reader.ReadElementContentAsString();
-                try
-                {
-                    table[key] = (Color)colorConverter.ConvertFromInvariantString(text);
-                }
-                catch (Exception)
-                {
-                    table[key] = Color.Red;
-                }
-            }
-            reader.ReadEndElement();
-        }
-
-        public void WriteXml(XmlWriter writer)
-        {
-            ColorConverter colorConverter = new ColorConverter();
-            if (!string.IsNullOrEmpty(name))
-            {
-                writer.WriteAttributeString("name", name);
-            }
-            foreach (string key in table.Keys)
-            {
-                writer.WriteElementString(key, colorConverter.ConvertToInvariantString(table[key]));
-            }
+            writer.WriteElementString(key, colorConverter.ConvertToInvariantString(table[key]));
         }
     }
 }

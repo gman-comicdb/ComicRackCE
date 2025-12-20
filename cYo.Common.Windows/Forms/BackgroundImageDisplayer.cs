@@ -5,110 +5,109 @@ using System.Windows.Forms;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl, IDisposable
 {
-    public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl, IDisposable
+    private readonly Control control;
+
+    private Bitmap image;
+
+    public ContentAlignment Alignment
     {
-        private readonly Control control;
+        get;
+        set;
+    }
 
-        private Bitmap image;
+    public bool AutoDispose
+    {
+        get;
+        set;
+    }
 
-        public ContentAlignment Alignment
+    public Control Control => control;
+
+    public float Opacity
+    {
+        get;
+        set;
+    }
+
+    public Bitmap Bitmap
+    {
+        get
         {
-            get;
-            set;
+            return image;
         }
-
-        public bool AutoDispose
+        set
         {
-            get;
-            set;
-        }
-
-        public Control Control => control;
-
-        public float Opacity
-        {
-            get;
-            set;
-        }
-
-        public Bitmap Bitmap
-        {
-            get
+            SetBitmap(value);
+            if (image != null && AutoDispose)
             {
-                return image;
+                image.Dispose();
             }
-            set
-            {
-                SetBitmap(value);
-                if (image != null && AutoDispose)
-                {
-                    image.Dispose();
-                }
-                image = value;
-            }
+            image = value;
         }
+    }
 
-        public object Tag
+    public object Tag
+    {
+        get
         {
-            get
-            {
-                return control.Tag;
-            }
-            set
-            {
-                control.Tag = value;
-            }
+            return control.Tag;
         }
-
-        public BackgroundImageDisplayer(Control c)
+        set
         {
-            Opacity = 1f;
-            AutoDispose = true;
-            Alignment = ContentAlignment.MiddleCenter;
-            control = c;
+            control.Tag = value;
         }
+    }
 
-        protected virtual void OnSetImage(Bitmap image)
-        {
-            if (control.InvokeIfRequired(delegate
-            {
-                OnSetImage(image);
-            }))
-            {
-                return;
-            }
-            Bitmap bitmap = ((image == null) ? null : new Bitmap(control.ClientRectangle.Width, control.ClientRectangle.Height));
-            if (bitmap != null)
-            {
-                using (Graphics graphics = Graphics.FromImage(bitmap))
-                {
-                    graphics.Clear(control.BackColor);
-                    Rectangle rectangle = new Rectangle(0, 0, image.Width, image.Height);
-                    Rectangle bounds = rectangle.Align(control.ClientRectangle, Alignment);
-                    graphics.DrawImage(image, bounds, Opacity);
-                }
-                if (control.BackgroundImage != null)
-                {
-                    control.BackgroundImage.Dispose();
-                }
-            }
-            control.BackgroundImage = bitmap;
-        }
+    public BackgroundImageDisplayer(Control c)
+    {
+        Opacity = 1f;
+        AutoDispose = true;
+        Alignment = ContentAlignment.MiddleCenter;
+        control = c;
+    }
 
-        public void SetBitmap(Bitmap image)
+    protected virtual void OnSetImage(Bitmap image)
+    {
+        if (control.InvokeIfRequired(delegate
         {
             OnSetImage(image);
-        }
-
-        protected override void Dispose(bool disposing)
+        }))
         {
+            return;
+        }
+        Bitmap bitmap = ((image == null) ? null : new Bitmap(control.ClientRectangle.Width, control.ClientRectangle.Height));
+        if (bitmap != null)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.Clear(control.BackColor);
+                Rectangle rectangle = new Rectangle(0, 0, image.Width, image.Height);
+                Rectangle bounds = rectangle.Align(control.ClientRectangle, Alignment);
+                graphics.DrawImage(image, bounds, Opacity);
+            }
             if (control.BackgroundImage != null)
             {
                 control.BackgroundImage.Dispose();
             }
-            control.Dispose();
         }
+        control.BackgroundImage = bitmap;
+    }
+
+    public void SetBitmap(Bitmap image)
+    {
+        OnSetImage(image);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (control.BackgroundImage != null)
+        {
+            control.BackgroundImage.Dispose();
+        }
+        control.Dispose();
     }
 }

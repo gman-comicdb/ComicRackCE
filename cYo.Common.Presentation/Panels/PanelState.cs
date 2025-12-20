@@ -1,9 +1,8 @@
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public enum PanelState
 {
-    public enum PanelState
-    {
-        Normal,
-        Hot,
-        Selected
-    }
+    Normal,
+    Hot,
+    Selected
 }

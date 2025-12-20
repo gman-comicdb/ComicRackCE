@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public enum ComicSmartListLimitSelectionType
 {
-    public enum ComicSmartListLimitSelectionType
-    {
-        Position = 0,
-        SortedBySeries = 1,
-        Random = 2,
-        Default = 2
-    }
+    Position = 0,
+    SortedBySeries = 1,
+    Random = 2,
+    Default = 2
 }

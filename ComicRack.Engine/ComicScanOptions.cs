@@ -1,11 +1,10 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Flags]
+public enum ComicScanOptions
 {
-    [Flags]
-    public enum ComicScanOptions
-    {
-        None = 0x0,
-        Default = 0x0
-    }
+    None = 0x0,
+    Default = 0x0
 }

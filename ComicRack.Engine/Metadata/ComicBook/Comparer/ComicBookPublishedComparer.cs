@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookPublishedComparer : Comparer<ComicBook>
 {
-    public class ComicBookPublishedComparer : Comparer<ComicBook>
+    public override int Compare(ComicBook x, ComicBook y)
     {
-        public override int Compare(ComicBook x, ComicBook y)
-        {
-            return DateTime.Compare(x.Published, y.Published);
-        }
+        return DateTime.Compare(x.Published, y.Published);
     }
 }

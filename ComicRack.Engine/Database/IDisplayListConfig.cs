@@ -1,11 +1,10 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public interface IDisplayListConfig
 {
-    public interface IDisplayListConfig
+    DisplayListConfig Display
     {
-        DisplayListConfig Display
-        {
-            get;
-            set;
-        }
+        get;
+        set;
     }
 }

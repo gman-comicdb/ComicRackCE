@@ -1,86 +1,85 @@
 using System.Drawing;
 
-namespace cYo.Common.Presentation.Ceco.Format
+namespace cYo.Common.Presentation.Ceco.Format;
+
+public class HorizontalRule : Block
 {
-    public class HorizontalRule : Block
+    private int thickness = 2;
+
+    private bool noshade;
+
+    public override FlowBreak FlowBreak => FlowBreak.BreakLine | FlowBreak.Before | FlowBreak.After;
+
+    public override int FlowBreakOffset => Font.Height;
+
+    public int Thickness
     {
-        private int thickness = 2;
-
-        private bool noshade;
-
-        public override FlowBreak FlowBreak => FlowBreak.BreakLine | FlowBreak.Before | FlowBreak.After;
-
-        public override int FlowBreakOffset => Font.Height;
-
-        public int Thickness
+        get
         {
-            get
+            return thickness;
+        }
+        set
+        {
+            if (thickness != value)
             {
-                return thickness;
-            }
-            set
-            {
-                if (thickness != value)
-                {
-                    thickness = value;
-                    OnThicknessChanged();
-                }
+                thickness = value;
+                OnThicknessChanged();
             }
         }
+    }
 
-        public bool Noshade
+    public bool Noshade
+    {
+        get
         {
-            get
-            {
-                return noshade;
-            }
-            set
-            {
-                if (noshade != value)
-                {
-                    noshade = value;
-                    OnNoShadeChanged();
-                }
-            }
+            return noshade;
         }
-
-        protected override void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl)
+        set
         {
-            base.Width = base.BlockWidth.GetSize(maxWidth);
-            base.MinimumWidth = (base.BlockWidth.IsFixed ? base.Width : 0);
-            base.Height = Thickness + ((!Noshade) ? 1 : 0);
-        }
-
-        public override void Draw(Graphics gr, Point location)
-        {
-            base.Draw(gr, location);
-            Rectangle bounds = base.Bounds;
-            bounds.Offset(location);
-            if (!noshade)
+            if (noshade != value)
             {
-                bounds.Width--;
-                bounds.Height--;
-            }
-            if (!noshade)
-            {
-                bounds.Offset(1, 1);
-                gr.FillRectangle(Brushes.DarkGray, bounds);
-                bounds.Offset(-1, -1);
-            }
-            using (Brush brush = new SolidBrush(ForeColor))
-            {
-                gr.FillRectangle(brush, bounds);
+                noshade = value;
+                OnNoShadeChanged();
             }
         }
+    }
 
-        protected virtual void OnThicknessChanged()
-        {
-            InvokeLayout(LayoutType.Full);
-        }
+    protected override void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl)
+    {
+        base.Width = base.BlockWidth.GetSize(maxWidth);
+        base.MinimumWidth = (base.BlockWidth.IsFixed ? base.Width : 0);
+        base.Height = Thickness + ((!Noshade) ? 1 : 0);
+    }
 
-        protected virtual void OnNoShadeChanged()
+    public override void Draw(Graphics gr, Point location)
+    {
+        base.Draw(gr, location);
+        Rectangle bounds = base.Bounds;
+        bounds.Offset(location);
+        if (!noshade)
         {
-            InvokeLayout(LayoutType.Full);
+            bounds.Width--;
+            bounds.Height--;
         }
+        if (!noshade)
+        {
+            bounds.Offset(1, 1);
+            gr.FillRectangle(Brushes.DarkGray, bounds);
+            bounds.Offset(-1, -1);
+        }
+        using (Brush brush = new SolidBrush(ForeColor))
+        {
+            gr.FillRectangle(brush, bounds);
+        }
+    }
+
+    protected virtual void OnThicknessChanged()
+    {
+        InvokeLayout(LayoutType.Full);
+    }
+
+    protected virtual void OnNoShadeChanged()
+    {
+        InvokeLayout(LayoutType.Full);
     }
 }

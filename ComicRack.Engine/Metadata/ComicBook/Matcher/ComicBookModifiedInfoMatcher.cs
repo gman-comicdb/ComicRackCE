@@ -1,20 +1,19 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Modified Info")]
+[ComicBookMatcherHint("ComicInfoIsDirty")]
+public class ComicBookModifiedInfoMatcher : ComicBookYesNoMatcher
 {
-    [Serializable]
-    [Description("Modified Info")]
-    [ComicBookMatcherHint("ComicInfoIsDirty")]
-    public class ComicBookModifiedInfoMatcher : ComicBookYesNoMatcher
+    protected override YesNo GetValue(ComicBook comicBook)
     {
-        protected override YesNo GetValue(ComicBook comicBook)
+        if (!comicBook.ComicInfoIsDirty)
         {
-            if (!comicBook.ComicInfoIsDirty)
-            {
-                return YesNo.No;
-            }
-            return YesNo.Yes;
+            return YesNo.No;
         }
+        return YesNo.Yes;
     }
 }

@@ -1,10 +1,9 @@
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IDescription
 {
-    public interface IDescription
+    string Description
     {
-        string Description
-        {
-            get;
-        }
+        get;
     }
 }

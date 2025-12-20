@@ -1,6 +1,5 @@
-namespace cYo.Common.Presentation.Ceco.Builders
+namespace cYo.Common.Presentation.Ceco.Builders;
+
+public class CSSParser
 {
-    public class CSSParser
-    {
-    }
 }

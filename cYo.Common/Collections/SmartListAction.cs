@@ -1,12 +1,11 @@
-namespace cYo.Common.Collections
+namespace cYo.Common.Collections;
+
+public enum SmartListAction
 {
-    public enum SmartListAction
-    {
-        Insert,
-        Remove,
-        Set,
-        Clear,
-        Move,
-        Refresh
-    }
+    Insert,
+    Remove,
+    Set,
+    Clear,
+    Move,
+    Refresh
 }

@@ -2,22 +2,21 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Common.Presentation
+namespace cYo.Common.Presentation;
+
+public interface IControlRenderer : IBitmapRenderer, IDisposable
 {
-    public interface IControlRenderer : IBitmapRenderer, IDisposable
+    Control Control
     {
-        Control Control
-        {
-            get;
-        }
-
-        Size Size
-        {
-            get;
-        }
-
-        event EventHandler Paint;
-
-        void Draw();
+        get;
     }
+
+    Size Size
+    {
+        get;
+    }
+
+    event EventHandler Paint;
+
+    void Draw();
 }

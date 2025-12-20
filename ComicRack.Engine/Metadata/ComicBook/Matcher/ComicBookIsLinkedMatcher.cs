@@ -1,20 +1,19 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Is Linked")]
+[ComicBookMatcherHint("FilePath")]
+public class ComicBookIsLinkedMatcher : ComicBookYesNoMatcher
 {
-    [Serializable]
-    [Description("Is Linked")]
-    [ComicBookMatcherHint("FilePath")]
-    public class ComicBookIsLinkedMatcher : ComicBookYesNoMatcher
+    protected override YesNo GetValue(ComicBook comicBook)
     {
-        protected override YesNo GetValue(ComicBook comicBook)
+        if (!comicBook.IsLinked)
         {
-            if (!comicBook.IsLinked)
-            {
-                return YesNo.No;
-            }
-            return YesNo.Yes;
+            return YesNo.No;
         }
+        return YesNo.Yes;
     }
 }

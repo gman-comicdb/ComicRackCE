@@ -1,11 +1,10 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.Sync
+namespace cYo.Projects.ComicRack.Engine.Sync;
+
+[Flags]
+public enum DeviceCapabilites
 {
-    [Flags]
-    public enum DeviceCapabilites
-    {
-        None = 0x0,
-        WebP = 0x1
-    }
+    None = 0x0,
+    WebP = 0x1
 }

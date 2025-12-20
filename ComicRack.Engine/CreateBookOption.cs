@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum CreateBookOption
 {
-    public enum CreateBookOption
-    {
-        DoNotAdd,
-        AddToStorage,
-        AddToTemporary
-    }
+    DoNotAdd,
+    AddToStorage,
+    AddToTemporary
 }

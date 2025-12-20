@@ -1,24 +1,23 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+[Serializable]
+[Description("Series: End of Gap")]
+[ComicBookMatcherHint("Series", "Volume", "FilePath", "EnableProposed", "Number", DisableOptimizedUpdate = true)]
+public class SmartListSeriesEndOfGapMatcher : ComicBookYesNoMatcher
 {
-    [Serializable]
-    [Description("Series: End of Gap")]
-    [ComicBookMatcherHint("Series", "Volume", "FilePath", "EnableProposed", "Number", DisableOptimizedUpdate = true)]
-    public class SmartListSeriesEndOfGapMatcher : ComicBookYesNoMatcher
+    protected override YesNo GetValue(ComicBook comicBook)
     {
-        protected override YesNo GetValue(ComicBook comicBook)
+        if (base.StatsProvider != null)
         {
-            if (base.StatsProvider != null)
+            if (!base.StatsProvider.GetSeriesStats(comicBook).IsGapEnd(comicBook))
             {
-                if (!base.StatsProvider.GetSeriesStats(comicBook).IsGapEnd(comicBook))
-                {
-                    return YesNo.No;
-                }
-                return YesNo.Yes;
+                return YesNo.No;
             }
-            return YesNo.Unknown;
+            return YesNo.Yes;
         }
+        return YesNo.Unknown;
     }
 }

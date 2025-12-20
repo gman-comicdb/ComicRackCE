@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupSize : SingleComicGrouper
 {
-    public class ComicBookGroupSize : SingleComicGrouper
+    public override IGroupInfo GetGroup(ComicBook item)
     {
-        public override IGroupInfo GetGroup(ComicBook item)
-        {
-            return GroupInfo.GetFileSizeGroup(item.FileSize);
-        }
+        return GroupInfo.GetFileSizeGroup(item.FileSize);
     }
 }

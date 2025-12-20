@@ -1,10 +1,9 @@
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public enum PowerRequestType
 {
-    public enum PowerRequestType
-    {
-        DisplayRequired,
-        SystemRequired,
-        AwayModeRequired,
-        ExecutionRequired
-    }
+    DisplayRequired,
+    SystemRequired,
+    AwayModeRequired,
+    ExecutionRequired
 }

@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum ImageBackgroundMode
 {
-    public enum ImageBackgroundMode
-    {
-        Auto = 0,
-        Color = 1,
-        Texture = 2,
-        Default = 1
-    }
+    Auto = 0,
+    Color = 1,
+    Texture = 2,
+    Default = 1
 }

@@ -1,33 +1,32 @@
 using System;
 
-namespace cYo.Common.Collections
+namespace cYo.Common.Collections;
+
+[Serializable]
+public class MruList<T> : SmartList<T>
 {
-    [Serializable]
-    public class MruList<T> : SmartList<T>
+    public int MaxCount
     {
-        public int MaxCount
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public MruList(int maxCount)
-        {
-            MaxCount = maxCount;
-        }
+    public MruList(int maxCount)
+    {
+        MaxCount = maxCount;
+    }
 
-        public MruList()
-            : this(20)
-        {
-        }
+    public MruList()
+        : this(20)
+    {
+    }
 
-        public void UpdateMostRecent(T item)
+    public void UpdateMostRecent(T item)
+    {
+        while (Remove(item))
         {
-            while (Remove(item))
-            {
-            }
-            Insert(0, item);
-            Trim(MaxCount);
         }
+        Insert(0, item);
+        Trim(MaxCount);
     }
 }

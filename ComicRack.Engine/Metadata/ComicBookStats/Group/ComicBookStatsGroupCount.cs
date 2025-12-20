@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookStatsGroupCount : SingleGrouper<ComicBookSeriesStatistics>
 {
-    public class ComicBookStatsGroupCount : SingleGrouper<ComicBookSeriesStatistics>
+    public override IGroupInfo GetGroup(ComicBookSeriesStatistics item)
     {
-        public override IGroupInfo GetGroup(ComicBookSeriesStatistics item)
-        {
-            return ItemGroupCount.GetNumberGroup(item.Count);
-        }
+        return ItemGroupCount.GetNumberGroup(item.Count);
     }
 }

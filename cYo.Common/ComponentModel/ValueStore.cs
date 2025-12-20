@@ -1,35 +1,34 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public class ValueStore<T> : IValueStore<T>
 {
-    public class ValueStore<T> : IValueStore<T>
+    private Action<T> setCall;
+
+    private Func<T> getCall;
+
+    public ValueStore(Action<T> setCall, Func<T> getCall)
     {
-        private Action<T> setCall;
+        this.setCall = setCall;
+        this.getCall = getCall;
+    }
 
-        private Func<T> getCall;
-
-        public ValueStore(Action<T> setCall, Func<T> getCall)
+    public T GetValue()
+    {
+        if (getCall == null)
         {
-            this.setCall = setCall;
-            this.getCall = getCall;
+            throw new NotImplementedException();
         }
+        return getCall();
+    }
 
-        public T GetValue()
+    public void SetValue(T value)
+    {
+        if (setCall == null)
         {
-            if (getCall == null)
-            {
-                throw new NotImplementedException();
-            }
-            return getCall();
+            throw new NotImplementedException();
         }
-
-        public void SetValue(T value)
-        {
-            if (setCall == null)
-            {
-                throw new NotImplementedException();
-            }
-            setCall(value);
-        }
+        setCall(value);
     }
 }

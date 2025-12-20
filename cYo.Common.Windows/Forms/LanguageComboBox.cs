@@ -6,185 +6,184 @@ using System.Windows.Forms;
 
 using cYo.Common.Collections;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class LanguageComboBox : ComboBox
 {
-    public class LanguageComboBox : ComboBox
+    private class LanguageItem : ComboBoxSkinner.ComboBoxItem<CultureInfo>, IComparable<LanguageItem>
     {
-        private class LanguageItem : ComboBoxSkinner.ComboBoxItem<CultureInfo>, IComparable<LanguageItem>
+        public LanguageItem(CultureInfo ci)
+            : base(ci)
         {
-            public LanguageItem(CultureInfo ci)
-                : base(ci)
-            {
-            }
-
-            public override string ToString()
-            {
-                if (string.IsNullOrEmpty(base.Item.Name))
-                {
-                    return string.Empty;
-                }
-                return base.Item.DisplayName;
-            }
-
-            public int CompareTo(LanguageItem other)
-            {
-                return string.Compare(ToString(), other.ToString());
-            }
         }
 
-        private CultureTypes cultureTypes = CultureTypes.NeutralCultures;
-
-        private IEnumerable<string> topISOLanguages;
-
-        public override string Text
+        public override string ToString()
         {
-            get
+            if (string.IsNullOrEmpty(base.Item.Name))
             {
-                return SelectedCulture;
-            }
-            set
-            {
-                SelectedCulture = value;
-            }
-        }
-
-        public CultureTypes CultureTypes
-        {
-            get
-            {
-                return cultureTypes;
-            }
-            set
-            {
-                if (value != cultureTypes)
-                {
-                    cultureTypes = value;
-                    OnCultureTypesChanged();
-                }
-            }
-        }
-
-        public IEnumerable<string> TopISOLanguages
-        {
-            get
-            {
-                return topISOLanguages;
-            }
-            set
-            {
-                topISOLanguages = value;
-                string selectedCulture = SelectedCulture;
-                FillList();
-                SelectedCulture = selectedCulture;
-            }
-        }
-
-        public string SelectedTwoLetterISOLanguage
-        {
-            get
-            {
-                LanguageItem languageItem = (LanguageItem)base.SelectedItem;
-                if (languageItem != null && !string.IsNullOrEmpty(languageItem.Item.Name))
-                {
-                    return languageItem.Item.TwoLetterISOLanguageName;
-                }
                 return string.Empty;
             }
-            set
+            return base.Item.DisplayName;
+        }
+
+        public int CompareTo(LanguageItem other)
+        {
+            return string.Compare(ToString(), other.ToString());
+        }
+    }
+
+    private CultureTypes cultureTypes = CultureTypes.NeutralCultures;
+
+    private IEnumerable<string> topISOLanguages;
+
+    public override string Text
+    {
+        get
+        {
+            return SelectedCulture;
+        }
+        set
+        {
+            SelectedCulture = value;
+        }
+    }
+
+    public CultureTypes CultureTypes
+    {
+        get
+        {
+            return cultureTypes;
+        }
+        set
+        {
+            if (value != cultureTypes)
             {
-                foreach (LanguageItem item in base.Items)
+                cultureTypes = value;
+                OnCultureTypesChanged();
+            }
+        }
+    }
+
+    public IEnumerable<string> TopISOLanguages
+    {
+        get
+        {
+            return topISOLanguages;
+        }
+        set
+        {
+            topISOLanguages = value;
+            string selectedCulture = SelectedCulture;
+            FillList();
+            SelectedCulture = selectedCulture;
+        }
+    }
+
+    public string SelectedTwoLetterISOLanguage
+    {
+        get
+        {
+            LanguageItem languageItem = (LanguageItem)base.SelectedItem;
+            if (languageItem != null && !string.IsNullOrEmpty(languageItem.Item.Name))
+            {
+                return languageItem.Item.TwoLetterISOLanguageName;
+            }
+            return string.Empty;
+        }
+        set
+        {
+            foreach (LanguageItem item in base.Items)
+            {
+                if (item.Item.TwoLetterISOLanguageName == value || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(item.Item.Name)))
                 {
-                    if (item.Item.TwoLetterISOLanguageName == value || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(item.Item.Name)))
-                    {
-                        base.SelectedItem = item;
-                        break;
-                    }
+                    base.SelectedItem = item;
+                    break;
                 }
             }
         }
+    }
 
-        public string SelectedCulture
+    public string SelectedCulture
+    {
+        get
         {
-            get
+            LanguageItem languageItem = base.SelectedItem as LanguageItem;
+            if (languageItem == null)
             {
-                LanguageItem languageItem = base.SelectedItem as LanguageItem;
-                if (languageItem == null)
-                {
-                    return string.Empty;
-                }
-                if (!string.IsNullOrEmpty(languageItem.Item.Name))
-                {
-                    return languageItem.Item.Name;
-                }
                 return string.Empty;
             }
-            set
+            if (!string.IsNullOrEmpty(languageItem.Item.Name))
             {
-                foreach (LanguageItem item in base.Items)
+                return languageItem.Item.Name;
+            }
+            return string.Empty;
+        }
+        set
+        {
+            foreach (LanguageItem item in base.Items)
+            {
+                if (item.Item.Name == value)
                 {
-                    if (item.Item.Name == value)
-                    {
-                        base.SelectedItem = item;
-                        break;
-                    }
+                    base.SelectedItem = item;
+                    break;
                 }
             }
         }
+    }
 
-        public LanguageComboBox()
+    public LanguageComboBox()
+    {
+        base.DropDownStyle = ComboBoxStyle.DropDownList;
+        SelectedCulture = string.Empty;
+        new ComboBoxSkinner(this);
+        FillList();
+    }
+
+    private void OnCultureTypesChanged()
+    {
+        if (!base.DesignMode)
         {
-            base.DropDownStyle = ComboBoxStyle.DropDownList;
-            SelectedCulture = string.Empty;
-            new ComboBoxSkinner(this);
             FillList();
         }
+    }
 
-        private void OnCultureTypesChanged()
+    private bool IsValidCulture(string iso)
+    {
+        if (string.IsNullOrEmpty(iso))
         {
-            if (!base.DesignMode)
-            {
-                FillList();
-            }
+            return false;
         }
+        try
+        {
+            new CultureInfo(iso);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
-        private bool IsValidCulture(string iso)
+    private void FillList()
+    {
+        base.Items.Clear();
+        base.Items.Add(new LanguageItem(new CultureInfo(string.Empty)));
+        base.Sorted = false;
+        LanguageItem[] array = ((topISOLanguages == null) ? null : (from iso in topISOLanguages.Where(IsValidCulture)
+                                                                    select new LanguageItem(new CultureInfo(iso))).ToArray().Sort());
+        bool hasTop = array != null && array.Length != 0;
+        if (hasTop)
         {
-            if (string.IsNullOrEmpty(iso))
-            {
-                return false;
-            }
-            try
-            {
-                new CultureInfo(iso);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            base.Items.AddRange(array);
         }
-
-        private void FillList()
+        LanguageItem[] array2 = (from ci in CultureInfo.GetCultures(cultureTypes)
+                                 select new LanguageItem(ci) into li
+                                 where !hasTop || !string.IsNullOrEmpty(li.ToString())
+                                 select li).ToArray().Sort();
+        if (hasTop)
         {
-            base.Items.Clear();
-            base.Items.Add(new LanguageItem(new CultureInfo(string.Empty)));
-            base.Sorted = false;
-            LanguageItem[] array = ((topISOLanguages == null) ? null : (from iso in topISOLanguages.Where(IsValidCulture)
-                                                                        select new LanguageItem(new CultureInfo(iso))).ToArray().Sort());
-            bool hasTop = array != null && array.Length != 0;
-            if (hasTop)
-            {
-                base.Items.AddRange(array);
-            }
-            LanguageItem[] array2 = (from ci in CultureInfo.GetCultures(cultureTypes)
-                                     select new LanguageItem(ci) into li
-                                     where !hasTop || !string.IsNullOrEmpty(li.ToString())
-                                     select li).ToArray().Sort();
-            if (hasTop)
-            {
-                ((ComboBoxSkinner.IComboBoxItem)array2[0]).IsSeparator = true;
-            }
-            base.Items.AddRange(array2);
+            ((ComboBoxSkinner.IComboBoxItem)array2[0]).IsSeparator = true;
         }
+        base.Items.AddRange(array2);
     }
 }

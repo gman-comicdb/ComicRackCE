@@ -1,35 +1,34 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public static class Providers
 {
-    public static class Providers
+    private static ImageProviderFactory readersFactory;
+
+    private static ProviderFactory<StorageProvider> writersFactory;
+
+    public static ImageProviderFactory Readers
     {
-        private static ImageProviderFactory readersFactory;
-
-        private static ProviderFactory<StorageProvider> writersFactory;
-
-        public static ImageProviderFactory Readers
+        get
         {
-            get
+            if (readersFactory == null)
             {
-                if (readersFactory == null)
-                {
-                    readersFactory = new ImageProviderFactory();
-                    readersFactory.RegisterProviders();
-                }
-                return readersFactory;
+                readersFactory = new ImageProviderFactory();
+                readersFactory.RegisterProviders();
             }
+            return readersFactory;
         }
+    }
 
-        public static ProviderFactory<StorageProvider> Writers
+    public static ProviderFactory<StorageProvider> Writers
+    {
+        get
         {
-            get
+            if (writersFactory == null)
             {
-                if (writersFactory == null)
-                {
-                    writersFactory = new ProviderFactory<StorageProvider>();
-                    writersFactory.RegisterProviders();
-                }
-                return writersFactory;
+                writersFactory = new ProviderFactory<StorageProvider>();
+                writersFactory.RegisterProviders();
             }
+            return writersFactory;
         }
     }
 }

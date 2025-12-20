@@ -8,113 +8,112 @@ using System.Windows.Forms;
 using cYo.Common.Collections;
 using cYo.Common.Windows.Forms;
 
-namespace cYo.Projects.ComicRack.Engine.Controls
+namespace cYo.Projects.ComicRack.Engine.Controls;
+
+public class ComicPageContainerControl : ContainerControl
 {
-    public class ComicPageContainerControl : ContainerControl
+    private IContainer components;
+
+    private TabBar tabBar;
+
+    public IEnumerable<ComicPageControl> Pages => base.Controls.OfType<ComicPageControl>();
+
+    public ComicPageContainerControl()
     {
-        private IContainer components;
+        InitializeComponent();
+    }
 
-        private TabBar tabBar;
-
-        public IEnumerable<ComicPageControl> Pages => base.Controls.OfType<ComicPageControl>();
-
-        public ComicPageContainerControl()
+    public void ShowInfo(IEnumerable<ComicBook> books)
+    {
+        Pages.ForEach(delegate (ComicPageControl p)
         {
-            InitializeComponent();
-        }
+            p.ShowInfo(books);
+        });
+    }
 
-        public void ShowInfo(IEnumerable<ComicBook> books)
+    protected override void OnControlAdded(ControlEventArgs e)
+    {
+        base.OnControlAdded(e);
+        Control c = e.Control;
+        if (!(c is TabBar))
         {
-            Pages.ForEach(delegate (ComicPageControl p)
+            string text = c.Text;
+            Image image = null;
+            ComicPageControl comicPageControl = e.Control as ComicPageControl;
+            if (comicPageControl != null)
             {
-                p.ShowInfo(books);
-            });
-        }
-
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            base.OnControlAdded(e);
-            Control c = e.Control;
-            if (!(c is TabBar))
-            {
-                string text = c.Text;
-                Image image = null;
-                ComicPageControl comicPageControl = e.Control as ComicPageControl;
-                if (comicPageControl != null)
-                {
-                    image = comicPageControl.Icon;
-                }
-                TabBar.TabBarItem tbi = new TabBar.TabBarItem
-                {
-                    Text = text,
-                    Image = image,
-                    Tag = c
-                };
-                c.TextChanged += delegate
-                {
-                    tbi.Text = c.Text;
-                };
-                c.Visible = false;
-                c.Dock = DockStyle.Fill;
-                tabBar.Items.Add(tbi);
-                tabBar.Visible = tabBar.Items.Count > 1;
-                if (tabBar.Items.Count == 1)
-                {
-                    tabBar.SelectedTab = tbi;
-                }
-                base.Controls.SetChildIndex(tabBar, 1000);
+                image = comicPageControl.Icon;
             }
-        }
-
-        protected override void OnControlRemoved(ControlEventArgs e)
-        {
-            ComicPageControl c = e.Control as ComicPageControl;
-            TabBar.TabBarItem tabBarItem = tabBar.Items.FirstOrDefault((TabBar.TabBarItem t) => t.Tag == c);
-            if (tabBarItem != null)
+            TabBar.TabBarItem tbi = new TabBar.TabBarItem
             {
-                tabBar.Items.Remove(tabBarItem);
-                tabBar.Visible = tabBar.Items.Count > 1;
-            }
-            base.OnControlRemoved(e);
-        }
-
-        private void tabBar_SelectedTabChanged(object sender, TabBar.SelectedTabChangedEventArgs e)
-        {
-            foreach (TabBar.TabBarItem item in tabBar.Items)
+                Text = text,
+                Image = image,
+                Tag = c
+            };
+            c.TextChanged += delegate
             {
-                ((Control)item.Tag).Visible = item == e.NewItem;
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && components != null)
+                tbi.Text = c.Text;
+            };
+            c.Visible = false;
+            c.Dock = DockStyle.Fill;
+            tabBar.Items.Add(tbi);
+            tabBar.Visible = tabBar.Items.Count > 1;
+            if (tabBar.Items.Count == 1)
             {
-                components.Dispose();
+                tabBar.SelectedTab = tbi;
             }
-            base.Dispose(disposing);
+            base.Controls.SetChildIndex(tabBar, 1000);
         }
+    }
 
-        private void InitializeComponent()
+    protected override void OnControlRemoved(ControlEventArgs e)
+    {
+        ComicPageControl c = e.Control as ComicPageControl;
+        TabBar.TabBarItem tabBarItem = tabBar.Items.FirstOrDefault((TabBar.TabBarItem t) => t.Tag == c);
+        if (tabBarItem != null)
         {
-            tabBar = new cYo.Common.Windows.Forms.TabBar();
-            SuspendLayout();
-            tabBar.AllowDrop = true;
-            tabBar.Dock = System.Windows.Forms.DockStyle.Top;
-            tabBar.Location = new System.Drawing.Point(0, 0);
-            tabBar.MinimumTabWidth = 100;
-            tabBar.Name = "tabBar";
-            tabBar.Size = new System.Drawing.Size(487, 31);
-            tabBar.TabIndex = 0;
-            tabBar.Text = "tabBar1";
-            tabBar.SelectedTabChanged += new System.EventHandler<cYo.Common.Windows.Forms.TabBar.SelectedTabChangedEventArgs>(tabBar_SelectedTabChanged);
-            base.AutoScaleDimensions = new System.Drawing.SizeF(6f, 13f);
-            base.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            base.Controls.Add(tabBar);
-            base.Name = "ComicInfoControl";
-            base.Size = new System.Drawing.Size(487, 352);
-            ResumeLayout(false);
-            PerformLayout();
+            tabBar.Items.Remove(tabBarItem);
+            tabBar.Visible = tabBar.Items.Count > 1;
         }
+        base.OnControlRemoved(e);
+    }
+
+    private void tabBar_SelectedTabChanged(object sender, TabBar.SelectedTabChangedEventArgs e)
+    {
+        foreach (TabBar.TabBarItem item in tabBar.Items)
+        {
+            ((Control)item.Tag).Visible = item == e.NewItem;
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && components != null)
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+        tabBar = new cYo.Common.Windows.Forms.TabBar();
+        SuspendLayout();
+        tabBar.AllowDrop = true;
+        tabBar.Dock = System.Windows.Forms.DockStyle.Top;
+        tabBar.Location = new System.Drawing.Point(0, 0);
+        tabBar.MinimumTabWidth = 100;
+        tabBar.Name = "tabBar";
+        tabBar.Size = new System.Drawing.Size(487, 31);
+        tabBar.TabIndex = 0;
+        tabBar.Text = "tabBar1";
+        tabBar.SelectedTabChanged += new System.EventHandler<cYo.Common.Windows.Forms.TabBar.SelectedTabChangedEventArgs>(tabBar_SelectedTabChanged);
+        base.AutoScaleDimensions = new System.Drawing.SizeF(6f, 13f);
+        base.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        base.Controls.Add(tabBar);
+        base.Name = "ComicInfoControl";
+        base.Size = new System.Drawing.Size(487, 352);
+        ResumeLayout(false);
+        PerformLayout();
     }
 }

@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum ExportTarget
 {
-    public enum ExportTarget
-    {
-        NewFolder,
-        SameAsSource,
-        ReplaceSource,
-        Ask
-    }
+    NewFolder,
+    SameAsSource,
+    ReplaceSource,
+    Ask
 }

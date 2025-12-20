@@ -9,217 +9,216 @@ using cYo.Common.IO;
 using cYo.Common.Text;
 using cYo.Projects.ComicRack.Engine;
 
-namespace cYo.Projects.ComicRack.Viewer.Config
+namespace cYo.Projects.ComicRack.Viewer.Config;
+
+public class DefaultLists
 {
-    public class DefaultLists
+    private const string DefaultGenresSection = "Book Genres";
+
+    private const string DefaultFormatsSection = "Book Formats";
+
+    private const string DefaultAgeRatingsSection = "Age Ratings";
+
+    private const string DefaultBookAgesSection = "Book Ages";
+
+    private const string DefaultBookConditionsSection = "Book Conditions";
+
+    private const string DefaultBookCollectionStatusSection = "Book Collection Status";
+
+    private Func<IEnumerable<ComicBook>> getBooks;
+
+    public string[] DefaultGenres
     {
-        private const string DefaultGenresSection = "Book Genres";
+        get;
+        private set;
+    }
 
-        private const string DefaultFormatsSection = "Book Formats";
+    public string[] DefaultFormats
+    {
+        get;
+        private set;
+    }
 
-        private const string DefaultAgeRatingsSection = "Age Ratings";
+    public string[] DefaultAgeRatings
+    {
+        get;
+        private set;
+    }
 
-        private const string DefaultBookAgesSection = "Book Ages";
+    public string[] DefaultBookAges
+    {
+        get;
+        private set;
+    }
 
-        private const string DefaultBookConditionsSection = "Book Conditions";
+    public string[] DefaultBookConditions
+    {
+        get;
+        private set;
+    }
 
-        private const string DefaultBookCollectionStatusSection = "Book Collection Status";
+    public string[] DefaultBookCollectionStatus
+    {
+        get;
+        private set;
+    }
 
-        private Func<IEnumerable<ComicBook>> getBooks;
+    public DefaultLists(Func<IEnumerable<ComicBook>> getBooks, IEnumerable<string> initPaths)
+    {
+        this.getBooks = getBooks;
+        DefaultGenres = LoadDefaultTextList(initPaths, DefaultGenresSection).ToArray();
+        DefaultFormats = (from s in LoadDefaultTextList(initPaths, DefaultFormatsSection).Concat(ComicBook.FormatIcons.Keys).Distinct()
+                          orderby s
+                          select s).ToArray();
+        DefaultAgeRatings = (from s in LoadDefaultTextList(initPaths, DefaultAgeRatingsSection).Concat(ComicBook.AgeRatingIcons.Keys)
+                             orderby s
+                             select s).Distinct().ToArray();
+        DefaultBookAges = LoadDefaultTextList(initPaths, DefaultBookAgesSection).ToArray();
+        DefaultBookConditions = LoadDefaultTextList(initPaths, DefaultBookConditionsSection).ToArray();
+        DefaultBookCollectionStatus = LoadDefaultTextList(initPaths, DefaultBookCollectionStatusSection).ToArray();
+    }
 
-        public string[] DefaultGenres
+    public AutoCompleteStringCollection GetComicFieldList(Func<ComicBook, string> autoCompleteHandler, bool sort = false)
+    {
+        AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+        foreach (ComicBook item in getBooks())
         {
-            get;
-            private set;
+            autoCompleteStringCollection.Add(autoCompleteHandler(item));
         }
-
-        public string[] DefaultFormats
+        if (sort)
         {
-            get;
-            private set;
+            ArrayList.Adapter(autoCompleteStringCollection).Sort();
         }
+        return autoCompleteStringCollection;
+    }
 
-        public string[] DefaultAgeRatings
+    public AutoCompleteStringCollection GetGenreList(bool withSeparator)
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.Genre);
+        comicFieldList.Remove("");
+        if (withSeparator)
         {
-            get;
-            private set;
-        }
-
-        public string[] DefaultBookAges
-        {
-            get;
-            private set;
-        }
-
-        public string[] DefaultBookConditions
-        {
-            get;
-            private set;
-        }
-
-        public string[] DefaultBookCollectionStatus
-        {
-            get;
-            private set;
-        }
-
-        public DefaultLists(Func<IEnumerable<ComicBook>> getBooks, IEnumerable<string> initPaths)
-        {
-            this.getBooks = getBooks;
-            DefaultGenres = LoadDefaultTextList(initPaths, DefaultGenresSection).ToArray();
-            DefaultFormats = (from s in LoadDefaultTextList(initPaths, DefaultFormatsSection).Concat(ComicBook.FormatIcons.Keys).Distinct()
-                              orderby s
-                              select s).ToArray();
-            DefaultAgeRatings = (from s in LoadDefaultTextList(initPaths, DefaultAgeRatingsSection).Concat(ComicBook.AgeRatingIcons.Keys)
-                                 orderby s
-                                 select s).Distinct().ToArray();
-            DefaultBookAges = LoadDefaultTextList(initPaths, DefaultBookAgesSection).ToArray();
-            DefaultBookConditions = LoadDefaultTextList(initPaths, DefaultBookConditionsSection).ToArray();
-            DefaultBookCollectionStatus = LoadDefaultTextList(initPaths, DefaultBookCollectionStatusSection).ToArray();
-        }
-
-        public AutoCompleteStringCollection GetComicFieldList(Func<ComicBook, string> autoCompleteHandler, bool sort = false)
-        {
-            AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
-            foreach (ComicBook item in getBooks())
-            {
-                autoCompleteStringCollection.Add(autoCompleteHandler(item));
-            }
-            if (sort)
-            {
-                ArrayList.Adapter(autoCompleteStringCollection).Sort();
-            }
-            return autoCompleteStringCollection;
-        }
-
-        public AutoCompleteStringCollection GetGenreList(bool withSeparator)
-        {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.Genre);
-            comicFieldList.Remove("");
-            if (withSeparator)
-            {
-                comicFieldList.Remove("-");
-                if (comicFieldList.Count > 0)
-                {
-                    comicFieldList.Add("-");
-                }
-            }
-            comicFieldList.AddRange(DefaultGenres);
-            return comicFieldList;
-        }
-
-        public AutoCompleteStringCollection GetFormatList()
-        {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.ShadowFormat, sort: true);
-            comicFieldList.Remove("");
             comicFieldList.Remove("-");
             if (comicFieldList.Count > 0)
             {
                 comicFieldList.Add("-");
             }
-            comicFieldList.AddRange(DefaultFormats);
-            return comicFieldList;
         }
+        comicFieldList.AddRange(DefaultGenres);
+        return comicFieldList;
+    }
 
-        public AutoCompleteStringCollection GetAgeRatingList()
+    public AutoCompleteStringCollection GetFormatList()
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.ShadowFormat, sort: true);
+        comicFieldList.Remove("");
+        comicFieldList.Remove("-");
+        if (comicFieldList.Count > 0)
         {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.AgeRating);
-            comicFieldList.Remove("");
-            comicFieldList.Remove("-");
-            if (comicFieldList.Count > 0)
+            comicFieldList.Add("-");
+        }
+        comicFieldList.AddRange(DefaultFormats);
+        return comicFieldList;
+    }
+
+    public AutoCompleteStringCollection GetAgeRatingList()
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.AgeRating);
+        comicFieldList.Remove("");
+        comicFieldList.Remove("-");
+        if (comicFieldList.Count > 0)
+        {
+            comicFieldList.Add("-");
+        }
+        comicFieldList.AddRange(DefaultAgeRatings);
+        return comicFieldList;
+    }
+
+    public AutoCompleteStringCollection GetBookAgeList()
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookAge);
+        comicFieldList.Remove("");
+        comicFieldList.Remove("-");
+        if (comicFieldList.Count > 0)
+        {
+            comicFieldList.Add("-");
+        }
+        comicFieldList.AddRange(DefaultBookAges);
+        return comicFieldList;
+    }
+
+    public AutoCompleteStringCollection GetBookConditionList()
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCondition);
+        comicFieldList.Remove("");
+        comicFieldList.Remove("-");
+        if (comicFieldList.Count > 0)
+        {
+            comicFieldList.Add("-");
+        }
+        comicFieldList.AddRange(DefaultBookConditions);
+        return comicFieldList;
+    }
+
+    public AutoCompleteStringCollection GetBookCollectionStatusList()
+    {
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCollectionStatus);
+        comicFieldList.Remove("");
+        comicFieldList.Remove("-");
+        comicFieldList.AddRange(DefaultBookCollectionStatus);
+        return comicFieldList;
+    }
+
+    private static IEnumerable<string> LoadDefaultTextList(IEnumerable<string> files, string section)
+    {
+        List<string> list = new List<string>();
+        foreach (string file in files)
+        {
+            try
             {
-                comicFieldList.Add("-");
+                list.AddRange(LoadTextList(file, section));
             }
-            comicFieldList.AddRange(DefaultAgeRatings);
-            return comicFieldList;
-        }
-
-        public AutoCompleteStringCollection GetBookAgeList()
-        {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookAge);
-            comicFieldList.Remove("");
-            comicFieldList.Remove("-");
-            if (comicFieldList.Count > 0)
+            catch (Exception)
             {
-                comicFieldList.Add("-");
             }
-            comicFieldList.AddRange(DefaultBookAges);
-            return comicFieldList;
         }
+        return list;
+    }
 
-        public AutoCompleteStringCollection GetBookConditionList()
+    private static IEnumerable<string> LoadTextList(string file, string section)
+    {
+        if (!File.Exists(file))
         {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCondition);
-            comicFieldList.Remove("");
-            comicFieldList.Remove("-");
-            if (comicFieldList.Count > 0)
+            yield break;
+        }
+        string sectionHeader = $"[{section}]";
+        bool sectionFound = false;
+        string prefix = null;
+        foreach (string line in FileUtility.ReadLines(file).TrimEndStrings().RemoveEmpty())
+        {
+            if (line.StartsWith(";"))
             {
-                comicFieldList.Add("-");
+                continue;
             }
-            comicFieldList.AddRange(DefaultBookConditions);
-            return comicFieldList;
-        }
-
-        public AutoCompleteStringCollection GetBookCollectionStatusList()
-        {
-            AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCollectionStatus);
-            comicFieldList.Remove("");
-            comicFieldList.Remove("-");
-            comicFieldList.AddRange(DefaultBookCollectionStatus);
-            return comicFieldList;
-        }
-
-        private static IEnumerable<string> LoadDefaultTextList(IEnumerable<string> files, string section)
-        {
-            List<string> list = new List<string>();
-            foreach (string file in files)
+            if (line.StartsWith(sectionHeader))
             {
-                try
-                {
-                    list.AddRange(LoadTextList(file, section));
-                }
-                catch (Exception)
-                {
-                }
+                sectionFound = true;
+                continue;
             }
-            return list;
-        }
-
-        private static IEnumerable<string> LoadTextList(string file, string section)
-        {
-            if (!File.Exists(file))
+            if (sectionFound && line.StartsWith("["))
             {
-                yield break;
+                break;
             }
-            string sectionHeader = $"[{section}]";
-            bool sectionFound = false;
-            string prefix = null;
-            foreach (string line in FileUtility.ReadLines(file).TrimEndStrings().RemoveEmpty())
+            if (sectionFound)
             {
-                if (line.StartsWith(";"))
+                if (!char.IsWhiteSpace(line[0]) || string.IsNullOrEmpty(prefix))
                 {
-                    continue;
+                    prefix = line;
+                    yield return line;
                 }
-                if (line.StartsWith(sectionHeader))
+                else
                 {
-                    sectionFound = true;
-                    continue;
-                }
-                if (sectionFound && line.StartsWith("["))
-                {
-                    break;
-                }
-                if (sectionFound)
-                {
-                    if (!char.IsWhiteSpace(line[0]) || string.IsNullOrEmpty(prefix))
-                    {
-                        prefix = line;
-                        yield return line;
-                    }
-                    else
-                    {
-                        yield return prefix + ": " + line.Trim();
-                    }
+                    yield return prefix + ": " + line.Trim();
                 }
             }
         }

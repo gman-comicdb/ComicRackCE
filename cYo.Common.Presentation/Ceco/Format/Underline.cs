@@ -1,28 +1,27 @@
 using System.Drawing;
 
-namespace cYo.Common.Presentation.Ceco.Format
+namespace cYo.Common.Presentation.Ceco.Format;
+
+public class Underline : Span
 {
-    public class Underline : Span
+    public override FontStyle FontStyle
     {
-        public override FontStyle FontStyle
+        get
         {
-            get
-            {
-                return base.FontStyle | FontStyle.Underline;
-            }
-            set
-            {
-                base.FontStyle = value;
-            }
+            return base.FontStyle | FontStyle.Underline;
         }
+        set
+        {
+            base.FontStyle = value;
+        }
+    }
 
-        public Underline()
-        {
-        }
+    public Underline()
+    {
+    }
 
-        public Underline(params Inline[] inlines)
-            : base(inlines)
-        {
-        }
+    public Underline(params Inline[] inlines)
+        : base(inlines)
+    {
     }
 }

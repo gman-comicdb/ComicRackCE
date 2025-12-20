@@ -5,43 +5,42 @@ using System.Xml.Serialization;
 
 using cYo.Common.Xml;
 
-namespace cYo.Common.Drawing
-{
-    public class ColorSchemaCollection : List<ColorSchema>
-    {
-        public ColorSchema this[string name] => Find((ColorSchema item) => item.Name == name);
+namespace cYo.Common.Drawing;
 
-        public static ColorSchemaCollection Load(string file)
+public class ColorSchemaCollection : List<ColorSchema>
+{
+    public ColorSchema this[string name] => Find((ColorSchema item) => item.Name == name);
+
+    public static ColorSchemaCollection Load(string file)
+    {
+        try
         {
-            try
+            XmlSerializer serializer = XmlUtility.GetSerializer<ColorSchemaCollection>();
+            using (StreamReader textReader = File.OpenText(file))
             {
-                XmlSerializer serializer = XmlUtility.GetSerializer<ColorSchemaCollection>();
-                using (StreamReader textReader = File.OpenText(file))
-                {
-                    return (ColorSchemaCollection)serializer.Deserialize(textReader);
-                }
-            }
-            catch (Exception)
-            {
-                return new ColorSchemaCollection();
+                return (ColorSchemaCollection)serializer.Deserialize(textReader);
             }
         }
-
-        public bool Save(string file)
+        catch (Exception)
         {
-            try
+            return new ColorSchemaCollection();
+        }
+    }
+
+    public bool Save(string file)
+    {
+        try
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemaCollection));
+            using (StreamWriter textWriter = File.CreateText(file))
             {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemaCollection));
-                using (StreamWriter textWriter = File.CreateText(file))
-                {
-                    xmlSerializer.Serialize(textWriter, this);
-                }
-                return true;
+                xmlSerializer.Serialize(textWriter, this);
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }

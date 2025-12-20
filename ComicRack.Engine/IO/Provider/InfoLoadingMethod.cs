@@ -1,8 +1,7 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public enum InfoLoadingMethod
 {
-    public enum InfoLoadingMethod
-    {
-        Fast,
-        Complete
-    }
+    Fast,
+    Complete
 }

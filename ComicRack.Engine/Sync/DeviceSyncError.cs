@@ -1,27 +1,26 @@
-namespace cYo.Projects.ComicRack.Engine.Sync
+namespace cYo.Projects.ComicRack.Engine.Sync;
+
+public class DeviceSyncError
 {
-    public class DeviceSyncError
+    public string Name
     {
-        public string Name
-        {
-            get;
-            private set;
-        }
+        get;
+        private set;
+    }
 
-        public string Message
-        {
-            get;
-            private set;
-        }
+    public string Message
+    {
+        get;
+        private set;
+    }
 
-        public DeviceSyncError()
-        {
-        }
+    public DeviceSyncError()
+    {
+    }
 
-        public DeviceSyncError(string name, string message)
-        {
-            Name = name;
-            Message = message;
-        }
+    public DeviceSyncError(string name, string message)
+    {
+        Name = name;
+        Message = message;
     }
 }

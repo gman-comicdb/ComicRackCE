@@ -1,22 +1,21 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IGroupInfo : IComparable<IGroupInfo>
 {
-    public interface IGroupInfo : IComparable<IGroupInfo>
+    object Key
     {
-        object Key
-        {
-            get;
-        }
+        get;
+    }
 
-        string Caption
-        {
-            get;
-        }
+    string Caption
+    {
+        get;
+    }
 
-        int Index
-        {
-            get;
-        }
+    int Index
+    {
+        get;
     }
 }

@@ -1,19 +1,18 @@
 using System;
 using System.Drawing;
 
-namespace cYo.Common.Presentation
+namespace cYo.Common.Presentation;
+
+public interface IPanableControl
 {
-    public interface IPanableControl
+    Point PanLocation
     {
-        Point PanLocation
-        {
-            get;
-        }
-
-        event EventHandler PanStart;
-
-        event EventHandler PanEnd;
-
-        event EventHandler Pan;
+        get;
     }
+
+    event EventHandler PanStart;
+
+    event EventHandler PanEnd;
+
+    event EventHandler Pan;
 }

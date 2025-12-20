@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine.Database
-{
-    public interface ICachedComicBookList
-    {
-        void CommitCache(bool block);
+namespace cYo.Projects.ComicRack.Engine.Database;
 
-        ISet<ComicBook> GetCache();
-    }
+public interface ICachedComicBookList
+{
+    void CommitCache(bool block);
+
+    ISet<ComicBook> GetCache();
 }

@@ -2,40 +2,39 @@ using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace cYo.Common.ComponentModel
-{
-    [Serializable]
-    public class NamedIdComponent : IdComponent
-    {
-        private string name;
+namespace cYo.Common.ComponentModel;
 
-        [DefaultValue(null)]
-        [XmlAttribute]
-        public string Name
+[Serializable]
+public class NamedIdComponent : IdComponent
+{
+    private string name;
+
+    [DefaultValue(null)]
+    [XmlAttribute]
+    public string Name
+    {
+        get
         {
-            get
+            return name;
+        }
+        set
+        {
+            if (!(name == value))
             {
-                return name;
-            }
-            set
-            {
-                if (!(name == value))
-                {
-                    name = value;
-                    OnNameChanged();
-                }
+                name = value;
+                OnNameChanged();
             }
         }
+    }
 
-        [field: NonSerialized]
-        public event EventHandler NameChanged;
+    [field: NonSerialized]
+    public event EventHandler NameChanged;
 
-        protected virtual void OnNameChanged()
+    protected virtual void OnNameChanged()
+    {
+        if (this.NameChanged != null)
         {
-            if (this.NameChanged != null)
-            {
-                this.NameChanged(this, EventArgs.Empty);
-            }
+            this.NameChanged(this, EventArgs.Empty);
         }
     }
 }

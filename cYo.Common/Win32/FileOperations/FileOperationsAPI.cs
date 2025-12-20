@@ -1,11 +1,10 @@
-﻿namespace cYo.Common.Win32.FileOperations
+﻿namespace cYo.Common.Win32.FileOperations;
+
+public enum FileOperationsAPI
 {
-    public enum FileOperationsAPI
-    {
-        Shell,
-        IFileOperation,
-        SHFileOperation,
-        NetFramework,
-        VisualBasic
-    }
+    Shell,
+    IFileOperation,
+    SHFileOperation,
+    NetFramework,
+    VisualBasic
 }

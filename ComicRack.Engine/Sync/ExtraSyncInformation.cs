@@ -1,41 +1,40 @@
-namespace cYo.Projects.ComicRack.Engine.Sync
+namespace cYo.Projects.ComicRack.Engine.Sync;
+
+public class ExtraSyncInformation
 {
-    public class ExtraSyncInformation
+    public bool ReadingStateChanged
     {
-        public bool ReadingStateChanged
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public bool InformationChanged
-        {
-            get;
-            set;
-        }
+    public bool InformationChanged
+    {
+        get;
+        set;
+    }
 
-        public bool BookmarksChanged
-        {
-            get;
-            set;
-        }
+    public bool BookmarksChanged
+    {
+        get;
+        set;
+    }
 
-        public bool PageTypesChanged
-        {
-            get;
-            set;
-        }
+    public bool PageTypesChanged
+    {
+        get;
+        set;
+    }
 
-        public bool CheckChanged
-        {
-            get;
-            set;
-        }
+    public bool CheckChanged
+    {
+        get;
+        set;
+    }
 
-        public bool DataChanged
-        {
-            get;
-            set;
-        }
+    public bool DataChanged
+    {
+        get;
+        set;
     }
 }

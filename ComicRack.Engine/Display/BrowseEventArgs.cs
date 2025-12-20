@@ -1,21 +1,20 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public class BrowseEventArgs : EventArgs
 {
-    public class BrowseEventArgs : EventArgs
+    private readonly PageSeekOrigin seekOrigin;
+
+    private readonly int offset;
+
+    public PageSeekOrigin SeekOrigin => seekOrigin;
+
+    public int Offset => offset;
+
+    public BrowseEventArgs(PageSeekOrigin origin, int offset)
     {
-        private readonly PageSeekOrigin seekOrigin;
-
-        private readonly int offset;
-
-        public PageSeekOrigin SeekOrigin => seekOrigin;
-
-        public int Offset => offset;
-
-        public BrowseEventArgs(PageSeekOrigin origin, int offset)
-        {
-            seekOrigin = origin;
-            this.offset = offset;
-        }
+        seekOrigin = origin;
+        this.offset = offset;
     }
 }

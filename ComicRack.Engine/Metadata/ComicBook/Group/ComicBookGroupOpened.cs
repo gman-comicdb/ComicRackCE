@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupOpened : SingleComicGrouper
 {
-    public class ComicBookGroupOpened : SingleComicGrouper
+    public override IGroupInfo GetGroup(ComicBook item)
     {
-        public override IGroupInfo GetGroup(ComicBook item)
-        {
-            return GroupInfo.GetDateGroup(item.OpenedTime);
-        }
+        return GroupInfo.GetDateGroup(item.OpenedTime);
     }
 }

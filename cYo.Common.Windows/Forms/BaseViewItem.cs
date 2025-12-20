@@ -2,141 +2,140 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 {
-    public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
+    private string name = string.Empty;
+
+    private string text = string.Empty;
+
+    private string tooltipText = string.Empty;
+
+    private object tag;
+
+    private object data;
+
+    public virtual string Name
     {
-        private string name = string.Empty;
-
-        private string text = string.Empty;
-
-        private string tooltipText = string.Empty;
-
-        private object tag;
-
-        private object data;
-
-        public virtual string Name
+        get
         {
-            get
+            return name;
+        }
+        set
+        {
+            if (!(name == value))
             {
-                return name;
-            }
-            set
-            {
-                if (!(name == value))
-                {
-                    name = value;
-                    OnPropertyChanged("Name");
-                }
+                name = value;
+                OnPropertyChanged("Name");
             }
         }
+    }
 
-        public virtual string Text
+    public virtual string Text
+    {
+        get
         {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                if (!(text == value))
-                {
-                    text = value;
-                    OnPropertyChanged("Text");
-                }
-            }
+            return text;
         }
-
-        public string TooltipText
+        set
         {
-            get
+            if (!(text == value))
             {
-                return tooltipText;
-            }
-            set
-            {
-                if (!(tooltipText == value))
-                {
-                    tooltipText = value;
-                    OnPropertyChanged("TooltipText");
-                }
+                text = value;
+                OnPropertyChanged("Text");
             }
         }
+    }
 
-        public object Tag
+    public string TooltipText
+    {
+        get
         {
-            get
-            {
-                return tag;
-            }
-            set
-            {
-                if (tag != value)
-                {
-                    tag = value;
-                    OnPropertyChanged("Tag");
-                }
-            }
+            return tooltipText;
         }
-
-        public object Data
+        set
         {
-            get
+            if (!(tooltipText == value))
             {
-                return data;
-            }
-            set
-            {
-                if (data != value)
-                {
-                    data = value;
-                    OnPropertyChanged("Data");
-                }
+                tooltipText = value;
+                OnPropertyChanged("TooltipText");
             }
         }
+    }
 
-        public ItemView View
+    public object Tag
+    {
+        get
         {
-            get;
-            set;
+            return tag;
         }
-
-        [field: NonSerialized]
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected BaseViewItem()
+        set
         {
-        }
-
-        protected BaseViewItem(string text)
-        {
-            this.text = text;
-        }
-
-        protected BaseViewItem(string text, object tag)
-            : this(text)
-        {
-            this.tag = tag;
-        }
-
-        protected BaseViewItem(string text, object tag, object data)
-            : this(text, tag)
-        {
-            this.data = data;
-        }
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            if (this.PropertyChanged != null)
+            if (tag != value)
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+                tag = value;
+                OnPropertyChanged("Tag");
             }
         }
+    }
 
-        public virtual int HitTest(Point pt)
+    public object Data
+    {
+        get
         {
-            return -1;
+            return data;
         }
+        set
+        {
+            if (data != value)
+            {
+                data = value;
+                OnPropertyChanged("Data");
+            }
+        }
+    }
+
+    public ItemView View
+    {
+        get;
+        set;
+    }
+
+    [field: NonSerialized]
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected BaseViewItem()
+    {
+    }
+
+    protected BaseViewItem(string text)
+    {
+        this.text = text;
+    }
+
+    protected BaseViewItem(string text, object tag)
+        : this(text)
+    {
+        this.tag = tag;
+    }
+
+    protected BaseViewItem(string text, object tag, object data)
+        : this(text, tag)
+    {
+        this.data = data;
+    }
+
+    protected virtual void OnPropertyChanged(string name)
+    {
+        if (this.PropertyChanged != null)
+        {
+            this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+    }
+
+    public virtual int HitTest(Point pt)
+    {
+        return -1;
     }
 }

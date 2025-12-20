@@ -1,24 +1,23 @@
 using cYo.Common.Drawing;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IEditPage
 {
-    public interface IEditPage
+    bool IsValid
     {
-        bool IsValid
-        {
-            get;
-        }
+        get;
+    }
 
-        ComicPageType PageType
-        {
-            get;
-            set;
-        }
+    ComicPageType PageType
+    {
+        get;
+        set;
+    }
 
-        ImageRotation Rotation
-        {
-            get;
-            set;
-        }
+    ImageRotation Rotation
+    {
+        get;
+        set;
     }
 }

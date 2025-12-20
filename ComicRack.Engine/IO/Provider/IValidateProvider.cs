@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public interface IValidateProvider
 {
-    public interface IValidateProvider
+    bool IsValid
     {
-        bool IsValid
-        {
-            get;
-        }
+        get;
     }
 }

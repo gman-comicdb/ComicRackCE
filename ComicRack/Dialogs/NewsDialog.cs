@@ -12,143 +12,142 @@ using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 
-namespace cYo.Projects.ComicRack.Viewer.Dialogs
+namespace cYo.Projects.ComicRack.Viewer.Dialogs;
+
+public partial class NewsDialog : FormEx
 {
-    public partial class NewsDialog : FormEx
+    private NewsStorage news;
+
+    public NewsStorage News
     {
-        private NewsStorage news;
-
-        public NewsStorage News
+        get
         {
-            get
-            {
-                return news;
-            }
-            set
-            {
-                news = value;
-            }
+            return news;
         }
-
-        public NewsDialog()
+        set
         {
-            LocalizeUtility.UpdateRightToLeft(this);
-            InitializeComponent();
-            listNewItems.Columns.ScaleDpi();
-            splitContainer.SplitterDistance = FormUtility.ScaleDpiX(splitContainer.SplitterDistance);
-            LocalizeUtility.Localize(this, null);
-            chkNewsStartup.Checked = Program.Settings.NewsStartup;
+            news = value;
         }
+    }
 
-        private void webBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+    public NewsDialog()
+    {
+        LocalizeUtility.UpdateRightToLeft(this);
+        InitializeComponent();
+        listNewItems.Columns.ScaleDpi();
+        splitContainer.SplitterDistance = FormUtility.ScaleDpiX(splitContainer.SplitterDistance);
+        LocalizeUtility.Localize(this, null);
+        chkNewsStartup.Checked = Program.Settings.NewsStartup;
+    }
+
+    private void webBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+    {
+        string absoluteUri = e.Url.AbsoluteUri;
+        if (absoluteUri != "about:blank")
         {
-            string absoluteUri = e.Url.AbsoluteUri;
-            if (absoluteUri != "about:blank")
-            {
-                e.Cancel = true;
-                ShowUrlInBrowser(absoluteUri);
-            }
+            e.Cancel = true;
+            ShowUrlInBrowser(absoluteUri);
         }
+    }
 
-        private void listNewItems_SelectedIndexChanged(object sender, EventArgs e)
+    private void listNewItems_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ShowItem(listNewItems.FocusedItem);
+    }
+
+    private void btMarkRead_Click(object sender, EventArgs e)
+    {
+        news.MarkAllRead();
+        foreach (ListViewItem item in listNewItems.Items)
         {
-            ShowItem(listNewItems.FocusedItem);
+            item.Font = FC.Get(item.Font, FontStyle.Regular);
         }
+    }
 
-        private void btMarkRead_Click(object sender, EventArgs e)
+    private void chkNewsStartup_CheckedChanged(object sender, EventArgs e)
+    {
+        Program.Settings.NewsStartup = chkNewsStartup.Checked;
+    }
+
+    private void btRefresh_Click(object sender, EventArgs e)
+    {
+        AutomaticProgressDialog.Process(this, TR.Messages["RetrieveNews", "Retrieving News"], TR.Messages["RetrieveNewsText", "Refreshing subscribed News Channels"], 1000, delegate
         {
-            news.MarkAllRead();
-            foreach (ListViewItem item in listNewItems.Items)
-            {
-                item.Font = FC.Get(item.Font, FontStyle.Regular);
-            }
+            news.UpdateFeeds(0);
+        }, AutomaticProgressDialogOptions.None);
+        FillList();
+    }
+
+    private static void ShowUrlInBrowser(string url)
+    {
+        try
+        {
+            Process.Start(url);
         }
-
-        private void chkNewsStartup_CheckedChanged(object sender, EventArgs e)
+        catch
         {
-            Program.Settings.NewsStartup = chkNewsStartup.Checked;
         }
+    }
 
-        private void btRefresh_Click(object sender, EventArgs e)
+    private void ShowItem(ListViewItem lvi)
+    {
+        if (lvi != null)
         {
-            AutomaticProgressDialog.Process(this, TR.Messages["RetrieveNews", "Retrieving News"], TR.Messages["RetrieveNewsText", "Refreshing subscribed News Channels"], 1000, delegate
-            {
-                news.UpdateFeeds(0);
-            }, AutomaticProgressDialogOptions.None);
-            FillList();
-        }
-
-        private static void ShowUrlInBrowser(string url)
-        {
+            string text = string.Empty;
             try
             {
-                Process.Start(url);
+                text = File.ReadAllText(Path.Combine(Application.StartupPath, "NewsTemplate.html"));
             }
             catch
             {
             }
-        }
-
-        private void ShowItem(ListViewItem lvi)
-        {
-            if (lvi != null)
+            NewsChannelItem newsChannelItem = lvi.Tag as NewsChannelItem;
+            try
             {
-                string text = string.Empty;
-                try
-                {
-                    text = File.ReadAllText(Path.Combine(Application.StartupPath, "NewsTemplate.html"));
-                }
-                catch
-                {
-                }
-                NewsChannelItem newsChannelItem = lvi.Tag as NewsChannelItem;
-                try
-                {
-                    webBrowser.DocumentText = text.Replace("#TITLE#", newsChannelItem.Title).Replace("#TEXT#", newsChannelItem.Description).Replace("#LINK#", newsChannelItem.Link)
-                        .Replace("#DATE#", newsChannelItem.Published.ToString()).ReplaceWebColors();
-                }
-                catch
-                {
-                }
-                news.NewsChannelItemInfos[newsChannelItem].IsRead = true;
-                lvi.Font = FC.Get(lvi.Font, FontStyle.Regular);
+                webBrowser.DocumentText = text.Replace("#TITLE#", newsChannelItem.Title).Replace("#TEXT#", newsChannelItem.Description).Replace("#LINK#", newsChannelItem.Link)
+                    .Replace("#DATE#", newsChannelItem.Published.ToString()).ReplaceWebColors();
             }
-        }
-
-        private void FillList()
-        {
-            listNewItems.Items.Clear();
-            NewsChannelItemCollection items = news.Items;
-            items.Sort((NewsChannelItem a, NewsChannelItem b) => DateTime.Compare(b.Published, a.Published));
-            foreach (NewsChannelItem item in items)
+            catch
             {
-                ListViewItem listViewItem = listNewItems.Items.Add(item.Title);
-                if (!news.NewsChannelItemInfos[item].IsRead)
-                {
-                    listViewItem.Font = FC.Get(listViewItem.Font, FontStyle.Bold);
-                }
-                listViewItem.Tag = item;
             }
-            SelectFirstNotRead();
+            news.NewsChannelItemInfos[newsChannelItem].IsRead = true;
+            lvi.Font = FC.Get(lvi.Font, FontStyle.Regular);
         }
+    }
 
-        private void SelectFirstNotRead()
+    private void FillList()
+    {
+        listNewItems.Items.Clear();
+        NewsChannelItemCollection items = news.Items;
+        items.Sort((NewsChannelItem a, NewsChannelItem b) => DateTime.Compare(b.Published, a.Published));
+        foreach (NewsChannelItem item in items)
         {
-            if (listNewItems.Items.Count > 0)
+            ListViewItem listViewItem = listNewItems.Items.Add(item.Title);
+            if (!news.NewsChannelItemInfos[item].IsRead)
             {
-                listNewItems.Items[0].Selected = true;
-                ShowItem(listNewItems.Items[0]);
+                listViewItem.Font = FC.Get(listViewItem.Font, FontStyle.Bold);
             }
+            listViewItem.Tag = item;
         }
+        SelectFirstNotRead();
+    }
 
-        public static void ShowNews(IWin32Window parentForm, NewsStorage storage)
+    private void SelectFirstNotRead()
+    {
+        if (listNewItems.Items.Count > 0)
         {
-            using (NewsDialog newsDialog = new NewsDialog())
-            {
-                newsDialog.News = storage;
-                newsDialog.FillList();
-                newsDialog.ShowDialog(parentForm);
-            }
+            listNewItems.Items[0].Selected = true;
+            ShowItem(listNewItems.Items[0]);
+        }
+    }
+
+    public static void ShowNews(IWin32Window parentForm, NewsStorage storage)
+    {
+        using (NewsDialog newsDialog = new NewsDialog())
+        {
+            newsDialog.News = storage;
+            newsDialog.FillList();
+            newsDialog.ShowDialog(parentForm);
         }
     }
 }

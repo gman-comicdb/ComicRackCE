@@ -1,9 +1,8 @@
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public enum HitTestType
 {
-    public enum HitTestType
-    {
-        Disabled,
-        Bounds,
-        Alpha
-    }
+    Disabled,
+    Bounds,
+    Alpha
 }

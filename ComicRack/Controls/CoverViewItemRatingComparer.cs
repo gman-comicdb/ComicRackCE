@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Viewer.Controls
+namespace cYo.Projects.ComicRack.Viewer.Controls;
+
+public class CoverViewItemRatingComparer : CoverViewItemComparer
 {
-    public class CoverViewItemRatingComparer : CoverViewItemComparer
+    protected override int OnCompare(CoverViewItem x, CoverViewItem y)
     {
-        protected override int OnCompare(CoverViewItem x, CoverViewItem y)
-        {
-            return x.AverageRating.CompareTo(y.AverageRating);
-        }
+        return x.AverageRating.CompareTo(y.AverageRating);
     }
 }

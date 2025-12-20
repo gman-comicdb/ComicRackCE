@@ -1,9 +1,8 @@
-namespace cYo.Common.Presentation.Ceco
+namespace cYo.Common.Presentation.Ceco;
+
+public enum LayoutType
 {
-    public enum LayoutType
-    {
-        None,
-        Position,
-        Full
-    }
+    None,
+    Position,
+    Full
 }

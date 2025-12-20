@@ -1,9 +1,8 @@
-namespace cYo.Common.ComponentModel
-{
-    public interface IValueStore<T>
-    {
-        T GetValue();
+namespace cYo.Common.ComponentModel;
 
-        void SetValue(T value);
-    }
+public interface IValueStore<T>
+{
+    T GetValue();
+
+    void SetValue(T value);
 }

@@ -9,92 +9,91 @@ using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.Sync;
 
-namespace cYo.Projects.ComicRack.Viewer.Dialogs
+namespace cYo.Projects.ComicRack.Viewer.Dialogs;
+
+public partial class ShowErrorsDialog : FormEx
 {
-    public partial class ShowErrorsDialog : FormEx
+    public class ErrorItem
     {
-        public class ErrorItem
+        public string Item
         {
-            public string Item
-            {
-                get;
-                set;
-            }
-
-            public string Message
-            {
-                get;
-                set;
-            }
+            get;
+            set;
         }
 
-        public ShowErrorsDialog()
+        public string Message
         {
-            LocalizeUtility.UpdateRightToLeft(this);
-            InitializeComponent();
-            LocalizeUtility.Localize(this, null);
-            this.RestorePosition();
+            get;
+            set;
         }
+    }
 
-        private void AddError(ErrorItem ei)
+    public ShowErrorsDialog()
+    {
+        LocalizeUtility.UpdateRightToLeft(this);
+        InitializeComponent();
+        LocalizeUtility.Localize(this, null);
+        this.RestorePosition();
+    }
+
+    private void AddError(ErrorItem ei)
+    {
+        ListViewItem listViewItem = lvErrors.Items.Add(ei.Item);
+        listViewItem.SubItems.Add(ei.Message);
+    }
+
+    public static void ShowErrors<T>(IWin32Window parent, SmartList<T> errors, Func<T, ErrorItem> converter)
+    {
+        if (errors.Count == 0)
         {
-            ListViewItem listViewItem = lvErrors.Items.Add(ei.Item);
-            listViewItem.SubItems.Add(ei.Message);
+            return;
         }
-
-        public static void ShowErrors<T>(IWin32Window parent, SmartList<T> errors, Func<T, ErrorItem> converter)
+        ShowErrorsDialog dlg = new ShowErrorsDialog();
+        try
         {
-            if (errors.Count == 0)
+            foreach (T error in errors)
             {
-                return;
+                dlg.AddError(converter(error));
             }
-            ShowErrorsDialog dlg = new ShowErrorsDialog();
-            try
+            EventHandler<SmartListChangedEventArgs<T>> value = delegate (object s, SmartListChangedEventArgs<T> e)
             {
-                foreach (T error in errors)
+                if (e.Action == SmartListAction.Insert)
                 {
-                    dlg.AddError(converter(error));
-                }
-                EventHandler<SmartListChangedEventArgs<T>> value = delegate (object s, SmartListChangedEventArgs<T> e)
-                {
-                    if (e.Action == SmartListAction.Insert)
+                    dlg.BeginInvoke(delegate
                     {
-                        dlg.BeginInvoke(delegate
-                        {
-                            dlg.AddError(converter(e.Item));
-                        });
-                    }
-                };
-                errors.Changed += value;
-                dlg.ShowDialog(parent);
-                errors.Changed -= value;
-                errors.Clear();
-            }
-            finally
-            {
-                if (dlg != null)
-                {
-                    ((IDisposable)dlg).Dispose();
+                        dlg.AddError(converter(e.Item));
+                    });
                 }
+            };
+            errors.Changed += value;
+            dlg.ShowDialog(parent);
+            errors.Changed -= value;
+            errors.Clear();
+        }
+        finally
+        {
+            if (dlg != null)
+            {
+                ((IDisposable)dlg).Dispose();
             }
         }
+    }
 
-        public static ErrorItem ComicExporterConverter(ComicExporter ce)
+    public static ErrorItem ComicExporterConverter(ComicExporter ce)
+    {
+        return new ErrorItem
         {
-            return new ErrorItem
-            {
-                Item = ce.ComicBooks[0].FileNameWithExtension,
-                Message = ce.LastError
-            };
-        }
+            Item = ce.ComicBooks[0].FileNameWithExtension,
+            Message = ce.LastError
+        };
+    }
 
-        public static ErrorItem DeviceSyncErrorConverter(DeviceSyncError ce)
+    public static ErrorItem DeviceSyncErrorConverter(DeviceSyncError ce)
+    {
+        return new ErrorItem
         {
-            return new ErrorItem
-            {
-                Item = ce.Name,
-                Message = ce.Message
-            };
-        }
+            Item = ce.Name,
+            Message = ce.Message
+        };
     }
 }

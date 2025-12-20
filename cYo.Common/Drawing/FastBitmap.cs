@@ -3,97 +3,96 @@ using System.Drawing.Imaging;
 
 using cYo.Common.ComponentModel;
 
-namespace cYo.Common.Drawing
+namespace cYo.Common.Drawing;
+
+public class FastBitmap : DisposableObject
 {
-    public class FastBitmap : DisposableObject
+    private struct PixelData
     {
-        private struct PixelData
+        public byte Blue;
+
+        public byte Green;
+
+        public byte Red;
+
+        public byte Alpha;
+
+        public override string ToString()
         {
-            public byte Blue;
+            return "(" + Alpha + ", " + Red + ", " + Green + ", " + Blue + ")";
+        }
+    }
 
-            public byte Green;
+    private int width;
 
-            public byte Red;
+    private BitmapData bitmapData;
 
-            public byte Alpha;
+    private unsafe byte* pBase = null;
 
-            public override string ToString()
+    private readonly Bitmap bitmap;
+
+    private unsafe PixelData* pixelData = null;
+
+    public Bitmap Bitmap => bitmap;
+
+    public unsafe FastBitmap(Bitmap inputBitmap, bool lockBitmap = true)
+    {
+        bitmap = inputBitmap;
+        if (lockBitmap)
+        {
+            LockImage();
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        UnlockImage();
+        base.Dispose(disposing);
+    }
+
+    public unsafe void LockImage()
+    {
+        if (bitmapData == null)
+        {
+            Rectangle rect = new Rectangle(Point.Empty, bitmap.Size);
+            width = rect.Width * sizeof(PixelData);
+            if (width % 4 != 0)
             {
-                return "(" + Alpha + ", " + Red + ", " + Green + ", " + Blue + ")";
+                width = 4 * (width / 4 + 1);
             }
+            bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            pBase = (byte*)bitmapData.Scan0.ToPointer();
         }
+    }
 
-        private int width;
+    public unsafe Color GetPixel(int x, int y)
+    {
+        pixelData = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
+        return Color.FromArgb(pixelData->Alpha, pixelData->Red, pixelData->Green, pixelData->Blue);
+    }
 
-        private BitmapData bitmapData;
+    public unsafe Color GetPixelNext()
+    {
+        pixelData++;
+        return Color.FromArgb(pixelData->Alpha, pixelData->Red, pixelData->Green, pixelData->Blue);
+    }
 
-        private unsafe byte* pBase = null;
+    public unsafe void SetPixel(int x, int y, Color color)
+    {
+        PixelData* ptr = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
+        ptr->Alpha = color.A;
+        ptr->Green = color.G;
+        ptr->Blue = color.B;
+        ptr->Red = color.R;
+    }
 
-        private readonly Bitmap bitmap;
-
-        private unsafe PixelData* pixelData = null;
-
-        public Bitmap Bitmap => bitmap;
-
-        public unsafe FastBitmap(Bitmap inputBitmap, bool lockBitmap = true)
+    public unsafe void UnlockImage()
+    {
+        if (bitmapData != null)
         {
-            bitmap = inputBitmap;
-            if (lockBitmap)
-            {
-                LockImage();
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            UnlockImage();
-            base.Dispose(disposing);
-        }
-
-        public unsafe void LockImage()
-        {
-            if (bitmapData == null)
-            {
-                Rectangle rect = new Rectangle(Point.Empty, bitmap.Size);
-                width = rect.Width * sizeof(PixelData);
-                if (width % 4 != 0)
-                {
-                    width = 4 * (width / 4 + 1);
-                }
-                bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-                pBase = (byte*)bitmapData.Scan0.ToPointer();
-            }
-        }
-
-        public unsafe Color GetPixel(int x, int y)
-        {
-            pixelData = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
-            return Color.FromArgb(pixelData->Alpha, pixelData->Red, pixelData->Green, pixelData->Blue);
-        }
-
-        public unsafe Color GetPixelNext()
-        {
-            pixelData++;
-            return Color.FromArgb(pixelData->Alpha, pixelData->Red, pixelData->Green, pixelData->Blue);
-        }
-
-        public unsafe void SetPixel(int x, int y, Color color)
-        {
-            PixelData* ptr = (PixelData*)(pBase + y * width + x * sizeof(PixelData));
-            ptr->Alpha = color.A;
-            ptr->Green = color.G;
-            ptr->Blue = color.B;
-            ptr->Red = color.R;
-        }
-
-        public unsafe void UnlockImage()
-        {
-            if (bitmapData != null)
-            {
-                bitmap.UnlockBits(bitmapData);
-                bitmapData = null;
-                pBase = null;
-            }
+            bitmap.UnlockBits(bitmapData);
+            bitmapData = null;
+            pBase = null;
         }
     }
 }

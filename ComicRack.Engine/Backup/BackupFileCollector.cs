@@ -4,31 +4,30 @@ using System.Linq;
 
 using cYo.Common.IO;
 
-namespace cYo.Projects.ComicRack.Engine.Backup
+namespace cYo.Projects.ComicRack.Engine.Backup;
+
+/// <summary>
+/// Collects backup files from multiple locations.
+/// </summary>
+internal class BackupFileCollector
 {
-    /// <summary>
-    /// Collects backup files from multiple locations.
-    /// </summary>
-    internal class BackupFileCollector
+    public IEnumerable<BackupFileEntry> CollectFiles(IEnumerable<BackupLocation> locations)
     {
-        public IEnumerable<BackupFileEntry> CollectFiles(IEnumerable<BackupLocation> locations)
+        var files = new List<BackupFileEntry>();
+
+        foreach (BackupLocation bl in locations)
         {
-            var files = new List<BackupFileEntry>();
+            var paths = bl.Provider.GetPaths();
+            var allFiles = bl.Provider.IsFile
+                ? paths
+                : paths.SelectMany(x => FileUtility.GetFiles(x, SearchOption.AllDirectories));
 
-            foreach (BackupLocation bl in locations)
+            foreach (var file in allFiles)
             {
-                var paths = bl.Provider.GetPaths();
-                var allFiles = bl.Provider.IsFile
-                    ? paths
-                    : paths.SelectMany(x => FileUtility.GetFiles(x, SearchOption.AllDirectories));
-
-                foreach (var file in allFiles)
-                {
-                    files.Add(new BackupFileEntry(bl.Provider.BaseFolder, file));
-                }
+                files.Add(new BackupFileEntry(bl.Provider.BaseFolder, file));
             }
-
-            return files;
         }
+
+        return files;
     }
 }

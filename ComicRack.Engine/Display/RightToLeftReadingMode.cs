@@ -1,8 +1,7 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum RightToLeftReadingMode
 {
-    public enum RightToLeftReadingMode
-    {
-        FlipParts,
-        FlipPages
-    }
+    FlipParts,
+    FlipPages
 }

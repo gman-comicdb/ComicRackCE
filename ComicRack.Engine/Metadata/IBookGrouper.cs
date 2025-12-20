@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IBookGrouper
 {
-    public interface IBookGrouper
+    IGrouper<ComicBook> BookGrouper
     {
-        IGrouper<ComicBook> BookGrouper
-        {
-            get;
-        }
+        get;
     }
 }

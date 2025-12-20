@@ -1,10 +1,9 @@
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IDataSize
 {
-    public interface IDataSize
+    int DataSize
     {
-        int DataSize
-        {
-            get;
-        }
+        get;
     }
 }

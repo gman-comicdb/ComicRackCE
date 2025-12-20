@@ -1,29 +1,28 @@
 using System;
 using System.IO;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Writers
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Writers;
+
+[FileFormat("Book Information", KnownFileFormats.XML, ".xml")]
+internal class XmlInfoStorageProvider : StorageProvider
 {
-    [FileFormat("Book Information", KnownFileFormats.XML, ".xml")]
-    internal class XmlInfoStorageProvider : StorageProvider
+    protected override ComicInfo OnStore(IImageProvider provider, ComicInfo info, string target, StorageSetting setting)
     {
-        protected override ComicInfo OnStore(IImageProvider provider, ComicInfo info, string target, StorageSetting setting)
+        if (info == null)
         {
-            if (info == null)
+            return info;
+        }
+        try
+        {
+            using (StreamWriter streamWriter = File.CreateText(target))
             {
-                return info;
+                info.Serialize(streamWriter.BaseStream);
             }
-            try
-            {
-                using (StreamWriter streamWriter = File.CreateText(target))
-                {
-                    info.Serialize(streamWriter.BaseStream);
-                }
-                return info;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return info;
+        }
+        catch (Exception)
+        {
+            throw;
         }
     }
 }

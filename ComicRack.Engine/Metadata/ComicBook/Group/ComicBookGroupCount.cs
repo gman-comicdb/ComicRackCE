@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupCount : ItemGroupCount
 {
-    public class ComicBookGroupCount : ItemGroupCount
+    protected override int GetInt(ComicBook item)
     {
-        protected override int GetInt(ComicBook item)
-        {
-            return item.ShadowCount;
-        }
+        return item.ShadowCount;
     }
 }

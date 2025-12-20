@@ -3,54 +3,53 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace cYo.Common.Presentation
+namespace cYo.Common.Presentation;
+
+public class ControlGdiRenderer : BitmapGdiRenderer, IControlRenderer, IBitmapRenderer, IDisposable
 {
-    public class ControlGdiRenderer : BitmapGdiRenderer, IControlRenderer, IBitmapRenderer, IDisposable
+    public Control Control
     {
-        public Control Control
+        get;
+        private set;
+    }
+
+    public Size Size => Control.Size;
+
+    public event EventHandler Paint;
+
+    public ControlGdiRenderer(Control control, bool doubleBuffer)
+    {
+        if (doubleBuffer)
         {
-            get;
-            private set;
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(control, true, null);
         }
+        Control = control;
+        Control.Paint += window_Paint;
+    }
 
-        public Size Size => Control.Size;
+    private void window_Paint(object sender, PaintEventArgs e)
+    {
+        BeginScene(e.Graphics);
+        OnPaint();
+        EndScene();
+    }
 
-        public event EventHandler Paint;
+    public void Dispose()
+    {
+        Control.Paint -= window_Paint;
+        GC.SuppressFinalize(this);
+    }
 
-        public ControlGdiRenderer(Control control, bool doubleBuffer)
+    public void Draw()
+    {
+        Control.Invalidate();
+    }
+
+    protected virtual void OnPaint()
+    {
+        if (this.Paint != null)
         {
-            if (doubleBuffer)
-            {
-                typeof(Control).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(control, true, null);
-            }
-            Control = control;
-            Control.Paint += window_Paint;
-        }
-
-        private void window_Paint(object sender, PaintEventArgs e)
-        {
-            BeginScene(e.Graphics);
-            OnPaint();
-            EndScene();
-        }
-
-        public void Dispose()
-        {
-            Control.Paint -= window_Paint;
-            GC.SuppressFinalize(this);
-        }
-
-        public void Draw()
-        {
-            Control.Invalidate();
-        }
-
-        protected virtual void OnPaint()
-        {
-            if (this.Paint != null)
-            {
-                this.Paint(this, EventArgs.Empty);
-            }
+            this.Paint(this, EventArgs.Empty);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using cYo.Common.Windows.Forms.Theme.Resources;
-
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using cYo.Common.Windows.Forms.Theme.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 

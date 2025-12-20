@@ -13,58 +13,57 @@ using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer.Properties;
 
-namespace cYo.Projects.ComicRack.Viewer.Dialogs
+namespace cYo.Projects.ComicRack.Viewer.Dialogs;
+
+public partial class ValueEditorDialog : FormEx
 {
-    public partial class ValueEditorDialog : FormEx
+    public string MatchValue
     {
-        public string MatchValue
+        get
         {
-            get
-            {
-                return rtfMatchValue.Text;
-            }
-            set
-            {
-                rtfMatchValue.Text = value;
-            }
+            return rtfMatchValue.Text;
         }
-
-        public override UIComponent UIComponent => UIComponent.Content;
-
-        public ValueEditorDialog()
+        set
         {
-            InitializeComponent();
-            btInsertValue.Image = ((Bitmap)btInsertValue.Image).ScaleDpi();
-            LocalizeUtility.Localize(this, null);
-            CreateValueContextMenu();
+            rtfMatchValue.Text = value;
         }
+    }
 
-        public void SyntaxColoring(IEnumerable<ValuePair<Color, Regex>> colors)
-        {
-            rtfMatchValue.RegisterColorize(colors);
-        }
+    public override UIComponent UIComponent => UIComponent.Content;
 
-        private void AddField(object sender, EventArgs e)
-        {
-            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
-            rtfMatchValue.SelectedText = "{" + (string)toolStripMenuItem.Tag + "}";
-            rtfMatchValue.Focus();
-        }
+    public ValueEditorDialog()
+    {
+        InitializeComponent();
+        btInsertValue.Image = ((Bitmap)btInsertValue.Image).ScaleDpi();
+        LocalizeUtility.Localize(this, null);
+        CreateValueContextMenu();
+    }
 
-        private void CreateValueContextMenu()
+    public void SyntaxColoring(IEnumerable<ValuePair<Color, Regex>> colors)
+    {
+        rtfMatchValue.RegisterColorize(colors);
+    }
+
+    private void AddField(object sender, EventArgs e)
+    {
+        ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+        rtfMatchValue.SelectedText = "{" + (string)toolStripMenuItem.Tag + "}";
+        rtfMatchValue.Focus();
+    }
+
+    private void CreateValueContextMenu()
+    {
+        components = new Container();
+        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        foreach (string item in ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties))
         {
-            components = new Container();
-            ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
-            foreach (string item in ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties))
-            {
-                contextMenuBuilder.Add(item, topLevel: false, chk: false, AddField, item, DateTime.MinValue);
-            }
-            ContextMenuStrip cm = new ContextMenuStrip(components);
-            cm.Items.AddRange(contextMenuBuilder.Create(20));
-            btInsertValue.Click += delegate
-            {
-                cm.Show(btInsertValue, 0, btInsertValue.Height);
-            };
+            contextMenuBuilder.Add(item, topLevel: false, chk: false, AddField, item, DateTime.MinValue);
         }
+        ContextMenuStrip cm = new ContextMenuStrip(components);
+        cm.Items.AddRange(contextMenuBuilder.Create(20));
+        btInsertValue.Click += delegate
+        {
+            cm.Show(btInsertValue, 0, btInsertValue.Height);
+        };
     }
 }

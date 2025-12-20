@@ -1,11 +1,10 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public interface IDynamicImages
 {
-    public interface IDynamicImages
+    bool RefreshMode
     {
-        bool RefreshMode
-        {
-            get;
-            set;
-        }
+        get;
+        set;
     }
 }

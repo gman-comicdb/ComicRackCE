@@ -1,15 +1,14 @@
 using System;
 
-namespace cYo.Common.Compression.SevenZip
-{
-    public class StubOpenCallback : IArchiveOpenCallback
-    {
-        public void SetTotal(IntPtr files, IntPtr bytes)
-        {
-        }
+namespace cYo.Common.Compression.SevenZip;
 
-        public void SetCompleted(IntPtr files, IntPtr bytes)
-        {
-        }
+public class StubOpenCallback : IArchiveOpenCallback
+{
+    public void SetTotal(IntPtr files, IntPtr bytes)
+    {
+    }
+
+    public void SetCompleted(IntPtr files, IntPtr bytes)
+    {
     }
 }

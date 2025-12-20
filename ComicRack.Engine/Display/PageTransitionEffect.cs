@@ -1,11 +1,10 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum PageTransitionEffect
 {
-    public enum PageTransitionEffect
-    {
-        None,
-        Fade,
-        LeftRight,
-        TopDown,
-        Paging
-    }
+    None,
+    Fade,
+    LeftRight,
+    TopDown,
+    Paging
 }

@@ -1,7 +1,6 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface ISettingsChanged
 {
-    public interface ISettingsChanged
-    {
-        void SettingsChanged();
-    }
+    void SettingsChanged();
 }

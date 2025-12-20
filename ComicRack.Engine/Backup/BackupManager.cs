@@ -10,97 +10,96 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Text;
 using cYo.Common.Threading;
 
-namespace cYo.Projects.ComicRack.Engine.Backup
+namespace cYo.Projects.ComicRack.Engine.Backup;
+
+/// <summary>
+/// Coordinates the backup process.
+/// </summary>
+public class BackupManager : DisposableObject
 {
-    /// <summary>
-    /// Coordinates the backup process.
-    /// </summary>
-    public class BackupManager : DisposableObject
+    private readonly ProcessingQueue<IEnumerable<BackupFileEntry>> backupQueue;
+    private readonly BackupLocationProviderFactory locationProviderFactory;
+    private readonly BackupFileCollector fileCollector = new BackupFileCollector();
+    private readonly BackupArchiveCreator archiveCreator = new BackupArchiveCreator();
+    private readonly BackupRetentionManager retentionManager = new BackupRetentionManager();
+
+    public bool IsInBackupProcess => backupQueue.IsActive;
+
+    private readonly BackupManagerOptions options;
+
+    public BackupManager(
+        BackupManagerOptions options,
+        SystemPaths paths,
+        string configFile,
+        string defaultListsFile,
+        string defaultIconPackagesPath)
     {
-        private readonly ProcessingQueue<IEnumerable<BackupFileEntry>> backupQueue;
-        private readonly BackupLocationProviderFactory locationProviderFactory;
-        private readonly BackupFileCollector fileCollector = new BackupFileCollector();
-        private readonly BackupArchiveCreator archiveCreator = new BackupArchiveCreator();
-        private readonly BackupRetentionManager retentionManager = new BackupRetentionManager();
+        this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-        public bool IsInBackupProcess => backupQueue.IsActive;
+        locationProviderFactory = new BackupLocationProviderFactory(paths, configFile, defaultListsFile, defaultIconPackagesPath);
+        backupQueue = new ProcessingQueue<IEnumerable<BackupFileEntry>>("Backup Queue", ThreadPriority.Lowest);
+    }
 
-        private readonly BackupManagerOptions options;
+    public void RunBackup(bool useQueue = true)
+    {
+        if (string.IsNullOrEmpty(options.Location))
+            return;
 
-        public BackupManager(
-            BackupManagerOptions options,
-            SystemPaths paths,
-            string configFile,
-            string defaultListsFile,
-            string defaultIconPackagesPath)
+        retentionManager.CleanOldBackups(options.Location, options.BackupsToKeep);
+
+        var backupLocations = GetBackupLocations(options.IncludeAllAlternateConfigs);
+        if (backupLocations.Any())
         {
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            var files = fileCollector.CollectFiles(backupLocations);
 
-            locationProviderFactory = new BackupLocationProviderFactory(paths, configFile, defaultListsFile, defaultIconPackagesPath);
-            backupQueue = new ProcessingQueue<IEnumerable<BackupFileEntry>>("Backup Queue", ThreadPriority.Lowest);
-        }
-
-        public void RunBackup(bool useQueue = true)
-        {
-            if (string.IsNullOrEmpty(options.Location))
-                return;
-
-            retentionManager.CleanOldBackups(options.Location, options.BackupsToKeep);
-
-            var backupLocations = GetBackupLocations(options.IncludeAllAlternateConfigs);
-            if (backupLocations.Any())
-            {
-                var files = fileCollector.CollectFiles(backupLocations);
-
-                if (useQueue)
-                    backupQueue.AddItem(files, _ => ExecuteBackup(files, backupLocations));
-                else
-                    ExecuteBackup(files, backupLocations);
-            }
-        }
-
-        private void ExecuteBackup(IEnumerable<BackupFileEntry> files, IEnumerable<BackupLocation> locations)
-        {
-            if (!files.Any())
-                return;
-
-            var backupTypes = locations.Select(x => x.BackupType);
-            archiveCreator.CreateBackup(options.Location, files, backupTypes);
-        }
-
-        private IEnumerable<BackupLocation> GetBackupLocations(bool includeAllConfigs)
-        {
-            var locations = new List<BackupLocation>();
-
-            foreach (BackupOptions flag in Enum.GetValues(typeof(BackupOptions)))
-            {
-                if (flag == BackupOptions.None || flag == BackupOptions.Full || flag == BackupOptions.FullWithCache || !options.Options.HasFlag(flag))
-                    continue;
-
-                try
-                {
-                    var provider = locationProviderFactory.Create(new SupportedBackupOption(flag), includeAllConfigs);
-                    var location = new BackupLocation(provider, flag);
-                    locations.Add(location);
-                }
-                catch (ArgumentException)
-                {
-                    // Skip unsupported backup options
-                }
-            }
-
-            return locations;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                backupQueue.Dispose();
-            }
-            base.Dispose(disposing);
+            if (useQueue)
+                backupQueue.AddItem(files, _ => ExecuteBackup(files, backupLocations));
+            else
+                ExecuteBackup(files, backupLocations);
         }
     }
 
-    internal record BackupLocation(IBackupLocationProvider Provider, BackupOptions BackupType) { }
+    private void ExecuteBackup(IEnumerable<BackupFileEntry> files, IEnumerable<BackupLocation> locations)
+    {
+        if (!files.Any())
+            return;
+
+        var backupTypes = locations.Select(x => x.BackupType);
+        archiveCreator.CreateBackup(options.Location, files, backupTypes);
+    }
+
+    private IEnumerable<BackupLocation> GetBackupLocations(bool includeAllConfigs)
+    {
+        var locations = new List<BackupLocation>();
+
+        foreach (BackupOptions flag in Enum.GetValues(typeof(BackupOptions)))
+        {
+            if (flag == BackupOptions.None || flag == BackupOptions.Full || flag == BackupOptions.FullWithCache || !options.Options.HasFlag(flag))
+                continue;
+
+            try
+            {
+                var provider = locationProviderFactory.Create(new SupportedBackupOption(flag), includeAllConfigs);
+                var location = new BackupLocation(provider, flag);
+                locations.Add(location);
+            }
+            catch (ArgumentException)
+            {
+                // Skip unsupported backup options
+            }
+        }
+
+        return locations;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            backupQueue.Dispose();
+        }
+        base.Dispose(disposing);
+    }
 }
+
+internal record BackupLocation(IBackupLocationProvider Provider, BackupOptions BackupType) { }

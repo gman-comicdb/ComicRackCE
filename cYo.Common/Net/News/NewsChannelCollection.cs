@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 
-namespace cYo.Common.Net.News
+namespace cYo.Common.Net.News;
+
+public class NewsChannelCollection : List<NewsChannel>
 {
-    public class NewsChannelCollection : List<NewsChannel>
-    {
-    }
 }

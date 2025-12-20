@@ -1,12 +1,11 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IIdentity
 {
-    public interface IIdentity
+    Guid Id
     {
-        Guid Id
-        {
-            get;
-        }
+        get;
     }
 }

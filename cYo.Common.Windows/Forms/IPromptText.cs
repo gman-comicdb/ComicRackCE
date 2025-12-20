@@ -1,17 +1,16 @@
-namespace cYo.Common.Windows.Forms
-{
-    public interface IPromptText
-    {
-        string PromptText
-        {
-            get;
-            set;
-        }
+namespace cYo.Common.Windows.Forms;
 
-        string Text
-        {
-            get;
-            set;
-        }
+public interface IPromptText
+{
+    string PromptText
+    {
+        get;
+        set;
+    }
+
+    string Text
+    {
+        get;
+        set;
     }
 }

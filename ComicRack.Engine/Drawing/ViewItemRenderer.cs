@@ -3,55 +3,54 @@ using System.Drawing;
 
 using cYo.Common.Drawing;
 
-namespace cYo.Projects.ComicRack.Engine.Drawing
+namespace cYo.Projects.ComicRack.Engine.Drawing;
+
+public abstract class ViewItemRenderer : ThumbRenderer
 {
-    public abstract class ViewItemRenderer : ThumbRenderer
+    private Color backColor = Color.Transparent;
+
+    private Color foreColor = SystemColors.WindowText;
+
+    private readonly List<TextLine> textLines = new List<TextLine>();
+
+    public Color BackColor
     {
-        private Color backColor = Color.Transparent;
-
-        private Color foreColor = SystemColors.WindowText;
-
-        private readonly List<TextLine> textLines = new List<TextLine>();
-
-        public Color BackColor
+        get
         {
-            get
-            {
-                return backColor;
-            }
-            set
-            {
-                backColor = value;
-            }
+            return backColor;
         }
-
-        public Color ForeColor
+        set
         {
-            get
-            {
-                return foreColor;
-            }
-            set
-            {
-                foreColor = value;
-            }
+            backColor = value;
         }
+    }
 
-        public Size Border
+    public Color ForeColor
+    {
+        get
         {
-            get;
-            set;
+            return foreColor;
         }
-
-        public List<TextLine> TextLines => textLines;
-
-        public void DisposeTextLines()
+        set
         {
-            TextLines.ForEach(delegate (TextLine tl)
-            {
-                tl.Dispose();
-            });
-            TextLines.Clear();
+            foreColor = value;
         }
+    }
+
+    public Size Border
+    {
+        get;
+        set;
+    }
+
+    public List<TextLine> TextLines => textLines;
+
+    public void DisposeTextLines()
+    {
+        TextLines.ForEach(delegate (TextLine tl)
+        {
+            tl.Dispose();
+        });
+        TextLines.Clear();
     }
 }

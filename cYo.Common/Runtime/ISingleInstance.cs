@@ -1,11 +1,10 @@
 using System.ServiceModel;
 
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+[ServiceContract]
+internal interface ISingleInstance
 {
-    [ServiceContract]
-    internal interface ISingleInstance
-    {
-        [OperationContract]
-        void InvokeLast(string[] args);
-    }
+    [OperationContract]
+    void InvokeLast(string[] args);
 }

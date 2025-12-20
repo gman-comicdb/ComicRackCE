@@ -1,8 +1,7 @@
-namespace cYo.Common.Drawing3D
+namespace cYo.Common.Drawing3D;
+
+public enum LightType
 {
-    public enum LightType
-    {
-        Point,
-        Directional
-    }
+    Point,
+    Directional
 }

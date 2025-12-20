@@ -1,24 +1,23 @@
 using System;
 using System.Xml.Serialization;
 
-namespace cYo.Common.ComponentModel
-{
-    [Serializable]
-    public class IdComponent : LiteComponent
-    {
-        private Guid id = Guid.NewGuid();
+namespace cYo.Common.ComponentModel;
 
-        [XmlAttribute]
-        public Guid Id
+[Serializable]
+public class IdComponent : LiteComponent
+{
+    private Guid id = Guid.NewGuid();
+
+    [XmlAttribute]
+    public Guid Id
+    {
+        get
         {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                id = value;
-            }
+            return id;
+        }
+        set
+        {
+            id = value;
         }
     }
 }

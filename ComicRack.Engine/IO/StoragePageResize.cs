@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum StoragePageResize
 {
-    public enum StoragePageResize
-    {
-        Original,
-        WidthHeight,
-        Width,
-        Height
-    }
+    Original,
+    WidthHeight,
+    Width,
+    Height
 }

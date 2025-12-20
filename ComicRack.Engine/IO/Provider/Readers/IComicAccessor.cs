@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers;
+
+public interface IComicAccessor
 {
-    public interface IComicAccessor
-    {
-        bool IsFormat(string source);
+    bool IsFormat(string source);
 
-        IEnumerable<ProviderImageInfo> GetEntryList(string source);
+    IEnumerable<ProviderImageInfo> GetEntryList(string source);
 
-        byte[] ReadByteImage(string source, ProviderImageInfo info);
+    byte[] ReadByteImage(string source, ProviderImageInfo info);
 
-        ComicInfo ReadInfo(string source);
+    ComicInfo ReadInfo(string source);
 
-        bool WriteInfo(string source, ComicInfo info);
-    }
+    bool WriteInfo(string source, ComicInfo info);
 }

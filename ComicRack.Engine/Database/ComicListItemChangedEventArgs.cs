@@ -1,25 +1,24 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public class ComicListItemChangedEventArgs : EventArgs
 {
-    public class ComicListItemChangedEventArgs : EventArgs
+    public ComicListItem Item
     {
-        public ComicListItem Item
-        {
-            get;
-            private set;
-        }
+        get;
+        private set;
+    }
 
-        public ComicListItemChange Change
-        {
-            get;
-            private set;
-        }
+    public ComicListItemChange Change
+    {
+        get;
+        private set;
+    }
 
-        public ComicListItemChangedEventArgs(ComicListItem changedItem, ComicListItemChange changeType)
-        {
-            Change = changeType;
-            Item = changedItem;
-        }
+    public ComicListItemChangedEventArgs(ComicListItem changedItem, ComicListItemChange changeType)
+    {
+        Change = changeType;
+        Item = changedItem;
     }
 }

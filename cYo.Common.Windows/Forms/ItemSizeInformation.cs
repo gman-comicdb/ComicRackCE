@@ -1,93 +1,92 @@
 using System.Drawing;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class ItemSizeInformation
 {
-    public class ItemSizeInformation
+    private Rectangle bounds;
+
+    public Graphics Graphics
     {
-        private Rectangle bounds;
+        get;
+        set;
+    }
 
-        public Graphics Graphics
+    public Rectangle Bounds
+    {
+        get
         {
-            get;
-            set;
+            return bounds;
         }
+        set
+        {
+            bounds = value;
+        }
+    }
 
-        public Rectangle Bounds
+    public int Width
+    {
+        get
         {
-            get
-            {
-                return bounds;
-            }
-            set
-            {
-                bounds = value;
-            }
+            return bounds.Width;
         }
+        set
+        {
+            bounds.Width = value;
+        }
+    }
 
-        public int Width
+    public int Height
+    {
+        get
         {
-            get
-            {
-                return bounds.Width;
-            }
-            set
-            {
-                bounds.Width = value;
-            }
+            return bounds.Height;
         }
+        set
+        {
+            bounds.Height = value;
+        }
+    }
 
-        public int Height
+    public Size Size
+    {
+        get
         {
-            get
-            {
-                return bounds.Height;
-            }
-            set
-            {
-                bounds.Height = value;
-            }
+            return bounds.Size;
         }
+        set
+        {
+            bounds.Size = value;
+        }
+    }
 
-        public Size Size
-        {
-            get
-            {
-                return bounds.Size;
-            }
-            set
-            {
-                bounds.Size = value;
-            }
-        }
+    public ItemViewMode DisplayType
+    {
+        get;
+        set;
+    }
 
-        public ItemViewMode DisplayType
-        {
-            get;
-            set;
-        }
+    public int Item
+    {
+        get;
+        set;
+    }
 
-        public int Item
-        {
-            get;
-            set;
-        }
+    public int GroupItem
+    {
+        get;
+        set;
+    }
 
-        public int GroupItem
-        {
-            get;
-            set;
-        }
+    public int SubItem
+    {
+        get;
+        set;
+    }
 
-        public int SubItem
-        {
-            get;
-            set;
-        }
-
-        public IColumn Header
-        {
-            get;
-            set;
-        }
+    public IColumn Header
+    {
+        get;
+        set;
     }
 }

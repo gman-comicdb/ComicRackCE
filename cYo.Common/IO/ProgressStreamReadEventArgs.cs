@@ -1,16 +1,15 @@
 using System;
 
-namespace cYo.Common.IO
+namespace cYo.Common.IO;
+
+public class ProgressStreamReadEventArgs : EventArgs
 {
-    public class ProgressStreamReadEventArgs : EventArgs
+    private readonly int count;
+
+    public int Count => count;
+
+    public ProgressStreamReadEventArgs(int count)
     {
-        private readonly int count;
-
-        public int Count => count;
-
-        public ProgressStreamReadEventArgs(int count)
-        {
-            this.count = count;
-        }
+        this.count = count;
     }
 }

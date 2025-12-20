@@ -1,9 +1,8 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum AutoScrollMode
 {
-    public enum AutoScrollMode
-    {
-        Off,
-        Pan,
-        Drag
-    }
+    Off,
+    Pan,
+    Drag
 }

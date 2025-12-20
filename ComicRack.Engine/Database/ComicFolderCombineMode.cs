@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public enum ComicFolderCombineMode
 {
-    public enum ComicFolderCombineMode
-    {
-        Or,
-        And,
-        Empty
-    }
+    Or,
+    And,
+    Empty
 }

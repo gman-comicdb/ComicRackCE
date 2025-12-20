@@ -6,29 +6,28 @@ using System.Windows.Forms;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 
-namespace cYo.Projects.ComicRack.Viewer.Dialogs
+namespace cYo.Projects.ComicRack.Viewer.Dialogs;
+
+public partial class ProgressDialog : FormEx
 {
-    public partial class ProgressDialog : FormEx
+    private bool cancel;
+
+    public ProgressDialog()
     {
-        private bool cancel;
+        LocalizeUtility.UpdateRightToLeft(this);
+        InitializeComponent();
+        LocalizeUtility.Localize(this, null);
+    }
 
-        public ProgressDialog()
-        {
-            LocalizeUtility.UpdateRightToLeft(this);
-            InitializeComponent();
-            LocalizeUtility.Localize(this, null);
-        }
+    public bool Progress(int percentDone)
+    {
+        progressBar.Value = percentDone;
+        Application.DoEvents();
+        return cancel;
+    }
 
-        public bool Progress(int percentDone)
-        {
-            progressBar.Value = percentDone;
-            Application.DoEvents();
-            return cancel;
-        }
-
-        private void btCancel_Click(object sender, EventArgs e)
-        {
-            cancel = true;
-        }
+    private void btCancel_Click(object sender, EventArgs e)
+    {
+        cancel = true;
     }
 }

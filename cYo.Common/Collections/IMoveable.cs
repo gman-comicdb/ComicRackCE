@@ -1,7 +1,6 @@
-namespace cYo.Common.Collections
+namespace cYo.Common.Collections;
+
+public interface IMoveable
 {
-    public interface IMoveable
-    {
-        void Move(int oldIndex, int newIndex);
-    }
+    void Move(int oldIndex, int newIndex);
 }

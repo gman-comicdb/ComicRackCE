@@ -1,28 +1,27 @@
 using System.Drawing;
 
-namespace cYo.Common.Presentation.Ceco.Format
+namespace cYo.Common.Presentation.Ceco.Format;
+
+public class Italic : Span
 {
-    public class Italic : Span
+    public override FontStyle FontStyle
     {
-        public override FontStyle FontStyle
+        get
         {
-            get
-            {
-                return base.FontStyle | FontStyle.Italic;
-            }
-            set
-            {
-                base.FontStyle = value;
-            }
+            return base.FontStyle | FontStyle.Italic;
         }
+        set
+        {
+            base.FontStyle = value;
+        }
+    }
 
-        public Italic()
-        {
-        }
+    public Italic()
+    {
+    }
 
-        public Italic(params Inline[] inlines)
-            : base(inlines)
-        {
-        }
+    public Italic(params Inline[] inlines)
+        : base(inlines)
+    {
     }
 }

@@ -1,11 +1,10 @@
 using cYo.Projects.ComicRack.Viewer.Config;
 
-namespace cYo.Projects.ComicRack.Viewer
-{
-    public interface IDisplayWorkspace
-    {
-        void SetWorkspace(DisplayWorkspace ws);
+namespace cYo.Projects.ComicRack.Viewer;
 
-        void StoreWorkspace(DisplayWorkspace ws);
-    }
+public interface IDisplayWorkspace
+{
+    void SetWorkspace(DisplayWorkspace ws);
+
+    void StoreWorkspace(DisplayWorkspace ws);
 }

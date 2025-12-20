@@ -3,168 +3,167 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public partial class FastScrollControl : UserControlEx
 {
-    public partial class FastScrollControl : UserControlEx
+    private int lineHeight = 16;
+
+    private int columnWidth = 16;
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int ScrollPositionX
     {
-        private int lineHeight = 16;
-
-        private int columnWidth = 16;
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int ScrollPositionX
+        get
         {
-            get
-            {
-                return base.AutoScrollPosition.X;
-            }
-            set
-            {
-                base.AutoScrollPosition = new Point(value, -base.AutoScrollPosition.Y);
-            }
+            return base.AutoScrollPosition.X;
         }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int ScrollPositionY
+        set
         {
-            get
-            {
-                return -base.AutoScrollPosition.Y;
-            }
-            set
-            {
-                base.AutoScrollPosition = new Point(base.AutoScrollPosition.X, value);
-            }
+            base.AutoScrollPosition = new Point(value, -base.AutoScrollPosition.Y);
         }
+    }
 
-        [DefaultValue(typeof(Point), "0, 0")]
-        public Point ScrollPosition
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int ScrollPositionY
+    {
+        get
         {
-            get
-            {
-                return new Point(base.AutoScrollPosition.X, -base.AutoScrollPosition.Y);
-            }
-            set
-            {
-                base.AutoScrollPosition = new Point(value.X, value.Y);
-            }
+            return -base.AutoScrollPosition.Y;
         }
-
-        [DefaultValue(typeof(Size), "0, 0")]
-        public Size VirtualSize
+        set
         {
-            get
-            {
-                return base.AutoScrollMinSize;
-            }
-            set
-            {
-                base.AutoScrollMinSize = value;
-            }
+            base.AutoScrollPosition = new Point(base.AutoScrollPosition.X, value);
         }
+    }
 
-        [DefaultValue(16)]
-        public virtual int LineHeight
+    [DefaultValue(typeof(Point), "0, 0")]
+    public Point ScrollPosition
+    {
+        get
         {
-            get
-            {
-                return lineHeight;
-            }
-            set
-            {
-                lineHeight = value;
-            }
+            return new Point(base.AutoScrollPosition.X, -base.AutoScrollPosition.Y);
         }
-
-        [DefaultValue(16)]
-        public virtual int ColumnWidth
+        set
         {
-            get
-            {
-                return columnWidth;
-            }
-            set
-            {
-                columnWidth = value;
-            }
+            base.AutoScrollPosition = new Point(value.X, value.Y);
         }
+    }
 
-        [DefaultValue(true)]
-        public bool EnableStick
+    [DefaultValue(typeof(Size), "0, 0")]
+    public Size VirtualSize
+    {
+        get
         {
-            get;
-            set;
+            return base.AutoScrollMinSize;
         }
-
-        public virtual Rectangle ViewRectangle
+        set
         {
-            get
-            {
-                Rectangle displayRectangle = DisplayRectangle;
-                displayRectangle.Offset(ScrollPosition);
-                return displayRectangle;
-            }
+            base.AutoScrollMinSize = value;
         }
+    }
 
-        public event EventHandler<AutoScrollEventArgs> AutoScrolling;
-
-        public event MouseEventHandler MouseHWheel;
-
-        public FastScrollControl()
+    [DefaultValue(16)]
+    public virtual int LineHeight
+    {
+        get
         {
-            InitializeComponent();
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, value: true);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, value: true);
-            SetStyle(ControlStyles.UserPaint, value: true);
+            return lineHeight;
         }
-
-        protected override void OnScroll(ScrollEventArgs se)
+        set
         {
-            base.OnScroll(se);
-            OnScroll();
+            lineHeight = value;
         }
+    }
 
-        protected virtual void OnScroll()
+    [DefaultValue(16)]
+    public virtual int ColumnWidth
+    {
+        get
         {
+            return columnWidth;
         }
-
-        public Point Translate(Point pt, bool fromClient)
+        set
         {
-            if (fromClient)
-            {
-                pt.Offset(ScrollPosition.X, ScrollPosition.Y);
-                pt.Offset(-ViewRectangle.X, -ViewRectangle.Y);
-            }
-            else
-            {
-                pt.Offset(-ScrollPosition.X, -ScrollPosition.Y);
-                pt.Offset(ViewRectangle.X, ViewRectangle.Y);
-            }
-            return pt;
+            columnWidth = value;
         }
+    }
 
-        public Rectangle Translate(Rectangle rc, bool fromClient)
+    [DefaultValue(true)]
+    public bool EnableStick
+    {
+        get;
+        set;
+    }
+
+    public virtual Rectangle ViewRectangle
+    {
+        get
         {
-            rc.Location = Translate(rc.Location, fromClient);
-            return rc;
+            Rectangle displayRectangle = DisplayRectangle;
+            displayRectangle.Offset(ScrollPosition);
+            return displayRectangle;
         }
+    }
 
-        protected virtual void OnAutoScrolling(AutoScrollEventArgs e)
+    public event EventHandler<AutoScrollEventArgs> AutoScrolling;
+
+    public event MouseEventHandler MouseHWheel;
+
+    public FastScrollControl()
+    {
+        InitializeComponent();
+        SetStyle(ControlStyles.OptimizedDoubleBuffer, value: true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint, value: true);
+        SetStyle(ControlStyles.UserPaint, value: true);
+    }
+
+    protected override void OnScroll(ScrollEventArgs se)
+    {
+        base.OnScroll(se);
+        OnScroll();
+    }
+
+    protected virtual void OnScroll()
+    {
+    }
+
+    public Point Translate(Point pt, bool fromClient)
+    {
+        if (fromClient)
         {
-            if (this.AutoScrolling != null)
-            {
-                this.AutoScrolling(this, e);
-            }
+            pt.Offset(ScrollPosition.X, ScrollPosition.Y);
+            pt.Offset(-ViewRectangle.X, -ViewRectangle.Y);
         }
-
-        protected virtual void OnMouseHWheel(MouseEventArgs e)
+        else
         {
-            if (this.MouseHWheel != null)
-            {
-                this.MouseHWheel(this, e);
-            }
+            pt.Offset(-ScrollPosition.X, -ScrollPosition.Y);
+            pt.Offset(ViewRectangle.X, ViewRectangle.Y);
+        }
+        return pt;
+    }
+
+    public Rectangle Translate(Rectangle rc, bool fromClient)
+    {
+        rc.Location = Translate(rc.Location, fromClient);
+        return rc;
+    }
+
+    protected virtual void OnAutoScrolling(AutoScrollEventArgs e)
+    {
+        if (this.AutoScrolling != null)
+        {
+            this.AutoScrolling(this, e);
+        }
+    }
+
+    protected virtual void OnMouseHWheel(MouseEventArgs e)
+    {
+        if (this.MouseHWheel != null)
+        {
+            this.MouseHWheel(this, e);
         }
     }
 }

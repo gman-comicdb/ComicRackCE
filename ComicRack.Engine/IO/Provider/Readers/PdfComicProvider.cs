@@ -6,73 +6,72 @@ using System.Security.Cryptography;
 using cYo.Common.Text;
 using cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Pdf;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers;
+
+[FileFormat("PDF Document (PDF)", KnownFileFormats.PDF, ".pdf")]
+public class PdfComicProvider : ComicProvider
 {
-    [FileFormat("PDF Document (PDF)", KnownFileFormats.PDF, ".pdf")]
-    public class PdfComicProvider : ComicProvider
+    private IComicAccessor pdfReader;
+
+    private List<ProviderImageInfo> infos = new List<ProviderImageInfo>();
+
+    public override ImageProviderCapabilities Capabilities => ImageProviderCapabilities.FastFormatCheck;
+
+    public PdfComicProvider()
     {
-        private IComicAccessor pdfReader;
-
-        private List<ProviderImageInfo> infos = new List<ProviderImageInfo>();
-
-        public override ImageProviderCapabilities Capabilities => ImageProviderCapabilities.FastFormatCheck;
-
-        public PdfComicProvider()
+        PdfGhostScript pdfGhostScript = new PdfGhostScript();
+        if (pdfGhostScript.IsAvailable())
         {
-            PdfGhostScript pdfGhostScript = new PdfGhostScript();
-            if (pdfGhostScript.IsAvailable())
-            {
-                pdfReader = pdfGhostScript;
-            }
+            pdfReader = pdfGhostScript;
+        }
+        else
+        {
+            if (EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Native)
+                pdfReader = new PdfNative();
             else
-            {
-                if (EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Native)
-                    pdfReader = new PdfNative();
-                else
-                    pdfReader = new PdfiumReaderEngine();
-            }
+                pdfReader = new PdfiumReaderEngine();
         }
+    }
 
-        protected override bool OnFastFormatCheck(string source)
+    protected override bool OnFastFormatCheck(string source)
+    {
+        try
         {
-            try
+            using (FileStream fileStream = File.OpenRead(source))
             {
-                using (FileStream fileStream = File.OpenRead(source))
-                {
-                    byte[] array = new byte[4];
-                    fileStream.Read(array, 0, array.Length);
-                    return array[0] == 37 && array[1] == 80 && array[2] == 68 && array[3] == 70;
-                }
-            }
-            catch
-            {
-                return true;
+                byte[] array = new byte[4];
+                fileStream.Read(array, 0, array.Length);
+                return array[0] == 37 && array[1] == 80 && array[2] == 68 && array[3] == 70;
             }
         }
+        catch
+        {
+            return true;
+        }
+    }
 
-        public override string CreateHash()
+    public override string CreateHash()
+    {
+        using (FileStream inputStream = File.OpenRead(base.Source))
         {
-            using (FileStream inputStream = File.OpenRead(base.Source))
+            return Base32.ToBase32String(new SHA1Managed().ComputeHash(inputStream));
+        }
+    }
+
+    protected override void OnParse()
+    {
+        foreach (ProviderImageInfo entry in pdfReader.GetEntryList(base.Source))
+        {
+            infos.Add(entry);
+            if (!FireIndexReady(entry))
             {
-                return Base32.ToBase32String(new SHA1Managed().ComputeHash(inputStream));
+                break;
             }
         }
+    }
 
-        protected override void OnParse()
-        {
-            foreach (ProviderImageInfo entry in pdfReader.GetEntryList(base.Source))
-            {
-                infos.Add(entry);
-                if (!FireIndexReady(entry))
-                {
-                    break;
-                }
-            }
-        }
-
-        protected override byte[] OnRetrieveSourceByteImage(int index)
-        {
-            return pdfReader.ReadByteImage(base.Source, infos[index]);
-        }
+    protected override byte[] OnRetrieveSourceByteImage(int index)
+    {
+        return pdfReader.ReadByteImage(base.Source, infos[index]);
     }
 }

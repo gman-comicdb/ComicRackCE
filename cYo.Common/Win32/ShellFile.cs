@@ -6,37 +6,36 @@ using System.Windows.Forms;
 
 using cYo.Common.Win32.FileOperations;
 
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public static class ShellFile
 {
-    public static class ShellFile
+    public static FileOperationsAPI DeleteAPI { get; set; } = FileOperationsAPI.IFileOperation;
+
+    public static void DeleteFile(IWin32Window window, ShellFileDeleteOptions options, params string[] files)
     {
-        public static FileOperationsAPI DeleteAPI { get; set; } = FileOperationsAPI.IFileOperation;
+        if (files == null || files.Length == 0)
+            return;
 
-        public static void DeleteFile(IWin32Window window, ShellFileDeleteOptions options, params string[] files)
+        foreach (string file in files)
         {
-            if (files == null || files.Length == 0)
-                return;
+            if (string.IsNullOrEmpty(file) || !File.Exists(file))
+                continue;
 
-            foreach (string file in files)
+            using (FileOperation fileOperation = FileOperation.GetFileOperationAPI(window, DeleteAPI, options))
             {
-                if (string.IsNullOrEmpty(file) || !File.Exists(file))
-                    continue;
-
-                using (FileOperation fileOperation = FileOperation.GetFileOperationAPI(window, DeleteAPI, options))
-                {
-                    fileOperation.DeleteFile(file);
-                }
+                fileOperation.DeleteFile(file);
             }
         }
+    }
 
-        public static void DeleteFile(ShellFileDeleteOptions options, params string[] files)
-        {
-            DeleteFile(null, options, files);
-        }
+    public static void DeleteFile(ShellFileDeleteOptions options, params string[] files)
+    {
+        DeleteFile(null, options, files);
+    }
 
-        public static void DeleteFile(params string[] files)
-        {
-            DeleteFile(ShellFileDeleteOptions.None, files);
-        }
+    public static void DeleteFile(params string[] files)
+    {
+        DeleteFile(ShellFileDeleteOptions.None, files);
     }
 }

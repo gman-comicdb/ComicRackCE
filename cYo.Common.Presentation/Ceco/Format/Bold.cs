@@ -1,28 +1,27 @@
 using System.Drawing;
 
-namespace cYo.Common.Presentation.Ceco.Format
+namespace cYo.Common.Presentation.Ceco.Format;
+
+public class Bold : Span
 {
-    public class Bold : Span
+    public override FontStyle FontStyle
     {
-        public override FontStyle FontStyle
+        get
         {
-            get
-            {
-                return base.FontStyle | FontStyle.Bold;
-            }
-            set
-            {
-                base.FontStyle = value;
-            }
+            return base.FontStyle | FontStyle.Bold;
         }
+        set
+        {
+            base.FontStyle = value;
+        }
+    }
 
-        public Bold()
-        {
-        }
+    public Bold()
+    {
+    }
 
-        public Bold(params Inline[] inlines)
-            : base(inlines)
-        {
-        }
+    public Bold(params Inline[] inlines)
+        : base(inlines)
+    {
     }
 }

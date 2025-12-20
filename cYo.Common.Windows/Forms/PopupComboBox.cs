@@ -5,185 +5,184 @@ using System.Security;
 using System.Security.Permissions;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+[ToolboxBitmap(typeof(ComboBox))]
+[ToolboxItem(true)]
+[ToolboxItemFilter("System.Windows.Forms")]
+[Description("Displays an editable text box with a drop-down list of permitted values.")]
+public class PopupComboBox : PopupComboBoxBase
 {
-    [ToolboxBitmap(typeof(ComboBox))]
-    [ToolboxItem(true)]
-    [ToolboxItemFilter("System.Windows.Forms")]
-    [Description("Displays an editable text box with a drop-down list of permitted values.")]
-    public class PopupComboBox : PopupComboBoxBase
+    [SuppressUnmanagedCodeSecurity]
+    private static class NativeMethods
     {
-        [SuppressUnmanagedCodeSecurity]
-        private static class NativeMethods
+        public const int WM_USER = 1024;
+
+        public const int WM_COMMAND = 273;
+
+        public const int WM_REFLECT = 8192;
+
+        public const int CBN_DROPDOWN = 7;
+
+        public static int HIWORD(int n)
         {
-            public const int WM_USER = 1024;
-
-            public const int WM_COMMAND = 273;
-
-            public const int WM_REFLECT = 8192;
-
-            public const int CBN_DROPDOWN = 7;
-
-            public static int HIWORD(int n)
-            {
-                return (n >> 16) & 0xFFFF;
-            }
-
-            public static int HIWORD(IntPtr n)
-            {
-                return HIWORD(n.ToInt32());
-            }
+            return (n >> 16) & 0xFFFF;
         }
 
-        private Popup dropDown;
-
-        private Control dropDownControl;
-
-        private DateTime dropDownHideTime;
-
-        public Control DropDownControl
+        public static int HIWORD(IntPtr n)
         {
-            get
+            return HIWORD(n.ToInt32());
+        }
+    }
+
+    private Popup dropDown;
+
+    private Control dropDownControl;
+
+    private DateTime dropDownHideTime;
+
+    public Control DropDownControl
+    {
+        get
+        {
+            return dropDownControl;
+        }
+        set
+        {
+            if (dropDownControl != value)
             {
-                return dropDownControl;
-            }
-            set
-            {
-                if (dropDownControl != value)
+                dropDownControl = value;
+                if (dropDown != null)
                 {
-                    dropDownControl = value;
-                    if (dropDown != null)
-                    {
-                        dropDown.Closed -= dropDown_Closed;
-                        dropDown.Dispose();
-                    }
-                    dropDown = new Popup(value);
-                    dropDown.Closed += dropDown_Closed;
+                    dropDown.Closed -= dropDown_Closed;
+                    dropDown.Dispose();
                 }
+                dropDown = new Popup(value);
+                dropDown.Closed += dropDown_Closed;
             }
         }
+    }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new int DropDownWidth
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new int DropDownWidth
+    {
+        get
         {
-            get
-            {
-                return base.DropDownWidth;
-            }
-            set
-            {
-                base.DropDownWidth = value;
-            }
+            return base.DropDownWidth;
         }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new int DropDownHeight
+        set
         {
-            get
-            {
-                return base.DropDownHeight;
-            }
-            set
-            {
-                base.DropDownHeight = value;
-            }
+            base.DropDownWidth = value;
         }
+    }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new bool IntegralHeight
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new int DropDownHeight
+    {
+        get
         {
-            get
-            {
-                return base.IntegralHeight;
-            }
-            set
-            {
-                base.IntegralHeight = value;
-            }
+            return base.DropDownHeight;
         }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new ObjectCollection Items => base.Items;
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new int ItemHeight
+        set
         {
-            get
-            {
-                return base.ItemHeight;
-            }
-            set
-            {
-                base.ItemHeight = value;
-            }
+            base.DropDownHeight = value;
         }
+    }
 
-        public PopupComboBox()
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new bool IntegralHeight
+    {
+        get
         {
-            dropDownHideTime = DateTime.Now;
-            base.DropDownHeight = (base.DropDownWidth = 1);
-            base.IntegralHeight = false;
+            return base.IntegralHeight;
         }
+        set
+        {
+            base.IntegralHeight = value;
+        }
+    }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && dropDown != null)
-            {
-                dropDown.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new ObjectCollection Items => base.Items;
 
-        public void ShowDropDown()
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new int ItemHeight
+    {
+        get
         {
-            if (dropDown != null)
-            {
-                if ((DateTime.Now - dropDownHideTime).TotalSeconds > 0.5)
-                {
-                    dropDown.Show(this);
-                    return;
-                }
-                dropDownHideTime = DateTime.Now.Subtract(new TimeSpan(0, 0, 1));
-                Focus();
-            }
+            return base.ItemHeight;
         }
+        set
+        {
+            base.ItemHeight = value;
+        }
+    }
 
-        public void HideDropDown()
-        {
-            if (dropDown != null)
-            {
-                dropDown.Hide();
-            }
-        }
+    public PopupComboBox()
+    {
+        dropDownHideTime = DateTime.Now;
+        base.DropDownHeight = (base.DropDownWidth = 1);
+        base.IntegralHeight = false;
+    }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        protected override void WndProc(ref Message m)
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && dropDown != null)
         {
-            // 0x2111 = WM_REFLECT + WM_COMMAND
-            // This is a reflected control notification sent to the control itself
-            if (m.Msg == NativeMethods.WM_REFLECT + NativeMethods.WM_COMMAND && NativeMethods.HIWORD(m.WParam) == NativeMethods.CBN_DROPDOWN)
-            {
-                ShowDropDown();
-            }
-            else
-            {
-                base.WndProc(ref m);
-            }
+            dropDown.Dispose();
         }
+        base.Dispose(disposing);
+    }
 
-        private void dropDown_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+    public void ShowDropDown()
+    {
+        if (dropDown != null)
         {
-            dropDownHideTime = DateTime.Now;
+            if ((DateTime.Now - dropDownHideTime).TotalSeconds > 0.5)
+            {
+                dropDown.Show(this);
+                return;
+            }
+            dropDownHideTime = DateTime.Now.Subtract(new TimeSpan(0, 0, 1));
+            Focus();
         }
+    }
+
+    public void HideDropDown()
+    {
+        if (dropDown != null)
+        {
+            dropDown.Hide();
+        }
+    }
+
+    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    protected override void WndProc(ref Message m)
+    {
+        // 0x2111 = WM_REFLECT + WM_COMMAND
+        // This is a reflected control notification sent to the control itself
+        if (m.Msg == NativeMethods.WM_REFLECT + NativeMethods.WM_COMMAND && NativeMethods.HIWORD(m.WParam) == NativeMethods.CBN_DROPDOWN)
+        {
+            ShowDropDown();
+        }
+        else
+        {
+            base.WndProc(ref m);
+        }
+    }
+
+    private void dropDown_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+    {
+        dropDownHideTime = DateTime.Now;
     }
 }

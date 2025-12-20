@@ -9,109 +9,108 @@ using System.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Controls;
 
-namespace cYo.Projects.ComicRack.Plugins.Controls
+namespace cYo.Projects.ComicRack.Plugins.Controls;
+
+public partial class HtmlComicPageControl : ComicPageControl
 {
-    public partial class HtmlComicPageControl : ComicPageControl
+    [ComVisible(true)]
+    public class ScriptProvider
     {
-        [ComVisible(true)]
-        public class ScriptProvider
-        {
-            public object ComicRack
-            {
-                get;
-                set;
-            }
-
-            public string Config
-            {
-                get;
-                set;
-            }
-        }
-
-        private string lastResult;
-
-        private string originalConfig;
-
-        public Func<ComicBook[], string> InfoFunction
+        public object ComicRack
         {
             get;
             set;
         }
 
-        public Action<string> SaveConfigFunction
+        public string Config
         {
             get;
             set;
         }
+    }
 
-        public ScriptProvider Script
+    private string lastResult;
+
+    private string originalConfig;
+
+    public Func<ComicBook[], string> InfoFunction
+    {
+        get;
+        set;
+    }
+
+    public Action<string> SaveConfigFunction
+    {
+        get;
+        set;
+    }
+
+    public ScriptProvider Script
+    {
+        get;
+        private set;
+    }
+
+    public object ScriptEngine
+    {
+        get
         {
-            get;
-            private set;
+            return Script.ComicRack;
         }
-
-        public object ScriptEngine
+        set
         {
-            get
-            {
-                return Script.ComicRack;
-            }
-            set
-            {
-                Script.ComicRack = value;
-            }
+            Script.ComicRack = value;
         }
+    }
 
-        public string ScriptConfig
+    public string ScriptConfig
+    {
+        get
         {
-            get
-            {
-                return Script.Config;
-            }
-            set
-            {
-                string text2 = (originalConfig = (Script.Config = value));
-            }
+            return Script.Config;
         }
-
-        public HtmlComicPageControl()
+        set
         {
-            Script = new ScriptProvider();
-            InitializeComponent();
+            string text2 = (originalConfig = (Script.Config = value));
         }
+    }
 
-        protected override void OnShowInfo(IEnumerable<ComicBook> books)
+    public HtmlComicPageControl()
+    {
+        Script = new ScriptProvider();
+        InitializeComponent();
+    }
+
+    protected override void OnShowInfo(IEnumerable<ComicBook> books)
+    {
+        base.OnShowInfo(books);
+        if (InfoFunction == null)
         {
-            base.OnShowInfo(books);
-            if (InfoFunction == null)
+            return;
+        }
+        try
+        {
+            string text = InfoFunction(books.ToArray());
+            if (!(text == lastResult))
             {
-                return;
-            }
-            try
-            {
-                string text = InfoFunction(books.ToArray());
-                if (!(text == lastResult))
+                webBrowser.ObjectForScripting = Script;
+                webBrowser.ScriptErrorsSuppressed = !EngineConfiguration.Default.EnableHtmlScriptErrors;
+                webBrowser.IsWebBrowserContextMenuEnabled = EngineConfiguration.Default.HtmlInfoContextMenu;
+                if (text.StartsWith("!"))
                 {
-                    webBrowser.ObjectForScripting = Script;
-                    webBrowser.ScriptErrorsSuppressed = !EngineConfiguration.Default.EnableHtmlScriptErrors;
-                    webBrowser.IsWebBrowserContextMenuEnabled = EngineConfiguration.Default.HtmlInfoContextMenu;
-                    if (text.StartsWith("!"))
-                    {
-                        webBrowser.Url = new Uri(text.Substring(1));
-                    }
-                    else
-                    {
-                        webBrowser.DocumentText = text;
-                    }
-                    lastResult = text;
+                    webBrowser.Url = new Uri(text.Substring(1));
                 }
+                else
+                {
+                    webBrowser.DocumentText = text;
+                }
+                lastResult = text;
             }
-            catch (Exception)
-            {
-                webBrowser.DocumentText = string.Empty;
-                lastResult = null;
-            }
+        }
+        catch (Exception)
+        {
+            webBrowser.DocumentText = string.Empty;
+            lastResult = null;
         }
     }
 }

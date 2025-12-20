@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
-{
-    public interface IComicBookList
-    {
-        string Name
-        {
-            get;
-        }
+namespace cYo.Projects.ComicRack.Engine;
 
-        IEnumerable<ComicBook> GetBooks();
+public interface IComicBookList
+{
+    string Name
+    {
+        get;
     }
+
+    IEnumerable<ComicBook> GetBooks();
 }

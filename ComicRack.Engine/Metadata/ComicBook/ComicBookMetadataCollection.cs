@@ -8,29 +8,28 @@ using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Windows.Forms;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookMetadataCollection : SmartList<ComicBookMetadata>
 {
-    public class ComicBookMetadataCollection : SmartList<ComicBookMetadata>
+    public ComicBookMetadata FindById(int id)
     {
-        public ComicBookMetadata FindById(int id)
-        {
-            return Find(h => h.Id == id);
-        }
+        return Find(h => h.Id == id);
+    }
 
-        public ComicBookMetadata FindBySorter(IComparer<ComicBook> comp)
-        {
-            if (comp != null)
-                return Find(h => h.GetComparer<ComicBook>() == comp);
+    public ComicBookMetadata FindBySorter(IComparer<ComicBook> comp)
+    {
+        if (comp != null)
+            return Find(h => h.GetComparer<ComicBook>() == comp);
 
-            return default;
-        }
+        return default;
+    }
 
-        public ComicBookMetadata FindByGrouper(IGrouper<ComicBook> comp)
-        {
-            if (comp != null)
-                return Find(h => h.GetGrouper<ComicBook>() == comp);
+    public ComicBookMetadata FindByGrouper(IGrouper<ComicBook> comp)
+    {
+        if (comp != null)
+            return Find(h => h.GetGrouper<ComicBook>() == comp);
 
-            return default;
-        }
+        return default;
     }
 }

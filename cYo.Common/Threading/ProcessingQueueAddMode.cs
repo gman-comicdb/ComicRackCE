@@ -1,8 +1,7 @@
-namespace cYo.Common.Threading
+namespace cYo.Common.Threading;
+
+public enum ProcessingQueueAddMode
 {
-    public enum ProcessingQueueAddMode
-    {
-        AddToBottom,
-        AddToTop
-    }
+    AddToBottom,
+    AddToTop
 }

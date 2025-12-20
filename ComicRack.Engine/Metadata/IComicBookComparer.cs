@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+/// <summary>
+/// Used to expose a comparer for ComicBook objects.
+/// </summary>
+public interface IComicBookComparer
 {
-    /// <summary>
-    /// Used to expose a comparer for ComicBook objects.
-    /// </summary>
-    public interface IComicBookComparer
-    {
-        public IComparer<ComicBook> Comparer { get; }
-    }
+    public IComparer<ComicBook> Comparer { get; }
 }

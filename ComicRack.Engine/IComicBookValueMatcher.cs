@@ -2,61 +2,60 @@ using System;
 
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IComicBookValueMatcher : IComicBookMatcher, IMatcher<ComicBook>, ICloneable
 {
-    public interface IComicBookValueMatcher : IComicBookMatcher, IMatcher<ComicBook>, ICloneable
+    string Description
     {
-        string Description
-        {
-            get;
-        }
+        get;
+    }
 
-        string DescriptionNeutral
-        {
-            get;
-        }
+    string DescriptionNeutral
+    {
+        get;
+    }
 
-        string MatchValue
-        {
-            get;
-            set;
-        }
+    string MatchValue
+    {
+        get;
+        set;
+    }
 
-        string MatchValue2
-        {
-            get;
-            set;
-        }
+    string MatchValue2
+    {
+        get;
+        set;
+    }
 
-        int MatchOperator
-        {
-            get;
-            set;
-        }
+    int MatchOperator
+    {
+        get;
+        set;
+    }
 
-        string[] OperatorsListNeutral
-        {
-            get;
-        }
+    string[] OperatorsListNeutral
+    {
+        get;
+    }
 
-        string[] OperatorsList
-        {
-            get;
-        }
+    string[] OperatorsList
+    {
+        get;
+    }
 
-        int ArgumentCount
-        {
-            get;
-        }
+    int ArgumentCount
+    {
+        get;
+    }
 
-        string UnitDescription
-        {
-            get;
-        }
+    string UnitDescription
+    {
+        get;
+    }
 
-        bool SwapOperatorArgument
-        {
-            get;
-        }
+    bool SwapOperatorArgument
+    {
+        get;
     }
 }

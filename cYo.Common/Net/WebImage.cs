@@ -7,218 +7,217 @@ using System.Threading;
 
 using cYo.Common.Drawing;
 
-namespace cYo.Common.Net
+namespace cYo.Common.Net;
+
+public class WebImage : Component
 {
-    public class WebImage : Component
+    public static string DefaultCacheLocation;
+
+    private bool isLoading;
+
+    private string name = "Image";
+
+    private Uri uri;
+
+    private string cacheLocation;
+
+    private TimeSpan checkIntervall = new TimeSpan(7, 0, 0, 0);
+
+    private volatile Bitmap image;
+
+    [DefaultValue("Image")]
+    public string Name
     {
-        public static string DefaultCacheLocation;
-
-        private bool isLoading;
-
-        private string name = "Image";
-
-        private Uri uri;
-
-        private string cacheLocation;
-
-        private TimeSpan checkIntervall = new TimeSpan(7, 0, 0, 0);
-
-        private volatile Bitmap image;
-
-        [DefaultValue("Image")]
-        public string Name
+        get
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
+            return name;
         }
-
-        [DefaultValue(null)]
-        public Uri Uri
+        set
         {
-            get
-            {
-                return uri;
-            }
-            set
-            {
-                uri = value;
-            }
+            name = value;
         }
+    }
 
-        [DefaultValue(null)]
-        public string CacheLocation
+    [DefaultValue(null)]
+    public Uri Uri
+    {
+        get
         {
-            get
-            {
-                return cacheLocation;
-            }
-            set
-            {
-                cacheLocation = value;
-            }
+            return uri;
         }
-
-        [DefaultValue(null)]
-        public Image DefaultImage
+        set
         {
-            get;
-            set;
+            uri = value;
         }
+    }
 
-        public TimeSpan CheckIntervall
+    [DefaultValue(null)]
+    public string CacheLocation
+    {
+        get
         {
-            get
-            {
-                return checkIntervall;
-            }
-            set
-            {
-                checkIntervall = value;
-            }
-        }
-
-        public Bitmap Image
-        {
-            get
-            {
-                return image;
-            }
-            protected set
-            {
-                image = value;
-            }
-        }
-
-        public event EventHandler ImageLoaded;
-
-        public WebImage()
-        {
-        }
-
-        public WebImage(IContainer container)
-        {
-            container.Add(this);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && Image != null)
-            {
-                Image.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        public void LoadImage(string uri)
-        {
-            Uri = new Uri(uri);
-            LoadImage();
-        }
-
-        public void LoadImage()
-        {
-            if (!CacheValid())
-            {
-                if (!isLoading)
-                {
-                    isLoading = true;
-                    ThreadPool.QueueUserWorkItem(LoadWebImage);
-                }
-            }
-            else
-            {
-                Image = GetCachedImage();
-                OnImageLoaded();
-            }
-        }
-
-        protected virtual void OnImageLoaded()
-        {
-            if (this.ImageLoaded != null)
-            {
-                this.ImageLoaded(this, EventArgs.Empty);
-            }
-        }
-
-        private void LoadWebImage(object state)
-        {
-            try
-            {
-                HttpAccess httpAccess = new HttpAccess
-                {
-                    AskProxyCredentials = false
-                };
-                using (Bitmap bitmap = (Bitmap)System.Drawing.Image.FromStream(httpAccess.GetStream(Uri)))
-                {
-                    Bitmap bitmap2 = bitmap.CreateCopy(PixelFormat.Format32bppArgb);
-                    CacheImage(bitmap2);
-                    Image = bitmap2;
-                }
-                OnImageLoaded();
-            }
-            catch
-            {
-            }
-            finally
-            {
-                isLoading = false;
-            }
-        }
-
-        private string GetCacheLocation()
-        {
-            if (string.IsNullOrEmpty(cacheLocation))
-            {
-                return DefaultCacheLocation;
-            }
             return cacheLocation;
         }
-
-        private string GetCacheFilename()
+        set
         {
-            return Path.Combine(GetCacheLocation(), Name);
+            cacheLocation = value;
         }
+    }
 
-        private Bitmap GetCachedImage()
+    [DefaultValue(null)]
+    public Image DefaultImage
+    {
+        get;
+        set;
+    }
+
+    public TimeSpan CheckIntervall
+    {
+        get
         {
-            try
+            return checkIntervall;
+        }
+        set
+        {
+            checkIntervall = value;
+        }
+    }
+
+    public Bitmap Image
+    {
+        get
+        {
+            return image;
+        }
+        protected set
+        {
+            image = value;
+        }
+    }
+
+    public event EventHandler ImageLoaded;
+
+    public WebImage()
+    {
+    }
+
+    public WebImage(IContainer container)
+    {
+        container.Add(this);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && Image != null)
+        {
+            Image.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    public void LoadImage(string uri)
+    {
+        Uri = new Uri(uri);
+        LoadImage();
+    }
+
+    public void LoadImage()
+    {
+        if (!CacheValid())
+        {
+            if (!isLoading)
             {
-                return (Bitmap)System.Drawing.Image.FromFile(GetCacheFilename());
-            }
-            catch
-            {
-                return null;
+                isLoading = true;
+                ThreadPool.QueueUserWorkItem(LoadWebImage);
             }
         }
-
-        private bool CacheValid()
+        else
         {
-            try
-            {
-                FileInfo fileInfo = new FileInfo(GetCacheFilename());
-                return DateTime.Now - fileInfo.LastWriteTime < checkIntervall;
-            }
-            catch
-            {
-                return false;
-            }
+            Image = GetCachedImage();
+            OnImageLoaded();
         }
+    }
 
-        private void CacheImage(Image image)
+    protected virtual void OnImageLoaded()
+    {
+        if (this.ImageLoaded != null)
         {
-            try
+            this.ImageLoaded(this, EventArgs.Empty);
+        }
+    }
+
+    private void LoadWebImage(object state)
+    {
+        try
+        {
+            HttpAccess httpAccess = new HttpAccess
             {
-                image.Save(GetCacheFilename(), ImageFormat.Png);
-            }
-            catch
+                AskProxyCredentials = false
+            };
+            using (Bitmap bitmap = (Bitmap)System.Drawing.Image.FromStream(httpAccess.GetStream(Uri)))
             {
+                Bitmap bitmap2 = bitmap.CreateCopy(PixelFormat.Format32bppArgb);
+                CacheImage(bitmap2);
+                Image = bitmap2;
             }
+            OnImageLoaded();
+        }
+        catch
+        {
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string GetCacheLocation()
+    {
+        if (string.IsNullOrEmpty(cacheLocation))
+        {
+            return DefaultCacheLocation;
+        }
+        return cacheLocation;
+    }
+
+    private string GetCacheFilename()
+    {
+        return Path.Combine(GetCacheLocation(), Name);
+    }
+
+    private Bitmap GetCachedImage()
+    {
+        try
+        {
+            return (Bitmap)System.Drawing.Image.FromFile(GetCacheFilename());
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private bool CacheValid()
+    {
+        try
+        {
+            FileInfo fileInfo = new FileInfo(GetCacheFilename());
+            return DateTime.Now - fileInfo.LastWriteTime < checkIntervall;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private void CacheImage(Image image)
+    {
+        try
+        {
+            image.Save(GetCacheFilename(), ImageFormat.Png);
+        }
+        catch
+        {
         }
     }
 }

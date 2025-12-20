@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Viewer.Controls
+namespace cYo.Projects.ComicRack.Viewer.Controls;
+
+public enum MarkerType
 {
-    public enum MarkerType
-    {
-        None,
-        IsOpen,
-        IsLast
-    }
+    None,
+    IsOpen,
+    IsLast
 }

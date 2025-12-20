@@ -1,17 +1,16 @@
-namespace cYo.Common.Net.Search
-{
-    public class SearchResult
-    {
-        public string Name
-        {
-            get;
-            set;
-        }
+namespace cYo.Common.Net.Search;
 
-        public string Result
-        {
-            get;
-            set;
-        }
+public class SearchResult
+{
+    public string Name
+    {
+        get;
+        set;
+    }
+
+    public string Result
+    {
+        get;
+        set;
     }
 }

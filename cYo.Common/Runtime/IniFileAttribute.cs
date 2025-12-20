@@ -1,33 +1,32 @@
 using System;
 
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class IniFileAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class IniFileAttribute : Attribute
+    private bool enabled = true;
+
+    public string Name
     {
-        private bool enabled = true;
+        get;
+        set;
+    }
 
-        public string Name
+    public bool Enabled
+    {
+        get
         {
-            get;
-            set;
+            return enabled;
         }
+        set
+        {
+            enabled = value;
+        }
+    }
 
-        public bool Enabled
-        {
-            get
-            {
-                return enabled;
-            }
-            set
-            {
-                enabled = value;
-            }
-        }
-
-        public IniFileAttribute(bool enabled)
-        {
-            this.enabled = enabled;
-        }
+    public IniFileAttribute(bool enabled)
+    {
+        this.enabled = enabled;
     }
 }

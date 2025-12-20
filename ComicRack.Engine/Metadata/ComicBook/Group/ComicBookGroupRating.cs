@@ -1,12 +1,11 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupRating : ComicBookGroupRatingBase
 {
-    public class ComicBookGroupRating : ComicBookGroupRatingBase
+    protected override int GetRating(ComicBook item)
     {
-        protected override int GetRating(ComicBook item)
-        {
-            return (int)Math.Round(item.Rating);
-        }
+        return (int)Math.Round(item.Rating);
     }
 }

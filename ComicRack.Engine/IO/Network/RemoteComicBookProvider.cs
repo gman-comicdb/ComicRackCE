@@ -3,73 +3,72 @@ using System;
 using cYo.Common.Threading;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public class RemoteComicBookProvider : ImageProvider
 {
-    public class RemoteComicBookProvider : ImageProvider
+    private readonly Guid comicId;
+
+    private readonly ComicLibraryClient client;
+
+    private readonly object retrieveLock = new object();
+
+    public override ImageProviderCapabilities Capabilities => base.Capabilities;
+
+    public override int FormatId => -1;
+
+    public RemoteComicBookProvider(Guid comicId, ComicLibraryClient client)
     {
-        private readonly Guid comicId;
+        this.comicId = comicId;
+        this.client = client;
+    }
 
-        private readonly ComicLibraryClient client;
-
-        private readonly object retrieveLock = new object();
-
-        public override ImageProviderCapabilities Capabilities => base.Capabilities;
-
-        public override int FormatId => -1;
-
-        public RemoteComicBookProvider(Guid comicId, ComicLibraryClient client)
+    protected override void OnParse()
+    {
+        int imageCount = client.RemoteLibrary.GetImageCount(comicId);
+        for (int i = 0; i < imageCount; i++)
         {
-            this.comicId = comicId;
-            this.client = client;
+            FireIndexReady(new ProviderImageInfo());
         }
+    }
 
-        protected override void OnParse()
+    protected override byte[] OnRetrieveSourceByteImage(int index)
+    {
+        try
         {
-            int imageCount = client.RemoteLibrary.GetImageCount(comicId);
-            for (int i = 0; i < imageCount; i++)
+            using (ItemMonitor.Lock(retrieveLock))
             {
-                FireIndexReady(new ProviderImageInfo());
+                return client.RemoteLibrary.GetImage(comicId, index);
             }
         }
-
-        protected override byte[] OnRetrieveSourceByteImage(int index)
+        catch
         {
-            try
-            {
-                using (ItemMonitor.Lock(retrieveLock))
-                {
-                    return client.RemoteLibrary.GetImage(comicId, index);
-                }
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
-        protected override void OnCheckSource()
+    protected override void OnCheckSource()
+    {
+        if (client == null || client.RemoteLibrary == null)
         {
-            if (client == null || client.RemoteLibrary == null)
-            {
-                throw new InvalidOperationException("No valid remote library");
-            }
+            throw new InvalidOperationException("No valid remote library");
         }
+    }
 
-        public override string CreateHash()
+    public override string CreateHash()
+    {
+        return string.Empty;
+    }
+
+    protected override ThumbnailImage OnRetrieveThumbnailImage(int index)
+    {
+        try
         {
-            return string.Empty;
+            return ThumbnailImage.CreateFrom(client.RemoteLibrary.GetThumbnailImage(comicId, index));
         }
-
-        protected override ThumbnailImage OnRetrieveThumbnailImage(int index)
+        catch
         {
-            try
-            {
-                return ThumbnailImage.CreateFrom(client.RemoteLibrary.GetThumbnailImage(comicId, index));
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

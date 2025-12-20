@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public interface IProviderInfo
 {
-    public interface IProviderInfo
-    {
-        Type ProviderType { get; }
-    }
+    Type ProviderType { get; }
 }

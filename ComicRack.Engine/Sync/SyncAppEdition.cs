@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.Sync
+namespace cYo.Projects.ComicRack.Engine.Sync;
+
+public enum SyncAppEdition
 {
-    public enum SyncAppEdition
-    {
-        Unknown,
-        AndroidFree,
-        AndroidFull,
-        iOS
-    }
+    Unknown,
+    AndroidFree,
+    AndroidFull,
+    iOS
 }

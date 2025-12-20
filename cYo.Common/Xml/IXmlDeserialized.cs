@@ -1,7 +1,6 @@
-namespace cYo.Common.Xml
+namespace cYo.Common.Xml;
+
+public interface IXmlDeserialized
 {
-    public interface IXmlDeserialized
-    {
-        void SerializationCompleted();
-    }
+    void SerializationCompleted();
 }

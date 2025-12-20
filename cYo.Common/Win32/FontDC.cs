@@ -4,90 +4,89 @@ using System.Runtime.InteropServices;
 
 using cYo.Common.ComponentModel;
 
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public class FontDC : DisposableObject, IDeviceContext, IDisposable
 {
-    public class FontDC : DisposableObject, IDeviceContext, IDisposable
+    private static class UnsafeNativeMethods
     {
-        private static class UnsafeNativeMethods
-        {
-            [DllImport("Gdi32", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
-            public static extern IntPtr SelectObject(HandleRef hdc, HandleRef obj);
+        [DllImport("Gdi32", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
+        public static extern IntPtr SelectObject(HandleRef hdc, HandleRef obj);
 
-            [DllImport("Gdi32", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
-            public static extern bool DeleteObject(HandleRef hObject);
+        [DllImport("Gdi32", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
+        public static extern bool DeleteObject(HandleRef hObject);
+    }
+
+    private readonly Graphics graphics;
+
+    private IntPtr hdc = IntPtr.Zero;
+
+    private IntPtr hfont = IntPtr.Zero;
+
+    private Font font;
+
+    public Font Font
+    {
+        get
+        {
+            return font;
         }
-
-        private readonly Graphics graphics;
-
-        private IntPtr hdc = IntPtr.Zero;
-
-        private IntPtr hfont = IntPtr.Zero;
-
-        private Font font;
-
-        public Font Font
+        set
         {
-            get
+            if (font == value)
             {
-                return font;
+                return;
             }
-            set
+            font = value;
+            if (font != null)
             {
-                if (font == value)
+                hfont = font.ToHfont();
+                IntPtr intPtr = UnsafeNativeMethods.SelectObject(new HandleRef(this, GetHdc()), new HandleRef(this, hfont));
+                if (intPtr != IntPtr.Zero)
                 {
-                    return;
-                }
-                font = value;
-                if (font != null)
-                {
-                    hfont = font.ToHfont();
-                    IntPtr intPtr = UnsafeNativeMethods.SelectObject(new HandleRef(this, GetHdc()), new HandleRef(this, hfont));
-                    if (intPtr != IntPtr.Zero)
-                    {
-                        UnsafeNativeMethods.DeleteObject(new HandleRef(this, intPtr));
-                    }
-                }
-                else if (hfont != IntPtr.Zero)
-                {
-                    UnsafeNativeMethods.DeleteObject(new HandleRef(this, hfont));
+                    UnsafeNativeMethods.DeleteObject(new HandleRef(this, intPtr));
                 }
             }
-        }
-
-        public FontDC(Graphics g, Font font)
-        {
-            graphics = g;
-            Font = font;
-        }
-
-        public FontDC(Graphics g)
-            : this(g, null)
-        {
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            ReleaseHdc();
-            base.Dispose(disposing);
-        }
-
-        public IntPtr GetHdc()
-        {
-            if (hdc == IntPtr.Zero)
+            else if (hfont != IntPtr.Zero)
             {
-                hdc = graphics.GetHdc();
+                UnsafeNativeMethods.DeleteObject(new HandleRef(this, hfont));
             }
-            return hdc;
         }
+    }
 
-        public void ReleaseHdc()
+    public FontDC(Graphics g, Font font)
+    {
+        graphics = g;
+        Font = font;
+    }
+
+    public FontDC(Graphics g)
+        : this(g, null)
+    {
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        ReleaseHdc();
+        base.Dispose(disposing);
+    }
+
+    public IntPtr GetHdc()
+    {
+        if (hdc == IntPtr.Zero)
         {
-            Font = null;
-            if (hdc != IntPtr.Zero)
-            {
-                graphics.ReleaseHdc();
-                hdc = IntPtr.Zero;
-            }
+            hdc = graphics.GetHdc();
+        }
+        return hdc;
+    }
+
+    public void ReleaseHdc()
+    {
+        Font = null;
+        if (hdc != IntPtr.Zero)
+        {
+            graphics.ReleaseHdc();
+            hdc = IntPtr.Zero;
         }
     }
 }

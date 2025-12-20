@@ -1,10 +1,9 @@
-namespace cYo.Common.Text
+namespace cYo.Common.Text;
+
+public enum ReverseTextIndexMode
 {
-    public enum ReverseTextIndexMode
-    {
-        Words = 0,
-        Letters = 1,
-        Key = 2,
-        Default = 0
-    }
+    Words = 0,
+    Letters = 1,
+    Key = 2,
+    Default = 0
 }

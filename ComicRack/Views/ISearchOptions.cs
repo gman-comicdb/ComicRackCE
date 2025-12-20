@@ -1,13 +1,12 @@
-namespace cYo.Projects.ComicRack.Viewer.Views
-{
-    public interface ISearchOptions
-    {
-        bool SearchBrowserVisible
-        {
-            get;
-            set;
-        }
+namespace cYo.Projects.ComicRack.Viewer.Views;
 
-        void FocusQuickSearch();
+public interface ISearchOptions
+{
+    bool SearchBrowserVisible
+    {
+        get;
+        set;
     }
+
+    void FocusQuickSearch();
 }

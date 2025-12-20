@@ -1,6 +1,5 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public class LeanComicRackServer
 {
-    public class LeanComicRackServer
-    {
-    }
 }

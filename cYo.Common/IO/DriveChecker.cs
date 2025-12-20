@@ -2,35 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace cYo.Common.IO
-{
-    public class DriveChecker
-    {
-        private readonly Dictionary<string, bool> cache = new Dictionary<string, bool>();
+namespace cYo.Common.IO;
 
-        public bool IsConnected(string path)
+public class DriveChecker
+{
+    private readonly Dictionary<string, bool> cache = new Dictionary<string, bool>();
+
+    public bool IsConnected(string path)
+    {
+        try
         {
-            try
+            string text = Path.GetPathRoot(path).ToLower();
+            if (!cache.TryGetValue(text, out var value))
             {
-                string text = Path.GetPathRoot(path).ToLower();
-                if (!cache.TryGetValue(text, out var value))
+                try
                 {
-                    try
-                    {
-                        value = Directory.Exists(text);
-                    }
-                    catch
-                    {
-                        value = false;
-                    }
-                    cache[text] = value;
+                    value = Directory.Exists(text);
                 }
-                return value;
+                catch
+                {
+                    value = false;
+                }
+                cache[text] = value;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return value;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }

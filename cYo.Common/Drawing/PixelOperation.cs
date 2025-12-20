@@ -1,9 +1,8 @@
-namespace cYo.Common.Drawing
+namespace cYo.Common.Drawing;
+
+public enum PixelOperation
 {
-    public enum PixelOperation
-    {
-        Add,
-        Multiply,
-        Replace
-    }
+    Add,
+    Multiply,
+    Replace
 }

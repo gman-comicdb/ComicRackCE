@@ -1,18 +1,17 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum StoragePageType
 {
-    public enum StoragePageType
-    {
-        Original,
-        Jpeg,
-        Png,
-        Gif,
-        Tiff,
-        Bmp,
-        Djvu,
-        Webp,
-        Heif,
-        Avif,
-        //Jpeg2000,
-        //JpegXL,
-    }
+    Original,
+    Jpeg,
+    Png,
+    Gif,
+    Tiff,
+    Bmp,
+    Djvu,
+    Webp,
+    Heif,
+    Avif,
+    //Jpeg2000,
+    //JpegXL,
 }

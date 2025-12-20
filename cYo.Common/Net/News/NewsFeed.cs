@@ -1,29 +1,28 @@
-namespace cYo.Common.Net.News
+namespace cYo.Common.Net.News;
+
+public abstract class NewsFeed
 {
-    public abstract class NewsFeed
+    private string rawFeed;
+
+    private NewsChannelCollection channels = new NewsChannelCollection();
+
+    public string RawFeed => rawFeed;
+
+    public NewsChannelCollection Channels => channels;
+
+    public void ReadFeed(string feed)
     {
-        private string rawFeed;
-
-        private NewsChannelCollection channels = new NewsChannelCollection();
-
-        public string RawFeed => rawFeed;
-
-        public NewsChannelCollection Channels => channels;
-
-        public void ReadFeed(string feed)
+        if (!(rawFeed == feed))
         {
-            if (!(rawFeed == feed))
-            {
-                rawFeed = feed;
-                channels = ParseFeed(feed);
-            }
+            rawFeed = feed;
+            channels = ParseFeed(feed);
         }
+    }
 
-        protected abstract NewsChannelCollection ParseFeed(string xmlFeed);
+    protected abstract NewsChannelCollection ParseFeed(string xmlFeed);
 
-        public static string LoadFeed(string url)
-        {
-            return HttpAccess.ReadText(url);
-        }
+    public static string LoadFeed(string url)
+    {
+        return HttpAccess.ReadText(url);
     }
 }

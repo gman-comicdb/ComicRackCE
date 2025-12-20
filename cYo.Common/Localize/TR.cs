@@ -9,196 +9,195 @@ using cYo.Common.IO;
 using cYo.Common.Reflection;
 using cYo.Common.Xml;
 
-namespace cYo.Common.Localize
+namespace cYo.Common.Localize;
+
+public class TR
 {
-    public class TR
+    private readonly TREntryList texts;
+
+    private CultureInfo culture = CultureInfo.CurrentUICulture;
+
+    private static readonly TRDictionary languageResources = new TRDictionary();
+
+    private static TR defaultTR;
+
+    private static TR messagesTR;
+
+    [XmlAttribute]
+    public string Name
     {
-        private readonly TREntryList texts;
+        get;
+        set;
+    }
 
-        private CultureInfo culture = CultureInfo.CurrentUICulture;
-
-        private static readonly TRDictionary languageResources = new TRDictionary();
-
-        private static TR defaultTR;
-
-        private static TR messagesTR;
-
-        [XmlAttribute]
-        public string Name
+    [XmlAttribute]
+    public string CultureName
+    {
+        get
         {
-            get;
-            set;
+            return culture.Name;
         }
-
-        [XmlAttribute]
-        public string CultureName
+        set
         {
-            get
-            {
-                return culture.Name;
-            }
-            set
-            {
-                culture = new CultureInfo(value);
-            }
+            culture = new CultureInfo(value);
         }
+    }
 
-        [XmlArray("Texts")]
-        [XmlArrayItem("Text")]
-        public TREntryList Texts => texts;
+    [XmlArray("Texts")]
+    [XmlArrayItem("Text")]
+    public TREntryList Texts => texts;
 
-        [XmlIgnore]
-        public CultureInfo Culture
+    [XmlIgnore]
+    public CultureInfo Culture
+    {
+        get
         {
-            get
-            {
-                return culture;
-            }
-            set
-            {
-                culture = value;
-            }
+            return culture;
         }
-
-        [XmlIgnore]
-        public string File
+        set
         {
-            get;
-            set;
+            culture = value;
         }
+    }
 
-        public string FileName => Path.GetFileName(File);
+    [XmlIgnore]
+    public string File
+    {
+        get;
+        set;
+    }
 
-        public bool IsEmpty => texts.Count == 0;
+    public string FileName => Path.GetFileName(File);
 
-        public string this[string key, string value] => texts.GetText(key, value);
+    public bool IsEmpty => texts.Count == 0;
 
-        public string this[string key] => texts.GetText(key, key);
+    public string this[string key, string value] => texts.GetText(key, value);
 
-        public static TRDictionary LanguageResources => languageResources;
+    public string this[string key] => texts.GetText(key, key);
 
-        public static TRInfo Info => LanguageResources.Info;
+    public static TRDictionary LanguageResources => languageResources;
 
-        public static CultureInfo DefaultCulture
+    public static TRInfo Info => LanguageResources.Info;
+
+    public static CultureInfo DefaultCulture
+    {
+        get
         {
-            get
-            {
-                return LanguageResources.DefaultCulture;
-            }
-            set
-            {
-                LanguageResources.DefaultCulture = value;
-            }
+            return LanguageResources.DefaultCulture;
         }
-
-        public static IVirtualFolder ResourceFolder
+        set
         {
-            get
-            {
-                return LanguageResources.ResourceFolder;
-            }
-            set
-            {
-                LanguageResources.ResourceFolder = value;
-            }
+            LanguageResources.DefaultCulture = value;
         }
+    }
 
-        public static TR Default
+    public static IVirtualFolder ResourceFolder
+    {
+        get
         {
-            get
+            return LanguageResources.ResourceFolder;
+        }
+        set
+        {
+            LanguageResources.ResourceFolder = value;
+        }
+    }
+
+    public static TR Default
+    {
+        get
+        {
+            if (defaultTR == null)
             {
-                if (defaultTR == null)
+                defaultTR = Load("Default");
+            }
+            return defaultTR;
+        }
+    }
+
+    public static TR Messages
+    {
+        get
+        {
+            if (messagesTR == null)
+            {
+                messagesTR = Load("Messages");
+            }
+            return messagesTR;
+        }
+    }
+
+    public TR()
+    {
+        texts = new TREntryList(this);
+    }
+
+    public TR(string name, CultureInfo culture)
+        : this()
+    {
+        Name = name;
+        this.culture = culture;
+    }
+
+    public string[] GetStrings(string key, string array, char sep)
+    {
+        string[] array2 = array.Split(sep);
+        try
+        {
+            string[] array3 = this[key, array].Split(sep);
+            if (array2.Length == array3.Length)
+            {
+                return array3;
+            }
+            return array2;
+        }
+        catch (Exception)
+        {
+            return array2;
+        }
+    }
+
+    public void Save(IVirtualFolder folder, string path)
+    {
+        Texts.Sort();
+        byte[] second = XmlUtility.Store(this, compressed: false);
+        try
+        {
+            using (Stream stream = folder.OpenRead(path))
+            {
+                byte[] array = new byte[stream.Length];
+                stream.Read(array, 0, (int)stream.Length);
+                if (array.SequenceEqual(second))
                 {
-                    defaultTR = Load("Default");
-                }
-                return defaultTR;
-            }
-        }
-
-        public static TR Messages
-        {
-            get
-            {
-                if (messagesTR == null)
-                {
-                    messagesTR = Load("Messages");
-                }
-                return messagesTR;
-            }
-        }
-
-        public TR()
-        {
-            texts = new TREntryList(this);
-        }
-
-        public TR(string name, CultureInfo culture)
-            : this()
-        {
-            Name = name;
-            this.culture = culture;
-        }
-
-        public string[] GetStrings(string key, string array, char sep)
-        {
-            string[] array2 = array.Split(sep);
-            try
-            {
-                string[] array3 = this[key, array].Split(sep);
-                if (array2.Length == array3.Length)
-                {
-                    return array3;
-                }
-                return array2;
-            }
-            catch (Exception)
-            {
-                return array2;
-            }
-        }
-
-        public void Save(IVirtualFolder folder, string path)
-        {
-            Texts.Sort();
-            byte[] second = XmlUtility.Store(this, compressed: false);
-            try
-            {
-                using (Stream stream = folder.OpenRead(path))
-                {
-                    byte[] array = new byte[stream.Length];
-                    stream.Read(array, 0, (int)stream.Length);
-                    if (array.SequenceEqual(second))
-                    {
-                        return;
-                    }
+                    return;
                 }
             }
-            catch (Exception)
-            {
-            }
-            try
-            {
-                folder.CreateFolder(Path.GetDirectoryName(path));
-                XmlUtility.Store(folder.Create(path), this, compressed: false);
-            }
-            catch (Exception)
-            {
-            }
         }
-
-        public static string Translate(Enum e)
+        catch (Exception)
         {
-            return Load(e.GetType().Name)[e.Name(), e.Description()];
         }
-
-        public static TR Load(string name)
+        try
         {
-            return LanguageResources.Load(name);
+            folder.CreateFolder(Path.GetDirectoryName(path));
+            XmlUtility.Store(folder.Create(path), this, compressed: false);
         }
-
-        public static IEnumerable<TRInfo> GetLanguageInfos()
+        catch (Exception)
         {
-            return LanguageResources.GetLanguageInfos();
         }
+    }
+
+    public static string Translate(Enum e)
+    {
+        return Load(e.GetType().Name)[e.Name(), e.Description()];
+    }
+
+    public static TR Load(string name)
+    {
+        return LanguageResources.Load(name);
+    }
+
+    public static IEnumerable<TRInfo> GetLanguageInfos()
+    {
+        return LanguageResources.GetLanguageInfos();
     }
 }

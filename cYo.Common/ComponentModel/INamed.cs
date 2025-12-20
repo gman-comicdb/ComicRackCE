@@ -1,11 +1,10 @@
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface INamed
 {
-    public interface INamed
+    string Name
     {
-        string Name
-        {
-            get;
-            set;
-        }
+        get;
+        set;
     }
 }

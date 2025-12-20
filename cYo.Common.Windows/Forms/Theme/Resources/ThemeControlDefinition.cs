@@ -1,8 +1,8 @@
-﻿using cYo.Common.Drawing.ExtendedColors;
-
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using cYo.Common.Drawing.ExtendedColors;
 
 namespace cYo.Common.Windows.Forms.Theme.Resources;
 

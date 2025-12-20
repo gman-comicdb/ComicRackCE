@@ -1,4 +1,3 @@
-namespace cYo.Projects.ComicRack.Viewer
-{
-    public delegate bool UpdateHandler();
-}
+namespace cYo.Projects.ComicRack.Viewer;
+
+public delegate bool UpdateHandler();

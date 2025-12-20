@@ -1,7 +1,6 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IComicBookStatsProvider
 {
-    public interface IComicBookStatsProvider
-    {
-        ComicBookSeriesStatistics GetSeriesStats(ComicBook book);
-    }
+    ComicBookSeriesStatistics GetSeriesStats(ComicBook book);
 }

@@ -1,10 +1,9 @@
-namespace cYo.Common.Compression.SevenZip
+namespace cYo.Common.Compression.SevenZip;
+
+public enum OperationResult
 {
-    public enum OperationResult
-    {
-        kOK,
-        kUnSupportedMethod,
-        kDataError,
-        kCRCError
-    }
+    kOK,
+    kUnSupportedMethod,
+    kDataError,
+    kCRCError
 }

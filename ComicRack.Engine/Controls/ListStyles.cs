@@ -6,71 +6,70 @@ using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 
-namespace cYo.Projects.ComicRack.Engine.Controls
+namespace cYo.Projects.ComicRack.Engine.Controls;
+
+public static class ListStyles
 {
-    public static class ListStyles
+    private static Rectangle oldBounds;
+
+    public static void SetOwnerDrawn(ListView lv)
     {
-        private static Rectangle oldBounds;
+        lv.OwnerDraw = true;
+        lv.DrawItem += DrawItem;
+        lv.DrawColumnHeader += DrawColumnHeader;
+        lv.DrawSubItem += DrawSubItem;
+        lv.MouseMove += MouseMove;
+    }
 
-        public static void SetOwnerDrawn(ListView lv)
+    private static void MouseMove(object sender, MouseEventArgs e)
+    {
+        ListView listView = sender as ListView;
+        ListViewItem itemAt = listView.GetItemAt(e.X, e.Y);
+        if (itemAt != null && itemAt.Bounds != oldBounds)
         {
-            lv.OwnerDraw = true;
-            lv.DrawItem += DrawItem;
-            lv.DrawColumnHeader += DrawColumnHeader;
-            lv.DrawSubItem += DrawSubItem;
-            lv.MouseMove += MouseMove;
+            listView.Invalidate(itemAt.Bounds);
+            oldBounds = itemAt.Bounds;
         }
+    }
 
-        private static void MouseMove(object sender, MouseEventArgs e)
+    private static void DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+    {
+        e.DrawDefault = false;
+        TextFormatFlags textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.VerticalCenter;
+        switch (e.Header.TextAlign)
         {
-            ListView listView = sender as ListView;
-            ListViewItem itemAt = listView.GetItemAt(e.X, e.Y);
-            if (itemAt != null && itemAt.Bounds != oldBounds)
-            {
-                listView.Invalidate(itemAt.Bounds);
-                oldBounds = itemAt.Bounds;
-            }
+            case HorizontalAlignment.Right:
+                textFormatFlags |= TextFormatFlags.Right;
+                break;
+            case HorizontalAlignment.Center:
+                textFormatFlags |= TextFormatFlags.HorizontalCenter;
+                break;
         }
-
-        private static void DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        using (e.Graphics.SaveState())
         {
-            e.DrawDefault = false;
-            TextFormatFlags textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.VerticalCenter;
-            switch (e.Header.TextAlign)
-            {
-                case HorizontalAlignment.Right:
-                    textFormatFlags |= TextFormatFlags.Right;
-                    break;
-                case HorizontalAlignment.Center:
-                    textFormatFlags |= TextFormatFlags.HorizontalCenter;
-                    break;
-            }
-            using (e.Graphics.SaveState())
-            {
-                e.Graphics.SetClip(e.SubItem.Bounds, CombineMode.Intersect);
-                e.DrawText(textFormatFlags);
-            }
+            e.Graphics.SetClip(e.SubItem.Bounds, CombineMode.Intersect);
+            e.DrawText(textFormatFlags);
         }
+    }
 
-        private static void DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-            => ThemeExtensions.ListView_DrawColumnHeader(sender, e); // handles dark text on dark background in Dark Mode
+    private static void DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        => ThemeExtensions.ListView_DrawColumnHeader(sender, e); // handles dark text on dark background in Dark Mode
 
-        private static void DrawItem(object sender, DrawListViewItemEventArgs e)
+    private static void DrawItem(object sender, DrawListViewItemEventArgs e)
+    {
+        e.DrawDefault = false;
+        e.DrawBackground();
+        // ListView is a Win32 control; OS is responsible for some aspects of drawing, independent of .NET version
+        // This includes which parts are handling in DrawItem/DrawSubItem. Replacement methods need testing on Win10 + Win11.
+        //e.DrawThemeBackground();  
+        using (e.Graphics.SaveState())
         {
-            e.DrawDefault = false;
-            e.DrawBackground();
-            // ListView is a Win32 control; OS is responsible for some aspects of drawing, independent of .NET version
-            // This includes which parts are handling in DrawItem/DrawSubItem. Replacement methods need testing on Win10 + Win11.
-            //e.DrawThemeBackground();  
-            using (e.Graphics.SaveState())
+            e.Graphics.SetClip(e.Item.Bounds, CombineMode.Intersect);
+            StyledRenderer.AlphaStyle alphaStyle = StyledRenderer.GetAlphaStyle(e.Item.Selected, hot: false, e.Item.Focused);
+            Color selectionColor = StyledRenderer.GetSelectionColor(e.Item.Focused);
+            if (alphaStyle != 0)
             {
-                e.Graphics.SetClip(e.Item.Bounds, CombineMode.Intersect);
-                StyledRenderer.AlphaStyle alphaStyle = StyledRenderer.GetAlphaStyle(e.Item.Selected, hot: false, e.Item.Focused);
-                Color selectionColor = StyledRenderer.GetSelectionColor(e.Item.Focused);
-                if (alphaStyle != 0)
-                {
-                    e.Graphics.DrawStyledRectangle(e.Bounds.Pad(0, 0, 1, 1), alphaStyle, selectionColor);
-                }
+                e.Graphics.DrawStyledRectangle(e.Bounds.Pad(0, 0, 1, 1), alphaStyle, selectionColor);
             }
         }
     }

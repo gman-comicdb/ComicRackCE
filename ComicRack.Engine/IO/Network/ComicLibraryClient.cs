@@ -10,225 +10,224 @@ using cYo.Common.Net;
 using cYo.Common.Threading;
 using cYo.Projects.ComicRack.Engine.Database;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public class ComicLibraryClient : DisposableObject
 {
-    public class ComicLibraryClient : DisposableObject
+    private IRemoteComicLibrary remoteLibrary;
+
+    private ProcessingQueue<string> queue;
+
+    public IRemoteComicLibrary RemoteLibrary
     {
-        private IRemoteComicLibrary remoteLibrary;
-
-        private ProcessingQueue<string> queue;
-
-        public IRemoteComicLibrary RemoteLibrary
+        get
         {
-            get
+            IServiceChannel serviceChannel = remoteLibrary as IServiceChannel;
+            if (serviceChannel.State == CommunicationState.Faulted || serviceChannel.State == CommunicationState.Closed)
             {
-                IServiceChannel serviceChannel = remoteLibrary as IServiceChannel;
-                if (serviceChannel.State == CommunicationState.Faulted || serviceChannel.State == CommunicationState.Closed)
+                Connect();
+            }
+            return remoteLibrary;
+        }
+        set
+        {
+            remoteLibrary = value;
+        }
+    }
+
+    public string Password
+    {
+        get;
+        set;
+    }
+
+    public ShareInformation ShareInformation
+    {
+        get;
+        private set;
+    }
+
+    private ComicLibraryClient(string serviceAddress, ShareInformation information)
+    {
+        serviceAddress = ServiceAddress.CompletePortAndPath(serviceAddress, ComicLibraryServerConfig.DefaultPrivateServicePort.ToString(), ComicLibraryServerConfig.DefaultServiceName);
+        if (information == null)
+        {
+            IRemoteServerInfo serverInfoService = GetServerInfoService(serviceAddress);
+            information = new ShareInformation
+            {
+                Id = serverInfoService.Id,
+                Name = serverInfoService.Name,
+                Comment = serverInfoService.Description,
+                Options = serverInfoService.Options
+            };
+        }
+        information.Uri = serviceAddress;
+        ShareInformation = information;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            queue.SafeDispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    public bool Connect()
+    {
+        try
+        {
+            remoteLibrary = GetComicLibraryService(ShareInformation.Uri, Password);
+            return remoteLibrary.IsValid;
+        }
+        catch (MessageSecurityException)
+        {
+            RemoteLibrary = null;
+            return false;
+        }
+        catch
+        {
+            RemoteLibrary = null;
+            throw;
+        }
+    }
+
+    public ComicLibrary GetRemoteLibrary()
+    {
+        try
+        {
+            byte[] libraryData = RemoteLibrary.GetLibraryData();
+            ComicLibrary comicLibrary = ComicLibrary.FromByteArray(libraryData);
+            comicLibrary.EditMode = (ShareInformation.IsEditable ? ComicsEditModes.EditProperties : ComicsEditModes.None);
+            foreach (ComicBook book in comicLibrary.Books)
+            {
+                book.FileInfoRetrieved = true;
+                book.ComicInfoIsDirty = false;
+                book.SetFileLocation($"REMOTE:{comicLibrary.Id}\\{book.FilePath}");
+                book.CreateComicProvider += CreateComicProvider;
+                if (ShareInformation.IsEditable)
                 {
-                    Connect();
+                    book.BookChanged += ComicPropertyChanged;
                 }
-                return remoteLibrary;
             }
-            set
+            if (ShareInformation.IsExportable)
             {
-                remoteLibrary = value;
+                comicLibrary.EditMode |= ComicsEditModes.ExportComic;
             }
+            comicLibrary.IsLoaded = true;
+            comicLibrary.IsDirty = false;
+            return comicLibrary;
         }
-
-        public string Password
+        catch (Exception)
         {
-            get;
-            set;
+            return null;
         }
+    }
 
-        public ShareInformation ShareInformation
+    private void UpdateComic(ComicBook cb, string propertyName, object value)
+    {
+        Guid id = cb.Id;
+        string item = $"{id}:{propertyName}";
+        if (queue == null)
         {
-            get;
-            private set;
+            queue = new ProcessingQueue<string>("Server Book Info Update", ThreadPriority.Highest);
         }
-
-        private ComicLibraryClient(string serviceAddress, ShareInformation information)
-        {
-            serviceAddress = ServiceAddress.CompletePortAndPath(serviceAddress, ComicLibraryServerConfig.DefaultPrivateServicePort.ToString(), ComicLibraryServerConfig.DefaultServiceName);
-            if (information == null)
-            {
-                IRemoteServerInfo serverInfoService = GetServerInfoService(serviceAddress);
-                information = new ShareInformation
-                {
-                    Id = serverInfoService.Id,
-                    Name = serverInfoService.Name,
-                    Comment = serverInfoService.Description,
-                    Options = serverInfoService.Options
-                };
-            }
-            information.Uri = serviceAddress;
-            ShareInformation = information;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                queue.SafeDispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        public bool Connect()
+        queue.AddItem(item, delegate
         {
             try
             {
-                remoteLibrary = GetComicLibraryService(ShareInformation.Uri, Password);
-                return remoteLibrary.IsValid;
-            }
-            catch (MessageSecurityException)
-            {
-                RemoteLibrary = null;
-                return false;
+                RemoteLibrary.UpdateComic(id, propertyName, value);
             }
             catch
             {
-                RemoteLibrary = null;
-                throw;
             }
-        }
+        });
+    }
 
-        public ComicLibrary GetRemoteLibrary()
-        {
-            try
-            {
-                byte[] libraryData = RemoteLibrary.GetLibraryData();
-                ComicLibrary comicLibrary = ComicLibrary.FromByteArray(libraryData);
-                comicLibrary.EditMode = (ShareInformation.IsEditable ? ComicsEditModes.EditProperties : ComicsEditModes.None);
-                foreach (ComicBook book in comicLibrary.Books)
-                {
-                    book.FileInfoRetrieved = true;
-                    book.ComicInfoIsDirty = false;
-                    book.SetFileLocation($"REMOTE:{comicLibrary.Id}\\{book.FilePath}");
-                    book.CreateComicProvider += CreateComicProvider;
-                    if (ShareInformation.IsEditable)
-                    {
-                        book.BookChanged += ComicPropertyChanged;
-                    }
-                }
-                if (ShareInformation.IsExportable)
-                {
-                    comicLibrary.EditMode |= ComicsEditModes.ExportComic;
-                }
-                comicLibrary.IsLoaded = true;
-                comicLibrary.IsDirty = false;
-                return comicLibrary;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+    private void CreateComicProvider(object sender, CreateComicProviderEventArgs e)
+    {
+        ComicBook comicBook = sender as ComicBook;
+        e.Provider = new RemoteComicBookProvider(comicBook.Id, this);
+    }
 
-        private void UpdateComic(ComicBook cb, string propertyName, object value)
-        {
-            Guid id = cb.Id;
-            string item = $"{id}:{propertyName}";
-            if (queue == null)
-            {
-                queue = new ProcessingQueue<string>("Server Book Info Update", ThreadPriority.Highest);
-            }
-            queue.AddItem(item, delegate
-            {
-                try
-                {
-                    RemoteLibrary.UpdateComic(id, propertyName, value);
-                }
-                catch
-                {
-                }
-            });
-        }
-
-        private void CreateComicProvider(object sender, CreateComicProviderEventArgs e)
+    private void ComicPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (!(e.PropertyName == "Pages"))
         {
             ComicBook comicBook = sender as ComicBook;
-            e.Provider = new RemoteComicBookProvider(comicBook.Id, this);
-        }
-
-        private void ComicPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!(e.PropertyName == "Pages"))
-            {
-                ComicBook comicBook = sender as ComicBook;
-                try
-                {
-                    UpdateComic(comicBook, e.PropertyName, comicBook.GetUntypedPropertyValue(e.PropertyName));
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
-        private static IRemoteComicLibrary GetComicLibraryService(string address, string password)
-        {
-            string uriString = string.Format("net.tcp://{0}/{1}", address, ComicLibraryServer.LibraryPoint);
-            EndpointAddress remoteAddress = new EndpointAddress(new Uri(uriString), EndpointIdentity.CreateDnsIdentity("ComicRack"), (AddressHeaderCollection)null);
-            ChannelFactory<IRemoteComicLibrary> channelFactory = new ChannelFactory<IRemoteComicLibrary>(ComicLibraryServer.CreateChannel(secure: true), remoteAddress);
-            channelFactory.Credentials.UserName.UserName = "ComicRack";
-            channelFactory.Credentials.UserName.Password = password;
-            channelFactory.Credentials.ClientCertificate.Certificate = ComicLibraryServer.Certificate;// New Cert (sha256)
-            channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
-            IRemoteComicLibrary remoteComicLibrary = channelFactory.CreateChannel();
-            ((IContextChannel)remoteComicLibrary).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
-            return remoteComicLibrary;
-        }
-
-        private static IRemoteServerInfo GetServerInfoService(string serviceAddress)
-        {
-            string remoteAddress = string.Format("net.tcp://{0}/{1}", serviceAddress, ComicLibraryServer.InfoPoint);
-            ChannelFactory<IRemoteServerInfo> channelFactory = new ChannelFactory<IRemoteServerInfo>(ComicLibraryServer.CreateChannel(secure: false), remoteAddress);
-            IRemoteServerInfo remoteServerInfo = channelFactory.CreateChannel();
-            ((IContextChannel)remoteServerInfo).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
-            return remoteServerInfo;
-        }
-
-        public static ComicLibraryClient Connect(string address, ShareInformation information)
-        {
             try
             {
-                return new ComicLibraryClient(address, information);
+                UpdateComic(comicBook, e.PropertyName, comicBook.GetUntypedPropertyValue(e.PropertyName));
             }
             catch (Exception)
             {
-                return null;
             }
         }
+    }
 
-        public static ComicLibraryClient Connect(string address)
+    private static IRemoteComicLibrary GetComicLibraryService(string address, string password)
+    {
+        string uriString = string.Format("net.tcp://{0}/{1}", address, ComicLibraryServer.LibraryPoint);
+        EndpointAddress remoteAddress = new EndpointAddress(new Uri(uriString), EndpointIdentity.CreateDnsIdentity("ComicRack"), (AddressHeaderCollection)null);
+        ChannelFactory<IRemoteComicLibrary> channelFactory = new ChannelFactory<IRemoteComicLibrary>(ComicLibraryServer.CreateChannel(secure: true), remoteAddress);
+        channelFactory.Credentials.UserName.UserName = "ComicRack";
+        channelFactory.Credentials.UserName.Password = password;
+        channelFactory.Credentials.ClientCertificate.Certificate = ComicLibraryServer.Certificate;// New Cert (sha256)
+        channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
+        IRemoteComicLibrary remoteComicLibrary = channelFactory.CreateChannel();
+        ((IContextChannel)remoteComicLibrary).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
+        return remoteComicLibrary;
+    }
+
+    private static IRemoteServerInfo GetServerInfoService(string serviceAddress)
+    {
+        string remoteAddress = string.Format("net.tcp://{0}/{1}", serviceAddress, ComicLibraryServer.InfoPoint);
+        ChannelFactory<IRemoteServerInfo> channelFactory = new ChannelFactory<IRemoteServerInfo>(ComicLibraryServer.CreateChannel(secure: false), remoteAddress);
+        IRemoteServerInfo remoteServerInfo = channelFactory.CreateChannel();
+        ((IContextChannel)remoteServerInfo).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
+        return remoteServerInfo;
+    }
+
+    public static ComicLibraryClient Connect(string address, ShareInformation information)
+    {
+        try
         {
-            return Connect(address, null);
+            return new ComicLibraryClient(address, information);
         }
-
-        public static ComicLibraryClient Connect(ShareInformation info)
+        catch (Exception)
         {
-            return Connect(info.Uri, info);
+            return null;
         }
+    }
 
-        public static ShareInformation GetServerInfo(string address)
+    public static ComicLibraryClient Connect(string address)
+    {
+        return Connect(address, null);
+    }
+
+    public static ComicLibraryClient Connect(ShareInformation info)
+    {
+        return Connect(info.Uri, info);
+    }
+
+    public static ShareInformation GetServerInfo(string address)
+    {
+        try
         {
-            try
+            using (ComicLibraryClient comicLibraryClient = Connect(address))
             {
-                using (ComicLibraryClient comicLibraryClient = Connect(address))
-                {
-                    return comicLibraryClient.ShareInformation;
-                }
-            }
-            catch (Exception)
-            {
-                return null;
+                return comicLibraryClient.ShareInformation;
             }
         }
-
-        public static string GetServerId(string address)
+        catch (Exception)
         {
-            return GetServerInfo(address)?.Id;
+            return null;
         }
+    }
+
+    public static string GetServerId(string address)
+    {
+        return GetServerInfo(address)?.Id;
     }
 }

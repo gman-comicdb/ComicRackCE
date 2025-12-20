@@ -1,8 +1,7 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum MagnifierStyle
 {
-    public enum MagnifierStyle
-    {
-        Glass,
-        Simple
-    }
+    Glass,
+    Simple
 }

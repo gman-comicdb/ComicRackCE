@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookCountComparer : Comparer<ComicBook>
 {
-    public class ComicBookCountComparer : Comparer<ComicBook>
+    public override int Compare(ComicBook x, ComicBook y)
     {
-        public override int Compare(ComicBook x, ComicBook y)
-        {
-            return x.ShadowCount.CompareTo(y.ShadowCount);
-        }
+        return x.ShadowCount.CompareTo(y.ShadowCount);
     }
 }

@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public enum LibraryShareMode
 {
-    public enum LibraryShareMode
-    {
-        None,
-        All,
-        Selected
-    }
+    None,
+    All,
+    Selected
 }

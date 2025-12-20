@@ -7,77 +7,76 @@ using cYo.Common.Win32;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Viewer.Controls;
 
-namespace cYo.Projects.ComicRack.Viewer.Views
+namespace cYo.Projects.ComicRack.Viewer.Views;
+
+public partial class SubView : CaptionControl
 {
-    public partial class SubView : CaptionControl
+    private IMain mainForm;
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public IMain Main
     {
-        private IMain mainForm;
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IMain Main
+        get
         {
-            get
+            return mainForm;
+        }
+        set
+        {
+            if (mainForm != value)
             {
-                return mainForm;
-            }
-            set
-            {
-                if (mainForm != value)
-                {
-                    mainForm = value;
-                    OnMainFormChanged();
-                }
+                mainForm = value;
+                OnMainFormChanged();
             }
         }
+    }
 
-        public SubView()
+    public SubView()
+    {
+        InitializeComponent();
+    }
+
+    private void Application_Idle(object sender, EventArgs e)
+    {
+        OnIdle();
+    }
+
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+        if (!base.DesignMode)
         {
-            InitializeComponent();
+            IdleProcess.Idle += Application_Idle;
         }
+    }
 
-        private void Application_Idle(object sender, EventArgs e)
-        {
-            OnIdle();
-        }
+    protected virtual void OnIdle()
+    {
+    }
 
-        protected override void OnLoad(EventArgs e)
+    protected virtual void OnMainFormChanged()
+    {
+        SetMain(base.Controls, Main);
+    }
+
+    private static void SetMain(ControlCollection cc, IMain main)
+    {
+        foreach (Control item in cc)
         {
-            base.OnLoad(e);
-            if (!base.DesignMode)
+            SubView subView = item as SubView;
+            if (subView != null)
             {
-                IdleProcess.Idle += Application_Idle;
+                subView.Main = main;
+            }
+            else
+            {
+                SetMain(item.Controls, main);
             }
         }
+    }
 
-        protected virtual void OnIdle()
-        {
-        }
-
-        protected virtual void OnMainFormChanged()
-        {
-            SetMain(base.Controls, Main);
-        }
-
-        private static void SetMain(ControlCollection cc, IMain main)
-        {
-            foreach (Control item in cc)
-            {
-                SubView subView = item as SubView;
-                if (subView != null)
-                {
-                    subView.Main = main;
-                }
-                else
-                {
-                    SetMain(item.Controls, main);
-                }
-            }
-        }
-
-        protected static void TranslateColumns(IEnumerable<IColumn> itemViewColumnCollection)
-        {
-            ComicListField.TranslateColumns(itemViewColumnCollection);
-        }
+    protected static void TranslateColumns(IEnumerable<IColumn> itemViewColumnCollection)
+    {
+        ComicListField.TranslateColumns(itemViewColumnCollection);
     }
 }

@@ -1,30 +1,29 @@
-namespace cYo.Projects.ComicRack.Viewer.Controls
+namespace cYo.Projects.ComicRack.Viewer.Controls;
+
+public class ItemSizeInfo
 {
-    public class ItemSizeInfo
+    public int Minimum
     {
-        public int Minimum
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public int Maximum
-        {
-            get;
-            set;
-        }
+    public int Maximum
+    {
+        get;
+        set;
+    }
 
-        public int Value
-        {
-            get;
-            set;
-        }
+    public int Value
+    {
+        get;
+        set;
+    }
 
-        public ItemSizeInfo(int min, int max, int value)
-        {
-            Minimum = min;
-            Maximum = max;
-            Value = value;
-        }
+    public ItemSizeInfo(int min, int max, int value)
+    {
+        Minimum = min;
+        Maximum = max;
+        Value = value;
     }
 }

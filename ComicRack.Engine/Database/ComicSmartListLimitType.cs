@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public enum ComicSmartListLimitType
 {
-    public enum ComicSmartListLimitType
-    {
-        Count,
-        MB,
-        GB
-    }
+    Count,
+    MB,
+    GB
 }

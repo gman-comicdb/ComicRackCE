@@ -1,9 +1,8 @@
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public interface IMouseHWheel
 {
-    public interface IMouseHWheel
-    {
-        event MouseEventHandler MouseHWheel;
-    }
+    event MouseEventHandler MouseHWheel;
 }

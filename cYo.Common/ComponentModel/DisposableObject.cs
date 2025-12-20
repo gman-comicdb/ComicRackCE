@@ -1,87 +1,86 @@
 using System;
 using System.Diagnostics;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+[Serializable]
+public abstract class DisposableObject : IDisposable
 {
-    [Serializable]
-    public abstract class DisposableObject : IDisposable
+    private bool isDisposed;
+
+    public bool IsDisposed => isDisposed;
+
+    [field: NonSerialized]
+    public event EventHandler Disposing;
+
+    [field: NonSerialized]
+    public event EventHandler Disposed;
+
+    [Conditional("DEBUG")]
+    public void FinalizerIsOk()
     {
-        private bool isDisposed;
+    }
 
-        public bool IsDisposed => isDisposed;
+    public DisposableObject()
+    {
+    }
 
-        [field: NonSerialized]
-        public event EventHandler Disposing;
-
-        [field: NonSerialized]
-        public event EventHandler Disposed;
-
-        [Conditional("DEBUG")]
-        public void FinalizerIsOk()
+    ~DisposableObject()
+    {
+        try
+        {
+            Dispose(disposing: false);
+        }
+        catch (Exception)
         {
         }
+    }
 
-        public DisposableObject()
+    protected virtual void Dispose(bool disposing)
+    {
+    }
+
+    protected virtual void CheckDisposed()
+    {
+        if (IsDisposed)
         {
+            throw new ObjectDisposedException(GetType().ToString());
         }
+    }
 
-        ~DisposableObject()
+    public void Dispose()
+    {
+        try
         {
             try
             {
-                Dispose(disposing: false);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-
-        protected virtual void CheckDisposed()
-        {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(GetType().ToString());
-            }
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                try
+                if (this.Disposing != null)
                 {
-                    if (this.Disposing != null)
-                    {
-                        this.Disposing(this, EventArgs.Empty);
-                    }
-                }
-                catch
-                {
-                }
-                Dispose(disposing: true);
-                isDisposed = true;
-                try
-                {
-                    if (this.Disposed != null)
-                    {
-                        this.Disposed(this, EventArgs.Empty);
-                    }
-                }
-                catch
-                {
+                    this.Disposing(this, EventArgs.Empty);
                 }
             }
             catch
             {
             }
-            finally
+            Dispose(disposing: true);
+            isDisposed = true;
+            try
             {
-                GC.SuppressFinalize(this);
+                if (this.Disposed != null)
+                {
+                    this.Disposed(this, EventArgs.Empty);
+                }
             }
+            catch
+            {
+            }
+        }
+        catch
+        {
+        }
+        finally
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

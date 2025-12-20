@@ -4,172 +4,171 @@ using System.Linq;
 
 using cYo.Common.Collections;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public class ServerStatistics
 {
-    public class ServerStatistics
+    public enum StatisticType
     {
-        public enum StatisticType
+        InfoRequest,
+        LibraryRequest,
+        PageRequest,
+        ThumbnailRequest,
+        FailedAuthentication
+    }
+
+    public class StatisticItem
+    {
+        public DateTime TimeStamp
         {
-            InfoRequest,
-            LibraryRequest,
-            PageRequest,
-            ThumbnailRequest,
-            FailedAuthentication
+            get;
+            private set;
         }
 
-        public class StatisticItem
+        public StatisticType Type
         {
-            public DateTime TimeStamp
-            {
-                get;
-                private set;
-            }
-
-            public StatisticType Type
-            {
-                get;
-                set;
-            }
-
-            public string Client
-            {
-                get;
-                set;
-            }
-
-            public int Size
-            {
-                get;
-                set;
-            }
-
-            public StatisticItem(string client, StatisticType type, int size = 0)
-            {
-                TimeStamp = DateTime.Now;
-                Client = client;
-                Type = type;
-                Size = size;
-            }
+            get;
+            set;
         }
 
-        public class StatisticResult
+        public string Client
         {
-            public int ClientCount
-            {
-                get;
-                private set;
-            }
-
-            public int InfoRequestCount
-            {
-                get;
-                private set;
-            }
-
-            public int LibraryRequestCount
-            {
-                get;
-                private set;
-            }
-
-            public int PageRequestCount
-            {
-                get;
-                private set;
-            }
-
-            public int ThumbnailRequestCount
-            {
-                get;
-                private set;
-            }
-
-            public long PageRequestSize
-            {
-                get;
-                private set;
-            }
-
-            public long ThumbnailRequestSize
-            {
-                get;
-                private set;
-            }
-
-            public long LibraryRequestSize
-            {
-                get;
-                private set;
-            }
-
-            public int FailedAuthenticationCount
-            {
-                get;
-                private set;
-            }
-
-            public long TotalRequestSize => PageRequestSize + ThumbnailRequestSize + LibraryRequestSize;
-
-            public StatisticResult()
-            {
-            }
-
-            public StatisticResult(IEnumerable<StatisticItem> items, TimeSpan timeSpan)
-            {
-                DateTime now = DateTime.Now;
-                IEnumerable<StatisticItem> source = items.Reverse().TakeWhile((StatisticItem n) => now - n.TimeStamp < timeSpan);
-                ClientCount = source.Select((StatisticItem n) => n.Client).Distinct().Count();
-                InfoRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.InfoRequest);
-                LibraryRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.LibraryRequest);
-                PageRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.PageRequest);
-                ThumbnailRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest);
-                FailedAuthenticationCount = source.Count((StatisticItem n) => n.Type == StatisticType.FailedAuthentication);
-                PageRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.PageRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
-                LibraryRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.LibraryRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
-                ThumbnailRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
-            }
-
-            public void Add(StatisticResult sr)
-            {
-                InfoRequestCount += sr.InfoRequestCount;
-                LibraryRequestCount += sr.LibraryRequestCount;
-                PageRequestCount += sr.PageRequestCount;
-                ThumbnailRequestCount += sr.ThumbnailRequestCount;
-                FailedAuthenticationCount += sr.FailedAuthenticationCount;
-                PageRequestSize += sr.PageRequestSize;
-                LibraryRequestSize += sr.LibraryRequestSize;
-                ThumbnailRequestSize += sr.ThumbnailRequestSize;
-            }
+            get;
+            set;
         }
 
-        private SmartList<StatisticItem> items = new SmartList<StatisticItem>();
-
-        public IEnumerable<StatisticItem> Items => items;
-
-        public void Add(string client, StatisticType type, int size = 0)
+        public int Size
         {
-            items.Add(new StatisticItem(client, type, size));
+            get;
+            set;
         }
 
-        public StatisticResult GetResult(TimeSpan timeSpan)
+        public StatisticItem(string client, StatisticType type, int size = 0)
         {
-            return new StatisticResult(Items, timeSpan);
+            TimeStamp = DateTime.Now;
+            Client = client;
+            Type = type;
+            Size = size;
+        }
+    }
+
+    public class StatisticResult
+    {
+        public int ClientCount
+        {
+            get;
+            private set;
         }
 
-        public StatisticResult GetResult(int seconds = int.MaxValue)
+        public int InfoRequestCount
         {
-            return new StatisticResult(Items, TimeSpan.FromSeconds(seconds));
+            get;
+            private set;
         }
 
-        public bool WasActive(int seconds = 10)
+        public int LibraryRequestCount
         {
-            return WasActive(TimeSpan.FromSeconds(seconds));
+            get;
+            private set;
         }
 
-        public bool WasActive(TimeSpan timeSpan)
+        public int PageRequestCount
+        {
+            get;
+            private set;
+        }
+
+        public int ThumbnailRequestCount
+        {
+            get;
+            private set;
+        }
+
+        public long PageRequestSize
+        {
+            get;
+            private set;
+        }
+
+        public long ThumbnailRequestSize
+        {
+            get;
+            private set;
+        }
+
+        public long LibraryRequestSize
+        {
+            get;
+            private set;
+        }
+
+        public int FailedAuthenticationCount
+        {
+            get;
+            private set;
+        }
+
+        public long TotalRequestSize => PageRequestSize + ThumbnailRequestSize + LibraryRequestSize;
+
+        public StatisticResult()
+        {
+        }
+
+        public StatisticResult(IEnumerable<StatisticItem> items, TimeSpan timeSpan)
         {
             DateTime now = DateTime.Now;
-            return items.Reverse().Any((StatisticItem n) => now - n.TimeStamp < timeSpan);
+            IEnumerable<StatisticItem> source = items.Reverse().TakeWhile((StatisticItem n) => now - n.TimeStamp < timeSpan);
+            ClientCount = source.Select((StatisticItem n) => n.Client).Distinct().Count();
+            InfoRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.InfoRequest);
+            LibraryRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.LibraryRequest);
+            PageRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.PageRequest);
+            ThumbnailRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest);
+            FailedAuthenticationCount = source.Count((StatisticItem n) => n.Type == StatisticType.FailedAuthentication);
+            PageRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.PageRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
+            LibraryRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.LibraryRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
+            ThumbnailRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
         }
+
+        public void Add(StatisticResult sr)
+        {
+            InfoRequestCount += sr.InfoRequestCount;
+            LibraryRequestCount += sr.LibraryRequestCount;
+            PageRequestCount += sr.PageRequestCount;
+            ThumbnailRequestCount += sr.ThumbnailRequestCount;
+            FailedAuthenticationCount += sr.FailedAuthenticationCount;
+            PageRequestSize += sr.PageRequestSize;
+            LibraryRequestSize += sr.LibraryRequestSize;
+            ThumbnailRequestSize += sr.ThumbnailRequestSize;
+        }
+    }
+
+    private SmartList<StatisticItem> items = new SmartList<StatisticItem>();
+
+    public IEnumerable<StatisticItem> Items => items;
+
+    public void Add(string client, StatisticType type, int size = 0)
+    {
+        items.Add(new StatisticItem(client, type, size));
+    }
+
+    public StatisticResult GetResult(TimeSpan timeSpan)
+    {
+        return new StatisticResult(Items, timeSpan);
+    }
+
+    public StatisticResult GetResult(int seconds = int.MaxValue)
+    {
+        return new StatisticResult(Items, TimeSpan.FromSeconds(seconds));
+    }
+
+    public bool WasActive(int seconds = 10)
+    {
+        return WasActive(TimeSpan.FromSeconds(seconds));
+    }
+
+    public bool WasActive(TimeSpan timeSpan)
+    {
+        DateTime now = DateTime.Now;
+        return items.Reverse().Any((StatisticItem n) => now - n.TimeStamp < timeSpan);
     }
 }

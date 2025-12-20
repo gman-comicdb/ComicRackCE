@@ -1,15 +1,14 @@
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public class FadeAnimator : Animator
 {
-    public class FadeAnimator : Animator
+    public FadeAnimator(int fadeInTime, int visibilityTime, int fadeOutTime)
     {
-        public FadeAnimator(int fadeInTime, int visibilityTime, int fadeOutTime)
+        base.Span = fadeInTime + visibilityTime + fadeOutTime;
+        base.AnimationValueGenerator = Animator.CreateLinearBouncer(fadeInTime, visibilityTime, fadeOutTime);
+        base.AnimationHandler = delegate (OverlayPanel p, float x, float d)
         {
-            base.Span = fadeInTime + visibilityTime + fadeOutTime;
-            base.AnimationValueGenerator = Animator.CreateLinearBouncer(fadeInTime, visibilityTime, fadeOutTime);
-            base.AnimationHandler = delegate (OverlayPanel p, float x, float d)
-            {
-                p.Opacity += d;
-            };
-        }
+            p.Opacity += d;
+        };
     }
 }

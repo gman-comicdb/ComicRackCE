@@ -1,9 +1,8 @@
-namespace cYo.Common.Compression.SevenZip
+namespace cYo.Common.Compression.SevenZip;
+
+public enum FileTimeType
 {
-    public enum FileTimeType
-    {
-        kWindows,
-        kUnix,
-        kDOS
-    }
+    kWindows,
+    kUnix,
+    kDOS
 }

@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookPencillerComparer : Comparer<ComicBook>
 {
-    public class ComicBookPencillerComparer : Comparer<ComicBook>
+    public override int Compare(ComicBook x, ComicBook y)
     {
-        public override int Compare(ComicBook x, ComicBook y)
-        {
-            return string.Compare(x.Penciller, y.Penciller, ignoreCase: true);
-        }
+        return string.Compare(x.Penciller, y.Penciller, ignoreCase: true);
     }
 }

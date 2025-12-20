@@ -2,10 +2,9 @@ using System.Collections.Generic;
 
 using cYo.Projects.ComicRack.Engine;
 
-namespace cYo.Projects.ComicRack.Viewer.Views
+namespace cYo.Projects.ComicRack.Viewer.Views;
+
+public interface IRemoveBooks
 {
-    public interface IRemoveBooks
-    {
-        void RemoveBooks(IEnumerable<ComicBook> books, bool ask);
-    }
+    void RemoveBooks(IEnumerable<ComicBook> books, bool ask);
 }

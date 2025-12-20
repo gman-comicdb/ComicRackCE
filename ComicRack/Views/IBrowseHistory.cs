@@ -1,13 +1,12 @@
-namespace cYo.Projects.ComicRack.Viewer.Views
+namespace cYo.Projects.ComicRack.Viewer.Views;
+
+public interface IBrowseHistory
 {
-    public interface IBrowseHistory
-    {
-        bool CanBrowsePrevious();
+    bool CanBrowsePrevious();
 
-        bool CanBrowseNext();
+    bool CanBrowseNext();
 
-        void BrowsePrevious();
+    void BrowsePrevious();
 
-        void BrowseNext();
-    }
+    void BrowseNext();
 }

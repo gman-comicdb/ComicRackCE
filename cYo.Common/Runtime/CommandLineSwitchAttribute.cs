@@ -1,36 +1,35 @@
 using System;
 
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class CommandLineSwitchAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class CommandLineSwitchAttribute : Attribute
+    public string Name
     {
-        public string Name
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public string ShortName
-        {
-            get;
-            set;
-        }
+    public string ShortName
+    {
+        get;
+        set;
+    }
 
-        public CommandLineSwitchAttribute(string name, string shortName)
-        {
-            Name = name;
-            ShortName = shortName;
-        }
+    public CommandLineSwitchAttribute(string name, string shortName)
+    {
+        Name = name;
+        ShortName = shortName;
+    }
 
-        public CommandLineSwitchAttribute(string name)
-            : this(name, null)
-        {
-        }
+    public CommandLineSwitchAttribute(string name)
+        : this(name, null)
+    {
+    }
 
-        public CommandLineSwitchAttribute()
-            : this(null)
-        {
-        }
+    public CommandLineSwitchAttribute()
+        : this(null)
+    {
     }
 }

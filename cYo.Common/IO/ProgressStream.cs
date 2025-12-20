@@ -1,95 +1,94 @@
 using System;
 using System.IO;
 
-namespace cYo.Common.IO
+namespace cYo.Common.IO;
+
+public class ProgressStream : Stream
 {
-    public class ProgressStream : Stream
+    private readonly Stream baseStream;
+
+    public bool BaseStreamOwned
     {
-        private readonly Stream baseStream;
+        get;
+        set;
+    }
 
-        public bool BaseStreamOwned
+    public Stream BaseStream => baseStream;
+
+    public override bool CanRead => baseStream.CanRead;
+
+    public override bool CanSeek => baseStream.CanSeek;
+
+    public override bool CanWrite => baseStream.CanWrite;
+
+    public override long Length => baseStream.Length;
+
+    public override long Position
+    {
+        get
         {
-            get;
-            set;
+            return baseStream.Position;
         }
-
-        public Stream BaseStream => baseStream;
-
-        public override bool CanRead => baseStream.CanRead;
-
-        public override bool CanSeek => baseStream.CanSeek;
-
-        public override bool CanWrite => baseStream.CanWrite;
-
-        public override long Length => baseStream.Length;
-
-        public override long Position
+        set
         {
-            get
+            baseStream.Position = value;
+        }
+    }
+
+    public event EventHandler<ProgressStreamReadEventArgs> DataRead;
+
+    public ProgressStream(Stream baseStream, bool baseStreamOwned = true)
+    {
+        this.baseStream = baseStream;
+        BaseStreamOwned = baseStreamOwned;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && BaseStreamOwned)
+        {
+            baseStream.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    public override void Flush()
+    {
+        baseStream.Flush();
+    }
+
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        count = baseStream.Read(buffer, offset, count);
+        OnDataRead(count);
+        return count;
+    }
+
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        return baseStream.Seek(offset, origin);
+    }
+
+    public override void SetLength(long value)
+    {
+        baseStream.SetLength(value);
+    }
+
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        baseStream.Write(buffer, offset, count);
+    }
+
+    protected virtual void OnDataRead(int count)
+    {
+        if (this.DataRead != null)
+        {
+            try
             {
-                return baseStream.Position;
+                this.DataRead(this, new ProgressStreamReadEventArgs(count));
             }
-            set
+            catch
             {
-                baseStream.Position = value;
-            }
-        }
-
-        public event EventHandler<ProgressStreamReadEventArgs> DataRead;
-
-        public ProgressStream(Stream baseStream, bool baseStreamOwned = true)
-        {
-            this.baseStream = baseStream;
-            BaseStreamOwned = baseStreamOwned;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && BaseStreamOwned)
-            {
-                baseStream.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        public override void Flush()
-        {
-            baseStream.Flush();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            count = baseStream.Read(buffer, offset, count);
-            OnDataRead(count);
-            return count;
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            return baseStream.Seek(offset, origin);
-        }
-
-        public override void SetLength(long value)
-        {
-            baseStream.SetLength(value);
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            baseStream.Write(buffer, offset, count);
-        }
-
-        protected virtual void OnDataRead(int count)
-        {
-            if (this.DataRead != null)
-            {
-                try
-                {
-                    this.DataRead(this, new ProgressStreamReadEventArgs(count));
-                }
-                catch
-                {
-                }
             }
         }
     }

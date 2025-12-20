@@ -1,8 +1,7 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum ItemViewLayout
 {
-    public enum ItemViewLayout
-    {
-        Top,
-        Left
-    }
+    Top,
+    Left
 }

@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public enum PartPageToDisplay
 {
-    public enum PartPageToDisplay
-    {
-        First,
-        Previous,
-        Next,
-        Last
-    }
+    First,
+    Previous,
+    Next,
+    Last
 }

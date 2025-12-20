@@ -8,312 +8,311 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Security.Permissions;
 using System.Windows.Forms;
 
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.IDataObject
 {
-    public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.IDataObject
+    private static class NativeMethods
     {
-        private static class NativeMethods
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct FILEDESCRIPTOR
         {
-            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-            public struct FILEDESCRIPTOR
-            {
-                public uint dwFlags;
+            public uint dwFlags;
 
-                public Guid clsid;
+            public Guid clsid;
 
-                public Size sizel;
+            public Size sizel;
 
-                public Point pointl;
+            public Point pointl;
 
-                public uint dwFileAttributes;
+            public uint dwFileAttributes;
 
-                public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
+            public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
 
-                public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
+            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
 
-                public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
 
-                public uint nFileSizeHigh;
+            public uint nFileSizeHigh;
 
-                public uint nFileSizeLow;
+            public uint nFileSizeLow;
 
-                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-                public string cFileName;
-            }
-
-            public const string CFSTR_PREFERREDDROPEFFECT = "Preferred DropEffect";
-
-            public const string CFSTR_PERFORMEDDROPEFFECT = "Performed DropEffect";
-
-            public const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW";
-
-            public const string CFSTR_FILECONTENTS = "FileContents";
-
-            public const int FD_CLSID = 1;
-
-            public const int FD_SIZEPOINT = 2;
-
-            public const int FD_ATTRIBUTES = 4;
-
-            public const int FD_CREATETIME = 8;
-
-            public const int FD_ACCESSTIME = 16;
-
-            public const int FD_WRITESTIME = 32;
-
-            public const int FD_FILESIZE = 64;
-
-            public const int FD_PROGRESSUI = 16384;
-
-            public const int FD_LINKUI = 32768;
-
-            public const int GMEM_MOVEABLE = 2;
-
-            public const int GMEM_ZEROINIT = 64;
-
-            public const int GHND = 66;
-
-            public const int GMEM_DDESHARE = 8192;
-
-            public const int DV_E_TYMED = -2147221399;
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-            public static extern IntPtr GlobalAlloc(int uFlags, int dwBytes);
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-            public static extern IntPtr GlobalFree(HandleRef handle);
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string cFileName;
         }
 
-        public class VirtualFileItemWriteEventArgs : EventArgs
+        public const string CFSTR_PREFERREDDROPEFFECT = "Preferred DropEffect";
+
+        public const string CFSTR_PERFORMEDDROPEFFECT = "Performed DropEffect";
+
+        public const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW";
+
+        public const string CFSTR_FILECONTENTS = "FileContents";
+
+        public const int FD_CLSID = 1;
+
+        public const int FD_SIZEPOINT = 2;
+
+        public const int FD_ATTRIBUTES = 4;
+
+        public const int FD_CREATETIME = 8;
+
+        public const int FD_ACCESSTIME = 16;
+
+        public const int FD_WRITESTIME = 32;
+
+        public const int FD_FILESIZE = 64;
+
+        public const int FD_PROGRESSUI = 16384;
+
+        public const int FD_LINKUI = 32768;
+
+        public const int GMEM_MOVEABLE = 2;
+
+        public const int GMEM_ZEROINIT = 64;
+
+        public const int GHND = 66;
+
+        public const int GMEM_DDESHARE = 8192;
+
+        public const int DV_E_TYMED = -2147221399;
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GlobalAlloc(int uFlags, int dwBytes);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GlobalFree(HandleRef handle);
+    }
+
+    public class VirtualFileItemWriteEventArgs : EventArgs
+    {
+        private readonly Stream stream;
+
+        public Stream Stream => stream;
+
+        public VirtualFileItemWriteEventArgs(Stream stream)
         {
-            private readonly Stream stream;
+            this.stream = stream;
+        }
+    }
 
-            public Stream Stream => stream;
+    public class VirtualFileItem
+    {
+        private long fileSize = -1L;
 
-            public VirtualFileItemWriteEventArgs(Stream stream)
-            {
-                this.stream = stream;
-            }
+        public string FileName
+        {
+            get;
+            set;
         }
 
-        public class VirtualFileItem
+        public long FileSize
         {
-            private long fileSize = -1L;
-
-            public string FileName
+            get
             {
-                get;
-                set;
+                return fileSize;
             }
-
-            public long FileSize
+            set
             {
-                get
-                {
-                    return fileSize;
-                }
-                set
-                {
-                    fileSize = value;
-                }
-            }
-
-            public DateTime WriteTime
-            {
-                get;
-                set;
-            }
-
-            public object Tag
-            {
-                get;
-                set;
-            }
-
-            public event EventHandler<VirtualFileItemWriteEventArgs> WriteData;
-
-            public VirtualFileItem(string fileName, long fileSize, DateTime writeTime)
-            {
-                FileName = fileName;
-                FileSize = fileSize;
-                WriteTime = writeTime;
-            }
-
-            public VirtualFileItem(string fileName)
-                : this(fileName, -1L, DateTime.Now)
-            {
-            }
-
-            public void Write(Stream s)
-            {
-                OnWriteData(new VirtualFileItemWriteEventArgs(s));
-            }
-
-            protected virtual void OnWriteData(VirtualFileItemWriteEventArgs e)
-            {
-                if (this.WriteData != null)
-                {
-                    this.WriteData(this, e);
-                }
+                fileSize = value;
             }
         }
 
-        private VirtualFileItem currentVirtualFileItem;
-
-        private readonly List<VirtualFileItem> virtualFiles = new List<VirtualFileItem>();
-
-        private static readonly TYMED[] usableTymeds = new TYMED[5]
+        public DateTime WriteTime
         {
-            TYMED.TYMED_HGLOBAL,
-            TYMED.TYMED_ISTREAM,
-            TYMED.TYMED_ENHMF,
-            TYMED.TYMED_MFPICT,
-            TYMED.TYMED_GDI
+            get;
+            set;
+        }
+
+        public object Tag
+        {
+            get;
+            set;
+        }
+
+        public event EventHandler<VirtualFileItemWriteEventArgs> WriteData;
+
+        public VirtualFileItem(string fileName, long fileSize, DateTime writeTime)
+        {
+            FileName = fileName;
+            FileSize = fileSize;
+            WriteTime = writeTime;
+        }
+
+        public VirtualFileItem(string fileName)
+            : this(fileName, -1L, DateTime.Now)
+        {
+        }
+
+        public void Write(Stream s)
+        {
+            OnWriteData(new VirtualFileItemWriteEventArgs(s));
+        }
+
+        protected virtual void OnWriteData(VirtualFileItemWriteEventArgs e)
+        {
+            if (this.WriteData != null)
+            {
+                this.WriteData(this, e);
+            }
+        }
+    }
+
+    private VirtualFileItem currentVirtualFileItem;
+
+    private readonly List<VirtualFileItem> virtualFiles = new List<VirtualFileItem>();
+
+    private static readonly TYMED[] usableTymeds = new TYMED[5]
+    {
+        TYMED.TYMED_HGLOBAL,
+        TYMED.TYMED_ISTREAM,
+        TYMED.TYMED_ENHMF,
+        TYMED.TYMED_MFPICT,
+        TYMED.TYMED_GDI
+    };
+
+    public void SetFile(VirtualFileItem vfi)
+    {
+        VirtualFileItem virtualFileItem = virtualFiles.Find((VirtualFileItem v) => string.Equals(vfi.FileName, v.FileName, StringComparison.OrdinalIgnoreCase));
+        if (virtualFileItem != null)
+        {
+            virtualFiles.Remove(virtualFileItem);
+        }
+        virtualFiles.Add(vfi);
+        SetData(NativeMethods.CFSTR_FILEDESCRIPTORW, null);
+        SetData(NativeMethods.CFSTR_FILECONTENTS, null);
+        SetData(NativeMethods.CFSTR_PERFORMEDDROPEFFECT, null);
+    }
+
+    public void SetFile(string fileName, Action<Stream> handler)
+    {
+        VirtualFileItem virtualFileItem = new VirtualFileItem(fileName);
+        virtualFileItem.WriteData += delegate (object sender, VirtualFileItemWriteEventArgs e)
+        {
+            handler(e.Stream);
         };
+        SetFile(virtualFileItem);
+    }
 
-        public void SetFile(VirtualFileItem vfi)
+    public override object GetData(string format, bool autoConvert)
+    {
+        switch (format)
         {
-            VirtualFileItem virtualFileItem = virtualFiles.Find((VirtualFileItem v) => string.Equals(vfi.FileName, v.FileName, StringComparison.OrdinalIgnoreCase));
-            if (virtualFileItem != null)
-            {
-                virtualFiles.Remove(virtualFileItem);
-            }
-            virtualFiles.Add(vfi);
-            SetData(NativeMethods.CFSTR_FILEDESCRIPTORW, null);
-            SetData(NativeMethods.CFSTR_FILECONTENTS, null);
-            SetData(NativeMethods.CFSTR_PERFORMEDDROPEFFECT, null);
+            case NativeMethods.CFSTR_FILEDESCRIPTORW:
+                if (virtualFiles != null)
+                {
+                    base.SetData(NativeMethods.CFSTR_FILEDESCRIPTORW, GetVirtualFilesDescriptor(virtualFiles));
+                }
+                break;
+            case NativeMethods.CFSTR_FILECONTENTS:
+                base.SetData(NativeMethods.CFSTR_FILECONTENTS, GetFileContents(currentVirtualFileItem));
+                break;
         }
+        return base.GetData(format, autoConvert);
+    }
 
-        public void SetFile(string fileName, Action<Stream> handler)
+    [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    void System.Runtime.InteropServices.ComTypes.IDataObject.GetData(ref FORMATETC formatetc, out STGMEDIUM medium)
+    {
+        if (!GetTymedUseable(formatetc.tymed))
         {
-            VirtualFileItem virtualFileItem = new VirtualFileItem(fileName);
-            virtualFileItem.WriteData += delegate (object sender, VirtualFileItemWriteEventArgs e)
-            {
-                handler(e.Stream);
-            };
-            SetFile(virtualFileItem);
+            Marshal.ThrowExceptionForHR(NativeMethods.DV_E_TYMED);
         }
-
-        public override object GetData(string format, bool autoConvert)
+        if (formatetc.cfFormat == (short)DataFormats.GetFormat(NativeMethods.CFSTR_FILECONTENTS).Id)
         {
-            switch (format)
+            try
             {
-                case NativeMethods.CFSTR_FILEDESCRIPTORW:
-                    if (virtualFiles != null)
-                    {
-                        base.SetData(NativeMethods.CFSTR_FILEDESCRIPTORW, GetVirtualFilesDescriptor(virtualFiles));
-                    }
-                    break;
-                case NativeMethods.CFSTR_FILECONTENTS:
-                    base.SetData(NativeMethods.CFSTR_FILECONTENTS, GetFileContents(currentVirtualFileItem));
-                    break;
+                currentVirtualFileItem = virtualFiles[formatetc.lindex];
             }
-            return base.GetData(format, autoConvert);
+            catch (IndexOutOfRangeException)
+            {
+                currentVirtualFileItem = null;
+            }
         }
-
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        void System.Runtime.InteropServices.ComTypes.IDataObject.GetData(ref FORMATETC formatetc, out STGMEDIUM medium)
+        medium = default(STGMEDIUM);
+        if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
         {
-            if (!GetTymedUseable(formatetc.tymed))
+            medium.tymed = TYMED.TYMED_HGLOBAL;
+            medium.unionmember = NativeMethods.GlobalAlloc(NativeMethods.GMEM_MOVEABLE | NativeMethods.GMEM_ZEROINIT | NativeMethods.GMEM_DDESHARE, 1);
+            if (medium.unionmember == IntPtr.Zero)
             {
-                Marshal.ThrowExceptionForHR(NativeMethods.DV_E_TYMED);
+                throw new OutOfMemoryException();
             }
-            if (formatetc.cfFormat == (short)DataFormats.GetFormat(NativeMethods.CFSTR_FILECONTENTS).Id)
+            try
             {
-                try
-                {
-                    currentVirtualFileItem = virtualFiles[formatetc.lindex];
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    currentVirtualFileItem = null;
-                }
-            }
-            medium = default(STGMEDIUM);
-            if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
-            {
-                medium.tymed = TYMED.TYMED_HGLOBAL;
-                medium.unionmember = NativeMethods.GlobalAlloc(NativeMethods.GMEM_MOVEABLE | NativeMethods.GMEM_ZEROINIT | NativeMethods.GMEM_DDESHARE, 1);
-                if (medium.unionmember == IntPtr.Zero)
-                {
-                    throw new OutOfMemoryException();
-                }
-                try
-                {
-                    ((System.Runtime.InteropServices.ComTypes.IDataObject)this).GetDataHere(ref formatetc, ref medium);
-                }
-                catch
-                {
-                    NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
-                    medium.unionmember = IntPtr.Zero;
-                    throw;
-                }
-            }
-            else
-            {
-                medium.tymed = formatetc.tymed;
                 ((System.Runtime.InteropServices.ComTypes.IDataObject)this).GetDataHere(ref formatetc, ref medium);
             }
-        }
-
-        private static MemoryStream GetVirtualFilesDescriptor(ICollection<VirtualFileItem> virtualFileItems)
-        {
-            MemoryStream memoryStream = new MemoryStream();
-            memoryStream.Write(BitConverter.GetBytes(virtualFileItems.Count), 0, 4);
-            foreach (VirtualFileItem virtualFileItem in virtualFileItems)
+            catch
             {
-                NativeMethods.FILEDESCRIPTOR fILEDESCRIPTOR = default(NativeMethods.FILEDESCRIPTOR);
-                long num = virtualFileItem.WriteTime.ToFileTimeUtc();
-                fILEDESCRIPTOR.cFileName = virtualFileItem.FileName;
-                fILEDESCRIPTOR.ftLastWriteTime.dwHighDateTime = (int)(num >> 32);
-                fILEDESCRIPTOR.ftLastWriteTime.dwLowDateTime = (int)(num & 0xFFFFFFFFu);
-                fILEDESCRIPTOR.dwFlags = 16416u;
-                if (virtualFileItem.FileSize != -1)
-                {
-                    fILEDESCRIPTOR.nFileSizeHigh = (uint)(virtualFileItem.FileSize >> 32);
-                    fILEDESCRIPTOR.nFileSizeLow = (uint)(virtualFileItem.FileSize & 0xFFFFFFFFu);
-                    fILEDESCRIPTOR.dwFlags |= 64u;
-                }
-                int num2 = Marshal.SizeOf((object)fILEDESCRIPTOR);
-                IntPtr intPtr = Marshal.AllocHGlobal(num2);
-                byte[] array = new byte[num2];
-                try
-                {
-                    Marshal.StructureToPtr((object)fILEDESCRIPTOR, intPtr, fDeleteOld: true);
-                    Marshal.Copy(intPtr, array, 0, num2);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(intPtr);
-                }
-                memoryStream.Write(array, 0, array.Length);
+                NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
+                medium.unionmember = IntPtr.Zero;
+                throw;
             }
-            return memoryStream;
         }
-
-        private MemoryStream GetFileContents(VirtualFileItem vfi)
+        else
         {
-            if (vfi == null)
+            medium.tymed = formatetc.tymed;
+            ((System.Runtime.InteropServices.ComTypes.IDataObject)this).GetDataHere(ref formatetc, ref medium);
+        }
+    }
+
+    private static MemoryStream GetVirtualFilesDescriptor(ICollection<VirtualFileItem> virtualFileItems)
+    {
+        MemoryStream memoryStream = new MemoryStream();
+        memoryStream.Write(BitConverter.GetBytes(virtualFileItems.Count), 0, 4);
+        foreach (VirtualFileItem virtualFileItem in virtualFileItems)
+        {
+            NativeMethods.FILEDESCRIPTOR fILEDESCRIPTOR = default(NativeMethods.FILEDESCRIPTOR);
+            long num = virtualFileItem.WriteTime.ToFileTimeUtc();
+            fILEDESCRIPTOR.cFileName = virtualFileItem.FileName;
+            fILEDESCRIPTOR.ftLastWriteTime.dwHighDateTime = (int)(num >> 32);
+            fILEDESCRIPTOR.ftLastWriteTime.dwLowDateTime = (int)(num & 0xFFFFFFFFu);
+            fILEDESCRIPTOR.dwFlags = 16416u;
+            if (virtualFileItem.FileSize != -1)
             {
-                return null;
+                fILEDESCRIPTOR.nFileSizeHigh = (uint)(virtualFileItem.FileSize >> 32);
+                fILEDESCRIPTOR.nFileSizeLow = (uint)(virtualFileItem.FileSize & 0xFFFFFFFFu);
+                fILEDESCRIPTOR.dwFlags |= 64u;
             }
-            MemoryStream memoryStream = new MemoryStream();
-            OnWriteVirtualFile(memoryStream, vfi);
-            if (memoryStream.Length == 0L)
+            int num2 = Marshal.SizeOf((object)fILEDESCRIPTOR);
+            IntPtr intPtr = Marshal.AllocHGlobal(num2);
+            byte[] array = new byte[num2];
+            try
             {
-                memoryStream.WriteByte(0);
+                Marshal.StructureToPtr((object)fILEDESCRIPTOR, intPtr, fDeleteOld: true);
+                Marshal.Copy(intPtr, array, 0, num2);
             }
-            return memoryStream;
+            finally
+            {
+                Marshal.FreeHGlobal(intPtr);
+            }
+            memoryStream.Write(array, 0, array.Length);
         }
+        return memoryStream;
+    }
 
-        protected virtual void OnWriteVirtualFile(Stream s, VirtualFileItem vfi)
+    private MemoryStream GetFileContents(VirtualFileItem vfi)
+    {
+        if (vfi == null)
         {
-            vfi.Write(s);
+            return null;
         }
+        MemoryStream memoryStream = new MemoryStream();
+        OnWriteVirtualFile(memoryStream, vfi);
+        if (memoryStream.Length == 0L)
+        {
+            memoryStream.WriteByte(0);
+        }
+        return memoryStream;
+    }
 
-        private static bool GetTymedUseable(TYMED tymed)
-        {
-            return usableTymeds.Any((TYMED tm) => (tymed & tm) != 0);
-        }
+    protected virtual void OnWriteVirtualFile(Stream s, VirtualFileItem vfi)
+    {
+        vfi.Write(s);
+    }
+
+    private static bool GetTymedUseable(TYMED tymed)
+    {
+        return usableTymeds.Any((TYMED tm) => (tymed & tm) != 0);
     }
 }

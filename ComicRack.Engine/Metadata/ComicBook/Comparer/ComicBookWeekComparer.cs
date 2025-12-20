@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookWeekComparer : Comparer<ComicBook>
 {
-    public class ComicBookWeekComparer : Comparer<ComicBook>
+    public override int Compare(ComicBook x, ComicBook y)
     {
-        public override int Compare(ComicBook x, ComicBook y)
-        {
-            return x.Day.CompareTo(y.Week);
-        }
+        return x.Day.CompareTo(y.Week);
     }
 }

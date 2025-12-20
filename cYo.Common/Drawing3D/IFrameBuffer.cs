@@ -1,6 +1,5 @@
-namespace cYo.Common.Drawing3D
+namespace cYo.Common.Drawing3D;
+
+public interface IFrameBuffer : ITexture
 {
-    public interface IFrameBuffer : ITexture
-    {
-    }
 }

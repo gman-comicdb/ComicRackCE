@@ -1,24 +1,23 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Cache
+namespace cYo.Projects.ComicRack.Engine.IO.Cache;
+
+public class ResourceThumbnailEventArgs : EventArgs
 {
-    public class ResourceThumbnailEventArgs : EventArgs
+    public ThumbnailKey Key
     {
-        public ThumbnailKey Key
-        {
-            get;
-            private set;
-        }
+        get;
+        private set;
+    }
 
-        public ThumbnailImage Image
-        {
-            get;
-            set;
-        }
+    public ThumbnailImage Image
+    {
+        get;
+        set;
+    }
 
-        public ResourceThumbnailEventArgs(ThumbnailKey key)
-        {
-            Key = key;
-        }
+    public ResourceThumbnailEventArgs(ThumbnailKey key)
+    {
+        Key = key;
     }
 }

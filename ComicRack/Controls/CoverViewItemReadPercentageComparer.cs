@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Viewer.Controls
+namespace cYo.Projects.ComicRack.Viewer.Controls;
+
+public class CoverViewItemReadPercentageComparer : CoverViewItemComparer
 {
-    public class CoverViewItemReadPercentageComparer : CoverViewItemComparer
+    protected override int OnCompare(CoverViewItem x, CoverViewItem y)
     {
-        protected override int OnCompare(CoverViewItem x, CoverViewItem y)
-        {
-            return x.StackReadPercent.CompareTo(y.StackReadPercent);
-        }
+        return x.StackReadPercent.CompareTo(y.StackReadPercent);
     }
 }

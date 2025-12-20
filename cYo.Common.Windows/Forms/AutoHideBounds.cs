@@ -1,11 +1,10 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum AutoHideBounds
 {
-    public enum AutoHideBounds
-    {
-        None,
-        Top,
-        Bottom,
-        Left,
-        Right
-    }
+    None,
+    Top,
+    Bottom,
+    Left,
+    Right
 }

@@ -1,7 +1,6 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public interface IBlackList
 {
-    public interface IBlackList
-    {
-        void AddToBlackList(string path);
-    }
+    void AddToBlackList(string path);
 }

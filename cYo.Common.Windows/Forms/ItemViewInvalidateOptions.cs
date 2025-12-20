@@ -1,9 +1,8 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum ItemViewInvalidateOptions
 {
-    public enum ItemViewInvalidateOptions
-    {
-        None,
-        Position,
-        Full
-    }
+    None,
+    Position,
+    Full
 }

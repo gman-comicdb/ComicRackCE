@@ -2,47 +2,46 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class AutoSizeComboBox : ComboBox
 {
-    public class AutoSizeComboBox : ComboBox
+    private int autoSizePadding = 24;
+
+    private bool autoSizeEnabled = true;
+
+    [DefaultValue(24)]
+    public int AutoSizePadding
     {
-        private int autoSizePadding = 24;
-
-        private bool autoSizeEnabled = true;
-
-        [DefaultValue(24)]
-        public int AutoSizePadding
+        get
         {
-            get
-            {
-                return autoSizePadding;
-            }
-            set
-            {
-                autoSizePadding = value;
-            }
+            return autoSizePadding;
         }
-
-        [DefaultValue(true)]
-        public bool AutoSizeEnabled
+        set
         {
-            get
-            {
-                return autoSizeEnabled;
-            }
-            set
-            {
-                autoSizeEnabled = value;
-            }
+            autoSizePadding = value;
         }
+    }
 
-        protected override void OnTextChanged(EventArgs e)
+    [DefaultValue(true)]
+    public bool AutoSizeEnabled
+    {
+        get
         {
-            base.OnTextChanged(e);
-            if (autoSizeEnabled)
-            {
-                base.Width = TextRenderer.MeasureText(Text, Font).Width + autoSizePadding;
-            }
+            return autoSizeEnabled;
+        }
+        set
+        {
+            autoSizeEnabled = value;
+        }
+    }
+
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        if (autoSizeEnabled)
+        {
+            base.Width = TextRenderer.MeasureText(Text, Font).Width + autoSizePadding;
         }
     }
 }

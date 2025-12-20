@@ -1,18 +1,17 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
-{
-    public class ComicBookGroupLinked : SingleComicGrouper
-    {
-        private readonly string[] captions = GroupInfo.TRGroup.GetStrings("LinkedGroups", "Linked to File|Not linked to File", '|');
+namespace cYo.Projects.ComicRack.Engine;
 
-        public override IGroupInfo GetGroup(ComicBook item)
+public class ComicBookGroupLinked : SingleComicGrouper
+{
+    private readonly string[] captions = GroupInfo.TRGroup.GetStrings("LinkedGroups", "Linked to File|Not linked to File", '|');
+
+    public override IGroupInfo GetGroup(ComicBook item)
+    {
+        if (!item.IsLinked)
         {
-            if (!item.IsLinked)
-            {
-                return new GroupInfo(captions[1], 1);
-            }
-            return new GroupInfo(captions[0], 0);
+            return new GroupInfo(captions[1], 1);
         }
+        return new GroupInfo(captions[0], 0);
     }
 }

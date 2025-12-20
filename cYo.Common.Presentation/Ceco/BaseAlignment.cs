@@ -1,11 +1,10 @@
-namespace cYo.Common.Presentation.Ceco
+namespace cYo.Common.Presentation.Ceco;
+
+public enum BaseAlignment
 {
-    public enum BaseAlignment
-    {
-        None,
-        Bottom,
-        Top,
-        Center,
-        Baseline
-    }
+    None,
+    Bottom,
+    Top,
+    Center,
+    Baseline
 }

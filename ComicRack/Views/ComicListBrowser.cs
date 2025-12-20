@@ -8,142 +8,141 @@ using cYo.Common.ComponentModel;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 
-namespace cYo.Projects.ComicRack.Viewer.Views
+namespace cYo.Projects.ComicRack.Viewer.Views;
+
+public partial class ComicListBrowser : SubView, IRefreshDisplay
 {
-    public partial class ComicListBrowser : SubView, IRefreshDisplay
+    protected readonly CursorList<IComicBookListProvider> history = new CursorList<IComicBookListProvider>();
+
+    private IComicBookListProvider bookList;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public virtual IComicBookListProvider BookList
     {
-        protected readonly CursorList<IComicBookListProvider> history = new CursorList<IComicBookListProvider>();
-
-        private IComicBookListProvider bookList;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public virtual IComicBookListProvider BookList
+        get
         {
-            get
+            return bookList;
+        }
+        protected set
+        {
+            if (bookList != value)
             {
-                return bookList;
-            }
-            protected set
-            {
-                if (bookList != value)
+                IComicBookListProvider comicBookListProvider = bookList;
+                bookList = value;
+                if (bookList != null)
                 {
-                    IComicBookListProvider comicBookListProvider = bookList;
-                    bookList = value;
-                    if (bookList != null)
-                    {
-                        bookList.ServiceRequest += bookList_ServiceRequest;
-                    }
-                    OnBookListChanged();
-                    if (comicBookListProvider != null)
-                    {
-                        comicBookListProvider.ServiceRequest -= bookList_ServiceRequest;
-                    }
-                    history.AddAtCursor(bookList);
+                    bookList.ServiceRequest += bookList_ServiceRequest;
                 }
-            }
-        }
-
-        [Browsable(false)]
-        public Guid BookListId
-        {
-            get
-            {
-                if (BookList != null)
+                OnBookListChanged();
+                if (comicBookListProvider != null)
                 {
-                    return BookList.Id;
+                    comicBookListProvider.ServiceRequest -= bookList_ServiceRequest;
                 }
-                return Guid.Empty;
+                history.AddAtCursor(bookList);
             }
         }
+    }
 
-        public virtual bool TopBrowserVisible
+    [Browsable(false)]
+    public Guid BookListId
+    {
+        get
         {
-            get
+            if (BookList != null)
             {
-                return false;
+                return BookList.Id;
             }
-            set
-            {
-            }
+            return Guid.Empty;
         }
+    }
 
-        public virtual int TopBrowserSplit
+    public virtual bool TopBrowserVisible
+    {
+        get
         {
-            get
-            {
-                return 100;
-            }
-            set
-            {
-            }
+            return false;
         }
-
-        public event EventHandler BookListChanged;
-
-        public event EventHandler RefreshLists;
-
-        public ComicListBrowser()
-        {
-            InitializeComponent();
-        }
-
-        protected virtual void OnBookListChanged()
-        {
-            if (this.BookListChanged != null)
-            {
-                this.BookListChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void bookList_ServiceRequest(object sender, ServiceRequestEventArgs e)
-        {
-            OnListServiceRequest(sender as IComicBookListProvider, e);
-        }
-
-        protected virtual void OnListServiceRequest(IComicBookListProvider senderList, ServiceRequestEventArgs e)
+        set
         {
         }
+    }
 
-        protected virtual IComicBookListProvider GetNewBookList()
+    public virtual int TopBrowserSplit
+    {
+        get
         {
-            if (base.Main != null)
-            {
-                base.Main.StoreWorkspace();
-            }
-            return BookList;
+            return 100;
         }
+        set
+        {
+        }
+    }
 
-        protected virtual void OnRefreshDisplay()
-        {
-            if (this.RefreshLists != null)
-            {
-                this.RefreshLists(this, EventArgs.Empty);
-            }
-        }
+    public event EventHandler BookListChanged;
 
-        public void OpenListInNewWindow()
-        {
-            IListDisplays listDisplays = this.FindParentService<IListDisplays>();
-            IComicBookListProvider newBookList = GetNewBookList();
-            if (listDisplays != null && newBookList != null)
-            {
-                listDisplays.AddListWindow(null, newBookList);
-            }
-        }
+    public event EventHandler RefreshLists;
 
-        public void OpenListInNewTab(Image image)
-        {
-            IListDisplays listDisplays = this.FindParentService<IListDisplays>();
-            IComicBookListProvider newBookList = GetNewBookList();
-            if (listDisplays != null && newBookList != null)
-            {
-                listDisplays.AddListTab(image, newBookList);
-            }
-        }
+    public ComicListBrowser()
+    {
+        InitializeComponent();
+    }
 
-        public void RefreshDisplay()
+    protected virtual void OnBookListChanged()
+    {
+        if (this.BookListChanged != null)
         {
-            OnRefreshDisplay();
+            this.BookListChanged(this, EventArgs.Empty);
         }
+    }
+
+    private void bookList_ServiceRequest(object sender, ServiceRequestEventArgs e)
+    {
+        OnListServiceRequest(sender as IComicBookListProvider, e);
+    }
+
+    protected virtual void OnListServiceRequest(IComicBookListProvider senderList, ServiceRequestEventArgs e)
+    {
+    }
+
+    protected virtual IComicBookListProvider GetNewBookList()
+    {
+        if (base.Main != null)
+        {
+            base.Main.StoreWorkspace();
+        }
+        return BookList;
+    }
+
+    protected virtual void OnRefreshDisplay()
+    {
+        if (this.RefreshLists != null)
+        {
+            this.RefreshLists(this, EventArgs.Empty);
+        }
+    }
+
+    public void OpenListInNewWindow()
+    {
+        IListDisplays listDisplays = this.FindParentService<IListDisplays>();
+        IComicBookListProvider newBookList = GetNewBookList();
+        if (listDisplays != null && newBookList != null)
+        {
+            listDisplays.AddListWindow(null, newBookList);
+        }
+    }
+
+    public void OpenListInNewTab(Image image)
+    {
+        IListDisplays listDisplays = this.FindParentService<IListDisplays>();
+        IComicBookListProvider newBookList = GetNewBookList();
+        if (listDisplays != null && newBookList != null)
+        {
+            listDisplays.AddListTab(image, newBookList);
+        }
+    }
+
+    public void RefreshDisplay()
+    {
+        OnRefreshDisplay();
     }
 }

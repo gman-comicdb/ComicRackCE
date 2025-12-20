@@ -5,67 +5,66 @@ using System.Text.RegularExpressions;
 
 using cYo.Common.Win32.PortableDevices;
 
-namespace cYo.Projects.ComicRack.Engine.Sync
+namespace cYo.Projects.ComicRack.Engine.Sync;
+
+public class PortableDeviceSyncProvider : SyncProviderBase
 {
-    public class PortableDeviceSyncProvider : SyncProviderBase
+    private const int maxFolderLevel = 10;
+
+    private readonly Device device;
+
+    private readonly DeviceFolder syncFolder;
+
+    public PortableDeviceSyncProvider(string deviceNode, string deviceKey = null)
     {
-        private const int maxFolderLevel = 10;
-
-        private readonly Device device;
-
-        private readonly DeviceFolder syncFolder;
-
-        public PortableDeviceSyncProvider(string deviceNode, string deviceKey = null)
+        device = DeviceFactory.GetDevice(deviceNode);
+        syncFolder = device.Find(Regex.Escape(MarkerFile), maxFolderLevel).Parent;
+        if (syncFolder == null)
         {
-            device = DeviceFactory.GetDevice(deviceNode);
-            syncFolder = device.Find(Regex.Escape(MarkerFile), maxFolderLevel).Parent;
-            if (syncFolder == null)
-            {
-                throw new DriveNotFoundException();
-            }
-            if (!ReadMarkerFile(deviceKey))
-            {
-                throw new DriveNotFoundException();
-            }
+            throw new DriveNotFoundException();
         }
-
-        protected override void OnStart()
+        if (!ReadMarkerFile(deviceKey))
         {
+            throw new DriveNotFoundException();
         }
+    }
 
-        protected override void OnCompleted()
-        {
-        }
+    protected override void OnStart()
+    {
+    }
 
-        protected override bool FileExists(string file)
-        {
-            return syncFolder.FileExists(file);
-        }
+    protected override void OnCompleted()
+    {
+    }
 
-        protected override IEnumerable<string> GetFileList()
-        {
-            return from item in syncFolder.Items.OfType<DeviceFile>()
-                   select item.Name;
-        }
+    protected override bool FileExists(string file)
+    {
+        return syncFolder.FileExists(file);
+    }
 
-        protected override void WriteFile(string fileName, Stream data)
-        {
-            syncFolder.WriteFile(fileName, data);
-        }
+    protected override IEnumerable<string> GetFileList()
+    {
+        return from item in syncFolder.Items.OfType<DeviceFile>()
+               select item.Name;
+    }
 
-        protected override Stream ReadFile(string fileName)
-        {
-            return syncFolder.GetFile(fileName).ReadFile();
-        }
+    protected override void WriteFile(string fileName, Stream data)
+    {
+        syncFolder.WriteFile(fileName, data);
+    }
 
-        protected override void DeleteFile(string fileName)
-        {
-            syncFolder.GetFile(fileName)?.Delete();
-        }
+    protected override Stream ReadFile(string fileName)
+    {
+        return syncFolder.GetFile(fileName).ReadFile();
+    }
 
-        protected override long GetFreeSpace()
-        {
-            return syncFolder.FreeSpace;
-        }
+    protected override void DeleteFile(string fileName)
+    {
+        syncFolder.GetFile(fileName)?.Delete();
+    }
+
+    protected override long GetFreeSpace()
+    {
+        return syncFolder.FreeSpace;
     }
 }

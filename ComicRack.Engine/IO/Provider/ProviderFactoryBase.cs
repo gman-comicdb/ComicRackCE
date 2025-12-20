@@ -7,51 +7,50 @@ using System.Threading;
 using cYo.Common.Collections;
 using cYo.Common.Threading;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public abstract class ProviderFactoryBase<T> where T : class
 {
-    public abstract class ProviderFactoryBase<T> where T : class
+    protected readonly ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
+
+    protected readonly List<IProviderInfo> providerDict = new List<IProviderInfo>();
+
+    public abstract void RegisterProvider(Type t, bool withLocking);
+
+    public void RegisterProviders()
     {
-        protected readonly ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
+        RegisterProviders(Assembly.GetExecutingAssembly());
+    }
 
-        protected readonly List<IProviderInfo> providerDict = new List<IProviderInfo>();
+    public void RegisterProviders(Assembly assembly)
+    {
+        RegisterProviders(assembly, typeof(T));
+    }
 
-        public abstract void RegisterProvider(Type t, bool withLocking);
-
-        public void RegisterProviders()
+    public void RegisterProviders(Assembly assembly, Type baseType)
+    {
+        using (rwLock.WriteLock())
         {
-            RegisterProviders(Assembly.GetExecutingAssembly());
+            (from t in assembly.GetTypes()
+             where !t.IsAbstract && t.IsSubclassOf(baseType) && t.GetConstructor(new Type[0]) != null
+             select t).ForEach((Type t) => RegisterProvider(t, withLocking: false));
         }
+    }
 
-        public void RegisterProviders(Assembly assembly)
-        {
-            RegisterProviders(assembly, typeof(T));
-        }
+    protected IEnumerable<TInfo> GetProviderInfos<TInfo>() where TInfo : class, IProviderInfo
+    {
+        return providerDict.ReadLock(rwLock).Cast<TInfo>();
+    }
 
-        public void RegisterProviders(Assembly assembly, Type baseType)
-        {
-            using (rwLock.WriteLock())
-            {
-                (from t in assembly.GetTypes()
-                 where !t.IsAbstract && t.IsSubclassOf(baseType) && t.GetConstructor(new Type[0]) != null
-                 select t).ForEach((Type t) => RegisterProvider(t, withLocking: false));
-            }
-        }
+    protected IEnumerable<Type> GetProviderTypes<TInfo>() where TInfo : class, IProviderInfo
+    {
+        return from pi in GetProviderInfos<TInfo>()
+               select pi.ProviderType;
+    }
 
-        protected IEnumerable<TInfo> GetProviderInfos<TInfo>() where TInfo : class, IProviderInfo
-        {
-            return providerDict.ReadLock(rwLock).Cast<TInfo>();
-        }
-
-        protected IEnumerable<Type> GetProviderTypes<TInfo>() where TInfo : class, IProviderInfo
-        {
-            return from pi in GetProviderInfos<TInfo>()
-                   select pi.ProviderType;
-        }
-
-        public IEnumerable<T> CreateProviders<TInfo>() where TInfo : class, IProviderInfo
-        {
-            return from t in GetProviderTypes<TInfo>()
-                   select Activator.CreateInstance(t) as T;
-        }
+    public IEnumerable<T> CreateProviders<TInfo>() where TInfo : class, IProviderInfo
+    {
+        return from t in GetProviderTypes<TInfo>()
+               select Activator.CreateInstance(t) as T;
     }
 }

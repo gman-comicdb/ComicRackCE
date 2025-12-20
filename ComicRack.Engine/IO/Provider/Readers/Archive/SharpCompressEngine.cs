@@ -9,90 +9,89 @@ using cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive
+namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive;
+
+public class SharpCompressEngine : FileBasedAccessor
 {
-    public class SharpCompressEngine : FileBasedAccessor
+    private int format;
+
+    public SharpCompressEngine(int format)
+        : base(format)
     {
-        private int format;
+        this.format = format;
+    }
 
-        public SharpCompressEngine(int format)
-            : base(format)
+    public override bool IsFormat(string source)
+    {
+        if (base.HasSignature)
         {
-            this.format = format;
+            return base.IsFormat(source);
         }
-
-        public override bool IsFormat(string source)
-        {
-            if (base.HasSignature)
-            {
-                return base.IsFormat(source);
-            }
-            try
-            {
-                using (IArchive archive = ArchiveFactory.Open(source))
-                {
-                    switch (archive.Type)
-                    {
-                        case ArchiveType.Rar:
-                            return format == KnownFileFormats.CBR;
-                        case ArchiveType.Zip:
-                            return format == KnownFileFormats.CBZ;
-                        case ArchiveType.Tar:
-                            return format == KnownFileFormats.CBT;
-                        case ArchiveType.SevenZip:
-                            return format == KnownFileFormats.CB7;
-                        default:
-                            return false;
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public override IEnumerable<ProviderImageInfo> GetEntryList(string source)
+        try
         {
             using (IArchive archive = ArchiveFactory.Open(source))
             {
-                int i = 0;
-                foreach (IArchiveEntry entry in archive.Entries)
+                switch (archive.Type)
                 {
-                    if (!entry.IsDirectory)
-                    {
-                        yield return new ProviderImageInfo(i, entry.Key, entry.Size);
-                    }
-                    i++;
+                    case ArchiveType.Rar:
+                        return format == KnownFileFormats.CBR;
+                    case ArchiveType.Zip:
+                        return format == KnownFileFormats.CBZ;
+                    case ArchiveType.Tar:
+                        return format == KnownFileFormats.CBT;
+                    case ArchiveType.SevenZip:
+                        return format == KnownFileFormats.CB7;
+                    default:
+                        return false;
                 }
             }
         }
-
-        public override byte[] ReadByteImage(string source, ProviderImageInfo info)
+        catch
         {
-            using (IArchive archive = ArchiveFactory.Open(source))
+            return false;
+        }
+    }
+
+    public override IEnumerable<ProviderImageInfo> GetEntryList(string source)
+    {
+        using (IArchive archive = ArchiveFactory.Open(source))
+        {
+            int i = 0;
+            foreach (IArchiveEntry entry in archive.Entries)
             {
-                IArchiveEntry archiveEntry = archive.Entries.Skip(info.Index).First();
-                MemoryStream memoryStream = new MemoryStream((int)archiveEntry.Size);
-                archiveEntry.WriteTo(memoryStream);
-                return memoryStream.ToArray();
+                if (!entry.IsDirectory)
+                {
+                    yield return new ProviderImageInfo(i, entry.Key, entry.Size);
+                }
+                i++;
             }
         }
+    }
 
-        public override ComicInfo ReadInfo(string source)
+    public override byte[] ReadByteImage(string source, ProviderImageInfo info)
+    {
+        using (IArchive archive = ArchiveFactory.Open(source))
         {
-            using (IArchive archive = ArchiveFactory.Open(source))
+            IArchiveEntry archiveEntry = archive.Entries.Skip(info.Index).First();
+            MemoryStream memoryStream = new MemoryStream((int)archiveEntry.Size);
+            archiveEntry.WriteTo(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
+    public override ComicInfo ReadInfo(string source)
+    {
+        using (IArchive archive = ArchiveFactory.Open(source))
+        {
+            return XmlInfoProviders.Readers.DeserializeAll(s =>
             {
-                return XmlInfoProviders.Readers.DeserializeAll(s =>
-                {
-                    IArchiveEntry archiveEntry = archive.Entries.FirstOrDefault((IArchiveEntry e) => Path.GetFileName(e.Key).Equals(s, StringComparison.OrdinalIgnoreCase));
+                IArchiveEntry archiveEntry = archive.Entries.FirstOrDefault((IArchiveEntry e) => Path.GetFileName(e.Key).Equals(s, StringComparison.OrdinalIgnoreCase));
 
-                    if (archiveEntry == null)
-                        return null;
+                if (archiveEntry == null)
+                    return null;
 
-                    return archiveEntry.OpenEntryStream();
-                });
-            }
+                return archiveEntry.OpenEntryStream();
+            });
         }
     }
 }

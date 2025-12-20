@@ -1,16 +1,15 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("File")]
+[ComicBookMatcherHint("FilePath")]
+public class ComicBookFileMatcher : ComicBookStringMatcher
 {
-    [Serializable]
-    [Description("File")]
-    [ComicBookMatcherHint("FilePath")]
-    public class ComicBookFileMatcher : ComicBookStringMatcher
+    protected override string GetValue(ComicBook comicBook)
     {
-        protected override string GetValue(ComicBook comicBook)
-        {
-            return comicBook.FileName;
-        }
+        return comicBook.FileName;
     }
 }

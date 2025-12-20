@@ -1,7 +1,6 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IRefreshDisplay
 {
-    public interface IRefreshDisplay
-    {
-        void RefreshDisplay();
-    }
+    void RefreshDisplay();
 }

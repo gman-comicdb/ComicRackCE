@@ -1,28 +1,27 @@
 using cYo.Common.ComponentModel;
 using cYo.Common.Reflection;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public abstract class FileProviderBase : DisposableObject
 {
-    public abstract class FileProviderBase : DisposableObject
+    private FileFormat defaultFileFormat;
+
+    public FileFormat DefaultFileFormat
     {
-        private FileFormat defaultFileFormat;
-
-        public FileFormat DefaultFileFormat
+        get
         {
-            get
+            if (defaultFileFormat == null)
             {
-                if (defaultFileFormat == null)
+                FileFormatAttribute attribute = GetType().GetAttribute<FileFormatAttribute>();
+                if (attribute != null)
                 {
-                    FileFormatAttribute attribute = GetType().GetAttribute<FileFormatAttribute>();
-                    if (attribute != null)
-                    {
-                        defaultFileFormat = attribute.Format;
-                    }
+                    defaultFileFormat = attribute.Format;
                 }
-                return defaultFileFormat;
             }
+            return defaultFileFormat;
         }
-
-        public virtual int FormatId => DefaultFileFormat.Id;
     }
+
+    public virtual int FormatId => DefaultFileFormat.Id;
 }

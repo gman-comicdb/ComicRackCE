@@ -6,157 +6,156 @@ using System.Text;
 
 using cYo.Common.Win32;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+[Serializable]
+public class FileFormat : IComparable<FileFormat>
 {
-    [Serializable]
-    public class FileFormat : IComparable<FileFormat>
+    private readonly string[] extensionArray;
+
+    private readonly string extensions;
+
+    private int iconId = 1;
+
+    public string Name
     {
-        private readonly string[] extensionArray;
+        get;
+        set;
+    }
 
-        private readonly string extensions;
+    public int Id
+    {
+        get;
+        set;
+    }
 
-        private int iconId = 1;
+    public string ExtensionList => extensions;
 
-        public string Name
+    public IEnumerable<string> Extensions => extensionArray;
+
+    public string ExtensionFilter
+    {
+        get
         {
-            get;
-            set;
-        }
-
-        public int Id
-        {
-            get;
-            set;
-        }
-
-        public string ExtensionList => extensions;
-
-        public IEnumerable<string> Extensions => extensionArray;
-
-        public string ExtensionFilter
-        {
-            get
+            StringBuilder stringBuilder = new StringBuilder();
+            string[] array = extensionArray;
+            foreach (string value in array)
             {
-                StringBuilder stringBuilder = new StringBuilder();
-                string[] array = extensionArray;
-                foreach (string value in array)
+                if (stringBuilder.Length != 0)
                 {
-                    if (stringBuilder.Length != 0)
-                    {
-                        stringBuilder.Append("; ");
-                    }
-                    stringBuilder.Append("*");
-                    stringBuilder.Append(value);
+                    stringBuilder.Append("; ");
                 }
-                return stringBuilder.ToString();
+                stringBuilder.Append("*");
+                stringBuilder.Append(value);
             }
+            return stringBuilder.ToString();
         }
+    }
 
-        public int IconId
+    public int IconId
+    {
+        get
         {
-            get
+            return iconId;
+        }
+        set
+        {
+            iconId = value;
+        }
+    }
+
+    public bool SupportsUpdate
+    {
+        get;
+        set;
+    }
+
+    public bool Dynamic
+    {
+        get;
+        set;
+    }
+
+    public string MainExtension => extensionArray[0];
+
+    public static bool CanRegisterShell => ShellRegister.CanRegisterShell;
+
+    public FileFormat(string name, int id, string extensions)
+    {
+        Name = name;
+        Id = id;
+        this.extensions = extensions;
+        extensionArray = extensions.Replace(" ", string.Empty).Split(';');
+    }
+
+    public bool HasExtension(string extension)
+    {
+        return extensionArray.Any((string ext) => string.Equals(extension, ext, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public bool IsShellRegistered(string typeId)
+    {
+        try
+        {
+            return extensionArray.All((string ext) => ShellRegister.IsFileOpenRegistered(typeId, ext) || ShellRegister.IsFileOpenWithRegistered(ext, typeId));
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public void RegisterShell(string typeId, string docName, bool overwrite)
+    {
+        try
+        {
+            string[] array = extensionArray;
+            foreach (string docExtension in array)
             {
-                return iconId;
-            }
-            set
-            {
-                iconId = value;
-            }
-        }
-
-        public bool SupportsUpdate
-        {
-            get;
-            set;
-        }
-
-        public bool Dynamic
-        {
-            get;
-            set;
-        }
-
-        public string MainExtension => extensionArray[0];
-
-        public static bool CanRegisterShell => ShellRegister.CanRegisterShell;
-
-        public FileFormat(string name, int id, string extensions)
-        {
-            Name = name;
-            Id = id;
-            this.extensions = extensions;
-            extensionArray = extensions.Replace(" ", string.Empty).Split(';');
-        }
-
-        public bool HasExtension(string extension)
-        {
-            return extensionArray.Any((string ext) => string.Equals(extension, ext, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public bool IsShellRegistered(string typeId)
-        {
-            try
-            {
-                return extensionArray.All((string ext) => ShellRegister.IsFileOpenRegistered(typeId, ext) || ShellRegister.IsFileOpenWithRegistered(ext, typeId));
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public void RegisterShell(string typeId, string docName, bool overwrite)
-        {
-            try
-            {
-                string[] array = extensionArray;
-                foreach (string docExtension in array)
+                bool flag = ShellRegister.IsFileOpenInUse(typeId, docExtension);
+                if (!flag || overwrite)
                 {
-                    bool flag = ShellRegister.IsFileOpenInUse(typeId, docExtension);
-                    if (!flag || overwrite)
-                    {
-                        ShellRegister.RegisterFileOpen(typeId, docExtension, docName, iconId);
-                    }
-                    else
-                    {
-                        ShellRegister.RegisterFileOpenWith(docExtension, typeId);
-                    }
+                    ShellRegister.RegisterFileOpen(typeId, docExtension, docName, iconId);
+                }
+                else
+                {
+                    ShellRegister.RegisterFileOpenWith(docExtension, typeId);
                 }
             }
-            catch
+        }
+        catch
+        {
+        }
+    }
+
+    public void UnregisterShell(string typeId)
+    {
+        try
+        {
+            string[] array = extensionArray;
+            foreach (string docExtension in array)
             {
+                ShellRegister.UnregisterFileOpen(typeId, docExtension);
+                ShellRegister.UnregisterFileOpenWith(docExtension, typeId);
             }
         }
-
-        public void UnregisterShell(string typeId)
+        catch
         {
-            try
-            {
-                string[] array = extensionArray;
-                foreach (string docExtension in array)
-                {
-                    ShellRegister.UnregisterFileOpen(typeId, docExtension);
-                    ShellRegister.UnregisterFileOpenWith(docExtension, typeId);
-                }
-            }
-            catch
-            {
-            }
         }
+    }
 
-        public bool Supports(string source)
-        {
-            return HasExtension(Path.GetExtension(source));
-        }
+    public bool Supports(string source)
+    {
+        return HasExtension(Path.GetExtension(source));
+    }
 
-        public override string ToString()
-        {
-            return Name + " (" + ExtensionFilter + ")";
-        }
+    public override string ToString()
+    {
+        return Name + " (" + ExtensionFilter + ")";
+    }
 
-        public int CompareTo(FileFormat other)
-        {
-            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
-        }
+    public int CompareTo(FileFormat other)
+    {
+        return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
     }
 }

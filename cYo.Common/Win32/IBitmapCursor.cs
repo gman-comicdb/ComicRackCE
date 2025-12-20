@@ -2,43 +2,42 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Common.Win32
+namespace cYo.Common.Win32;
+
+public interface IBitmapCursor : IDisposable
 {
-    public interface IBitmapCursor : IDisposable
+    Bitmap Bitmap
     {
-        Bitmap Bitmap
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        bool BitmapOwned
-        {
-            get;
-            set;
-        }
+    bool BitmapOwned
+    {
+        get;
+        set;
+    }
 
-        Cursor Cursor
-        {
-            get;
-        }
+    Cursor Cursor
+    {
+        get;
+    }
 
-        Point HotSpot
-        {
-            get;
-            set;
-        }
+    Point HotSpot
+    {
+        get;
+        set;
+    }
 
-        Cursor OverlayCursor
-        {
-            get;
-            set;
-        }
+    Cursor OverlayCursor
+    {
+        get;
+        set;
+    }
 
-        BitmapCursorOverlayEffect OverlayEffect
-        {
-            get;
-            set;
-        }
+    BitmapCursorOverlayEffect OverlayEffect
+    {
+        get;
+        set;
     }
 }

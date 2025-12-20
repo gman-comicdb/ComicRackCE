@@ -2,128 +2,127 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class AutoRepeatButton : Button
 {
-    public class AutoRepeatButton : Button
+    private bool supressFinalClick;
+
+    private bool finalClick;
+
+    private int currentTime;
+
+    private Timer timer;
+
+    private int repeatTime = 250;
+
+    private int speedUp = 10;
+
+    private bool repeatEnabled = true;
+
+    [DefaultValue(250)]
+    public int RepeatTime
     {
-        private bool supressFinalClick;
-
-        private bool finalClick;
-
-        private int currentTime;
-
-        private Timer timer;
-
-        private int repeatTime = 250;
-
-        private int speedUp = 10;
-
-        private bool repeatEnabled = true;
-
-        [DefaultValue(250)]
-        public int RepeatTime
+        get
         {
-            get
-            {
-                return repeatTime;
-            }
-            set
-            {
-                repeatTime = value;
-            }
+            return repeatTime;
         }
-
-        [DefaultValue(10)]
-        public int SpeedUp
+        set
         {
-            get
-            {
-                return speedUp;
-            }
-            set
-            {
-                speedUp = value;
-            }
+            repeatTime = value;
         }
+    }
 
-        [DefaultValue(true)]
-        public bool RepeatEnabled
+    [DefaultValue(10)]
+    public int SpeedUp
+    {
+        get
         {
-            get
-            {
-                return repeatEnabled;
-            }
-            set
-            {
-                repeatEnabled = value;
-            }
+            return speedUp;
         }
-
-        protected override void Dispose(bool disposing)
+        set
         {
-            if (disposing && timer != null)
-            {
-                timer.Dispose();
-            }
-            base.Dispose(disposing);
+            speedUp = value;
         }
+    }
 
-        protected override void OnMouseDown(MouseEventArgs mevent)
+    [DefaultValue(true)]
+    public bool RepeatEnabled
+    {
+        get
         {
-            base.OnMouseDown(mevent);
-            if ((mevent.Button & MouseButtons.Left) != 0)
-            {
-                currentTime = repeatTime;
-                InitTimer(currentTime);
-            }
+            return repeatEnabled;
         }
-
-        protected override void OnMouseUp(MouseEventArgs mevent)
+        set
         {
-            base.OnMouseUp(mevent);
-            InitTimer(0);
-            if (supressFinalClick)
-            {
-                finalClick = false;
-            }
+            repeatEnabled = value;
         }
+    }
 
-        protected override void OnClick(EventArgs e)
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && timer != null)
         {
-            if (finalClick)
-            {
-                base.OnClick(e);
-            }
-            finalClick = true;
+            timer.Dispose();
         }
+        base.Dispose(disposing);
+    }
 
-        private void InitTimer(int repeatTime)
+    protected override void OnMouseDown(MouseEventArgs mevent)
+    {
+        base.OnMouseDown(mevent);
+        if ((mevent.Button & MouseButtons.Left) != 0)
         {
-            if (timer == null)
-            {
-                timer = new Timer();
-                timer.Tick += timer_Tick;
-            }
-            finalClick = true;
-            supressFinalClick = false;
-            timer.Stop();
-            if (repeatEnabled && repeatTime != 0)
-            {
-                timer.Interval = repeatTime;
-                timer.Start();
-            }
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            OnClick(e);
-            currentTime -= speedUp;
-            if (currentTime < 50)
-            {
-                currentTime = 50;
-            }
+            currentTime = repeatTime;
             InitTimer(currentTime);
-            supressFinalClick = true;
         }
+    }
+
+    protected override void OnMouseUp(MouseEventArgs mevent)
+    {
+        base.OnMouseUp(mevent);
+        InitTimer(0);
+        if (supressFinalClick)
+        {
+            finalClick = false;
+        }
+    }
+
+    protected override void OnClick(EventArgs e)
+    {
+        if (finalClick)
+        {
+            base.OnClick(e);
+        }
+        finalClick = true;
+    }
+
+    private void InitTimer(int repeatTime)
+    {
+        if (timer == null)
+        {
+            timer = new Timer();
+            timer.Tick += timer_Tick;
+        }
+        finalClick = true;
+        supressFinalClick = false;
+        timer.Stop();
+        if (repeatEnabled && repeatTime != 0)
+        {
+            timer.Interval = repeatTime;
+            timer.Start();
+        }
+    }
+
+    private void timer_Tick(object sender, EventArgs e)
+    {
+        OnClick(e);
+        currentTime -= speedUp;
+        if (currentTime < 50)
+        {
+            currentTime = 50;
+        }
+        InitTimer(currentTime);
+        supressFinalClick = true;
     }
 }

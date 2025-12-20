@@ -1,8 +1,7 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum ExportImageProcessingSource
 {
-    public enum ExportImageProcessingSource
-    {
-        Custom,
-        FromComic
-    }
+    Custom,
+    FromComic
 }

@@ -3,200 +3,199 @@ using System;
 using cYo.Common.Mathematics;
 using cYo.Common.Runtime;
 
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public class Animator
 {
-    public class Animator
+    private volatile int delay;
+
+    private volatile int time;
+
+    private volatile int span = 1000;
+
+    private volatile bool isRunning;
+
+    private volatile float animationValue;
+
+    private volatile float lastAnimationValue;
+
+    private AnimationValueHandler animationValueGenerator = LinearRise;
+
+    private AnimationHandler animationHandler;
+
+    private long startTime;
+
+    public int Delay
     {
-        private volatile int delay;
-
-        private volatile int time;
-
-        private volatile int span = 1000;
-
-        private volatile bool isRunning;
-
-        private volatile float animationValue;
-
-        private volatile float lastAnimationValue;
-
-        private AnimationValueHandler animationValueGenerator = LinearRise;
-
-        private AnimationHandler animationHandler;
-
-        private long startTime;
-
-        public int Delay
+        get
         {
-            get
-            {
-                return delay;
-            }
-            set
-            {
-                delay = value;
-            }
+            return delay;
         }
-
-        public int Time => time;
-
-        public int Span
+        set
         {
-            get
-            {
-                return span;
-            }
-            set
-            {
-                span = value;
-            }
+            delay = value;
         }
+    }
 
-        public bool HasBeenStarted => startTime != 0;
+    public int Time => time;
 
-        public bool IsRunning => isRunning;
-
-        public bool IsCompleted
+    public int Span
+    {
+        get
         {
-            get
-            {
-                if (HasBeenStarted)
-                {
-                    return time >= span;
-                }
-                return false;
-            }
+            return span;
         }
-
-        public float AnimationValue => animationValue;
-
-        public float LastAnimationValue => lastAnimationValue;
-
-        public AnimationValueHandler AnimationValueGenerator
+        set
         {
-            get
-            {
-                return animationValueGenerator;
-            }
-            set
-            {
-                animationValueGenerator = value;
-            }
+            span = value;
         }
+    }
 
-        public AnimationHandler AnimationHandler
+    public bool HasBeenStarted => startTime != 0;
+
+    public bool IsRunning => isRunning;
+
+    public bool IsCompleted
+    {
+        get
         {
-            get
+            if (HasBeenStarted)
             {
-                return animationHandler;
+                return time >= span;
             }
-            set
-            {
-                animationHandler = value;
-            }
+            return false;
         }
+    }
 
-        public static long Now => Machine.Ticks;
+    public float AnimationValue => animationValue;
 
-        public event EventHandler Started;
+    public float LastAnimationValue => lastAnimationValue;
 
-        public void Start()
+    public AnimationValueHandler AnimationValueGenerator
+    {
+        get
         {
-            isRunning = true;
-            startTime = Now;
-            time = 0;
-            animationValue = GetAnimationValue().Clamp(0f, 1f);
-            OnStarted();
+            return animationValueGenerator;
         }
-
-        public void Stop()
+        set
         {
-            isRunning = false;
+            animationValueGenerator = value;
         }
+    }
 
-        public virtual bool Animate(OverlayPanel panel)
+    public AnimationHandler AnimationHandler
+    {
+        get
         {
-            if (!IsRunning || IsCompleted)
-            {
-                return false;
-            }
-            time = (int)Math.Max(0L, Now - startTime - Delay);
-            lastAnimationValue = animationValue;
-            animationValue = GetAnimationValue().Clamp(0f, 1f);
-            OnAnimate(panel);
-            return true;
+            return animationHandler;
         }
-
-        protected virtual float GetAnimationValue()
+        set
         {
-            if (animationValueGenerator == null)
-            {
-                return 1f;
-            }
-            return animationValueGenerator(Time, Span);
+            animationHandler = value;
         }
+    }
 
-        protected virtual void OnAnimate(OverlayPanel panel)
+    public static long Now => Machine.Ticks;
+
+    public event EventHandler Started;
+
+    public void Start()
+    {
+        isRunning = true;
+        startTime = Now;
+        time = 0;
+        animationValue = GetAnimationValue().Clamp(0f, 1f);
+        OnStarted();
+    }
+
+    public void Stop()
+    {
+        isRunning = false;
+    }
+
+    public virtual bool Animate(OverlayPanel panel)
+    {
+        if (!IsRunning || IsCompleted)
         {
-            if (animationHandler != null)
-            {
-                animationHandler(panel, AnimationValue, AnimationValue - LastAnimationValue);
-            }
+            return false;
         }
+        time = (int)Math.Max(0L, Now - startTime - Delay);
+        lastAnimationValue = animationValue;
+        animationValue = GetAnimationValue().Clamp(0f, 1f);
+        OnAnimate(panel);
+        return true;
+    }
 
-        protected virtual void OnStarted()
-        {
-            if (this.Started != null)
-            {
-                this.Started(this, EventArgs.Empty);
-            }
-        }
-
-        public static float Constant1(int time, int span)
+    protected virtual float GetAnimationValue()
+    {
+        if (animationValueGenerator == null)
         {
             return 1f;
         }
+        return animationValueGenerator(Time, Span);
+    }
 
-        public static float LinearRise(int time, int span)
+    protected virtual void OnAnimate(OverlayPanel panel)
+    {
+        if (animationHandler != null)
         {
-            return (float)time / (float)span;
+            animationHandler(panel, AnimationValue, AnimationValue - LastAnimationValue);
         }
+    }
 
-        public static float SinusRise(int time, int span)
+    protected virtual void OnStarted()
+    {
+        if (this.Started != null)
         {
-            float num = (float)time / (float)span;
-            if (num <= 0f || num >= 1f)
+            this.Started(this, EventArgs.Empty);
+        }
+    }
+
+    public static float Constant1(int time, int span)
+    {
+        return 1f;
+    }
+
+    public static float LinearRise(int time, int span)
+    {
+        return (float)time / (float)span;
+    }
+
+    public static float SinusRise(int time, int span)
+    {
+        float num = (float)time / (float)span;
+        if (num <= 0f || num >= 1f)
+        {
+            return num;
+        }
+        return (float)Math.Sin((double)num * Math.PI / 2.0);
+    }
+
+    public static float LinearDrop(int time, int span)
+    {
+        return 1f - LinearRise(time, span);
+    }
+
+    public static AnimationValueHandler CreateBouncer(int inTime, int stayTime, int outTime, AnimationValueHandler inHandler, AnimationValueHandler stayHandler, AnimationValueHandler outHandler)
+    {
+        return delegate (int time, int span)
+        {
+            if (time < inTime)
             {
-                return num;
+                return inHandler(time, inTime);
             }
-            return (float)Math.Sin((double)num * Math.PI / 2.0);
-        }
-
-        public static float LinearDrop(int time, int span)
-        {
-            return 1f - LinearRise(time, span);
-        }
-
-        public static AnimationValueHandler CreateBouncer(int inTime, int stayTime, int outTime, AnimationValueHandler inHandler, AnimationValueHandler stayHandler, AnimationValueHandler outHandler)
-        {
-            return delegate (int time, int span)
+            time -= inTime;
+            if (time < stayTime)
             {
-                if (time < inTime)
-                {
-                    return inHandler(time, inTime);
-                }
-                time -= inTime;
-                if (time < stayTime)
-                {
-                    return stayHandler(time, stayTime);
-                }
-                time -= stayTime;
-                return (time < outTime) ? outHandler(time, outTime) : 0f;
-            };
-        }
+                return stayHandler(time, stayTime);
+            }
+            time -= stayTime;
+            return (time < outTime) ? outHandler(time, outTime) : 0f;
+        };
+    }
 
-        public static AnimationValueHandler CreateLinearBouncer(int inTime, int stayTime, int outTime)
-        {
-            return CreateBouncer(inTime, stayTime, outTime, LinearRise, Constant1, LinearDrop);
-        }
+    public static AnimationValueHandler CreateLinearBouncer(int inTime, int stayTime, int outTime)
+    {
+        return CreateBouncer(inTime, stayTime, outTime, LinearRise, Constant1, LinearDrop);
     }
 }

@@ -1,15 +1,14 @@
-namespace cYo.Common.Compression.SevenZip
+namespace cYo.Common.Compression.SevenZip;
+
+public enum ArchivePropId
 {
-    public enum ArchivePropId
-    {
-        kName,
-        kClassID,
-        kExtension,
-        kAddExtension,
-        kUpdate,
-        kKeepName,
-        kStartSignature,
-        kFinishSignature,
-        kAssociate
-    }
+    kName,
+    kClassID,
+    kExtension,
+    kAddExtension,
+    kUpdate,
+    kKeepName,
+    kStartSignature,
+    kFinishSignature,
+    kAssociate
 }

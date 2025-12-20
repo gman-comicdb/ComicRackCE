@@ -1,25 +1,24 @@
 using System;
 
-namespace cYo.Common.Runtime
+namespace cYo.Common.Runtime;
+
+public class BarkEventArgs : EventArgs
 {
-    public class BarkEventArgs : EventArgs
+    public BarkType Bark
     {
-        public BarkType Bark
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public Exception Exception
-        {
-            get;
-            set;
-        }
+    public Exception Exception
+    {
+        get;
+        set;
+    }
 
-        public BarkEventArgs(BarkType bark, Exception e)
-        {
-            Bark = bark;
-            Exception = e;
-        }
+    public BarkEventArgs(BarkType bark, Exception e)
+    {
+        Bark = bark;
+        Exception = e;
     }
 }

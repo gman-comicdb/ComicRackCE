@@ -1,8 +1,7 @@
-namespace cYo.Common.Drawing3D
+namespace cYo.Common.Drawing3D;
+
+public enum ShadingModel
 {
-    public enum ShadingModel
-    {
-        Flat,
-        Gourard
-    }
+    Flat,
+    Gourard
 }

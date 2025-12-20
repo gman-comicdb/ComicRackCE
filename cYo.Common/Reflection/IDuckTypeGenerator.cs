@@ -1,9 +1,8 @@
 using System;
 
-namespace cYo.Common.Reflection
+namespace cYo.Common.Reflection;
+
+internal interface IDuckTypeGenerator
 {
-    internal interface IDuckTypeGenerator
-    {
-        Type[] CreateDuckTypes(Type interfaceType, Type[] duckedTypes);
-    }
+    Type[] CreateDuckTypes(Type interfaceType, Type[] duckedTypes);
 }

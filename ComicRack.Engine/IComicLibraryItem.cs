@@ -1,12 +1,11 @@
 using cYo.Projects.ComicRack.Engine.Database;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IComicLibraryItem
 {
-    public interface IComicLibraryItem
+    ComicLibrary Library
     {
-        ComicLibrary Library
-        {
-            get;
-        }
+        get;
     }
 }

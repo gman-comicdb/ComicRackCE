@@ -1,12 +1,11 @@
 using cYo.Common.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookGroupActualFileFormat : ComicBookStringGrouper<ComicBookFileFormatMatcher>
 {
-    public class ComicBookGroupActualFileFormat : ComicBookStringGrouper<ComicBookFileFormatMatcher>
+    public override IGroupInfo GetGroup(ComicBook item)
     {
-        public override IGroupInfo GetGroup(ComicBook item)
-        {
-            return new GroupInfo(string.IsNullOrEmpty(item.ActualFileFormat) ? GroupInfo.Unspecified : item.ActualFileFormat);
-        }
+        return new GroupInfo(string.IsNullOrEmpty(item.ActualFileFormat) ? GroupInfo.Unspecified : item.ActualFileFormat);
     }
 }

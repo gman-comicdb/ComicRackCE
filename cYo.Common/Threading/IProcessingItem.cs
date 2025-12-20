@@ -1,10 +1,9 @@
-namespace cYo.Common.Threading
+namespace cYo.Common.Threading;
+
+public interface IProcessingItem<T> : IProgressState
 {
-    public interface IProcessingItem<T> : IProgressState
+    T Item
     {
-        T Item
-        {
-            get;
-        }
+        get;
     }
 }

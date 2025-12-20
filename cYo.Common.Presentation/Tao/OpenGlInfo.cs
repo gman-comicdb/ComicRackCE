@@ -1,85 +1,84 @@
 using Tao.OpenGl;
 
-namespace cYo.Common.Presentation.Tao
+namespace cYo.Common.Presentation.Tao;
+
+public static class OpenGlInfo
 {
-    public static class OpenGlInfo
+    private static int maxTextureSize;
+
+    private static float version;
+
+    private static bool? supportsAnisotropicFilter;
+
+    private static bool? supportsNonPower2Textures;
+
+    private static bool? supportsTextureCompression;
+
+    public static int MaxTextureSize
     {
-        private static int maxTextureSize;
-
-        private static float version;
-
-        private static bool? supportsAnisotropicFilter;
-
-        private static bool? supportsNonPower2Textures;
-
-        private static bool? supportsTextureCompression;
-
-        public static int MaxTextureSize
+        get
         {
-            get
+            if (maxTextureSize == 0)
             {
-                if (maxTextureSize == 0)
-                {
-                    Gl.glGetIntegerv(3379, out maxTextureSize);
-                }
-                return maxTextureSize;
+                Gl.glGetIntegerv(3379, out maxTextureSize);
             }
+            return maxTextureSize;
         }
+    }
 
-        public static float Version
+    public static float Version
+    {
+        get
         {
-            get
+            if (version == 0f)
             {
-                if (version == 0f)
+                try
                 {
-                    try
-                    {
-                        string text = Gl.glGetString(7938).Trim();
-                        version = float.Parse(text.Substring(0, 1)) + float.Parse(text.Substring(2, 1)) / 10f;
-                    }
-                    catch
-                    {
-                        version = 1f;
-                    }
+                    string text = Gl.glGetString(7938).Trim();
+                    version = float.Parse(text.Substring(0, 1)) + float.Parse(text.Substring(2, 1)) / 10f;
                 }
-                return version;
+                catch
+                {
+                    version = 1f;
+                }
             }
+            return version;
         }
+    }
 
-        public static bool SupportsAnisotopricFilter
+    public static bool SupportsAnisotopricFilter
+    {
+        get
         {
-            get
+            if (!supportsAnisotropicFilter.HasValue)
             {
-                if (!supportsAnisotropicFilter.HasValue)
-                {
-                    supportsAnisotropicFilter = Gl.IsExtensionSupported("GL_EXT_texture_filter_anisotropic");
-                }
-                return supportsAnisotropicFilter.Value;
+                supportsAnisotropicFilter = Gl.IsExtensionSupported("GL_EXT_texture_filter_anisotropic");
             }
+            return supportsAnisotropicFilter.Value;
         }
+    }
 
-        public static bool SupportsNonPower2Textures
+    public static bool SupportsNonPower2Textures
+    {
+        get
         {
-            get
+            if (!supportsNonPower2Textures.HasValue)
             {
-                if (!supportsNonPower2Textures.HasValue)
-                {
-                    supportsNonPower2Textures = Gl.IsExtensionSupported("ARB_texture_non_power_of_two");
-                }
-                return supportsNonPower2Textures.Value;
+                supportsNonPower2Textures = Gl.IsExtensionSupported("ARB_texture_non_power_of_two");
             }
+            return supportsNonPower2Textures.Value;
         }
+    }
 
-        public static bool SupportsTextureCompression
+    public static bool SupportsTextureCompression
+    {
+        get
         {
-            get
+            if (!supportsTextureCompression.HasValue)
             {
-                if (!supportsTextureCompression.HasValue)
-                {
-                    supportsTextureCompression = Gl.IsExtensionSupported("GL_ARB_texture_compression");
-                }
-                return supportsTextureCompression.Value;
+                supportsTextureCompression = Gl.IsExtensionSupported("GL_ARB_texture_compression");
             }
+            return supportsTextureCompression.Value;
         }
     }
 }

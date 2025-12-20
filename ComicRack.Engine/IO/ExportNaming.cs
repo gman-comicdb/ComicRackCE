@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum ExportNaming
 {
-    public enum ExportNaming
-    {
-        Filename,
-        Caption,
-        Custom
-    }
+    Filename,
+    Caption,
+    Custom
 }

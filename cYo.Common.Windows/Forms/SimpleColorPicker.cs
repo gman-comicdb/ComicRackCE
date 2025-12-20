@@ -6,125 +6,124 @@ using System.Windows.Forms;
 using cYo.Common.Text;
 using cYo.Common.Windows.Forms.Theme;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class SimpleColorPicker : ComboBox
 {
-    public class SimpleColorPicker : ComboBox
+    private IContainer components;
+
+    public string SelectedColorName
     {
-        private IContainer components;
-
-        public string SelectedColorName
+        get
         {
-            get
-            {
-                return SelectedColor.Name;
-            }
-            set
-            {
-                SelectedColor = Color.FromName(value);
-            }
+            return SelectedColor.Name;
         }
-
-        public Color SelectedColor
+        set
         {
-            get
+            SelectedColor = Color.FromName(value);
+        }
+    }
+
+    public Color SelectedColor
+    {
+        get
+        {
+            if (base.SelectedItem != null)
             {
-                if (base.SelectedItem != null)
-                {
-                    return (Color)base.SelectedItem;
-                }
-                return Color.Empty;
+                return (Color)base.SelectedItem;
             }
-            set
+            return Color.Empty;
+        }
+        set
+        {
+            foreach (Color item in base.Items)
             {
-                foreach (Color item in base.Items)
+                if (item == value)
                 {
-                    if (item == value)
-                    {
-                        base.SelectedItem = item;
-                        break;
-                    }
+                    base.SelectedItem = item;
+                    break;
                 }
             }
         }
+    }
 
-        public SimpleColorPicker()
-        {
-            InitializeComponent();
-            base.DrawMode = DrawMode.OwnerDrawFixed;
-            base.Items.Clear();
-        }
+    public SimpleColorPicker()
+    {
+        InitializeComponent();
+        base.DrawMode = DrawMode.OwnerDrawFixed;
+        base.Items.Clear();
+    }
 
-        protected override void OnDrawItem(DrawItemEventArgs e)
+    protected override void OnDrawItem(DrawItemEventArgs e)
+    {
+        base.OnDrawItem(e);
+        Graphics graphics = e.Graphics;
+        //e.DrawBackground();
+        e.DrawThemeBackground();
+        // does not draw a FocusRectangle in light mode, maintaining current functionality
+        e.DrawThemeFocusRectangle();
+        using (StringFormat format = new StringFormat
         {
-            base.OnDrawItem(e);
-            Graphics graphics = e.Graphics;
-            //e.DrawBackground();
-            e.DrawThemeBackground();
-            // does not draw a FocusRectangle in light mode, maintaining current functionality
-            e.DrawThemeFocusRectangle();
-            using (StringFormat format = new StringFormat
+            Alignment = StringAlignment.Near,
+            LineAlignment = StringAlignment.Center
+        })
+        {
+            try
             {
-                Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center
-            })
-            {
-                try
+                Color color = (Color)base.Items[e.Index];
+                Rectangle bounds = e.Bounds;
+                bounds.Width = bounds.Height * 3 / 2;
+                bounds.Inflate(-2, -2);
+                using (Brush brush = new SolidBrush(color))
                 {
-                    Color color = (Color)base.Items[e.Index];
-                    Rectangle bounds = e.Bounds;
-                    bounds.Width = bounds.Height * 3 / 2;
-                    bounds.Inflate(-2, -2);
-                    using (Brush brush = new SolidBrush(color))
-                    {
-                        graphics.FillRectangle(brush, bounds);
-                    }
-                    using (Pen pen = new Pen(e.ForeColor))
-                    {
-                        graphics.DrawRectangle(pen, bounds);
-                    }
-                    Rectangle bounds2 = e.Bounds;
-                    bounds2.X = 5 + bounds.Right;
-                    bounds2.Width = e.Bounds.Width - bounds2.X;
-                    using (Brush brush2 = new SolidBrush(e.ForeColor))
-                    {
-                        string s = color.ToKnownColor().ToString().PascalToSpaced();
-                        graphics.DrawString(s, e.Font, brush2, bounds2, format);
-                    }
+                    graphics.FillRectangle(brush, bounds);
                 }
-                catch (Exception)
+                using (Pen pen = new Pen(e.ForeColor))
                 {
-                    using (Brush brush3 = new SolidBrush(e.ForeColor))
-                    {
-                        graphics.DrawString("Unknown Color", e.Font, brush3, e.Bounds, format);
-                    }
+                    graphics.DrawRectangle(pen, bounds);
+                }
+                Rectangle bounds2 = e.Bounds;
+                bounds2.X = 5 + bounds.Right;
+                bounds2.Width = e.Bounds.Width - bounds2.X;
+                using (Brush brush2 = new SolidBrush(e.ForeColor))
+                {
+                    string s = color.ToKnownColor().ToString().PascalToSpaced();
+                    graphics.DrawString(s, e.Font, brush2, bounds2, format);
                 }
             }
-        }
-
-        public void FillKnownColors(bool includingSystem)
-        {
-            foreach (KnownColor value in Enum.GetValues(typeof(KnownColor)))
+            catch (Exception)
             {
-                Color color2 = Color.FromKnownColor(value);
-                if (color2.A == byte.MaxValue && (!color2.IsSystemColor || (color2.IsSystemColor && includingSystem)))
+                using (Brush brush3 = new SolidBrush(e.ForeColor))
                 {
-                    base.Items.Add(color2);
+                    graphics.DrawString("Unknown Color", e.Font, brush3, e.Bounds, format);
                 }
             }
         }
+    }
 
-        protected override void Dispose(bool disposing)
+    public void FillKnownColors(bool includingSystem)
+    {
+        foreach (KnownColor value in Enum.GetValues(typeof(KnownColor)))
         {
-            if (disposing && components != null)
+            Color color2 = Color.FromKnownColor(value);
+            if (color2.A == byte.MaxValue && (!color2.IsSystemColor || (color2.IsSystemColor && includingSystem)))
             {
-                components.Dispose();
+                base.Items.Add(color2);
             }
-            base.Dispose(disposing);
         }
+    }
 
-        private void InitializeComponent()
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && components != null)
         {
-            components = new System.ComponentModel.Container();
+            components.Dispose();
         }
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+        components = new System.ComponentModel.Container();
     }
 }

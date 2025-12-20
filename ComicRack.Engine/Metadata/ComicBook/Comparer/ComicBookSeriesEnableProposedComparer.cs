@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class ComicBookSeriesEnableProposedComparer : Comparer<ComicBook>
 {
-    public class ComicBookSeriesEnableProposedComparer : Comparer<ComicBook>
+    public override int Compare(ComicBook x, ComicBook y)
     {
-        public override int Compare(ComicBook x, ComicBook y)
-        {
-            return x.EnableProposed.CompareTo(y.EnableProposed);
-        }
+        return x.EnableProposed.CompareTo(y.EnableProposed);
     }
 }

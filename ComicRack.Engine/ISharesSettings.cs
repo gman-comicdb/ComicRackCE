@@ -1,29 +1,28 @@
 using cYo.Common.Collections;
 using cYo.Projects.ComicRack.Engine.IO.Network;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface ISharesSettings
 {
-    public interface ISharesSettings
+    bool LookForShared
     {
-        bool LookForShared
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        SmartList<ComicLibraryServerConfig> Shares
-        {
-            get;
-        }
+    SmartList<ComicLibraryServerConfig> Shares
+    {
+        get;
+    }
 
-        string PrivateListingPassword
-        {
-            get;
-        }
+    string PrivateListingPassword
+    {
+        get;
+    }
 
-        string ExternalServerAddress
-        {
-            get;
-        }
+    string ExternalServerAddress
+    {
+        get;
     }
 }

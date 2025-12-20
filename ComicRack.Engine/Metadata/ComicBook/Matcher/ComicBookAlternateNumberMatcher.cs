@@ -3,20 +3,19 @@ using System.ComponentModel;
 
 using cYo.Common.Text;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Alternate Number")]
+[ComicBookMatcherHint("AlternateNumber")]
+public class ComicBookAlternateNumberMatcher : ComicBookNumericMatcher
 {
-    [Serializable]
-    [Description("Alternate Number")]
-    [ComicBookMatcherHint("AlternateNumber")]
-    public class ComicBookAlternateNumberMatcher : ComicBookNumericMatcher
+    protected override float GetValue(ComicBook comicBook)
     {
-        protected override float GetValue(ComicBook comicBook)
+        if (!comicBook.AlternateNumber.TryParse(out float f, invariant: true))
         {
-            if (!comicBook.AlternateNumber.TryParse(out float f, invariant: true))
-            {
-                return -1f;
-            }
-            return f;
+            return -1f;
         }
+        return f;
     }
 }

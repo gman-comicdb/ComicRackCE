@@ -4,97 +4,96 @@ using System.Linq;
 
 using cYo.Common.Collections;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+[Serializable]
+public class ItemViewGroupsStatus
 {
-    [Serializable]
-    public class ItemViewGroupsStatus
+    public enum GroupStatus
     {
-        public enum GroupStatus
+        AllExpanded,
+        AllCollapsed,
+        KeysExpanded,
+        KeysCollapsed
+    }
+
+    private HashSet<int> keys = new HashSet<int>();
+
+    public GroupStatus Status
+    {
+        get;
+        set;
+    }
+
+    public HashSet<int> Keys => keys;
+
+    public ItemViewGroupsStatus()
+        : this(null)
+    {
+    }
+
+    public ItemViewGroupsStatus(IEnumerable<GroupHeaderInformation> headers)
+    {
+        Status = GroupStatus.AllExpanded;
+        if (headers == null)
         {
-            AllExpanded,
-            AllCollapsed,
-            KeysExpanded,
-            KeysCollapsed
+            return;
         }
-
-        private HashSet<int> keys = new HashSet<int>();
-
-        public GroupStatus Status
-        {
-            get;
-            set;
-        }
-
-        public HashSet<int> Keys => keys;
-
-        public ItemViewGroupsStatus()
-            : this(null)
-        {
-        }
-
-        public ItemViewGroupsStatus(IEnumerable<GroupHeaderInformation> headers)
+        headers = headers.ToArray();
+        int num = headers.Count();
+        int num2 = headers.Count((GroupHeaderInformation h) => h.Collapsed);
+        int num3 = num - num2;
+        if (num3 == num)
         {
             Status = GroupStatus.AllExpanded;
-            if (headers == null)
-            {
-                return;
-            }
-            headers = headers.ToArray();
-            int num = headers.Count();
-            int num2 = headers.Count((GroupHeaderInformation h) => h.Collapsed);
-            int num3 = num - num2;
-            if (num3 == num)
-            {
-                Status = GroupStatus.AllExpanded;
-            }
-            else if (num2 == num)
-            {
-                Status = GroupStatus.AllCollapsed;
-            }
-            else if (num2 < num3)
-            {
-                Status = GroupStatus.KeysCollapsed;
-                keys.AddRange(from h in headers
-                              where h.Collapsed
-                              select h.Caption.GetHashCode());
-            }
-            else
-            {
-                Status = GroupStatus.KeysExpanded;
-                keys.AddRange(from h in headers
-                              where !h.Collapsed
-                              select h.Caption.GetHashCode());
-            }
         }
-
-        public bool IsCollapsed(string caption)
+        else if (num2 == num)
         {
-            switch (Status)
-            {
-                default:
-                    return true;
-                case GroupStatus.AllExpanded:
-                    return false;
-                case GroupStatus.KeysCollapsed:
-                    return keys.Contains(caption.GetHashCode());
-                case GroupStatus.KeysExpanded:
-                    return !keys.Contains(caption.GetHashCode());
-            }
+            Status = GroupStatus.AllCollapsed;
         }
-
-        public bool IsCollapsed(GroupHeaderInformation header)
+        else if (num2 < num3)
         {
-            return IsCollapsed(header.Caption);
+            Status = GroupStatus.KeysCollapsed;
+            keys.AddRange(from h in headers
+                          where h.Collapsed
+                          select h.Caption.GetHashCode());
         }
-
-        public bool IsExpanded(string caption)
+        else
         {
-            return !IsCollapsed(caption);
+            Status = GroupStatus.KeysExpanded;
+            keys.AddRange(from h in headers
+                          where !h.Collapsed
+                          select h.Caption.GetHashCode());
         }
+    }
 
-        public bool IsExpanded(GroupHeaderInformation header)
+    public bool IsCollapsed(string caption)
+    {
+        switch (Status)
         {
-            return IsExpanded(header.Caption);
+            default:
+                return true;
+            case GroupStatus.AllExpanded:
+                return false;
+            case GroupStatus.KeysCollapsed:
+                return keys.Contains(caption.GetHashCode());
+            case GroupStatus.KeysExpanded:
+                return !keys.Contains(caption.GetHashCode());
         }
+    }
+
+    public bool IsCollapsed(GroupHeaderInformation header)
+    {
+        return IsCollapsed(header.Caption);
+    }
+
+    public bool IsExpanded(string caption)
+    {
+        return !IsCollapsed(caption);
+    }
+
+    public bool IsExpanded(GroupHeaderInformation header)
+    {
+        return IsExpanded(header.Caption);
     }
 }

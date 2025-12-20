@@ -1,10 +1,9 @@
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public enum ExtendedBorderStyle
 {
-    public enum ExtendedBorderStyle
-    {
-        None,
-        Flat,
-        Sunken,
-        Raised
-    }
+    None,
+    Flat,
+    Sunken,
+    Raised
 }

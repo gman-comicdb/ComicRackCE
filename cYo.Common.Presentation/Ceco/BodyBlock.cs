@@ -1,86 +1,85 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace cYo.Common.Presentation.Ceco
+namespace cYo.Common.Presentation.Ceco;
+
+public class BodyBlock : FlowBlock, IResources
 {
-    public class BodyBlock : FlowBlock, IResources
+    private class FontKey
     {
-        private class FontKey
+        public readonly string FontFamily;
+
+        public readonly float FontSize;
+
+        public readonly FontStyle FontStyle;
+
+        public FontKey(string fontFamily, float fontSize, FontStyle fontStyle)
         {
-            public readonly string FontFamily;
-
-            public readonly float FontSize;
-
-            public readonly FontStyle FontStyle;
-
-            public FontKey(string fontFamily, float fontSize, FontStyle fontStyle)
+            if (string.IsNullOrEmpty(fontFamily))
             {
-                if (string.IsNullOrEmpty(fontFamily))
-                {
-                    fontFamily = "Arial";
-                }
-                if (fontSize == 0f)
-                {
-                    fontSize = 8f;
-                }
-                FontFamily = fontFamily;
-                FontSize = fontSize;
-                FontStyle = fontStyle;
+                fontFamily = "Arial";
             }
-
-            public override bool Equals(object obj)
+            if (fontSize == 0f)
             {
-                FontKey fontKey = obj as FontKey;
-                if (fontKey == null)
-                {
-                    return false;
-                }
-                if (fontKey.FontFamily == FontFamily && fontKey.FontSize == FontSize)
-                {
-                    return fontKey.FontStyle == FontStyle;
-                }
+                fontSize = 8f;
+            }
+            FontFamily = fontFamily;
+            FontSize = fontSize;
+            FontStyle = fontStyle;
+        }
+
+        public override bool Equals(object obj)
+        {
+            FontKey fontKey = obj as FontKey;
+            if (fontKey == null)
+            {
                 return false;
             }
-
-            public override int GetHashCode()
+            if (fontKey.FontFamily == FontFamily && fontKey.FontSize == FontSize)
             {
-                int num = FontFamily.GetHashCode() ^ FontSize.GetHashCode();
-                FontStyle fontStyle = FontStyle;
-                return num ^ fontStyle.GetHashCode();
+                return fontKey.FontStyle == FontStyle;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int num = FontFamily.GetHashCode() ^ FontSize.GetHashCode();
+            FontStyle fontStyle = FontStyle;
+            return num ^ fontStyle.GetHashCode();
+        }
+    }
+
+    private readonly Dictionary<FontKey, Font> fontCache = new Dictionary<FontKey, Font>();
+
+    private Font GetCachedFont(FontKey fontKey)
+    {
+        if (fontCache.TryGetValue(fontKey, out var value))
+        {
+            return value;
+        }
+        return fontCache[fontKey] = new Font(fontKey.FontFamily, fontKey.FontSize, fontKey.FontStyle);
+    }
+
+    public override Font GetFont(string fontFamily, float fontSize, FontStyle fontStyle)
+    {
+        return GetCachedFont(new FontKey(fontFamily, fontSize, fontStyle));
+    }
+
+    public override Image GetImage(string source)
+    {
+        return Image.FromFile(source);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            foreach (Font value in fontCache.Values)
+            {
+                value.Dispose();
             }
         }
-
-        private readonly Dictionary<FontKey, Font> fontCache = new Dictionary<FontKey, Font>();
-
-        private Font GetCachedFont(FontKey fontKey)
-        {
-            if (fontCache.TryGetValue(fontKey, out var value))
-            {
-                return value;
-            }
-            return fontCache[fontKey] = new Font(fontKey.FontFamily, fontKey.FontSize, fontKey.FontStyle);
-        }
-
-        public override Font GetFont(string fontFamily, float fontSize, FontStyle fontStyle)
-        {
-            return GetCachedFont(new FontKey(fontFamily, fontSize, fontStyle));
-        }
-
-        public override Image GetImage(string source)
-        {
-            return Image.FromFile(source);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                foreach (Font value in fontCache.Values)
-                {
-                    value.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
+        base.Dispose(disposing);
     }
 }

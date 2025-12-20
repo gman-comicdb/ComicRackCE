@@ -3,127 +3,126 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Common.Presentation.Ceco.Controls
+namespace cYo.Common.Presentation.Ceco.Controls;
+
+public class XHtmlLabel : Control
 {
-    public class XHtmlLabel : Control
+    private ContentAlignment textAlign = ContentAlignment.MiddleLeft;
+
+    private Size textMargin;
+
+    private XHtmlControlRenderer renderer;
+
+    [Browsable(true)]
+    public override bool AutoSize
     {
-        private ContentAlignment textAlign = ContentAlignment.MiddleLeft;
-
-        private Size textMargin;
-
-        private XHtmlControlRenderer renderer;
-
-        [Browsable(true)]
-        public override bool AutoSize
+        get
         {
-            get
+            return base.AutoSize;
+        }
+        set
+        {
+            base.AutoSize = value;
+        }
+    }
+
+    [DefaultValue(typeof(Color), "Transparent")]
+    public override Color BackColor
+    {
+        get
+        {
+            return base.BackColor;
+        }
+        set
+        {
+            base.BackColor = value;
+        }
+    }
+
+    [Category("Appearance")]
+    [Description("The alignment of the text")]
+    [DefaultValue(ContentAlignment.MiddleLeft)]
+    public ContentAlignment TextAlign
+    {
+        get
+        {
+            return textAlign;
+        }
+        set
+        {
+            if (textAlign != value)
             {
-                return base.AutoSize;
-            }
-            set
-            {
-                base.AutoSize = value;
+                textAlign = value;
+                OnTextAlignChanged();
+                Invalidate();
             }
         }
+    }
 
-        [DefaultValue(typeof(Color), "Transparent")]
-        public override Color BackColor
+    [Category("Appearance")]
+    [Description("The margin between content and border")]
+    [DefaultValue(typeof(Size), "0,0")]
+    public Size TextMargin
+    {
+        get
         {
-            get
+            return textMargin;
+        }
+        set
+        {
+            if (!(textMargin == value))
             {
-                return base.BackColor;
-            }
-            set
-            {
-                base.BackColor = value;
+                textMargin = value;
+                OnTextMarginChanged();
+                Recalculate();
+                Invalidate();
             }
         }
+    }
 
-        [Category("Appearance")]
-        [Description("The alignment of the text")]
-        [DefaultValue(ContentAlignment.MiddleLeft)]
-        public ContentAlignment TextAlign
+    public event EventHandler TextAlignChanged;
+
+    public event EventHandler TextMarginChanged;
+
+    public XHtmlLabel()
+    {
+        InitializeComponent();
+        SetStyle(ControlStyles.SupportsTransparentBackColor, value: true);
+        DoubleBuffered = true;
+        BackColor = Color.Transparent;
+        renderer.Control = this;
+    }
+
+    protected virtual void OnTextMarginChanged()
+    {
+        if (this.TextMarginChanged != null)
         {
-            get
-            {
-                return textAlign;
-            }
-            set
-            {
-                if (textAlign != value)
-                {
-                    textAlign = value;
-                    OnTextAlignChanged();
-                    Invalidate();
-                }
-            }
+            this.TextMarginChanged(this, EventArgs.Empty);
         }
+    }
 
-        [Category("Appearance")]
-        [Description("The margin between content and border")]
-        [DefaultValue(typeof(Size), "0,0")]
-        public Size TextMargin
+    protected virtual void OnTextAlignChanged()
+    {
+        renderer.Body.SetAlign(textAlign);
+        if (this.TextAlignChanged != null)
         {
-            get
-            {
-                return textMargin;
-            }
-            set
-            {
-                if (!(textMargin == value))
-                {
-                    textMargin = value;
-                    OnTextMarginChanged();
-                    Recalculate();
-                    Invalidate();
-                }
-            }
+            this.TextAlignChanged(this, EventArgs.Empty);
         }
+    }
 
-        public event EventHandler TextAlignChanged;
-
-        public event EventHandler TextMarginChanged;
-
-        public XHtmlLabel()
+    private void Recalculate()
+    {
+        if (AutoSize)
         {
-            InitializeComponent();
-            SetStyle(ControlStyles.SupportsTransparentBackColor, value: true);
-            DoubleBuffered = true;
-            BackColor = Color.Transparent;
-            renderer.Control = this;
+            base.Size = GetPreferredSize(base.PreferredSize);
         }
+    }
 
-        protected virtual void OnTextMarginChanged()
-        {
-            if (this.TextMarginChanged != null)
-            {
-                this.TextMarginChanged(this, EventArgs.Empty);
-            }
-        }
-
-        protected virtual void OnTextAlignChanged()
-        {
-            renderer.Body.SetAlign(textAlign);
-            if (this.TextAlignChanged != null)
-            {
-                this.TextAlignChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void Recalculate()
-        {
-            if (AutoSize)
-            {
-                base.Size = GetPreferredSize(base.PreferredSize);
-            }
-        }
-
-        private void InitializeComponent()
-        {
-            renderer = new cYo.Common.Presentation.Ceco.Controls.XHtmlControlRenderer();
-            SuspendLayout();
-            renderer.Control = null;
-            ResumeLayout(false);
-        }
+    private void InitializeComponent()
+    {
+        renderer = new cYo.Common.Presentation.Ceco.Controls.XHtmlControlRenderer();
+        SuspendLayout();
+        renderer.Control = null;
+        ResumeLayout(false);
     }
 }

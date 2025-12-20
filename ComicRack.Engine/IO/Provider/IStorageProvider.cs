@@ -1,26 +1,25 @@
 using System;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public interface IStorageProvider
 {
-    public interface IStorageProvider
+    string DefaultExtension
     {
-        string DefaultExtension
-        {
-            get;
-        }
-
-        FileFormat DefaultFileFormat
-        {
-            get;
-        }
-
-        int FormatId
-        {
-            get;
-        }
-
-        event EventHandler<StorageProgressEventArgs> Progress;
-
-        ComicInfo Store(IImageProvider provider, ComicInfo info, string target, StorageSetting setting);
+        get;
     }
+
+    FileFormat DefaultFileFormat
+    {
+        get;
+    }
+
+    int FormatId
+    {
+        get;
+    }
+
+    event EventHandler<StorageProgressEventArgs> Progress;
+
+    ComicInfo Store(IImageProvider provider, ComicInfo info, string target, StorageSetting setting);
 }

@@ -5,47 +5,46 @@ using System.Xml.Serialization;
 
 using cYo.Projects.ComicRack.Engine.Drawing;
 
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+[Serializable]
+public class ThumbnailConfig : ICloneable
 {
-    [Serializable]
-    public class ThumbnailConfig : ICloneable
+    private readonly List<int> captionIds = new List<int>();
+
+    [XmlAttribute]
+    [DefaultValue(false)]
+    public bool HideCaptions
     {
-        private readonly List<int> captionIds = new List<int>();
+        get;
+        set;
+    }
 
-        [XmlAttribute]
-        [DefaultValue(false)]
-        public bool HideCaptions
-        {
-            get;
-            set;
-        }
+    [XmlArray("Lines")]
+    [XmlArrayItem("Id")]
+    public List<int> CaptionIds => captionIds;
 
-        [XmlArray("Lines")]
-        [XmlArrayItem("Id")]
-        public List<int> CaptionIds => captionIds;
+    [DefaultValue(ComicTextElements.DefaultFileComic)]
+    public ComicTextElements TextElements
+    {
+        get;
+        set;
+    }
 
-        [DefaultValue(ComicTextElements.DefaultFileComic)]
-        public ComicTextElements TextElements
-        {
-            get;
-            set;
-        }
+    public ThumbnailConfig()
+    {
+        TextElements = ComicTextElements.DefaultFileComic;
+    }
 
-        public ThumbnailConfig()
-        {
-            TextElements = ComicTextElements.DefaultFileComic;
-        }
+    public ThumbnailConfig(ThumbnailConfig cfg)
+    {
+        CaptionIds.AddRange(cfg.CaptionIds);
+        HideCaptions = cfg.HideCaptions;
+        TextElements = cfg.TextElements;
+    }
 
-        public ThumbnailConfig(ThumbnailConfig cfg)
-        {
-            CaptionIds.AddRange(cfg.CaptionIds);
-            HideCaptions = cfg.HideCaptions;
-            TextElements = cfg.TextElements;
-        }
-
-        public object Clone()
-        {
-            return new ThumbnailConfig(this);
-        }
+    public object Clone()
+    {
+        return new ThumbnailConfig(this);
     }
 }

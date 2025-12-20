@@ -1,8 +1,7 @@
-namespace cYo.Common.Presentation
+namespace cYo.Common.Presentation;
+
+public enum BlendingOperation
 {
-    public enum BlendingOperation
-    {
-        Blend,
-        Multiply
-    }
+    Blend,
+    Multiply
 }

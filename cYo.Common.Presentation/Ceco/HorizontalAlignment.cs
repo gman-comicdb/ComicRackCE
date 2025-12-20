@@ -1,10 +1,9 @@
-namespace cYo.Common.Presentation.Ceco
+namespace cYo.Common.Presentation.Ceco;
+
+public enum HorizontalAlignment
 {
-    public enum HorizontalAlignment
-    {
-        None,
-        Left,
-        Center,
-        Right
-    }
+    None,
+    Left,
+    Center,
+    Right
 }

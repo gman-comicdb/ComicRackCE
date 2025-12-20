@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IVirtualTagSettings
 {
-    public interface IVirtualTagSettings
-    {
-        List<VirtualTag> VirtualTags { get; }
-    }
+    List<VirtualTag> VirtualTags { get; }
 }

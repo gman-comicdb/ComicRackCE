@@ -1,16 +1,15 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IExtendedDisposable : IDisposable
 {
-    public interface IExtendedDisposable : IDisposable
+    bool IsDisposed
     {
-        bool IsDisposed
-        {
-            get;
-        }
-
-        event EventHandler Disposing;
-
-        event EventHandler Disposed;
+        get;
     }
+
+    event EventHandler Disposing;
+
+    event EventHandler Disposed;
 }

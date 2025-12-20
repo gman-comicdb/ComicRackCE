@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.Drawing
+namespace cYo.Projects.ComicRack.Engine.Drawing;
+
+public enum ThumbnailRatingMode
 {
-    public enum ThumbnailRatingMode
-    {
-        Tags,
-        StarsOverlay,
-        StarsBelow
-    }
+    Tags,
+    StarsOverlay,
+    StarsBelow
 }

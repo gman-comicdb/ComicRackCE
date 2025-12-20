@@ -2,59 +2,58 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Projects.ComicRack.Engine.Display
+namespace cYo.Projects.ComicRack.Engine.Display;
+
+public class GestureEventArgs : EventArgs
 {
-    public class GestureEventArgs : EventArgs
+    private readonly GestureType gesture;
+
+    public GestureType Gesture => gesture;
+
+    public ContentAlignment Area
     {
-        private readonly GestureType gesture;
+        get;
+        set;
+    }
 
-        public GestureType Gesture => gesture;
+    public Rectangle AreaBounds
+    {
+        get;
+        set;
+    }
 
-        public ContentAlignment Area
-        {
-            get;
-            set;
-        }
+    public Point Location
+    {
+        get;
+        set;
+    }
 
-        public Rectangle AreaBounds
-        {
-            get;
-            set;
-        }
+    public MouseButtons MouseButton
+    {
+        get;
+        set;
+    }
 
-        public Point Location
-        {
-            get;
-            set;
-        }
+    public bool Double
+    {
+        get;
+        set;
+    }
 
-        public MouseButtons MouseButton
-        {
-            get;
-            set;
-        }
+    public bool Handled
+    {
+        get;
+        set;
+    }
 
-        public bool Double
-        {
-            get;
-            set;
-        }
+    public bool IsTouch
+    {
+        get;
+        set;
+    }
 
-        public bool Handled
-        {
-            get;
-            set;
-        }
-
-        public bool IsTouch
-        {
-            get;
-            set;
-        }
-
-        public GestureEventArgs(GestureType gesture)
-        {
-            this.gesture = gesture;
-        }
+    public GestureEventArgs(GestureType gesture)
+    {
+        this.gesture = gesture;
     }
 }

@@ -10,372 +10,371 @@ using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Common.Windows.Properties;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class CollapsibleGroupBox : ContainerControl
 {
-    public class CollapsibleGroupBox : ContainerControl
+    private Size fullSize;
+
+    private int headerHeight = 24;
+
+    private FontStyle fontStyle = FontStyle.Bold;
+
+    private bool collapsed;
+
+    private bool useTheme = true;
+
+    private Rectangle cachedHeaderRectangle;
+
+    private Bitmap collapsedImage;
+
+    private Bitmap expandedImage;
+
+    private static readonly Image arrowDown = Resources.SimpleArrowDown.ScaleDpi();
+
+    private static readonly Image arrowRight = Resources.SimpleArrowRight.ScaleDpi();
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int FullHeight => fullSize.Height;
+
+    [Browsable(false)]
+    [DefaultValue(24)]
+    public int HeaderHeight
     {
-        private Size fullSize;
-
-        private int headerHeight = 24;
-
-        private FontStyle fontStyle = FontStyle.Bold;
-
-        private bool collapsed;
-
-        private bool useTheme = true;
-
-        private Rectangle cachedHeaderRectangle;
-
-        private Bitmap collapsedImage;
-
-        private Bitmap expandedImage;
-
-        private static readonly Image arrowDown = Resources.SimpleArrowDown.ScaleDpi();
-
-        private static readonly Image arrowRight = Resources.SimpleArrowRight.ScaleDpi();
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int FullHeight => fullSize.Height;
-
-        [Browsable(false)]
-        [DefaultValue(24)]
-        public int HeaderHeight
+        get
         {
-            get
+            return headerHeight;
+        }
+        set
+        {
+            if (headerHeight != value)
             {
-                return headerHeight;
-            }
-            set
-            {
-                if (headerHeight != value)
+                headerHeight = value;
+                if (collapsed)
                 {
-                    headerHeight = value;
-                    if (collapsed)
-                    {
-                        base.Height = FormUtility.ScaleDpiY(headerHeight);
-                    }
-                    Invalidate();
+                    base.Height = FormUtility.ScaleDpiY(headerHeight);
                 }
+                Invalidate();
             }
         }
+    }
 
-        [DefaultValue(FontStyle.Bold)]
-        public FontStyle HeaderFontStyle
+    [DefaultValue(FontStyle.Bold)]
+    public FontStyle HeaderFontStyle
+    {
+        get
         {
-            get
+            return fontStyle;
+        }
+        set
+        {
+            if (fontStyle != value)
             {
-                return fontStyle;
+                fontStyle = value;
+                Invalidate();
             }
-            set
+        }
+    }
+
+    [DefaultValue(false)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool Collapsed
+    {
+        get
+        {
+            return collapsed;
+        }
+        set
+        {
+            if (value != collapsed)
             {
-                if (fontStyle != value)
+                collapsed = value;
+                if (!value)
                 {
-                    fontStyle = value;
-                    Invalidate();
+                    base.Size = fullSize;
                 }
-            }
-        }
-
-        [DefaultValue(false)]
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool Collapsed
-        {
-            get
-            {
-                return collapsed;
-            }
-            set
-            {
-                if (value != collapsed)
+                else
                 {
-                    collapsed = value;
-                    if (!value)
-                    {
-                        base.Size = fullSize;
-                    }
-                    else
-                    {
-                        fullSize = base.Size;
-                        base.Height = FormUtility.ScaleDpiY(headerHeight);
-                    }
-                    Invalidate();
-                    OnCollapsedChanged();
+                    fullSize = base.Size;
+                    base.Height = FormUtility.ScaleDpiY(headerHeight);
                 }
+                Invalidate();
+                OnCollapsedChanged();
             }
         }
+    }
 
-        [DefaultValue(true)]
-        public bool UseTheme
+    [DefaultValue(true)]
+    public bool UseTheme
+    {
+        get
         {
-            get
+            return useTheme;
+        }
+        set
+        {
+            if (useTheme != value)
             {
-                return useTheme;
-            }
-            set
-            {
-                if (useTheme != value)
-                {
-                    useTheme = value;
-                    Invalidate();
-                }
+                useTheme = value;
+                Invalidate();
             }
         }
+    }
 
-        [DefaultValue(false)]
-        public bool TransparentTouch
+    [DefaultValue(false)]
+    public bool TransparentTouch
+    {
+        get;
+        set;
+    }
+
+    protected Rectangle HeaderRectangle
+    {
+        get
         {
-            get;
-            set;
+            Rectangle rectangle = new Rectangle(0, 0, base.ClientRectangle.Width, FormUtility.ScaleDpiY(headerHeight));
+            if (rectangle != cachedHeaderRectangle)
+            {
+                cachedHeaderRectangle = rectangle;
+                RebuildRegion();
+            }
+            return rectangle;
         }
+    }
 
-        protected Rectangle HeaderRectangle
+    protected Rectangle ToggleRectange
+    {
+        get
         {
-            get
-            {
-                Rectangle rectangle = new Rectangle(0, 0, base.ClientRectangle.Width, FormUtility.ScaleDpiY(headerHeight));
-                if (rectangle != cachedHeaderRectangle)
-                {
-                    cachedHeaderRectangle = rectangle;
-                    RebuildRegion();
-                }
-                return rectangle;
-            }
+            Rectangle headerRectangle = HeaderRectangle;
+            headerRectangle.Width = headerRectangle.Height;
+            return headerRectangle;
         }
+    }
 
-        protected Rectangle ToggleRectange
+    [DefaultValue(null)]
+    public Bitmap CollapsedImage
+    {
+        get
         {
-            get
-            {
-                Rectangle headerRectangle = HeaderRectangle;
-                headerRectangle.Width = headerRectangle.Height;
-                return headerRectangle;
-            }
+            return collapsedImage;
         }
-
-        [DefaultValue(null)]
-        public Bitmap CollapsedImage
+        set
         {
-            get
+            if (collapsedImage != value)
             {
-                return collapsedImage;
-            }
-            set
-            {
-                if (collapsedImage != value)
-                {
-                    collapsedImage = value;
-                    Invalidate(ToggleRectange);
-                }
-            }
-        }
-
-        [DefaultValue(null)]
-        public Bitmap ExpandedImage
-        {
-            get
-            {
-                return expandedImage;
-            }
-            set
-            {
-                if (expandedImage != value)
-                {
-                    expandedImage = value;
-                    Invalidate(ToggleRectange);
-                }
+                collapsedImage = value;
+                Invalidate(ToggleRectange);
             }
         }
+    }
 
-        public bool UsesTheme
+    [DefaultValue(null)]
+    public Bitmap ExpandedImage
+    {
+        get
         {
-            get
+            return expandedImage;
+        }
+        set
+        {
+            if (expandedImage != value)
             {
-                if (useTheme && VisualStyleRenderer.IsSupported)
-                {
-                    return VisualStyleRenderer.IsElementDefined(VisualStyleElement.Tab.Body.Normal);
-                }
-                return false;
+                expandedImage = value;
+                Invalidate(ToggleRectange);
             }
         }
+    }
 
-        public override Color BackColor
+    public bool UsesTheme
+    {
+        get
         {
-            get
+            if (useTheme && VisualStyleRenderer.IsSupported)
             {
-                if (!UsesTheme || TransparentTouch)
-                {
-                    return base.BackColor;
-                }
-                return ThemeColors.CollapsibleGroupBox.Back;
+                return VisualStyleRenderer.IsElementDefined(VisualStyleElement.Tab.Body.Normal);
             }
-            set
-            {
-                base.BackColor = value;
-            }
+            return false;
         }
+    }
 
-        public override Rectangle DisplayRectangle
+    public override Color BackColor
+    {
+        get
         {
-            get
+            if (!UsesTheme || TransparentTouch)
             {
-                Rectangle displayRectangle = base.DisplayRectangle;
-                return new Rectangle(0, FormUtility.ScaleDpiY(headerHeight), displayRectangle.Width, displayRectangle.Height - FormUtility.ScaleDpiY(headerHeight));
+                return base.BackColor;
             }
+            return ThemeColors.CollapsibleGroupBox.Back;
         }
-
-        public event EventHandler CollapsedChanged;
-
-        public event EventHandler CollapseClicked;
-
-        protected override void OnMouseUp(MouseEventArgs e)
+        set
         {
-            base.OnMouseUp(e);
-            if (ToggleRectange.Contains(e.Location))
-            {
-                Collapsed = !Collapsed;
-                OnCollapseClicked();
-            }
+            base.BackColor = value;
         }
+    }
 
-        protected override void OnDoubleClick(EventArgs e)
+    public override Rectangle DisplayRectangle
+    {
+        get
         {
-            if (!HeaderRectangle.Contains(PointToClient(Cursor.Position)))
-            {
-                base.OnDoubleClick(e);
-                return;
-            }
+            Rectangle displayRectangle = base.DisplayRectangle;
+            return new Rectangle(0, FormUtility.ScaleDpiY(headerHeight), displayRectangle.Width, displayRectangle.Height - FormUtility.ScaleDpiY(headerHeight));
+        }
+    }
+
+    public event EventHandler CollapsedChanged;
+
+    public event EventHandler CollapseClicked;
+
+    protected override void OnMouseUp(MouseEventArgs e)
+    {
+        base.OnMouseUp(e);
+        if (ToggleRectange.Contains(e.Location))
+        {
             Collapsed = !Collapsed;
             OnCollapseClicked();
         }
+    }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
+    protected override void OnDoubleClick(EventArgs e)
+    {
+        if (!HeaderRectangle.Contains(PointToClient(Cursor.Position)))
         {
-            base.OnPaintBackground(e);
-            if (UsesTheme && !TransparentTouch)
+            base.OnDoubleClick(e);
+            return;
+        }
+        Collapsed = !Collapsed;
+        OnCollapseClicked();
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+        base.OnPaintBackground(e);
+        if (UsesTheme && !TransparentTouch)
+        {
+            VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(VisualStyleElement.Tab.Body.Normal);
+            //visualStyleRenderer.DrawBackground(e.Graphics, base.ClientRectangle);
+            visualStyleRenderer.DrawThemeBackground(e.Graphics, base.ClientRectangle);
+        }
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        DrawBox(e.Graphics);
+    }
+
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        Invalidate(HeaderRectangle);
+    }
+
+
+    private void DrawBox(Graphics gr)
+    {
+        Rectangle headerRectangle = HeaderRectangle;
+        // MultipleComicBooksDialog/Preferences
+        if (UsesTheme)
+        {
+
+            using (LinearGradientBrush brush = new LinearGradientBrush(headerRectangle, ThemeColors.CollapsibleGroupBox.HeaderGradientStart, ThemeColors.CollapsibleGroupBox.HeaderGradientEnd, 0f))
             {
-                VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(VisualStyleElement.Tab.Body.Normal);
-                //visualStyleRenderer.DrawBackground(e.Graphics, base.ClientRectangle);
-                visualStyleRenderer.DrawThemeBackground(e.Graphics, base.ClientRectangle);
+                gr.FillRectangle(brush, headerRectangle);
             }
         }
-
-        protected override void OnPaint(PaintEventArgs e)
+        else
         {
-            DrawBox(e.Graphics);
+            gr.FillRectangle(SystemBrushes.ControlDark, headerRectangle);
         }
-
-        protected override void OnTextChanged(EventArgs e)
+        Image toggleImage = GetToggleImage();
+        gr.DrawImage(toggleImage, toggleImage.Size.Align(ToggleRectange, System.Drawing.ContentAlignment.MiddleCenter));
+        using (StringFormat format = new StringFormat
         {
-            base.OnTextChanged(e);
-            Invalidate(HeaderRectangle);
+            LineAlignment = StringAlignment.Center
+        })
+        {
+            gr.DrawString(Text, FC.Get(Font, HeaderFontStyle), ThemeBrushes.CollapsibleGroupBox.HeaderText, headerRectangle.Pad(ToggleRectange.Width, 0), format);
         }
+    }
 
-
-        private void DrawBox(Graphics gr)
+    private Image GetToggleImage()
+    {
+        object obj;
+        if (!collapsed)
         {
-            Rectangle headerRectangle = HeaderRectangle;
-            // MultipleComicBooksDialog/Preferences
-            if (UsesTheme)
+            obj = expandedImage;
+            if (obj == null)
             {
-
-                using (LinearGradientBrush brush = new LinearGradientBrush(headerRectangle, ThemeColors.CollapsibleGroupBox.HeaderGradientStart, ThemeColors.CollapsibleGroupBox.HeaderGradientEnd, 0f))
-                {
-                    gr.FillRectangle(brush, headerRectangle);
-                }
-            }
-            else
-            {
-                gr.FillRectangle(SystemBrushes.ControlDark, headerRectangle);
-            }
-            Image toggleImage = GetToggleImage();
-            gr.DrawImage(toggleImage, toggleImage.Size.Align(ToggleRectange, System.Drawing.ContentAlignment.MiddleCenter));
-            using (StringFormat format = new StringFormat
-            {
-                LineAlignment = StringAlignment.Center
-            })
-            {
-                gr.DrawString(Text, FC.Get(Font, HeaderFontStyle), ThemeBrushes.CollapsibleGroupBox.HeaderText, headerRectangle.Pad(ToggleRectange.Width, 0), format);
+                return arrowDown;
             }
         }
-
-        private Image GetToggleImage()
+        else
         {
-            object obj;
-            if (!collapsed)
+            obj = collapsedImage ?? arrowRight;
+        }
+        return (Image)obj;
+    }
+
+    protected virtual void OnCollapsedChanged()
+    {
+        if (this.CollapsedChanged != null)
+        {
+            this.CollapsedChanged(this, EventArgs.Empty);
+        }
+    }
+
+    protected virtual void OnCollapseClicked()
+    {
+        if (this.CollapseClicked != null)
+        {
+            this.CollapseClicked(this, EventArgs.Empty);
+        }
+    }
+
+    protected override void OnControlAdded(ControlEventArgs e)
+    {
+        base.OnControlAdded(e);
+        e.Control.SizeChanged += Control_SizeChanged;
+        e.Control.LocationChanged += Control_SizeChanged;
+        RebuildRegion();
+    }
+
+    private void Control_SizeChanged(object sender, EventArgs e)
+    {
+        RebuildRegion();
+    }
+
+    protected override void OnControlRemoved(ControlEventArgs e)
+    {
+        base.OnControlRemoved(e);
+        e.Control.SizeChanged -= Control_SizeChanged;
+        e.Control.LocationChanged -= Control_SizeChanged;
+        RebuildRegion();
+    }
+
+    protected override void OnSizeChanged(EventArgs e)
+    {
+        base.OnSizeChanged(e);
+        RebuildRegion();
+    }
+
+    private void RebuildRegion()
+    {
+        if (!TransparentTouch || base.DesignMode)
+        {
+            return;
+        }
+        Region region = new Region(HeaderRectangle);
+        foreach (Control control in base.Controls)
+        {
+            if (!(control is Label))
             {
-                obj = expandedImage;
-                if (obj == null)
-                {
-                    return arrowDown;
-                }
-            }
-            else
-            {
-                obj = collapsedImage ?? arrowRight;
-            }
-            return (Image)obj;
-        }
-
-        protected virtual void OnCollapsedChanged()
-        {
-            if (this.CollapsedChanged != null)
-            {
-                this.CollapsedChanged(this, EventArgs.Empty);
+                region.Union(control.Bounds);
             }
         }
-
-        protected virtual void OnCollapseClicked()
-        {
-            if (this.CollapseClicked != null)
-            {
-                this.CollapseClicked(this, EventArgs.Empty);
-            }
-        }
-
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            base.OnControlAdded(e);
-            e.Control.SizeChanged += Control_SizeChanged;
-            e.Control.LocationChanged += Control_SizeChanged;
-            RebuildRegion();
-        }
-
-        private void Control_SizeChanged(object sender, EventArgs e)
-        {
-            RebuildRegion();
-        }
-
-        protected override void OnControlRemoved(ControlEventArgs e)
-        {
-            base.OnControlRemoved(e);
-            e.Control.SizeChanged -= Control_SizeChanged;
-            e.Control.LocationChanged -= Control_SizeChanged;
-            RebuildRegion();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            RebuildRegion();
-        }
-
-        private void RebuildRegion()
-        {
-            if (!TransparentTouch || base.DesignMode)
-            {
-                return;
-            }
-            Region region = new Region(HeaderRectangle);
-            foreach (Control control in base.Controls)
-            {
-                if (!(control is Label))
-                {
-                    region.Union(control.Bounds);
-                }
-            }
-            base.Region = region;
-        }
+        base.Region = region;
     }
 }

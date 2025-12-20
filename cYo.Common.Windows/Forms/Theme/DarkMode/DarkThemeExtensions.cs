@@ -1,13 +1,13 @@
-﻿using cYo.Common.Win32;
-using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
-using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
-using cYo.Common.Windows.Forms.Theme.Resources;
-
-using System;
+﻿using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+
+using cYo.Common.Win32;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+using cYo.Common.Windows.Forms.Theme.Resources;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode;
 

@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum DoublePageHandling
 {
-    public enum DoublePageHandling
-    {
-        Keep,
-        Split,
-        Rotate,
-        AdaptWidth
-    }
+    Keep,
+    Split,
+    Rotate,
+    AdaptWidth
 }

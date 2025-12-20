@@ -2,16 +2,15 @@ using System.Collections.Generic;
 
 using cYo.Projects.ComicRack.Engine;
 
-namespace cYo.Projects.ComicRack.Plugins.Automation
+namespace cYo.Projects.ComicRack.Plugins.Automation;
+
+public interface IBrowser
 {
-    public interface IBrowser
-    {
-        bool OpenNextComic();
+    bool OpenNextComic();
 
-        bool OpenPrevComic();
+    bool OpenPrevComic();
 
-        bool OpenRandomComic();
+    bool OpenRandomComic();
 
-        void SelectComics(IEnumerable<ComicBook> books);
-    }
+    void SelectComics(IEnumerable<ComicBook> books);
 }

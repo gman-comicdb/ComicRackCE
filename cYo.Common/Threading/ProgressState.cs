@@ -1,9 +1,8 @@
-namespace cYo.Common.Threading
+namespace cYo.Common.Threading;
+
+public enum ProgressState
 {
-    public enum ProgressState
-    {
-        Waiting,
-        Running,
-        Completed
-    }
+    Waiting,
+    Running,
+    Completed
 }

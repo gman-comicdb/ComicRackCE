@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace cYo.Projects.ComicRack.Plugins
+namespace cYo.Projects.ComicRack.Plugins;
+
+public interface IPluginConfig
 {
-    public interface IPluginConfig
+    IEnumerable<string> LibraryPaths
     {
-        IEnumerable<string> LibraryPaths
-        {
-            get;
-        }
+        get;
     }
 }

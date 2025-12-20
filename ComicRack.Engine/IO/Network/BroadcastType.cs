@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Network
+namespace cYo.Projects.ComicRack.Engine.IO.Network;
+
+public enum BroadcastType
 {
-    public enum BroadcastType
-    {
-        ClientStarted,
-        ClientStopped,
-        ServerStarted,
-        ServerStopped
-    }
+    ClientStarted,
+    ClientStopped,
+    ServerStarted,
+    ServerStopped
 }

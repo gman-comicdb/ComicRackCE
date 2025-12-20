@@ -1,12 +1,11 @@
-namespace cYo.Common.Drawing
+namespace cYo.Common.Drawing;
+
+public enum ScaleMode
 {
-    public enum ScaleMode
-    {
-        None,
-        FitWidth,
-        FitHeight,
-        FitAll,
-        Fill,
-        Center
-    }
+    None,
+    FitWidth,
+    FitHeight,
+    FitAll,
+    Fill,
+    Center
 }

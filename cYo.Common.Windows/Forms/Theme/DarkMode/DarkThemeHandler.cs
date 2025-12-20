@@ -1,12 +1,12 @@
 ﻿
-using cYo.Common.Windows.Forms.Theme.DarkMode.Handlers;
-using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
-using cYo.Common.Windows.Forms.Theme.Internal;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
+using cYo.Common.Windows.Forms.Theme.DarkMode.Handlers;
+using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+using cYo.Common.Windows.Forms.Theme.Internal;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode;
 

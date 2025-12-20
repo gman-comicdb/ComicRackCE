@@ -1,9 +1,8 @@
-namespace cYo.Common.Compression.SevenZip
+namespace cYo.Common.Compression.SevenZip;
+
+public enum AskMode
 {
-    public enum AskMode
-    {
-        kExtract,
-        kTest,
-        kSkip
-    }
+    kExtract,
+    kTest,
+    kSkip
 }

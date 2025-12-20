@@ -1,16 +1,15 @@
 using System;
 using System.ComponentModel;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+[Serializable]
+[Description("Cover Artist")]
+[ComicBookMatcherHint("CoverArtist")]
+public class ComicBookCoverArtistMatcher : ComicBookStringMatcher
 {
-    [Serializable]
-    [Description("Cover Artist")]
-    [ComicBookMatcherHint("CoverArtist")]
-    public class ComicBookCoverArtistMatcher : ComicBookStringMatcher
+    protected override string GetValue(ComicBook comicBook)
     {
-        protected override string GetValue(ComicBook comicBook)
-        {
-            return comicBook.CoverArtist;
-        }
+        return comicBook.CoverArtist;
     }
 }

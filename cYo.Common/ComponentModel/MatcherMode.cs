@@ -1,8 +1,7 @@
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public enum MatcherMode
 {
-    public enum MatcherMode
-    {
-        And,
-        Or
-    }
+    And,
+    Or
 }

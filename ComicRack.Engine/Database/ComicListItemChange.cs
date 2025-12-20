@@ -1,11 +1,10 @@
-namespace cYo.Projects.ComicRack.Engine.Database
+namespace cYo.Projects.ComicRack.Engine.Database;
+
+public enum ComicListItemChange
 {
-    public enum ComicListItemChange
-    {
-        Added,
-        Removed,
-        Edited,
-        Statistic,
-        Other
-    }
+    Added,
+    Removed,
+    Edited,
+    Statistic,
+    Other
 }

@@ -1,20 +1,19 @@
-﻿namespace cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo
-{
-    public static class XmlInfoProviders
-    {
-        private static XmlInfoProviderFactory readersFactory;
+﻿namespace cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo;
 
-        public static XmlInfoProviderFactory Readers
+public static class XmlInfoProviders
+{
+    private static XmlInfoProviderFactory readersFactory;
+
+    public static XmlInfoProviderFactory Readers
+    {
+        get
         {
-            get
+            if (readersFactory == null)
             {
-                if (readersFactory == null)
-                {
-                    readersFactory = new XmlInfoProviderFactory();
-                    readersFactory.RegisterProviders();
-                }
-                return readersFactory;
+                readersFactory = new XmlInfoProviderFactory();
+                readersFactory.RegisterProviders();
             }
+            return readersFactory;
         }
     }
 }

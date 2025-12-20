@@ -1,12 +1,11 @@
 using System;
 
-namespace cYo.Common.Net
+namespace cYo.Common.Net;
+
+public static class WebUtility
 {
-    public static class WebUtility
+    public static string UrlEncode(string text)
     {
-        public static string UrlEncode(string text)
-        {
-            return Uri.EscapeDataString(text);
-        }
+        return Uri.EscapeDataString(text);
     }
 }

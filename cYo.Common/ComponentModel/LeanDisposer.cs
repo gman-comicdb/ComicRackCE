@@ -1,31 +1,30 @@
 using System;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+internal struct LeanDisposer : IDisposable
 {
-    internal struct LeanDisposer : IDisposable
+    private Action method;
+
+    private bool eatErrors;
+
+    public LeanDisposer(Action method, bool eatErrors = false)
     {
-        private Action method;
+        this.method = method;
+        this.eatErrors = eatErrors;
+    }
 
-        private bool eatErrors;
-
-        public LeanDisposer(Action method, bool eatErrors = false)
+    public void Dispose()
+    {
+        try
         {
-            this.method = method;
-            this.eatErrors = eatErrors;
+            method();
         }
-
-        public void Dispose()
+        catch (Exception)
         {
-            try
+            if (!eatErrors)
             {
-                method();
-            }
-            catch (Exception)
-            {
-                if (!eatErrors)
-                {
-                    throw;
-                }
+                throw;
             }
         }
     }

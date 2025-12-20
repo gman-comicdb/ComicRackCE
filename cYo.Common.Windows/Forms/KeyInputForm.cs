@@ -2,88 +2,87 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public partial class KeyInputForm : FormEx
 {
-    public partial class KeyInputForm : FormEx
+    private string description;
+
+    [Browsable(false)]
+    public CommandKey Key
     {
-        private string description;
+        get;
+        private set;
+    }
 
-        [Browsable(false)]
-        public CommandKey Key
+    public string Description
+    {
+        get
         {
-            get;
-            private set;
+            return description;
         }
-
-        public string Description
+        set
         {
-            get
+            if (!(description == value))
             {
-                return description;
-            }
-            set
-            {
-                if (!(description == value))
-                {
-                    description = value;
-                    Invalidate();
-                }
+                description = value;
+                Invalidate();
             }
         }
+    }
 
-        public KeyInputForm()
+    public KeyInputForm()
+    {
+        InitializeComponent();
+    }
+
+    protected override bool IsInputKey(Keys keyData)
+    {
+        return true;
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.KeyCode != Keys.ControlKey && e.KeyCode != Keys.ShiftKey && e.KeyCode != Keys.Menu)
         {
-            InitializeComponent();
+            Key = (CommandKey)e.KeyData;
+            base.DialogResult = DialogResult.OK;
+            Close();
         }
+    }
 
-        protected override bool IsInputKey(Keys keyData)
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        if (string.IsNullOrEmpty(Description))
         {
-            return true;
+            return;
         }
-
-        protected override void OnKeyDown(KeyEventArgs e)
+        using (SolidBrush brush = new SolidBrush(ForeColor))
         {
-            base.OnKeyDown(e);
-            if (e.KeyCode != Keys.ControlKey && e.KeyCode != Keys.ShiftKey && e.KeyCode != Keys.Menu)
+            using (StringFormat format = new StringFormat
             {
-                Key = (CommandKey)e.KeyData;
-                base.DialogResult = DialogResult.OK;
-                Close();
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            })
+            {
+                e.Graphics.DrawString(Description, Font, brush, base.ClientRectangle, format);
             }
         }
+    }
 
-        protected override void OnPaint(PaintEventArgs e)
+    public static CommandKey Show(IWin32Window parent, string caption, string description)
+    {
+        using (KeyInputForm keyInputForm = new KeyInputForm())
         {
-            base.OnPaint(e);
-            if (string.IsNullOrEmpty(Description))
+            keyInputForm.Text = caption;
+            keyInputForm.Description = description;
+            if (keyInputForm.ShowDialog(parent) == DialogResult.Cancel)
             {
-                return;
+                return CommandKey.None;
             }
-            using (SolidBrush brush = new SolidBrush(ForeColor))
-            {
-                using (StringFormat format = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                })
-                {
-                    e.Graphics.DrawString(Description, Font, brush, base.ClientRectangle, format);
-                }
-            }
-        }
-
-        public static CommandKey Show(IWin32Window parent, string caption, string description)
-        {
-            using (KeyInputForm keyInputForm = new KeyInputForm())
-            {
-                keyInputForm.Text = caption;
-                keyInputForm.Description = description;
-                if (keyInputForm.ShowDialog(parent) == DialogResult.Cancel)
-                {
-                    return CommandKey.None;
-                }
-                return keyInputForm.Key;
-            }
+            return keyInputForm.Key;
         }
     }
 }

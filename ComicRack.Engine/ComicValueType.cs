@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum ComicValueType
 {
-    public enum ComicValueType
-    {
-        Standard,
-        Proposed,
-        Shadow
-    }
+    Standard,
+    Proposed,
+    Shadow
 }

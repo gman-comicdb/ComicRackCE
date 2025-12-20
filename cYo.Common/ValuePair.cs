@@ -2,35 +2,34 @@ using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace cYo.Common
+namespace cYo.Common;
+
+[Serializable]
+public class ValuePair<K, T>
 {
-    [Serializable]
-    public class ValuePair<K, T>
+    [XmlAttribute]
+    [DefaultValue(null)]
+    public K Key
     {
-        [XmlAttribute]
-        [DefaultValue(null)]
-        public K Key
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        [XmlAttribute]
-        [DefaultValue(null)]
-        public T Value
-        {
-            get;
-            set;
-        }
+    [XmlAttribute]
+    [DefaultValue(null)]
+    public T Value
+    {
+        get;
+        set;
+    }
 
-        public ValuePair()
-        {
-        }
+    public ValuePair()
+    {
+    }
 
-        public ValuePair(K key, T value)
-        {
-            Key = key;
-            Value = value;
-        }
+    public ValuePair(K key, T value)
+    {
+        Key = key;
+        Value = value;
     }
 }

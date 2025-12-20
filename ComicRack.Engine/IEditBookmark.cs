@@ -1,21 +1,20 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public interface IEditBookmark
 {
-    public interface IEditBookmark
+    bool CanBookmark
     {
-        bool CanBookmark
-        {
-            get;
-        }
+        get;
+    }
 
-        string BookmarkProposal
-        {
-            get;
-        }
+    string BookmarkProposal
+    {
+        get;
+    }
 
-        string Bookmark
-        {
-            get;
-            set;
-        }
+    string Bookmark
+    {
+        get;
+        set;
     }
 }

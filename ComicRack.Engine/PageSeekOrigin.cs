@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum PageSeekOrigin
 {
-    public enum PageSeekOrigin
-    {
-        Beginning,
-        End,
-        Current,
-        Absolute
-    }
+    Beginning,
+    End,
+    Current,
+    Absolute
 }

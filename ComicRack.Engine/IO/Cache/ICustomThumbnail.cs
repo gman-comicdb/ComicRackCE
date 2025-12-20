@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace cYo.Projects.ComicRack.Engine.IO.Cache
+namespace cYo.Projects.ComicRack.Engine.IO.Cache;
+
+public interface ICustomThumbnail
 {
-    public interface ICustomThumbnail
-    {
-        string AddCustomThumbnail(Bitmap bmp);
+    string AddCustomThumbnail(Bitmap bmp);
 
-        ThumbnailImage GetCustomThumbnail(string key);
+    ThumbnailImage GetCustomThumbnail(string key);
 
-        IEnumerable<string> GetCustomThumbnailKeys();
+    IEnumerable<string> GetCustomThumbnailKeys();
 
-        bool CustomThumbnailExists(string key);
+    bool CustomThumbnailExists(string key);
 
-        bool RemoveCustomThumbnail(string key);
-    }
+    bool RemoveCustomThumbnail(string key);
 }

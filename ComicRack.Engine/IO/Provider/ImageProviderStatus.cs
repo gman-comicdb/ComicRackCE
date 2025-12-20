@@ -1,11 +1,10 @@
-namespace cYo.Projects.ComicRack.Engine.IO.Provider
+namespace cYo.Projects.ComicRack.Engine.IO.Provider;
+
+public enum ImageProviderStatus
 {
-    public enum ImageProviderStatus
-    {
-        NotStarted,
-        Running,
-        Completed,
-        Aborted,
-        Error
-    }
+    NotStarted,
+    Running,
+    Completed,
+    Aborted,
+    Error
 }

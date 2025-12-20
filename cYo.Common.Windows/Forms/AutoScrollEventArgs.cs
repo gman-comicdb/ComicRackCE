@@ -1,46 +1,45 @@
 using System.ComponentModel;
 using System.Drawing;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class AutoScrollEventArgs : CancelEventArgs
 {
-    public class AutoScrollEventArgs : CancelEventArgs
+    private Point delta;
+
+    public Point Delta
     {
-        private Point delta;
-
-        public Point Delta
+        get
         {
-            get
-            {
-                return delta;
-            }
-            set
-            {
-                delta = value;
-            }
+            return delta;
         }
-
-        public int X
+        set
         {
-            get
-            {
-                return delta.X;
-            }
-            set
-            {
-                delta.X = value;
-            }
+            delta = value;
         }
+    }
 
-        public int Y
+    public int X
+    {
+        get
         {
-            get
-            {
-                return delta.Y;
-            }
-            set
-            {
-                delta.Y = value;
-            }
+            return delta.X;
+        }
+        set
+        {
+            delta.X = value;
+        }
+    }
+
+    public int Y
+    {
+        get
+        {
+            return delta.Y;
+        }
+        set
+        {
+            delta.Y = value;
         }
     }
 }

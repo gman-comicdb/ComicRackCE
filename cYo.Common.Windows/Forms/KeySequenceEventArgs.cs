@@ -1,16 +1,15 @@
 using System;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public class KeySequenceEventArgs : EventArgs
 {
-    public class KeySequenceEventArgs : EventArgs
+    private readonly KeySequence sequence;
+
+    public KeySequence Sequence => sequence;
+
+    public KeySequenceEventArgs(KeySequence sequence)
     {
-        private readonly KeySequence sequence;
-
-        public KeySequence Sequence => sequence;
-
-        public KeySequenceEventArgs(KeySequence sequence)
-        {
-            this.sequence = sequence;
-        }
+        this.sequence = sequence;
     }
 }

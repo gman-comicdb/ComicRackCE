@@ -1,23 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace cYo.Common.Collections
-{
-    public class SimpleCache<K, T>
-    {
-        private Dictionary<K, T> dict = new Dictionary<K, T>();
+namespace cYo.Common.Collections;
 
-        public T Get(K key, Func<K, T> create)
+public class SimpleCache<K, T>
+{
+    private Dictionary<K, T> dict = new Dictionary<K, T>();
+
+    public T Get(K key, Func<K, T> create)
+    {
+        if (dict == null)
         {
-            if (dict == null)
-            {
-                dict = new Dictionary<K, T>();
-            }
-            if (!dict.TryGetValue(key, out var value))
-            {
-                return dict[key] = create(key);
-            }
-            return value;
+            dict = new Dictionary<K, T>();
         }
+        if (!dict.TryGetValue(key, out var value))
+        {
+            return dict[key] = create(key);
+        }
+        return value;
     }
 }

@@ -2,14 +2,13 @@ using System;
 
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public class CreateComicProviderEventArgs : EventArgs
 {
-    public class CreateComicProviderEventArgs : EventArgs
+    public ImageProvider Provider
     {
-        public ImageProvider Provider
-        {
-            get;
-            set;
-        }
+        get;
+        set;
     }
 }

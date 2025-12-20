@@ -1,22 +1,21 @@
 using System;
 using System.Drawing;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+public interface IBitmapDisplayControl : IDisposable
 {
-    public interface IBitmapDisplayControl : IDisposable
+    Bitmap Bitmap
     {
-        Bitmap Bitmap
-        {
-            get;
-            set;
-        }
-
-        object Tag
-        {
-            get;
-            set;
-        }
-
-        void SetBitmap(Bitmap bitmap);
+        get;
+        set;
     }
+
+    object Tag
+    {
+        get;
+        set;
+    }
+
+    void SetBitmap(Bitmap bitmap);
 }

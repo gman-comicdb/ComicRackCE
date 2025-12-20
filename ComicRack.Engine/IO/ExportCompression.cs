@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine.IO
+namespace cYo.Projects.ComicRack.Engine.IO;
+
+public enum ExportCompression
 {
-    public enum ExportCompression
-    {
-        None,
-        Medium,
-        Strong
-    }
+    None,
+    Medium,
+    Strong
 }

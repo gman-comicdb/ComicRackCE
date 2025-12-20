@@ -1,10 +1,9 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum MangaYesNo
 {
-    public enum MangaYesNo
-    {
-        Unknown = -1,
-        No,
-        Yes,
-        YesAndRightToLeft
-    }
+    Unknown = -1,
+    No,
+    Yes,
+    YesAndRightToLeft
 }

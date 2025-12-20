@@ -1,11 +1,10 @@
-namespace cYo.Common.Presentation
+namespace cYo.Common.Presentation;
+
+public enum StencilMode
 {
-    public enum StencilMode
-    {
-        Disabled,
-        WriteOne,
-        WriteNull,
-        TestOne,
-        TestNull
-    }
+    Disabled,
+    WriteOne,
+    WriteNull,
+    TestOne,
+    TestNull
 }

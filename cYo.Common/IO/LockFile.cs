@@ -2,37 +2,36 @@ using System.IO;
 
 using cYo.Common.ComponentModel;
 
-namespace cYo.Common.IO
+namespace cYo.Common.IO;
+
+public class LockFile : DisposableObject
 {
-    public class LockFile : DisposableObject
+    private readonly string file;
+
+    public bool WasLocked
     {
-        private readonly string file;
+        get;
+        private set;
+    }
 
-        public bool WasLocked
+    public LockFile(string file)
+    {
+        this.file = file;
+        if (File.Exists(file))
         {
-            get;
-            private set;
+            WasLocked = true;
         }
-
-        public LockFile(string file)
+        else
         {
-            this.file = file;
-            if (File.Exists(file))
+            using (File.Create(file))
             {
-                WasLocked = true;
-            }
-            else
-            {
-                using (File.Create(file))
-                {
-                }
             }
         }
+    }
 
-        protected override void Dispose(bool disposing)
-        {
-            FileUtility.SafeDelete(file);
-            base.Dispose(disposing);
-        }
+    protected override void Dispose(bool disposing)
+    {
+        FileUtility.SafeDelete(file);
+        base.Dispose(disposing);
     }
 }

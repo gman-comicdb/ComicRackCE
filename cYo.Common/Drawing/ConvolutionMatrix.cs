@@ -1,208 +1,207 @@
-namespace cYo.Common.Drawing
+namespace cYo.Common.Drawing;
+
+public struct ConvolutionMatrix
 {
-    public struct ConvolutionMatrix
+    private int topLeft;
+
+    private int topMid;
+
+    private int topRight;
+
+    private int midLeft;
+
+    private int pixel;
+
+    private int midRight;
+
+    private int bottomLeft;
+
+    private int bottomMid;
+
+    private int bottomRight;
+
+    private int divisor;
+
+    private int offset;
+
+    public int TopLeft
     {
-        private int topLeft;
-
-        private int topMid;
-
-        private int topRight;
-
-        private int midLeft;
-
-        private int pixel;
-
-        private int midRight;
-
-        private int bottomLeft;
-
-        private int bottomMid;
-
-        private int bottomRight;
-
-        private int divisor;
-
-        private int offset;
-
-        public int TopLeft
+        get
         {
-            get
-            {
-                return topLeft;
-            }
-            set
-            {
-                topLeft = value;
-            }
+            return topLeft;
         }
-
-        public int TopMid
+        set
         {
-            get
-            {
-                return topMid;
-            }
-            set
-            {
-                topMid = value;
-            }
+            topLeft = value;
         }
+    }
 
-        public int TopRight
+    public int TopMid
+    {
+        get
         {
-            get
-            {
-                return topRight;
-            }
-            set
-            {
-                topRight = value;
-            }
+            return topMid;
         }
-
-        public int MidLeft
+        set
         {
-            get
-            {
-                return midLeft;
-            }
-            set
-            {
-                midLeft = value;
-            }
+            topMid = value;
         }
+    }
 
-        public int Pixel
+    public int TopRight
+    {
+        get
         {
-            get
-            {
-                return pixel;
-            }
-            set
-            {
-                pixel = value;
-            }
+            return topRight;
         }
-
-        public int MidRight
+        set
         {
-            get
-            {
-                return midRight;
-            }
-            set
-            {
-                midRight = value;
-            }
+            topRight = value;
         }
+    }
 
-        public int BottomLeft
+    public int MidLeft
+    {
+        get
         {
-            get
-            {
-                return bottomLeft;
-            }
-            set
-            {
-                bottomLeft = value;
-            }
+            return midLeft;
         }
-
-        public int BottomMid
+        set
         {
-            get
-            {
-                return bottomMid;
-            }
-            set
-            {
-                bottomMid = value;
-            }
+            midLeft = value;
         }
+    }
 
-        public int BottomRight
+    public int Pixel
+    {
+        get
         {
-            get
-            {
-                return bottomRight;
-            }
-            set
-            {
-                bottomRight = value;
-            }
+            return pixel;
         }
-
-        public int Divisor
+        set
         {
-            get
-            {
-                return divisor;
-            }
-            set
-            {
-                divisor = value;
-            }
+            pixel = value;
         }
+    }
 
-        public int Offset
+    public int MidRight
+    {
+        get
         {
-            get
-            {
-                return offset;
-            }
-            set
-            {
-                offset = value;
-            }
+            return midRight;
         }
-
-        public ConvolutionMatrix(int setToAll)
+        set
         {
-            divisor = 1;
-            offset = 0;
-            pixel = setToAll;
-            topLeft = (topMid = (topRight = (midLeft = (midRight = (bottomLeft = (bottomMid = (bottomRight = setToAll)))))));
+            midRight = value;
         }
+    }
 
-        public void SetAll(int value)
+    public int BottomLeft
+    {
+        get
         {
-            int num2 = (BottomRight = value);
-            int num4 = (BottomMid = num2);
-            int num6 = (BottomLeft = num4);
-            int num8 = (MidRight = num6);
-            int num10 = (Pixel = num8);
-            int num12 = (MidLeft = num10);
-            int num14 = (TopRight = num12);
-            int num17 = (TopLeft = (TopMid = num14));
+            return bottomLeft;
         }
-
-        public override bool Equals(object obj)
+        set
         {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-            ConvolutionMatrix convolutionMatrix = (ConvolutionMatrix)obj;
-            if (convolutionMatrix.topLeft == topLeft && convolutionMatrix.topMid == topMid && convolutionMatrix.topRight == topRight && convolutionMatrix.midLeft == midLeft && convolutionMatrix.midRight == midRight && convolutionMatrix.bottomLeft == bottomLeft && convolutionMatrix.bottomMid == bottomMid)
-            {
-                return convolutionMatrix.bottomRight == bottomRight;
-            }
+            bottomLeft = value;
+        }
+    }
+
+    public int BottomMid
+    {
+        get
+        {
+            return bottomMid;
+        }
+        set
+        {
+            bottomMid = value;
+        }
+    }
+
+    public int BottomRight
+    {
+        get
+        {
+            return bottomRight;
+        }
+        set
+        {
+            bottomRight = value;
+        }
+    }
+
+    public int Divisor
+    {
+        get
+        {
+            return divisor;
+        }
+        set
+        {
+            divisor = value;
+        }
+    }
+
+    public int Offset
+    {
+        get
+        {
+            return offset;
+        }
+        set
+        {
+            offset = value;
+        }
+    }
+
+    public ConvolutionMatrix(int setToAll)
+    {
+        divisor = 1;
+        offset = 0;
+        pixel = setToAll;
+        topLeft = (topMid = (topRight = (midLeft = (midRight = (bottomLeft = (bottomMid = (bottomRight = setToAll)))))));
+    }
+
+    public void SetAll(int value)
+    {
+        int num2 = (BottomRight = value);
+        int num4 = (BottomMid = num2);
+        int num6 = (BottomLeft = num4);
+        int num8 = (MidRight = num6);
+        int num10 = (Pixel = num8);
+        int num12 = (MidLeft = num10);
+        int num14 = (TopRight = num12);
+        int num17 = (TopLeft = (TopMid = num14));
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
             return false;
         }
-
-        public override int GetHashCode()
+        ConvolutionMatrix convolutionMatrix = (ConvolutionMatrix)obj;
+        if (convolutionMatrix.topLeft == topLeft && convolutionMatrix.topMid == topMid && convolutionMatrix.topRight == topRight && convolutionMatrix.midLeft == midLeft && convolutionMatrix.midRight == midRight && convolutionMatrix.bottomLeft == bottomLeft && convolutionMatrix.bottomMid == bottomMid)
         {
-            return TopLeft.GetHashCode() ^ topRight.GetHashCode() ^ bottomLeft.GetHashCode() ^ bottomRight.GetHashCode();
+            return convolutionMatrix.bottomRight == bottomRight;
         }
+        return false;
+    }
 
-        public static bool operator ==(ConvolutionMatrix a, ConvolutionMatrix b)
-        {
-            return a.Equals(b);
-        }
+    public override int GetHashCode()
+    {
+        return TopLeft.GetHashCode() ^ topRight.GetHashCode() ^ bottomLeft.GetHashCode() ^ bottomRight.GetHashCode();
+    }
 
-        public static bool operator !=(ConvolutionMatrix a, ConvolutionMatrix b)
-        {
-            return !(a == b);
-        }
+    public static bool operator ==(ConvolutionMatrix a, ConvolutionMatrix b)
+    {
+        return a.Equals(b);
+    }
+
+    public static bool operator !=(ConvolutionMatrix a, ConvolutionMatrix b)
+    {
+        return !(a == b);
     }
 }

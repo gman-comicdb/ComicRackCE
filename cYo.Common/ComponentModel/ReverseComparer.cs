@@ -1,23 +1,22 @@
 using System.Collections.Generic;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public class ReverseComparer<T> : Comparer<T>
 {
-    public class ReverseComparer<T> : Comparer<T>
+    private readonly IComparer<T> comparer;
+
+    public ReverseComparer(IComparer<T> comparer)
     {
-        private readonly IComparer<T> comparer;
+        this.comparer = comparer;
+    }
 
-        public ReverseComparer(IComparer<T> comparer)
+    public override int Compare(T x, T y)
+    {
+        if (comparer != null)
         {
-            this.comparer = comparer;
+            return comparer.Compare(y, x);
         }
-
-        public override int Compare(T x, T y)
-        {
-            if (comparer != null)
-            {
-                return comparer.Compare(y, x);
-            }
-            return 0;
-        }
+        return 0;
     }
 }

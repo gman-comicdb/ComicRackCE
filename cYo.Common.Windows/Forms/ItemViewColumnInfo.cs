@@ -2,105 +2,104 @@ using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace cYo.Common.Windows.Forms
+namespace cYo.Common.Windows.Forms;
+
+[Serializable]
+public class ItemViewColumnInfo
 {
-    [Serializable]
-    public class ItemViewColumnInfo
+    private bool visible = true;
+
+    private int width = 80;
+
+    private readonly string name;
+
+    [NonSerialized]
+    private readonly object tag;
+
+    private DateTime lastTimeVisible = DateTime.MinValue;
+
+    [XmlAttribute]
+    [DefaultValue(0)]
+    public int Id
     {
-        private bool visible = true;
+        get;
+        set;
+    }
 
-        private int width = 80;
+    [XmlAttribute]
+    [DefaultValue(0)]
+    public int FormatId
+    {
+        get;
+        set;
+    }
 
-        private readonly string name;
-
-        [NonSerialized]
-        private readonly object tag;
-
-        private DateTime lastTimeVisible = DateTime.MinValue;
-
-        [XmlAttribute]
-        [DefaultValue(0)]
-        public int Id
+    [XmlAttribute]
+    [DefaultValue(true)]
+    public bool Visible
+    {
+        get
         {
-            get;
-            set;
+            return visible;
         }
-
-        [XmlAttribute]
-        [DefaultValue(0)]
-        public int FormatId
+        set
         {
-            get;
-            set;
+            visible = value;
         }
+    }
 
-        [XmlAttribute]
-        [DefaultValue(true)]
-        public bool Visible
+    [XmlAttribute]
+    [DefaultValue(80)]
+    public int Width
+    {
+        get
         {
-            get
-            {
-                return visible;
-            }
-            set
-            {
-                visible = value;
-            }
+            return width;
         }
-
-        [XmlAttribute]
-        [DefaultValue(80)]
-        public int Width
+        set
         {
-            get
-            {
-                return width;
-            }
-            set
-            {
-                width = value;
-            }
+            width = value;
         }
+    }
 
-        public string Name => name;
+    public string Name => name;
 
-        public object Tag => tag;
+    public object Tag => tag;
 
-        [DefaultValue(typeof(DateTime), "0001-01-01T00:00:00")]
-        public DateTime LastTimeVisible
+    [DefaultValue(typeof(DateTime), "0001-01-01T00:00:00")]
+    public DateTime LastTimeVisible
+    {
+        get
         {
-            get
-            {
-                return lastTimeVisible;
-            }
-            set
-            {
-                lastTimeVisible = value;
-            }
+            return lastTimeVisible;
         }
-
-        public ItemViewColumnInfo()
+        set
         {
+            lastTimeVisible = value;
         }
+    }
 
-        public ItemViewColumnInfo(IColumn header)
-        {
-            Id = header.Id;
-            FormatId = header.FormatId;
-            Visible = header.Visible;
-            Width = header.Width;
-            name = header.Text;
-            tag = header.Tag;
-            lastTimeVisible = header.LastTimeVisible;
-        }
+    public ItemViewColumnInfo()
+    {
+    }
 
-        public override string ToString()
+    public ItemViewColumnInfo(IColumn header)
+    {
+        Id = header.Id;
+        FormatId = header.FormatId;
+        Visible = header.Visible;
+        Width = header.Width;
+        name = header.Text;
+        tag = header.Tag;
+        lastTimeVisible = header.LastTimeVisible;
+    }
+
+    public override string ToString()
+    {
+        if (!string.IsNullOrEmpty(name))
         {
-            if (!string.IsNullOrEmpty(name))
-            {
-                return name;
-            }
-            return string.Empty;
+            return name;
         }
+        return string.Empty;
     }
 }

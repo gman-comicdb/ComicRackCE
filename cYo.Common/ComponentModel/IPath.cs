@@ -1,24 +1,23 @@
 using System.ComponentModel;
 
-namespace cYo.Common.ComponentModel
+namespace cYo.Common.ComponentModel;
+
+public interface IPath
 {
-    public interface IPath
+    string Path
     {
-        string Path
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        string Arguments
-        {
-            get;
-            set;
-        }
+    string Arguments
+    {
+        get;
+        set;
+    }
 
-        string FullPath
-        {
-            get;
-        }
+    string FullPath
+    {
+        get;
     }
 }

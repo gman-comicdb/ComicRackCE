@@ -1,12 +1,11 @@
 using cYo.Common.Collections;
 
-namespace cYo.Common.Presentation.Panels
+namespace cYo.Common.Presentation.Panels;
+
+public class OverlayPanelCollection : SmartList<OverlayPanel>
 {
-    public class OverlayPanelCollection : SmartList<OverlayPanel>
+    public OverlayPanelCollection()
     {
-        public OverlayPanelCollection()
-        {
-            base.Flags |= SmartListOptions.DisposeOnRemove;
-        }
+        base.Flags |= SmartListOptions.DisposeOnRemove;
     }
 }

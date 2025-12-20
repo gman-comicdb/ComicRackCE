@@ -1,99 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-using cYo.Common.Runtime;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace cYo.Common.Net
+using cYo.Common.Runtime;
+
+namespace cYo.Common.Net;
+
+public class GithubAPI(string sha1 = "", string headTag = "nightly")
 {
-    public class GithubAPI(string sha1 = "", string headTag = "nightly")
+    const string apiURL = @"https://api.github.com/repos/maforget/ComicRackCE/compare/{0}...{1}";
+    private GithubCompareAPI response = null;
+
+    public string Commit { get; } = !string.IsNullOrEmpty(sha1) ? sha1 : GitVersion.CurrentCommit;
+    public string UpdateMessage => GetCommitsMessages();
+    public bool IsUpdateAvailable => CheckIfUpdateAvailable();
+
+    private bool CheckIfUpdateAvailable()
     {
-        const string apiURL = @"https://api.github.com/repos/maforget/ComicRackCE/compare/{0}...{1}";
-        private GithubCompareAPI response = null;
+        if (response == null || response.status.Contains("Error"))
+            return false;
 
-        public string Commit { get; } = !string.IsNullOrEmpty(sha1) ? sha1 : GitVersion.CurrentCommit;
-        public string UpdateMessage => GetCommitsMessages();
-        public bool IsUpdateAvailable => CheckIfUpdateAvailable();
+        return response.status == "ahead"; //"ahead" means that we have a new update available. "identical" or "behind" are also possible values.
+    }
 
-        private bool CheckIfUpdateAvailable()
+    public async Task ExecuteAsync()
+    {
+        response = await Task.Run(() => GetResponse());
+    }
+
+    private GithubCompareAPI GetResponse()
+    {
+        try
         {
-            if (response == null || response.status.Contains("Error"))
-                return false;
-
-            return response.status == "ahead"; //"ahead" means that we have a new update available. "identical" or "behind" are also possible values.
+            string url = string.Format(apiURL, Commit, headTag);
+            string rawJson = LoadText(url);
+            GithubCompareAPI json = JsonSerializer.Deserialize<GithubCompareAPI>(rawJson);
+            return json;
         }
-
-        public async Task ExecuteAsync()
+        catch (Exception ex)
         {
-            response = await Task.Run(() => GetResponse());
-        }
-
-        private GithubCompareAPI GetResponse()
-        {
-            try
+            return new GithubCompareAPI()
             {
-                string url = string.Format(apiURL, Commit, headTag);
-                string rawJson = LoadText(url);
-                GithubCompareAPI json = JsonSerializer.Deserialize<GithubCompareAPI>(rawJson);
-                return json;
-            }
-            catch (Exception ex)
-            {
-                return new GithubCompareAPI()
-                {
-                    status = $"Error - {ex.Message}"
-                };
-            }
+                status = $"Error - {ex.Message}"
+            };
         }
+    }
 
-        private string GetCommitsMessages()
+    private string GetCommitsMessages()
+    {
+        if (response == null)
+            return string.Empty;
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < response.commits.Length; i++)
         {
-            if (response == null)
-                return string.Empty;
+            Commit item = response.commits[i];
+            sb.AppendLine(item.commit.message);
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < response.commits.Length; i++)
-            {
-                Commit item = response.commits[i];
-                sb.AppendLine(item.commit.message);
-
-                if (i < response.commits.Length - 1)
-                    sb.AppendLine(new string('-', 100));
-            }
-            return sb.ToString();
+            if (i < response.commits.Length - 1)
+                sb.AppendLine(new string('-', 100));
         }
-
-        public static string LoadText(string url)
-        {
-            return HttpAccess.ReadText(url);
-        }
+        return sb.ToString();
     }
 
-
-    #region JSON response object
-    public class GithubCompareAPI
+    public static string LoadText(string url)
     {
-        public string status { get; set; }
-        public int ahead_by { get; set; }
-        public int behind_by { get; set; }
-        public int total_commits { get; set; }
-        public Commit[] commits { get; set; }
+        return HttpAccess.ReadText(url);
     }
-
-    public class Commit
-    {
-        public string sha { get; set; }
-        public CommitDetail commit { get; set; }
-        public string html_url { get; set; }
-    }
-
-    public class CommitDetail
-    {
-        public string message { get; set; }
-    }
-    #endregion
-
 }
+
+
+#region JSON response object
+public class GithubCompareAPI
+{
+    public string status { get; set; }
+    public int ahead_by { get; set; }
+    public int behind_by { get; set; }
+    public int total_commits { get; set; }
+    public Commit[] commits { get; set; }
+}
+
+public class Commit
+{
+    public string sha { get; set; }
+    public CommitDetail commit { get; set; }
+    public string html_url { get; set; }
+}
+
+public class CommitDetail
+{
+    public string message { get; set; }
+}
+#endregion

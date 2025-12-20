@@ -1,9 +1,8 @@
-namespace cYo.Projects.ComicRack.Engine
+namespace cYo.Projects.ComicRack.Engine;
+
+public enum YesNo
 {
-    public enum YesNo
-    {
-        Unknown = -1,
-        No,
-        Yes
-    }
+    Unknown = -1,
+    No,
+    Yes
 }

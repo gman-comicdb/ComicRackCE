@@ -1,15 +1,14 @@
-namespace cYo.Projects.ComicRack.Viewer.Controls
-{
-    public interface ISetCustomThumbnail
-    {
-        string Name
-        {
-            get;
-        }
+namespace cYo.Projects.ComicRack.Viewer.Controls;
 
-        string CustomThumbnailKey
-        {
-            set;
-        }
+public interface ISetCustomThumbnail
+{
+    string Name
+    {
+        get;
+    }
+
+    string CustomThumbnailKey
+    {
+        set;
     }
 }

@@ -1,34 +1,33 @@
-namespace cYo.Common.Threading
+namespace cYo.Common.Threading;
+
+public interface IProgressState
 {
-    public interface IProgressState
+    bool ProgressAvailable
     {
-        bool ProgressAvailable
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        int ProgressPercentage
-        {
-            get;
-            set;
-        }
+    int ProgressPercentage
+    {
+        get;
+        set;
+    }
 
-        string ProgressMessage
-        {
-            get;
-            set;
-        }
+    string ProgressMessage
+    {
+        get;
+        set;
+    }
 
-        bool Abort
-        {
-            get;
-            set;
-        }
+    bool Abort
+    {
+        get;
+        set;
+    }
 
-        ProgressState State
-        {
-            get;
-        }
+    ProgressState State
+    {
+        get;
     }
 }
