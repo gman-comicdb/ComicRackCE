@@ -26,35 +26,15 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
         private bool failed;
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public bool IsCustom
-        {
-            get;
-            set;
-        }
+        public bool IsCustom { get; set; }
 
-        public string Default
-        {
-            get;
-            set;
-        }
+        public string Default { get; set; }
 
-        public ImageLayout Layout
-        {
-            get;
-            set;
-        }
+        public ImageLayout Layout { get; set; }
 
-        public Bitmap Sample
-        {
-            get;
-            set;
-        }
+        public Bitmap Sample { get; set; }
 
         public TextureFileItem(string file, bool custom = true)
             : base(file)
@@ -84,7 +64,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
         public override bool Equals(object obj)
         {
-            return obj is TextureFileItem ? ((TextureFileItem)obj).Item == base.Item : false;
+            return obj is TextureFileItem && ((TextureFileItem)obj).Item == base.Item;
         }
 
         public override int GetHashCode()
@@ -173,17 +153,9 @@ public partial class ComicDisplaySettingsDialog : FormEx
     }
 
 
-    private DisplayWorkspace Workspace
-    {
-        get;
-        set;
-    }
+    private DisplayWorkspace Workspace { get; set; }
 
-    private Action<DisplayWorkspace> ApplyAction
-    {
-        get;
-        set;
-    }
+    private Action<DisplayWorkspace> ApplyAction { get; set; }
 
     public override UIComponent UIComponent => UIComponent.Content;
 

@@ -30,10 +30,7 @@ public partial class ExportComicsDialog : FormEx
 
     public ExportSettingCollection DefaultPresets
     {
-        get
-        {
-            return defaultPresets;
-        }
+        get => defaultPresets;
         set
         {
             defaultPresets = value;
@@ -43,10 +40,7 @@ public partial class ExportComicsDialog : FormEx
 
     public ExportSettingCollection UserPresets
     {
-        get
-        {
-            return userPresets;
-        }
+        get => userPresets;
         set
         {
             userPresets = value;
@@ -76,11 +70,7 @@ public partial class ExportComicsDialog : FormEx
         }
     }
 
-    public string SettingName
-    {
-        get;
-        set;
-    }
+    public string SettingName { get; set; }
 
     public ExportSetting Setting
     {

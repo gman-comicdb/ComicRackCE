@@ -7,14 +7,8 @@ public partial class PasswordDialog : FormEx
 {
     public string Description
     {
-        get
-        {
-            return lblDescription.Text;
-        }
-        set
-        {
-            lblDescription.Text = value;
-        }
+        get => lblDescription.Text;
+        set => lblDescription.Text = value;
     }
 
     public string Password => txPassword.Text;

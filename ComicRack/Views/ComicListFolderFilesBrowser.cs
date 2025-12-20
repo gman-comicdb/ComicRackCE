@@ -29,10 +29,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string CurrentFolder
     {
-        get
-        {
-            return tvFolders == null || tvFolders.Nodes.Count <= 0 ? cachedCurrentFolder : tvFolders.GetSelectedNodePath();
-        }
+        get => tvFolders == null || tvFolders.Nodes.Count <= 0 ? cachedCurrentFolder : tvFolders.GetSelectedNodePath();
         set
         {
             if (tvFolders == null || tvFolders.Nodes.Count == 0)
@@ -48,10 +45,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     public SmartList<string> Paths
     {
-        get
-        {
-            return paths;
-        }
+        get => paths;
         set
         {
             if (paths != value)
@@ -71,26 +65,14 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     public override bool TopBrowserVisible
     {
-        get
-        {
-            return favContainer.Expanded;
-        }
-        set
-        {
-            favContainer.Expanded = value;
-        }
+        get => favContainer.Expanded;
+        set => favContainer.Expanded = value;
     }
 
     public override int TopBrowserSplit
     {
-        get
-        {
-            return favContainer.ExpandedWidth;
-        }
-        set
-        {
-            favContainer.ExpandedWidth = value;
-        }
+        get => favContainer.ExpandedWidth;
+        set => favContainer.ExpandedWidth = value;
     }
 
     public ComicListFolderFilesBrowser()

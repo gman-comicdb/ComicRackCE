@@ -174,69 +174,29 @@ public static class Program
         }
     }
 
-    public static MainForm MainForm
-    {
-        get;
-        private set;
-    }
+    public static MainForm MainForm { get; private set; }
 
-    public static DefaultLists Lists
-    {
-        get;
-        private set;
-    }
+    public static DefaultLists Lists { get; private set; }
 
-    public static bool Restart
-    {
-        get;
-        set;
-    }
+    public static bool Restart { get; set; }
 
-    public static ScriptOutputForm ScriptConsole
-    {
-        get;
-        set;
-    }
+    public static ScriptOutputForm ScriptConsole { get; set; }
 
     public static bool UseLocalSettings => ExtendedSettings.UseLocalSettings || IniFile.Default.GetValue("UseLocalSettings", def: false);
 
-    public static Settings Settings
-    {
-        get;
-        private set;
-    }
+    public static Settings Settings { get; private set; }
 
-    public static NewsStorage News
-    {
-        get;
-        private set;
-    }
+    public static NewsStorage News { get; private set; }
 
-    public static CacheManager CacheManager
-    {
-        get;
-        private set;
-    }
+    public static CacheManager CacheManager { get; private set; }
 
     public static ImagePool ImagePool => CacheManager.ImagePool;
 
-    public static NetworkManager NetworkManager
-    {
-        get;
-        private set;
-    }
+    public static NetworkManager NetworkManager { get; private set; }
 
-    public static QueueManager QueueManager
-    {
-        get;
-        private set;
-    }
+    public static QueueManager QueueManager { get; private set; }
 
-    public static BackupManager BackupManager
-    {
-        get;
-        private set;
-    }
+    public static BackupManager BackupManager { get; private set; }
 
     public static ComicScanner Scanner => QueueManager.Scanner;
 
@@ -254,11 +214,7 @@ public static class Program
         ExportSetting.ConvertToCB7
     };
 
-    public static IEnumerable<StringPair> DefaultKeyboardMapping
-    {
-        get;
-        set;
-    }
+    public static IEnumerable<StringPair> DefaultKeyboardMapping { get; set; }
 
     public static TRInfo[] InstalledLanguages
     {
@@ -301,10 +257,7 @@ public static class Program
 
     public static string HelpSystem
     {
-        get
-        {
-            return Help.HelpName;
-        }
+        get => Help.HelpName;
         set
         {
             if (!(Help.HelpName == value))

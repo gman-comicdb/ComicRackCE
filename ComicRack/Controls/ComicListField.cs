@@ -11,43 +11,19 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 public class ComicListField
 {
     [DefaultValue(null)]
-    public string DisplayProperty
-    {
-        get;
-        set;
-    }
+    public string DisplayProperty { get; set; }
 
     [DefaultValue(null)]
-    public string EditProperty
-    {
-        get;
-        set;
-    }
+    public string EditProperty { get; set; }
 
     [DefaultValue(null)]
-    public string Description
-    {
-        get;
-        set;
-    }
+    public string Description { get; set; }
 
-    public StringTrimming Trimming
-    {
-        get;
-        set;
-    }
+    public StringTrimming Trimming { get; set; }
 
-    public Type ValueType
-    {
-        get;
-        set;
-    }
+    public Type ValueType { get; set; }
 
-    public string DefaultText
-    {
-        get;
-        set;
-    }
+    public string DefaultText { get; set; }
 
     public ComicListField()
     {

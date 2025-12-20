@@ -44,17 +44,9 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         private readonly HashSet<ComicBook> items;
 
-        public string Caption
-        {
-            get;
-            private set;
-        }
+        public string Caption { get; private set; }
 
-        public IGrouper<IViewableItem> Grouper
-        {
-            get;
-            private set;
-        }
+        public IGrouper<IViewableItem> Grouper { get; private set; }
 
         public StackMatcher(IGrouper<IViewableItem> grouper, string caption, HashSet<ComicBook> items)
         {
@@ -280,10 +272,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IComicBookListProvider BookList
     {
-        get
-        {
-            return bookList;
-        }
+        get => bookList;
         set
         {
             if (bookList == value)
@@ -335,37 +324,22 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewConfig ViewConfig
     {
-        get
-        {
-            return itemView.ViewConfig;
-        }
-        set
-        {
-            itemView.ViewConfig = value;
-        }
+        get => itemView.ViewConfig;
+        set => itemView.ViewConfig = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewMode ItemViewMode
     {
-        get
-        {
-            return itemView.ItemViewMode;
-        }
-        set
-        {
-            itemView.ItemViewMode = value;
-        }
+        get => itemView.ItemViewMode;
+        set => itemView.ItemViewMode = value;
     }
 
     [DefaultValue(null)]
     public string QuickSearch
     {
-        get
-        {
-            return quickSearch;
-        }
+        get => quickSearch;
         set
         {
             if (!(quickSearch == value))
@@ -382,10 +356,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicBookAllPropertiesMatcher.MatcherOption QuickSearchType
     {
-        get
-        {
-            return quickSearchType;
-        }
+        get => quickSearchType;
         set
         {
             if (quickSearchType != value)
@@ -400,10 +371,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicBookAllPropertiesMatcher.ShowOptionType ShowOptionType
     {
-        get
-        {
-            return showOptionType;
-        }
+        get => showOptionType;
         set
         {
             if (showOptionType != value)
@@ -418,10 +386,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicBookAllPropertiesMatcher.ShowComicType ShowComicType
     {
-        get
-        {
-            return showComicType;
-        }
+        get => showComicType;
         set
         {
             if (showComicType != value)
@@ -437,10 +402,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DefaultValue(false)]
     public bool ShowOnlyDuplicates
     {
-        get
-        {
-            return showOnlyDuplicates;
-        }
+        get => showOnlyDuplicates;
         set
         {
             if (showOnlyDuplicates != value)
@@ -456,10 +418,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DefaultValue(false)]
     public bool ShowGroupHeaders
     {
-        get
-        {
-            return showGroupHeaders;
-        }
+        get => showGroupHeaders;
         set
         {
             if (showGroupHeaders != value)
@@ -473,10 +432,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicsEditModes ComicEditMode
     {
-        get
-        {
-            return comicEditMode;
-        }
+        get => comicEditMode;
         set
         {
             if (comicEditMode != value)
@@ -488,61 +444,36 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     }
 
     [DefaultValue(false)]
-    public bool DisableViewConfigUpdate
-    {
-        get;
-        set;
-    }
+    public bool DisableViewConfigUpdate { get; set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [Browsable(false)]
     public int SearchBrowserColumn1
     {
-        get
-        {
-            return bookSelectorPanel.Column1;
-        }
-        set
-        {
-            bookSelectorPanel.Column1 = value;
-        }
+        get => bookSelectorPanel.Column1;
+        set => bookSelectorPanel.Column1 = value;
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [Browsable(false)]
     public int SearchBrowserColumn2
     {
-        get
-        {
-            return bookSelectorPanel.Column2;
-        }
-        set
-        {
-            bookSelectorPanel.Column2 = value;
-        }
+        get => bookSelectorPanel.Column2;
+        set => bookSelectorPanel.Column2 = value;
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [Browsable(false)]
     public int SearchBrowserColumn3
     {
-        get
-        {
-            return bookSelectorPanel.Column3;
-        }
-        set
-        {
-            bookSelectorPanel.Column3 = value;
-        }
+        get => bookSelectorPanel.Column3;
+        set => bookSelectorPanel.Column3 = value;
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ThumbnailConfig ThumbnailConfig
     {
-        get
-        {
-            return thumbnailConfig;
-        }
+        get => thumbnailConfig;
         set
         {
             if (value != null)
@@ -555,10 +486,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DefaultValue(null)]
     public Image ListBackgroundImage
     {
-        get
-        {
-            return listBackgroundImage;
-        }
+        get => listBackgroundImage;
         set
         {
             listBackgroundImage = value;
@@ -570,19 +498,12 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     }
 
     [DefaultValue(false)]
-    public bool HideNavigation
-    {
-        get;
-        set;
-    }
+    public bool HideNavigation { get; set; }
 
     [DefaultValue(false)]
     public bool SearchBrowserVisible
     {
-        get
-        {
-            return searchBrowserVisible;
-        }
+        get => searchBrowserVisible;
         set
         {
             if (searchBrowserVisible != value)
@@ -596,10 +517,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicLibrary Library
     {
-        get
-        {
-            return library;
-        }
+        get => library;
         set
         {
             if (library != value)
@@ -1632,7 +1550,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IEditableComicBookListProvider editableComicBookListProvider = BookList.QueryService<IEditableComicBookListProvider>();
         if (ComicEditMode.CanEditList() && editableComicBookListProvider != null && !editableComicBookListProvider.IsLibrary)
         {
-            return mustBeOrdered ? IsViewSortedByPosition() : true;
+            return !mustBeOrdered || IsViewSortedByPosition();
         }
         return false;
     }
@@ -2426,9 +2344,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool IsViewSortedByPosition()
     {
-        return itemView.SortColumn != null && itemView.SortColumn.Id == 100 && itemView.ItemSortOrder == SortOrder.Ascending && itemView.GroupColumn == null
-            ? !itemView.IsStacked
-            : false;
+        return itemView.SortColumn != null && itemView.SortColumn.Id == 100 && itemView.ItemSortOrder == SortOrder.Ascending && itemView.GroupColumn == null && !itemView.IsStacked;
     }
 
     private void SetDropEffects(DragEventArgs e)
@@ -2731,9 +2647,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool CanRemoveBooks()
     {
-        return itemView.InplaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null
-            ? BookList.QueryService<IRemoveBooks>() != null
-            : false;
+        return itemView.InplaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null && BookList.QueryService<IRemoveBooks>() != null;
     }
 
     private void RemoveBooks()

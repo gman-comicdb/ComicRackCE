@@ -15,14 +15,8 @@ public partial class CrashDialog : FormEx
 
     public BarkType CrashType
     {
-        get
-        {
-            return crashType;
-        }
-        set
-        {
-            crashType = value;
-        }
+        get => crashType;
+        set => crashType = value;
     }
 
     public CrashDialog()

@@ -126,7 +126,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
         public bool IsValid()
         {
-            return books != null ? !books.IsEmpty() : false;
+            return books != null && !books.IsEmpty();
         }
 
         public void SetRating(float rating)
@@ -173,20 +173,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         private IEditPage editor;
 
-        public bool IsValid
-        {
-            get
-            {
-                return editor != null ? editor.IsValid : false;
-            }
-        }
+        public bool IsValid => editor != null && editor.IsValid;
 
         public ComicPageType PageType
         {
-            get
-            {
-                return !IsValid ? ComicPageType.Story : editor.PageType;
-            }
+            get => !IsValid ? ComicPageType.Story : editor.PageType;
             set
             {
                 if (IsValid)
@@ -198,10 +189,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
         public ImageRotation Rotation
         {
-            get
-            {
-                return !IsValid ? ImageRotation.None : editor.Rotation;
-            }
+            get => !IsValid ? ImageRotation.None : editor.Rotation;
             set
             {
                 if (IsValid)
@@ -221,28 +209,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         private IEditBookmark editor;
 
-        public bool CanBookmark
-        {
-            get
-            {
-                return editor != null ? editor.CanBookmark : false;
-            }
-        }
+        public bool CanBookmark => editor != null && editor.CanBookmark;
 
-        public string BookmarkProposal
-        {
-            get
-            {
-                return !CanBookmark ? string.Empty : editor.BookmarkProposal;
-            }
-        }
+        public string BookmarkProposal => !CanBookmark ? string.Empty : editor.BookmarkProposal;
 
         public string Bookmark
         {
-            get
-            {
-                return !CanBookmark ? string.Empty : editor.Bookmark;
-            }
+            get => !CanBookmark ? string.Empty : editor.Bookmark;
             set
             {
                 if (CanBookmark)
@@ -396,10 +369,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(false)]
     public bool AutoHideMainMenu
     {
-        get
-        {
-            return autoHideMainMenu;
-        }
+        get => autoHideMainMenu;
         set
         {
             if (autoHideMainMenu != value)
@@ -413,10 +383,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(true)]
     public bool ShowMainMenuNoComicOpen
     {
-        get
-        {
-            return showMainMenuNoComicOpen;
-        }
+        get => showMainMenuNoComicOpen;
         set
         {
             if (showMainMenuNoComicOpen != value)
@@ -428,18 +395,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     }
 
     [Browsable(false)]
-    public bool IsInitialized
-    {
-        get;
-        private set;
-    }
+    public bool IsInitialized { get; private set; }
 
     public bool ReaderUndocked
     {
-        get
-        {
-            return readerForm != null;
-        }
+        get => readerForm != null;
         set
         {
             if (value == ReaderUndocked)
@@ -492,10 +452,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rectangle UndockedReaderBounds
     {
-        get
-        {
-            return !ReaderUndocked ? undockedReaderBounds : readerForm.SafeBounds;
-        }
+        get => !ReaderUndocked ? undockedReaderBounds : readerForm.SafeBounds;
         set
         {
             if (ReaderUndocked)
@@ -513,10 +470,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public FormWindowState UndockedReaderState
     {
-        get
-        {
-            return !ReaderUndocked ? undockedReaderState : readerForm.WindowState;
-        }
+        get => !ReaderUndocked ? undockedReaderState : readerForm.WindowState;
         set
         {
             if (ReaderUndocked)
@@ -534,10 +488,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rectangle ScriptOutputBounds
     {
-        get
-        {
-            return ScriptConsole?.SafeBounds ?? Rectangle.Empty;
-        }
+        get => ScriptConsole?.SafeBounds ?? Rectangle.Empty;
         set
         {
             if (ScriptConsole != null)
@@ -556,10 +507,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private bool MainToolStripVisible
     {
-        get
-        {
-            return fileTabs.Controls.Contains(mainToolStrip);
-        }
+        get => fileTabs.Controls.Contains(mainToolStrip);
         set
         {
             bool mainToolStripVisible = MainToolStripVisible;
@@ -586,40 +534,21 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public DockStyle ViewDock
     {
-        get
-        {
-            return mainViewContainer.Dock;
-        }
-        set
-        {
-            mainViewContainer.Dock = value;
-        }
+        get => mainViewContainer.Dock;
+        set => mainViewContainer.Dock = value;
     }
 
-    public Rectangle SafeBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle SafeBounds { get; set; }
 
     public bool MinimizedToTray => notifyIcon.Visible;
 
     public Control Control => this;
 
-    public bool IsComicVisible
-    {
-        get
-        {
-            return !ReaderUndocked && BrowserDock == DockStyle.Fill ? mainView.IsComicVisible : true;
-        }
-    }
+    public bool IsComicVisible => ReaderUndocked || BrowserDock != DockStyle.Fill || mainView.IsComicVisible;
 
     public bool BrowserVisible
     {
-        get
-        {
-            return !ReaderUndocked && BrowserDock != DockStyle.Fill ? mainViewContainer.Expanded : savedBrowserVisible;
-        }
+        get => !ReaderUndocked && BrowserDock != DockStyle.Fill ? mainViewContainer.Expanded : savedBrowserVisible;
         set
         {
             if (!ReaderUndocked && BrowserDock != DockStyle.Fill)
@@ -634,10 +563,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public DockStyle BrowserDock
     {
-        get
-        {
-            return !ReaderUndocked ? mainViewContainer.Dock : savedBrowserDockStyle;
-        }
+        get => !ReaderUndocked ? mainViewContainer.Dock : savedBrowserDockStyle;
         set
         {
             if (ReaderUndocked)
@@ -658,10 +584,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(false)]
     public bool MinimalGui
     {
-        get
-        {
-            return minimalGui;
-        }
+        get => minimalGui;
         set
         {
             if (minimalGui != value)
@@ -672,10 +595,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    public static ScriptOutputForm ScriptConsole
-    {
-        get => Program.ScriptConsole ?? null;
-    }
+    public static ScriptOutputForm ScriptConsole => Program.ScriptConsole ?? null;
 
     public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries.Replace("\n", "").Replace("\r", "").Split(';', StringSplitOptions.RemoveEmptyEntries);
 
@@ -4030,7 +3950,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             mainView.ShowLibrary(library);
         }
-        return !libraryBrowser.SelectList(list.Id) ? false : this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false;
+        return libraryBrowser.SelectList(list.Id) && (this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false);
     }
 
     void IApplication.Restart()

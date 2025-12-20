@@ -15,18 +15,11 @@ public partial class ReaderForm : FormEx
 {
     private Rectangle safeBounds;
 
-    public ComicDisplay ComicDisplay
-    {
-        get;
-        set;
-    }
+    public ComicDisplay ComicDisplay { get; set; }
 
     public Rectangle SafeBounds
     {
-        get
-        {
-            return safeBounds;
-        }
+        get => safeBounds;
         set
         {
             base.StartPosition = FormStartPosition.Manual;

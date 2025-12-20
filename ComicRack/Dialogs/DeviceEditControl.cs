@@ -62,10 +62,7 @@ public partial class DeviceEditControl : UserControlEx
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string DeviceName
     {
-        get
-        {
-            return deviceName;
-        }
+        get => deviceName;
         set
         {
             if (!(deviceName == value))
@@ -80,18 +77,10 @@ public partial class DeviceEditControl : UserControlEx
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public string DeviceKey
-    {
-        get;
-        set;
-    }
+    public string DeviceKey { get; set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public DeviceSyncSettings.SharedListSettings DefaultListSettings
-    {
-        get;
-        set;
-    }
+    public DeviceSyncSettings.SharedListSettings DefaultListSettings { get; set; }
 
     public bool CanPaste => Clipboard.ContainsData(DeviceSyncSettings.ClipboardFormat);
 

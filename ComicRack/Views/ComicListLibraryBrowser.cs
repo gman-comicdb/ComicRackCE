@@ -39,14 +39,8 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
         public DisplayListConfig Display
         {
-            get
-            {
-                return Program.Settings.GetRemoteViewConfig(id, vc.Display);
-            }
-            set
-            {
-                Program.Settings.UpdateRemoteViewConfig(id, value);
-            }
+            get => Program.Settings.GetRemoteViewConfig(id, vc.Display);
+            set => Program.Settings.UpdateRemoteViewConfig(id, value);
         }
 
         public ViewConfigurationHandler(Guid id, IDisplayListConfig vc)
@@ -203,10 +197,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     public ComicLibrary Library
     {
-        get
-        {
-            return library;
-        }
+        get => library;
         set
         {
             if (library != value)
@@ -227,36 +218,18 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
     }
 
-    public ComicsEditModes ComicEditMode
-    {
-        get
-        {
-            return Library != null ? Library.EditMode : ComicsEditModes.Default;
-        }
-    }
+    public ComicsEditModes ComicEditMode => Library != null ? Library.EditMode : ComicsEditModes.Default;
 
     public override bool TopBrowserVisible
     {
-        get
-        {
-            return favContainer.Expanded;
-        }
-        set
-        {
-            favContainer.Expanded = value;
-        }
+        get => favContainer.Expanded;
+        set => favContainer.Expanded = value;
     }
 
     public override int TopBrowserSplit
     {
-        get
-        {
-            return favContainer.ExpandedWidth;
-        }
-        set
-        {
-            favContainer.ExpandedWidth = value;
-        }
+        get => favContainer.ExpandedWidth;
+        set => favContainer.ExpandedWidth = value;
     }
 
     public event EventHandler LibraryChanged;
@@ -510,9 +483,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             return EditSmartListItem(selectedNode, selectedNode.Tag as ComicSmartListItem);
         }
-        return selectedNode.Tag is ComicListItemFolder || selectedNode.Tag is ComicIdListItem
-            ? EditListItem(selectedNode.Tag as ComicListItem)
-            : false;
+        return (selectedNode.Tag is ComicListItemFolder || selectedNode.Tag is ComicIdListItem) && EditListItem(selectedNode.Tag as ComicListItem);
     }
 
     private bool EditListItem(ComicListItem cli)

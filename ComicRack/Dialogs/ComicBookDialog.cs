@@ -55,10 +55,7 @@ public partial class ComicBookDialog : FormEx
 
     public string CustomThumbnailKey
     {
-        get
-        {
-            return customThumbnailKey;
-        }
+        get => customThumbnailKey;
         set
         {
             if (!displayComic.IsLinked && !(value == customThumbnailKey))
@@ -72,26 +69,14 @@ public partial class ComicBookDialog : FormEx
 
     public static ItemViewConfig PagesConfig
     {
-        get
-        {
-            return pagesConfig;
-        }
-        set
-        {
-            pagesConfig = value;
-        }
+        get => pagesConfig;
+        set => pagesConfig = value;
     }
 
     public static PluginEngine ScriptEngine
     {
-        get
-        {
-            return scriptEngine;
-        }
-        set
-        {
-            scriptEngine = value;
-        }
+        get => scriptEngine;
+        set => scriptEngine = value;
     }
 
     public static Size SafeSize { get; set; }

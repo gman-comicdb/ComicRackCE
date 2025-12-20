@@ -62,14 +62,8 @@ public class CommandMapper : Component
 
     public bool Enable
     {
-        get
-        {
-            return enable;
-        }
-        set
-        {
-            enable = value;
-        }
+        get => enable;
+        set => enable = value;
     }
 
     public CommandMapper(bool enable)

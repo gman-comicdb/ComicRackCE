@@ -51,10 +51,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewConfig ViewConfig
     {
-        get
-        {
-            return itemView.ViewConfig;
-        }
+        get => itemView.ViewConfig;
         set
         {
             int itemRowHeight = itemView.ItemRowHeight;
@@ -66,24 +63,15 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DefaultValue(true)]
     public bool CreateBackdrop
     {
-        get
-        {
-            return createBackdrop;
-        }
-        set
-        {
-            createBackdrop = value;
-        }
+        get => createBackdrop;
+        set => createBackdrop = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicBookNavigator Book
     {
-        get
-        {
-            return book;
-        }
+        get => book;
         set
         {
             if (book == value)
@@ -124,10 +112,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicPageType PageFilter
     {
-        get
-        {
-            return pageFilter;
-        }
+        get => pageFilter;
         set
         {
             if (pageFilter != value)
@@ -138,13 +123,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         }
     }
 
-    public bool CanBookmark
-    {
-        get
-        {
-            return Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount == 1 : false;
-        }
-    }
+    public bool CanBookmark => Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() && itemView.SelectedCount == 1;
 
     public string BookmarkProposal
     {
@@ -162,10 +141,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     public string Bookmark
     {
-        get
-        {
-            return !CanBookmark ? null : GetSelectedPages().First().Bookmark;
-        }
+        get => !CanBookmark ? null : GetSelectedPages().First().Bookmark;
         set
         {
             if (CanBookmark)
@@ -176,13 +152,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         }
     }
 
-    private bool HasValidPages
-    {
-        get
-        {
-            return Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount > 0 : false;
-        }
-    }
+    private bool HasValidPages => Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() && itemView.SelectedCount > 0;
 
     bool IEditPage.IsValid => HasValidPages;
 
@@ -661,9 +631,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private bool IsPageSorted()
     {
-        return itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending
-            ? itemView.GroupColumn == null
-            : false;
+        return itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending && itemView.GroupColumn == null;
     }
 
     private void itemView_ItemDrag(object sender, ItemDragEventArgs e)
@@ -778,7 +746,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         //Check the reading direction to determine the first and second page.
         bool reversed = this.Book.RightToLeftReading == YesNo.Yes || this.Book.Comic.Manga == MangaYesNo.YesAndRightToLeft;
         //If the sort order is descending the pages will be reversed already, so no need to reverse the order
-        reversed = reversed && itemView.ItemSorter != null && itemView.ItemSortOrder == SortOrder.Descending ? false : reversed;
+        reversed = (!reversed || itemView.ItemSorter == null || itemView.ItemSortOrder != SortOrder.Descending) && reversed;
         PageViewItem firstPage = (reversed ? selectedPages[^1] : selectedPages[0]);
         PageViewItem secondPage = (reversed ? selectedPages[0] : selectedPages[^1]);
 

@@ -25,41 +25,23 @@ public class NewsStorage
         [XmlAttribute]
         public string Url
         {
-            get
-            {
-                return url;
-            }
-            set
-            {
-                url = value;
-            }
+            get => url;
+            set => url = value;
         }
 
         [DefaultValue("")]
         public string Comment
         {
-            get
-            {
-                return comment;
-            }
-            set
-            {
-                comment = value;
-            }
+            get => comment;
+            set => comment = value;
         }
 
         public NewsChannelCollection Channels => channels;
 
         public DateTime LastUpdate
         {
-            get
-            {
-                return lastTimeRead;
-            }
-            set
-            {
-                lastTimeRead = value;
-            }
+            get => lastTimeRead;
+            set => lastTimeRead = value;
         }
 
         public Subscription()
@@ -82,19 +64,11 @@ public class NewsStorage
     public class NewsChannelItemInfo
     {
         [XmlAttribute]
-        public string Guid
-        {
-            get;
-            set;
-        }
+        public string Guid { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool IsRead
-        {
-            get;
-            set;
-        }
+        public bool IsRead { get; set; }
 
         public NewsChannelItemInfo()
         {

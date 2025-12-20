@@ -27,41 +27,17 @@ public class DefaultLists
 
     private Func<IEnumerable<ComicBook>> getBooks;
 
-    public string[] DefaultGenres
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultGenres { get; private set; }
 
-    public string[] DefaultFormats
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultFormats { get; private set; }
 
-    public string[] DefaultAgeRatings
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultAgeRatings { get; private set; }
 
-    public string[] DefaultBookAges
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookAges { get; private set; }
 
-    public string[] DefaultBookConditions
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookConditions { get; private set; }
 
-    public string[] DefaultBookCollectionStatus
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookCollectionStatus { get; private set; }
 
     public DefaultLists(Func<IEnumerable<ComicBook>> getBooks, IEnumerable<string> initPaths)
     {

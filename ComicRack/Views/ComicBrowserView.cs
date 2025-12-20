@@ -10,14 +10,8 @@ public partial class ComicBrowserView : SubView
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IComicBookListProvider BookList
     {
-        get
-        {
-            return comicBrowser.BookList;
-        }
-        set
-        {
-            comicBrowser.BookList = value;
-        }
+        get => comicBrowser.BookList;
+        set => comicBrowser.BookList = value;
     }
 
     public ComicBrowserView()

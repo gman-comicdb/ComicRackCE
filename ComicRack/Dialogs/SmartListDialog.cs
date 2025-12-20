@@ -24,23 +24,11 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
     {
         private const int ImageSpacing = 4;
 
-        public int Level
-        {
-            get;
-            set;
-        }
+        public int Level { get; set; }
 
-        public Guid Id
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
 
-        public Image Image
-        {
-            get;
-            set;
-        }
+        public Image Image { get; set; }
 
         public ReferenceItem(int level, string name, Guid id, Image image)
             : base(name)
@@ -79,24 +67,13 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     private ComicSmartListItem smartComicList;
 
-    public ComicLibrary Library
-    {
-        get;
-        set;
-    }
+    public ComicLibrary Library { get; set; }
 
-    public Guid EditId
-    {
-        get;
-        set;
-    }
+    public Guid EditId { get; set; }
 
     public ComicSmartListItem SmartComicList
     {
-        get
-        {
-            return smartComicList;
-        }
+        get => smartComicList;
         set
         {
             matcherControls.SuspendLayout();
@@ -137,10 +114,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     public bool EnableNavigation
     {
-        get
-        {
-            return btPrev.Visible;
-        }
+        get => btPrev.Visible;
         set
         {
             Button button = btPrev;
@@ -159,38 +133,20 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     public bool PreviousEnabled
     {
-        get
-        {
-            return btPrev.Enabled;
-        }
-        set
-        {
-            btPrev.Enabled = value;
-        }
+        get => btPrev.Enabled;
+        set => btPrev.Enabled = value;
     }
 
     public bool NextEnabled
     {
-        get
-        {
-            return btNext.Enabled;
-        }
-        set
-        {
-            btNext.Enabled = value;
-        }
+        get => btNext.Enabled;
+        set => btNext.Enabled = value;
     }
 
     public int DialogEditorOffset
     {
-        get
-        {
-            return -matcherControls.AutoScrollPosition.Y;
-        }
-        set
-        {
-            matcherControls.AutoScrollPosition = new Point(0, value);
-        }
+        get => -matcherControls.AutoScrollPosition.Y;
+        set => matcherControls.AutoScrollPosition = new Point(0, value);
     }
 
     public override UIComponent UIComponent => UIComponent.Content;

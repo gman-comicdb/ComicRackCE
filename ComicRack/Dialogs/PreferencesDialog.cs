@@ -45,30 +45,15 @@ public partial class PreferencesDialog : FormEx
 
     private bool blockSetTab;
 
-    public string AutoInstallPlugin
-    {
-        get;
-        set;
-    }
+    public string AutoInstallPlugin { get; set; }
 
-    public bool NeedsRestart
-    {
-        get;
-        set;
-    }
+    public bool NeedsRestart { get; set; }
 
-    public string BackupFile
-    {
-        get;
-        set;
-    }
+    public string BackupFile { get; set; }
 
     public PluginEngine Plugins
     {
-        get
-        {
-            return pluginEngine;
-        }
+        get => pluginEngine;
         set
         {
             pluginEngine = value;

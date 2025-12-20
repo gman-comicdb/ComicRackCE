@@ -23,10 +23,7 @@ public partial class OpenRemoteDialog : FormEx
 
     public bool ShowPublic
     {
-        get
-        {
-            return showPublic;
-        }
+        get => showPublic;
         set
         {
             showPublic = value;
@@ -39,11 +36,7 @@ public partial class OpenRemoteDialog : FormEx
         }
     }
 
-    private RemoteShareItem CurrentItem
-    {
-        get;
-        set;
-    }
+    private RemoteShareItem CurrentItem { get; set; }
 
     public OpenRemoteDialog()
     {

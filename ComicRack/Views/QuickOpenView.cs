@@ -53,22 +53,13 @@ public partial class QuickOpenView : CaptionControl
 
     public bool ShowBrowserCommand
     {
-        get
-        {
-            return btBrowser.Visible;
-        }
-        set
-        {
-            btBrowser.Visible = value;
-        }
+        get => btBrowser.Visible;
+        set => btBrowser.Visible = value;
     }
 
     public int ThumbnailSize
     {
-        get
-        {
-            return itemView.ItemThumbSize.Height;
-        }
+        get => itemView.ItemThumbSize.Height;
         set
         {
             value = value.Clamp(Program.MinThumbHeight, Program.MaxThumbHeight);

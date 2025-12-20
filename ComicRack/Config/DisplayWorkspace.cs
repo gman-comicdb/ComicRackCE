@@ -29,18 +29,10 @@ public class DisplayWorkspace : IComparable<DisplayWorkspace>, INamed, IDescript
     private ImageLayout backgroundImageLayout = ImageLayout.Tile;
 
     [DefaultValue("")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue(WorkspaceType.Default)]
-    public WorkspaceType Type
-    {
-        get;
-        set;
-    }
+    public WorkspaceType Type { get; set; }
 
     public string Description
     {
@@ -70,332 +62,160 @@ public class DisplayWorkspace : IComparable<DisplayWorkspace>, INamed, IDescript
 
     [Browsable(false)]
     [DefaultValue(typeof(Size), "400, 250")]
-    public Size PanelSize
-    {
-        get;
-        set;
-    }
+    public Size PanelSize { get; set; }
 
     [Browsable(false)]
     [DefaultValue(DockStyle.Fill)]
-    public DockStyle PanelDock
-    {
-        get;
-        set;
-    }
+    public DockStyle PanelDock { get; set; }
 
     [Browsable(false)]
     [DefaultValue(true)]
-    public bool PanelVisible
-    {
-        get;
-        set;
-    }
+    public bool PanelVisible { get; set; }
 
     [Browsable(false)]
-    public Rectangle FormBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle FormBounds { get; set; }
 
     [Browsable(false)]
     [DefaultValue(FormWindowState.Normal)]
-    public FormWindowState FormState
-    {
-        get;
-        set;
-    }
+    public FormWindowState FormState { get; set; }
 
     [Browsable(false)]
     [DefaultValue(FormWindowState.Normal)]
-    public FormWindowState PreviousFormState
-    {
-        get;
-        set;
-    }
+    public FormWindowState PreviousFormState { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool FullScreen
-    {
-        get;
-        set;
-    }
+    public bool FullScreen { get; set; }
 
     [Browsable(false)]
     [DefaultValue(true)]
-    public bool MinimalGui
-    {
-        get;
-        set;
-    }
+    public bool MinimalGui { get; set; }
 
     [Browsable(false)]
-    public ItemViewConfig ComicBookDialogPagesConfig
-    {
-        get;
-        set;
-    }
+    public ItemViewConfig ComicBookDialogPagesConfig { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool ReaderUndocked
-    {
-        get;
-        set;
-    }
+    public bool ReaderUndocked { get; set; }
 
     [Browsable(false)]
-    public Rectangle UndockedReaderBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle UndockedReaderBounds { get; set; }
 
     [Browsable(false)]
-    public Rectangle ScriptOutputBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle ScriptOutputBounds { get; set; }
 
     [Browsable(false)]
-    public Size PreferencesOutputSize
-    {
-        get;
-        set;
-    }
+    public Size PreferencesOutputSize { get; set; }
 
     [Browsable(false)]
-    public Size ComicBookDialogOutputSize
-    {
-        get;
-        set;
-    }
+    public Size ComicBookDialogOutputSize { get; set; }
 
     [Browsable(false)]
     [DefaultValue(FormWindowState.Normal)]
-    public FormWindowState UndockedReaderState
-    {
-        get;
-        set;
-    }
+    public FormWindowState UndockedReaderState { get; set; }
 
     [Browsable(false)]
-    public ComicExplorerViewSettings DatabaseView
-    {
-        get;
-        set;
-    }
+    public ComicExplorerViewSettings DatabaseView { get; set; }
 
     [Browsable(false)]
-    public ComicExplorerViewSettings FileView
-    {
-        get;
-        set;
-    }
+    public ComicExplorerViewSettings FileView { get; set; }
 
     [Browsable(false)]
-    public ItemViewConfig PagesViewConfig
-    {
-        get;
-        set;
-    }
+    public ItemViewConfig PagesViewConfig { get; set; }
 
-    public BookPageLayout LandscapeLayout
-    {
-        get;
-        set;
-    }
+    public BookPageLayout LandscapeLayout { get; set; }
 
-    public BookPageLayout PortraitLayout
-    {
-        get;
-        set;
-    }
+    public BookPageLayout PortraitLayout { get; set; }
 
-    public BookPageLayout Layout
-    {
-        get
-        {
-            return !Screen.PrimaryScreen.IsLandscape() ? PortraitLayout : LandscapeLayout;
-        }
-    }
+    public BookPageLayout Layout => !Screen.PrimaryScreen.IsLandscape() ? PortraitLayout : LandscapeLayout;
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool RightToLeftReading
-    {
-        get;
-        set;
-    }
+    public bool RightToLeftReading { get; set; }
 
     [Browsable(false)]
     [DefaultValue(PageTransitionEffect.Fade)]
-    public PageTransitionEffect PageTransitionEffect
-    {
-        get;
-        set;
-    }
+    public PageTransitionEffect PageTransitionEffect { get; set; }
 
     [DefaultValue(true)]
-    public bool DrawRealisticPages
-    {
-        get;
-        set;
-    }
+    public bool DrawRealisticPages { get; set; }
 
     [DefaultValue(ImageBackgroundMode.Color)]
-    public ImageBackgroundMode PageImageBackgroundMode
-    {
-        get;
-        set;
-    }
+    public ImageBackgroundMode PageImageBackgroundMode { get; set; }
 
     [DefaultValue("WhiteSmoke")]
     public string BackgroundColor
     {
-        get
-        {
-            return backgroundColor;
-        }
-        set
-        {
-            backgroundColor = ColorExtensions.IsNamedColor(value);
-        }
+        get => backgroundColor;
+        set => backgroundColor = ColorExtensions.IsNamedColor(value);
     }
 
     [XmlIgnore]
     public Color BackColor
     {
-        get
-        {
-            return Color.FromName(BackgroundColor);
-        }
-        set
-        {
-            BackgroundColor = value.Name;
-        }
+        get => Color.FromName(BackgroundColor);
+        set => BackgroundColor = value.Name;
     }
 
     [DefaultValue(null)]
-    public string BackgroundTexture
-    {
-        get;
-        set;
-    }
+    public string BackgroundTexture { get; set; }
 
     [DefaultValue(false)]
-    public bool PageMargin
-    {
-        get;
-        set;
-    }
+    public bool PageMargin { get; set; }
 
     [DefaultValue(0.05f)]
-    public float PageMarginPercentWidth
-    {
-        get;
-        set;
-    }
+    public float PageMarginPercentWidth { get; set; }
 
     [DefaultValue(null)]
-    public string PaperTexture
-    {
-        get;
-        set;
-    }
+    public string PaperTexture { get; set; }
 
     [DefaultValue(1f)]
     public float PaperTextureStrength
     {
-        get
-        {
-            return paperTextureStrength;
-        }
-        set
-        {
-            paperTextureStrength = value.Clamp(0f, 1f);
-        }
+        get => paperTextureStrength;
+        set => paperTextureStrength = value.Clamp(0f, 1f);
     }
 
     [DefaultValue(ImageLayout.Tile)]
     public ImageLayout PaperTextureLayout
     {
-        get
-        {
-            return paperTextureLayout;
-        }
-        set
-        {
-            paperTextureLayout = value;
-        }
+        get => paperTextureLayout;
+        set => paperTextureLayout = value;
     }
 
     [DefaultValue(ImageLayout.Tile)]
     public ImageLayout BackgroundImageLayout
     {
-        get
-        {
-            return backgroundImageLayout;
-        }
-        set
-        {
-            backgroundImageLayout = value;
-        }
+        get => backgroundImageLayout;
+        set => backgroundImageLayout = value;
     }
 
     [XmlIgnore]
     public bool IsWindowLayout
     {
-        get
-        {
-            return IsType(WorkspaceType.WindowLayout);
-        }
-        set
-        {
-            SetType(WorkspaceType.WindowLayout, value);
-        }
+        get => IsType(WorkspaceType.WindowLayout);
+        set => SetType(WorkspaceType.WindowLayout, value);
     }
 
     [XmlIgnore]
     public bool IsViewsSetup
     {
-        get
-        {
-            return IsType(WorkspaceType.ViewsSetup);
-        }
-        set
-        {
-            SetType(WorkspaceType.ViewsSetup, value);
-        }
+        get => IsType(WorkspaceType.ViewsSetup);
+        set => SetType(WorkspaceType.ViewsSetup, value);
     }
 
     [XmlIgnore]
     public bool IsComicPageLayout
     {
-        get
-        {
-            return IsType(WorkspaceType.ComicPageLayout);
-        }
-        set
-        {
-            SetType(WorkspaceType.ComicPageLayout, value);
-        }
+        get => IsType(WorkspaceType.ComicPageLayout);
+        set => SetType(WorkspaceType.ComicPageLayout, value);
     }
 
     [XmlIgnore]
     public bool IsComicPageDisplay
     {
-        get
-        {
-            return IsType(WorkspaceType.ComicPageDisplay);
-        }
-        set
-        {
-            SetType(WorkspaceType.ComicPageDisplay, value);
-        }
+        get => IsType(WorkspaceType.ComicPageDisplay);
+        set => SetType(WorkspaceType.ComicPageDisplay, value);
     }
 
     public DisplayWorkspace(string name)

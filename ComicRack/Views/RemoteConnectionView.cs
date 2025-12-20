@@ -32,26 +32,15 @@ public partial class RemoteConnectionView : SubView
 
     private string textCancel = TR.Default["Cancel", "Cancel"];
 
-    public MainView View
-    {
-        get;
-        private set;
-    }
+    public MainView View { get; private set; }
 
-    public ComicLibraryClient Client
-    {
-        get;
-        private set;
-    }
+    public ComicLibraryClient Client { get; private set; }
 
     private TabBar.TabBarItem Tab => base.Tag as TabBar.TabBarItem;
 
     private Image TabImage
     {
-        get
-        {
-            return Tab?.Image;
-        }
+        get => Tab?.Image;
         set
         {
             if (Tab != null)

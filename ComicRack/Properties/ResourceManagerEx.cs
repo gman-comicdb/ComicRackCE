@@ -19,7 +19,7 @@ internal class ResourceManagerEx : System.Resources.ResourceManager
     public ResourceManagerEx(Type resourceType, Themes theme = Themes.Default)
         : base(resourceType.FullName, resourceType.Assembly)
     {
-        isThemed = theme != Themes.Default ? true : false;
+        isThemed = theme != Themes.Default;
         triggerWord = isThemed ? theme.ToString() : string.Empty;
         DiscoverResources();
     }

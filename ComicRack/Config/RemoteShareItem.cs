@@ -9,19 +9,11 @@ public class RemoteShareItem
 {
     [DefaultValue(null)]
     [XmlAttribute]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue(null)]
     [XmlAttribute]
-    public string Uri
-    {
-        get;
-        set;
-    }
+    public string Uri { get; set; }
 
     public RemoteShareItem()
     {
@@ -45,7 +37,7 @@ public class RemoteShareItem
 
     public override bool Equals(object obj)
     {
-        return obj is RemoteShareItem remoteShareItem && remoteShareItem.Name == Name ? remoteShareItem.Uri == Uri : false;
+        return obj is RemoteShareItem remoteShareItem && remoteShareItem.Name == Name && remoteShareItem.Uri == Uri;
     }
 
     public override int GetHashCode()

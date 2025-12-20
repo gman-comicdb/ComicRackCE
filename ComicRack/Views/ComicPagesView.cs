@@ -65,14 +65,8 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewConfig ViewConfig
     {
-        get
-        {
-            return pagesView.ViewConfig;
-        }
-        set
-        {
-            pagesView.ViewConfig = value;
-        }
+        get => pagesView.ViewConfig;
+        set => pagesView.ViewConfig = value;
     }
 
     public ComicPagesView()

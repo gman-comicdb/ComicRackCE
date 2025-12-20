@@ -76,54 +76,27 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     private readonly VisibilityAnimator tabStripVisibility;
 
-    public bool IsComicViewer
-    {
-        get
-        {
-            return comicViewer != null ? comicViewer.Visible : false;
-        }
-    }
+    public bool IsComicViewer => comicViewer != null && comicViewer.Visible;
 
     private DockStyle ViewDock
     {
-        get
-        {
-            return base.Parent.Dock;
-        }
-        set
-        {
-            base.Parent.Dock = value;
-        }
+        get => base.Parent.Dock;
+        set => base.Parent.Dock = value;
     }
 
     public TabBar TabBar => tabStrip;
 
     public bool TabBarVisible
     {
-        get
-        {
-            return tabStripVisibility.Visible;
-        }
-        set
-        {
-            tabStripVisibility.Visible = value;
-        }
+        get => tabStripVisibility.Visible;
+        set => tabStripVisibility.Visible = value;
     }
 
-    public bool IsComicVisible
-    {
-        get
-        {
-            return tabStrip.SelectedTab != null ? tabStrip.SelectedTab.Tag is int : false;
-        }
-    }
+    public bool IsComicVisible => tabStrip.SelectedTab != null && tabStrip.SelectedTab.Tag is int;
 
     public bool InfoPanelRight
     {
-        get
-        {
-            return this.FindActiveService<ISidebar>()?.InfoBrowserRight ?? false;
-        }
+        get => this.FindActiveService<ISidebar>()?.InfoBrowserRight ?? false;
         set
         {
             ISidebar sidebar = this.FindActiveService<ISidebar>();

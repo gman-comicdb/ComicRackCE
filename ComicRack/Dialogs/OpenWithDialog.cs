@@ -20,13 +20,7 @@ public partial class OpenWithDialog : FormEx
 
     public IList Items { get; set; }
 
-    public object SelectedItem
-    {
-        get
-        {
-            return lvItems.SelectedItems.Count != 0 ? lvItems.SelectedItems[0].Tag : null;
-        }
-    }
+    public object SelectedItem => lvItems.SelectedItems.Count != 0 ? lvItems.SelectedItems[0].Tag : null;
 
     public OpenWithDialog()
     {

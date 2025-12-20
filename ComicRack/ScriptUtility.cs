@@ -24,11 +24,7 @@ public static class ScriptUtility
 {
     private class ScriptSearch : CachedSearch
     {
-        public Command Command
-        {
-            get;
-            set;
-        }
+        public Command Command { get; set; }
 
         public override string Name => Command.GetLocalizedName();
 
@@ -61,11 +57,7 @@ public static class ScriptUtility
         }
     }
 
-    public static PluginEngine Scripts
-    {
-        get;
-        private set;
-    }
+    public static PluginEngine Scripts { get; private set; }
 
     public static bool Enabled => Program.Settings.Scripting;
 

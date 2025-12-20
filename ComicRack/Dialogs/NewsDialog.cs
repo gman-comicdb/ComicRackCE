@@ -19,14 +19,8 @@ public partial class NewsDialog : FormEx
 
     public NewsStorage News
     {
-        get
-        {
-            return news;
-        }
-        set
-        {
-            news = value;
-        }
+        get => news;
+        set => news = value;
     }
 
     public NewsDialog()

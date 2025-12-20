@@ -18,14 +18,8 @@ public partial class ValueEditorDialog : FormEx
 {
     public string MatchValue
     {
-        get
-        {
-            return rtfMatchValue.Text;
-        }
-        set
-        {
-            rtfMatchValue.Text = value;
-        }
+        get => rtfMatchValue.Text;
+        set => rtfMatchValue.Text = value;
     }
 
     public override UIComponent UIComponent => UIComponent.Content;

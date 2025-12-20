@@ -12,18 +12,10 @@ namespace cYo.Projects.ComicRack.Viewer.Config;
 public class ListConfiguration : IComparable<ListConfiguration>, INamed, IDescription
 {
     [DefaultValue("")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue(null)]
-    public DisplayListConfig Config
-    {
-        get;
-        set;
-    }
+    public DisplayListConfig Config { get; set; }
 
     public string Description => LocalizeUtility.LocalizeEnum(typeof(ItemViewMode), (int)Config.View.ItemViewMode);
 

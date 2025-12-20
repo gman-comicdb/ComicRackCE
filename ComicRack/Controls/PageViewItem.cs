@@ -37,10 +37,7 @@ public class PageViewItem : ThumbnailViewItem
 
     public bool IsCurrentPage
     {
-        get
-        {
-            return isCurrentPage;
-        }
+        get => isCurrentPage;
         set
         {
             if (isCurrentPage != value)
@@ -57,10 +54,7 @@ public class PageViewItem : ThumbnailViewItem
 
     public string Key
     {
-        get
-        {
-            return key;
-        }
+        get => key;
         set
         {
             if (!(key == value))

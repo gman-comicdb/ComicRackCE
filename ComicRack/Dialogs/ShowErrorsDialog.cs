@@ -13,11 +13,7 @@ public partial class ShowErrorsDialog : FormEx
 {
     public class ErrorItem
     {
-        public string Item
-        {
-            get;
-            set;
-        }
+        public string Item { get; set; }
 
         public string Message
         {

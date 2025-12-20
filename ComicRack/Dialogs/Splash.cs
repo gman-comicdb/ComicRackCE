@@ -29,19 +29,12 @@ public partial class Splash : LayeredForm
     private int crashSequence;
 
     [DefaultValue(false)]
-    public bool Fade
-    {
-        get;
-        set;
-    }
+    public bool Fade { get; set; }
 
     [DefaultValue(0)]
     public int Progress
     {
-        get
-        {
-            return progress;
-        }
+        get => progress;
         set
         {
             if (progress != value)
@@ -59,10 +52,7 @@ public partial class Splash : LayeredForm
     [DefaultValue(null)]
     public string Message
     {
-        get
-        {
-            return message;
-        }
+        get => message;
         set
         {
             if (!(message == value))
@@ -80,10 +70,7 @@ public partial class Splash : LayeredForm
     [DefaultValue(3)]
     public int MessageLines
     {
-        get
-        {
-            return messageLines;
-        }
+        get => messageLines;
         set
         {
             if (messageLines != value)
@@ -101,10 +88,7 @@ public partial class Splash : LayeredForm
     [DefaultValue(typeof(Color), "White")]
     public Color ProgressColor
     {
-        get
-        {
-            return progressColor;
-        }
+        get => progressColor;
         set
         {
             if (!(progressColor == value))

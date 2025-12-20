@@ -58,10 +58,7 @@ public partial class TasksDialog : FormEx
 
     public IEnumerable<QueueManager.IPendingTasks> Processes
     {
-        get
-        {
-            return processes;
-        }
+        get => processes;
         set
         {
             taskImages.Images.Clear();
@@ -76,14 +73,8 @@ public partial class TasksDialog : FormEx
 
     public int SelectedTab
     {
-        get
-        {
-            return tabs.SelectedIndex;
-        }
-        set
-        {
-            tabs.SelectedIndex = value;
-        }
+        get => tabs.SelectedIndex;
+        set => tabs.SelectedIndex = value;
     }
 
     public TasksDialog()

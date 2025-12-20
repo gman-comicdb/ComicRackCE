@@ -23,18 +23,11 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     private volatile List<ComicBook> currentBooks = new List<ComicBook>();
 
-    public IWin32Window Window
-    {
-        get;
-        set;
-    }
+    public IWin32Window Window { get; set; }
 
     public string Path
     {
-        get
-        {
-            return path;
-        }
+        get => path;
         set
         {
             if (!(path == value))
@@ -48,10 +41,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     public bool IncludeSubFolders
     {
-        get
-        {
-            return includeSubFolders;
-        }
+        get => includeSubFolders;
         set
         {
             if (includeSubFolders != value)
@@ -62,11 +52,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
         }
     }
 
-    public int BookCount
-    {
-        get;
-        set;
-    }
+    public int BookCount { get; set; }
 
     public event EventHandler BookListChanged;
 

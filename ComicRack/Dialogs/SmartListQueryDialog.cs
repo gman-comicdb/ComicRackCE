@@ -20,17 +20,9 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 {
     private class UndoItem
     {
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
-        public int SelectionStart
-        {
-            get;
-            set;
-        }
+        public int SelectionStart { get; set; }
 
         public int SelectionLength
         {
@@ -45,17 +37,9 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     private string coloredText;
 
-    public ComicLibrary Library
-    {
-        get;
-        set;
-    }
+    public ComicLibrary Library { get; set; }
 
-    public Guid EditId
-    {
-        get;
-        set;
-    }
+    public Guid EditId { get; set; }
 
     public ComicSmartListItem SmartComicList
     {
@@ -95,10 +79,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     public bool EnableNavigation
     {
-        get
-        {
-            return btPrev.Visible;
-        }
+        get => btPrev.Visible;
         set
         {
             Button button = btPrev;
@@ -117,26 +98,14 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     public bool PreviousEnabled
     {
-        get
-        {
-            return btPrev.Enabled;
-        }
-        set
-        {
-            btPrev.Enabled = value;
-        }
+        get => btPrev.Enabled;
+        set => btPrev.Enabled = value;
     }
 
     public bool NextEnabled
     {
-        get
-        {
-            return btNext.Enabled;
-        }
-        set
-        {
-            btNext.Enabled = value;
-        }
+        get => btNext.Enabled;
+        set => btNext.Enabled = value;
     }
 
     public override UIComponent UIComponent => UIComponent.Content;

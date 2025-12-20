@@ -17,17 +17,9 @@ public partial class ListLayoutDialog : FormEx
 {
     public class TileTextItem
     {
-        public int Value
-        {
-            get;
-            set;
-        }
+        public int Value { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public override string ToString()
         {
@@ -37,17 +29,9 @@ public partial class ListLayoutDialog : FormEx
 
     private class CaptionData
     {
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public CaptionData(int id, string text)
         {
@@ -63,22 +47,12 @@ public partial class ListLayoutDialog : FormEx
 
     private Action<DisplayListConfig> apply;
 
-    public DisplayListConfig DisplayListConfig
-    {
-        get;
-        set;
-    }
+    public DisplayListConfig DisplayListConfig { get; set; }
 
     public ItemViewConfig Config
     {
-        get
-        {
-            return DisplayListConfig.View;
-        }
-        set
-        {
-            DisplayListConfig.View = value;
-        }
+        get => DisplayListConfig.View;
+        set => DisplayListConfig.View = value;
     }
 
     public ListLayoutDialog()

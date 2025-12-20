@@ -18,10 +18,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public virtual IComicBookListProvider BookList
     {
-        get
-        {
-            return bookList;
-        }
+        get => bookList;
         protected set
         {
             if (bookList != value)
@@ -43,20 +40,11 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
     }
 
     [Browsable(false)]
-    public Guid BookListId
-    {
-        get
-        {
-            return BookList != null ? BookList.Id : Guid.Empty;
-        }
-    }
+    public Guid BookListId => BookList != null ? BookList.Id : Guid.Empty;
 
     public virtual bool TopBrowserVisible
     {
-        get
-        {
-            return false;
-        }
+        get => false;
         set
         {
         }
@@ -64,10 +52,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     public virtual int TopBrowserSplit
     {
-        get
-        {
-            return 100;
-        }
+        get => 100;
         set
         {
         }

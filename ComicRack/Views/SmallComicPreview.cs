@@ -21,14 +21,8 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 
     public bool TwoPageDisplay
     {
-        get
-        {
-            return pageViewer.PageLayout != PageLayoutMode.Single;
-        }
-        set
-        {
-            pageViewer.PageLayout = (value ? PageLayoutMode.DoubleAdaptive : PageLayoutMode.Single);
-        }
+        get => pageViewer.PageLayout != PageLayoutMode.Single;
+        set => pageViewer.PageLayout = (value ? PageLayoutMode.DoubleAdaptive : PageLayoutMode.Single);
     }
 
     public event EventHandler CloseClicked;

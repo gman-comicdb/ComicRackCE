@@ -30,25 +30,13 @@ public class DragDropContainer
 
     public bool IsReadingListsContainer => readingLists.Count() > 0;
 
-    public bool IsBookContainer
-    {
-        get
-        {
-            return books != null ? books.Books.Count > 0 : false;
-        }
-    }
+    public bool IsBookContainer => books != null && books.Books.Count > 0;
 
     public bool IsFilesContainer => filesOrFolders.Count() > 0;
 
     public bool HasMatcher => Matcher != null;
 
-    public bool IsValid
-    {
-        get
-        {
-            return !IsBookContainer ? IsFilesContainer : true;
-        }
-    }
+    public bool IsValid => IsBookContainer || IsFilesContainer;
 
     public DragDropContainer()
     {

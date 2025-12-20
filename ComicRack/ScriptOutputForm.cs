@@ -17,10 +17,7 @@ public partial class ScriptOutputForm : FormEx
 
     public Rectangle SafeBounds
     {
-        get
-        {
-            return safeBounds;
-        }
+        get => safeBounds;
         set
         {
             base.StartPosition = FormStartPosition.Manual;

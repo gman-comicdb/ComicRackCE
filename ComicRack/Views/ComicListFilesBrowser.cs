@@ -10,14 +10,8 @@ public partial class ComicListFilesBrowser : ComicListBrowser
 
     public bool IncludeSubFolders
     {
-        get
-        {
-            return folderBooks.IncludeSubFolders;
-        }
-        set
-        {
-            folderBooks.IncludeSubFolders = value;
-        }
+        get => folderBooks.IncludeSubFolders;
+        set => folderBooks.IncludeSubFolders = value;
     }
 
     public ComicListFilesBrowser()

@@ -59,10 +59,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     public float Opacity
     {
-        get
-        {
-            return opacity;
-        }
+        get => opacity;
         set
         {
             value = value.Clamp(0f, 1f);
@@ -76,10 +73,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     public Size Border
     {
-        get
-        {
-            return border;
-        }
+        get => border;
         set
         {
             if (!(border == value))
@@ -90,10 +84,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
         }
     }
 
-    public abstract ThumbnailKey ThumbnailKey
-    {
-        get;
-    }
+    public abstract ThumbnailKey ThumbnailKey { get; }
 
     public bool IsDisposed => disposed;
 

@@ -17,11 +17,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class FavoriteViewItem : ThumbnailViewItem
 {
-    public ComicListItem ComicListItem
-    {
-        get;
-        set;
-    }
+    public ComicListItem ComicListItem { get; set; }
 
     public override string Text => ComicListItem.Name;
 

@@ -19,17 +19,9 @@ public class LibraryTreeSkin : NiceTreeSkin
 {
     private static readonly Image deviceIcon = Resources.DeviceSync.Scale(8, 8);
 
-    public bool DisableDeviceIcon
-    {
-        get;
-        set;
-    }
+    public bool DisableDeviceIcon { get; set; }
 
-    public Func<TreeNode, ComicListItem> GetNodeItem
-    {
-        get;
-        set;
-    }
+    public Func<TreeNode, ComicListItem> GetNodeItem { get; set; }
 
     protected override void DrawNodeIcon(TreeViewSkinnerDrawInfo di, Image image, Rectangle bounds)
     {

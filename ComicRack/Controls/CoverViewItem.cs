@@ -191,10 +191,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public string CustomThumbnailKey
     {
-        get
-        {
-            return customThumbnailKey;
-        }
+        get => customThumbnailKey;
         set
         {
             if (!(customThumbnailKey == value))
@@ -209,44 +206,25 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public override string Text
     {
-        get
-        {
-            return Comic.Caption;
-        }
-        set
-        {
-            base.Text = value;
-        }
+        get => Comic.Caption;
+        set => base.Text = value;
     }
 
     public override string Name
     {
-        get
-        {
-            return Comic.CaptionWithoutFormat;
-        }
-        set
-        {
-            base.Name = value;
-        }
+        get => Comic.CaptionWithoutFormat;
+        set => base.Name = value;
     }
 
     public int ThumbnailLabelHeight => thumbnailLabelHeight;
 
     public float ThumbnailLabelFontScale => thumbnailLabelFontScale;
 
-    public ComicBook Comic
-    {
-        get;
-        set;
-    }
+    public ComicBook Comic { get; set; }
 
     public int LabelLines
     {
-        get
-        {
-            return labelLines;
-        }
+        get => labelLines;
         set
         {
             if (labelLines != value)
@@ -257,24 +235,13 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
         }
     }
 
-    public int Position
-    {
-        get;
-        set;
-    }
+    public int Position { get; set; }
 
-    public ThumbnailConfig ThumbnailConfig
-    {
-        get;
-        set;
-    }
+    public ThumbnailConfig ThumbnailConfig { get; set; }
 
     public MarkerType Marker
     {
-        get
-        {
-            return marker;
-        }
+        get => marker;
         set
         {
             if (marker != value)
@@ -285,31 +252,13 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
         }
     }
 
-    public IGroupInfo CustomGroup
-    {
-        get;
-        set;
-    }
+    public IGroupInfo CustomGroup { get; set; }
 
-    public IComicBookStatsProvider StatsProvider
-    {
-        get;
-        set;
-    }
+    public IComicBookStatsProvider StatsProvider { get; set; }
 
-    public ComicBookSeriesStatistics SeriesStats
-    {
-        get
-        {
-            return StatsProvider?.GetSeriesStats(Comic);
-        }
-    }
+    public ComicBookSeriesStatistics SeriesStats => StatsProvider?.GetSeriesStats(Comic);
 
-    public static CoverThumbnailSizing ThumbnailSizing
-    {
-        get;
-        set;
-    }
+    public static CoverThumbnailSizing ThumbnailSizing { get; set; }
 
     public static event DrawCustomThumbnailOverlayHandler DrawCustomThumbnailOverlay;
 
@@ -1587,12 +1536,12 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     public bool Contains(Point pt)
     {
-        return drawnRect.HasValue ? drawnRect.Value.Contains(pt) : true;
+        return !drawnRect.HasValue || drawnRect.Value.Contains(pt);
     }
 
     public bool IntersectsWith(Rectangle rc)
     {
-        return drawnRect.HasValue ? drawnRect.Value.IntersectsWith(rc) : true;
+        return !drawnRect.HasValue || drawnRect.Value.IntersectsWith(rc);
     }
 
     protected virtual void OnRefreshComicData()

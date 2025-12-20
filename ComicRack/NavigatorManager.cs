@@ -31,10 +31,7 @@ public class NavigatorManager : IOpenBooksManager
 
     public int CurrentSlot
     {
-        get
-        {
-            return currentSlot;
-        }
+        get => currentSlot;
         set
         {
             value = value.Clamp(-1, slots.Count - 1);

@@ -17,10 +17,7 @@ public partial class SubView : CaptionControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IMain Main
     {
-        get
-        {
-            return mainForm;
-        }
+        get => mainForm;
         set
         {
             if (mainForm != value)

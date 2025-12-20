@@ -10,10 +10,7 @@ public partial class ZoomDialog : FormEx
 {
     public float Zoom
     {
-        get
-        {
-            return (float)(numPercentage.Value / 100m);
-        }
+        get => (float)(numPercentage.Value / 100m);
         set
         {
             numPercentage.Value = (int)(value * 100f).Clamp((float)numPercentage.Minimum, (float)numPercentage.Maximum);
