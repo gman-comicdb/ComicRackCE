@@ -351,8 +351,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         base.OnListServiceRequest(senderList, e);
         if (e.ServiceType == typeof(IDisplayListConfig) && !ComicEditMode.IsLocalComic())
         {
-            IDisplayListConfig displayListConfig = senderList as IDisplayListConfig;
-            if (displayListConfig != null)
+            if (senderList is IDisplayListConfig displayListConfig)
             {
                 e.Service = new ViewConfigurationHandler(senderList.Id, displayListConfig);
             }
@@ -766,8 +765,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             DataObjectEx dataObjectEx = new DataObjectEx();
             dataObjectEx.SetData(dragNode);
-            ShareableComicListItem sc = dragNode.Tag as ShareableComicListItem;
-            if (sc != null)
+            if (dragNode.Tag is ShareableComicListItem sc)
             {
                 dataObjectEx.SetFile(FileUtility.MakeValidFilename(sc.Name + ".cbl"), delegate (Stream stream)
                 {
@@ -813,8 +811,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_AfterExpand(object sender, TreeViewEventArgs e)
     {
-        ComicListItemFolder comicListItemFolder = e.Node.Tag as ComicListItemFolder;
-        if (comicListItemFolder != null)
+        if (e.Node.Tag is ComicListItemFolder comicListItemFolder)
         {
             comicListItemFolder.Collapsed = false;
         }
@@ -822,8 +819,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_AfterCollapse(object sender, TreeViewEventArgs e)
     {
-        ComicListItemFolder comicListItemFolder = e.Node.Tag as ComicListItemFolder;
-        if (comicListItemFolder != null)
+        if (e.Node.Tag is ComicListItemFolder comicListItemFolder)
         {
             comicListItemFolder.Collapsed = true;
         }
@@ -831,8 +827,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_DrawNode(object sender, DrawTreeNodeEventArgs e)
     {
-        ComicListItem comicListItem = e.Node.Tag as ComicListItem;
-        if (comicListItem != null && comicListItem.PendingCacheUpdate)
+        if (e.Node.Tag is ComicListItem comicListItem && comicListItem.PendingCacheUpdate)
         {
             OnListCacheChanged();
         }
@@ -877,8 +872,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void cmEditDevices_Click(object sender, EventArgs e)
     {
-        ComicListItem comicListItem = cmEditDevices.Tag as ComicListItem;
-        if (comicListItem != null)
+        if (cmEditDevices.Tag is ComicListItem comicListItem)
         {
             base.Main.ShowPortableDevices(Program.Settings.Devices[0], comicListItem.Id);
             tvQueries.Refresh();
@@ -943,8 +937,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         TreeNode selectedNode = tvQueries.SelectedNode;
         if (selectedNode != null)
         {
-            ComicListItem comicListItem = selectedNode.Tag as ComicListItem;
-            if (comicListItem != null)
+            if (selectedNode.Tag is ComicListItem comicListItem)
             {
                 comicListItem.Favorite = true;
             }
@@ -962,8 +955,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void favView_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ItemViewItem itemViewItem = favView.FocusedItem as ItemViewItem;
-        if (itemViewItem != null)
+        if (favView.FocusedItem is ItemViewItem itemViewItem)
         {
             SelectList((Guid)itemViewItem.Tag);
         }
@@ -985,10 +977,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private bool CreateDragContainter(DragEventArgs e)
     {
-        if (dragBookContainer == null)
-        {
-            dragBookContainer = DragDropContainer.Create(e.Data);
-        }
+        dragBookContainer ??= DragDropContainer.Create(e.Data);
         return dragBookContainer.IsValid;
     }
 
@@ -1314,8 +1303,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             return;
 
         base.Main.StoreWorkspace(); // We need to store the workspace because it ensures the sortKey is up to date.
-        ShareableComicListItem shareableComicListItem = tvQueries.SelectedNode.Tag as ShareableComicListItem;
-        if (shareableComicListItem == null)
+        if (tvQueries.SelectedNode.Tag is not ShareableComicListItem shareableComicListItem)
             return;
 
         if (shareableComicListItem is ComicListItemFolder comicListItemFolder)
@@ -1431,8 +1419,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             return;
         }
-        ShareableComicListItem shareableComicListItem = Clipboard.GetData(ShareableComicListItem.ClipboardFormat) as ShareableComicListItem;
-        if (shareableComicListItem != null)
+        if (Clipboard.GetData(ShareableComicListItem.ClipboardFormat) is ShareableComicListItem shareableComicListItem)
         {
             shareableComicListItem = ((ICloneable)shareableComicListItem).Clone<ShareableComicListItem>();
             if (shareableComicListItem != null)
@@ -1443,8 +1430,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         if (Program.ExtendedSettings.AllowCopyListFolders)
         {
-            ComicListItemFolder comicListItemFolder = Clipboard.GetData(ShareableComicListItem.ClipboardFormat) as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (Clipboard.GetData(ShareableComicListItem.ClipboardFormat) is ComicListItemFolder comicListItemFolder)
             {
                 comicListItemFolder = ((ICloneable)comicListItemFolder).Clone<ComicListItemFolder>();
                 if (comicListItemFolder != null)

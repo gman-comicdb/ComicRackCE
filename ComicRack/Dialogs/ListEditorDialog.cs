@@ -51,10 +51,8 @@ public partial class ListEditorDialog : FormEx
         lvItems.Items.Clear();
         foreach (object item in Items)
         {
-            INamed named = item as INamed;
-            IDescription description = item as IDescription;
-            ListViewItem listViewItem = lvItems.Items.Add((named != null) ? named.Name : item.ToString());
-            if (description != null)
+            ListViewItem listViewItem = lvItems.Items.Add((item is INamed named) ? named.Name : item.ToString());
+            if (item is IDescription description)
             {
                 listViewItem.SubItems.Add(description.Description);
             }

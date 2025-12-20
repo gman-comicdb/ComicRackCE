@@ -63,8 +63,7 @@ public partial class SubView : CaptionControl
     {
         foreach (Control item in cc)
         {
-            SubView subView = item as SubView;
-            if (subView != null)
+            if (item is SubView subView)
             {
                 subView.Main = main;
             }

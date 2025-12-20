@@ -36,10 +36,7 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
     public SmallComicPreview()
     {
         InitializeComponent();
-        if (components == null)
-        {
-            components = new Container();
-        }
+        components ??= new Container();
         components.Add(commands);
         LocalizeUtility.Localize(this, components);
         noneSelectedText = TR.Load(base.Name)[pageViewer.Name, pageViewer.Text];

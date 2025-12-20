@@ -180,8 +180,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     private void favView_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ItemViewItem itemViewItem = favView.FocusedItem as ItemViewItem;
-        if (itemViewItem != null)
+        if (favView.FocusedItem is ItemViewItem itemViewItem)
         {
             CurrentFolder = itemViewItem.Tag as string;
         }

@@ -883,8 +883,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private void ComicItemAdded(object sender, SmartListChangedEventArgs<IViewableItem> e)
     {
-        CoverViewItem coverViewItem = e.Item as CoverViewItem;
-        if (coverViewItem != null)
+        if (e.Item is CoverViewItem coverViewItem)
         {
             coverViewItem.ThumbnailConfig = ThumbnailConfig;
         }
@@ -1379,16 +1378,10 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         tbbGroup.Image = ((itemView.GroupSortingOrder == SortOrder.Ascending) ? groupDown : groupUp);
         if (tbUndo.Visible)
         {
-            if (tbUndo.Tag == null)
-            {
-                tbUndo.Tag = tbUndo.Text;
-            }
+            tbUndo.Tag ??= tbUndo.Text;
             string undoLabel = Program.Database.Undo.UndoLabel;
             tbUndo.ToolTipText = (string)tbUndo.Tag + (string.IsNullOrEmpty(undoLabel) ? string.Empty : (": " + undoLabel));
-            if (tbRedo.Tag == null)
-            {
-                tbRedo.Tag = tbRedo.Text;
-            }
+            tbRedo.Tag ??= tbRedo.Text;
             string text = Program.Database.Undo.RedoEntries.FirstOrDefault();
             tbRedo.ToolTipText = (string)tbRedo.Tag + (string.IsNullOrEmpty(text) ? string.Empty : (": " + text));
         }
@@ -1409,8 +1402,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IViewableItem focusedItem = itemView.FocusedItem;
         if (!itemView.IsStack(focusedItem) || itemView.GetStackCount(focusedItem) == 1)
         {
-            CoverViewItem coverViewItem = focusedItem as CoverViewItem;
-            if (coverViewItem != null && coverViewItem.Comic.IsLinked)
+            if (focusedItem is CoverViewItem coverViewItem && coverViewItem.Comic.IsLinked)
             {
                 ExternalProgram ep = Program.Settings.ExternalPrograms.FirstOrDefault(x => x.Override);
 
@@ -1491,8 +1483,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         if (!string.IsNullOrEmpty(stackConfigItem.ThumbnailKey))
         {
-            ISetCustomThumbnail setCustomThumbnail = e.Stack.Items.FirstOrDefault() as ISetCustomThumbnail;
-            if (setCustomThumbnail != null)
+            if (e.Stack.Items.FirstOrDefault() is ISetCustomThumbnail setCustomThumbnail)
             {
                 setCustomThumbnail.CustomThumbnailKey = ThumbnailKey.GetResource(ThumbnailKey.CustomKey, stackConfigItem.ThumbnailKey);
             }
@@ -1759,10 +1750,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         ComicBook comicBook = GetBookList(ComicBookFilterType.Selected).FirstOrDefault();
         if (comicBook != null)
         {
-            if (stacksConfig == null)
-            {
-                stacksConfig = new StacksConfig();
-            }
+            stacksConfig ??= new StacksConfig();
             stacksConfig.SetStackTop(currentStackName, comicBook);
         }
     }
@@ -1788,10 +1776,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         string text = Program.LoadCustomThumbnail(null, this, miSetStackThumbnail.Text.Replace("&", string.Empty));
         if (text != null)
         {
-            if (stacksConfig == null)
-            {
-                stacksConfig = new StacksConfig();
-            }
+            stacksConfig ??= new StacksConfig();
             stacksConfig.SetStackThumbnailKey(itemView.GetStackCaption(viewableItem), text);
             FillBookList();
         }
@@ -1877,10 +1862,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
                     preStackFocusedId = GetFocusedId();
                 }
                 itemView.ItemStacker = null;
-                if (stacksConfig == null)
-                {
-                    stacksConfig = new StacksConfig();
-                }
+                stacksConfig ??= new StacksConfig();
                 ItemViewConfig stackViewConfig = stacksConfig.GetStackViewConfig(Program.Settings.CommonListStackLayout ? BookList.Name : stackCaption);
                 if (stackViewConfig != null)
                 {
@@ -2403,10 +2385,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool CreateDragContainter(DragEventArgs e)
     {
-        if (dragBookContainer == null)
-        {
-            dragBookContainer = DragDropContainer.Create(e.Data);
-        }
+        dragBookContainer ??= DragDropContainer.Create(e.Data);
         return dragBookContainer.IsValid;
     }
 
@@ -2477,8 +2456,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             return;
         }
         Point pt = itemView.PointToClient(new Point(e.X, e.Y));
-        CoverViewItem coverViewItem = itemView.ItemHitTest(pt) as CoverViewItem;
-        if (coverViewItem != null && IsViewSortedByPosition() && dragBookContainer.IsBookContainer)
+        if (itemView.ItemHitTest(pt) is CoverViewItem coverViewItem && IsViewSortedByPosition() && dragBookContainer.IsBookContainer)
         {
             itemView.MarkerItem = coverViewItem;
             itemView.MarkerVisible = true;
@@ -2502,9 +2480,8 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     private void itemView_DragDrop(object sender, DragEventArgs e)
     {
         Point pt = itemView.PointToClient(new Point(e.X, e.Y));
-        CoverViewItem coverViewItem = itemView.ItemHitTest(pt) as CoverViewItem;
         int index = -1;
-        if (coverViewItem != null && IsViewSortedByPosition())
+        if (itemView.ItemHitTest(pt) is CoverViewItem coverViewItem && IsViewSortedByPosition())
         {
             index = coverViewItem.Position - 1;
         }
@@ -2619,8 +2596,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     public void ShowWeb()
     {
-        CoverViewItem coverViewItem = itemView.FocusedItem as CoverViewItem;
-        if (coverViewItem != null && !string.IsNullOrEmpty(coverViewItem.Comic.Web))
+        if (itemView.FocusedItem is CoverViewItem coverViewItem && !string.IsNullOrEmpty(coverViewItem.Comic.Web))
         {
             Program.StartDocument(coverViewItem.Comic.Web);
         }
@@ -2628,8 +2604,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     public void OpenComic()
     {
-        CoverViewItem coverViewItem = itemView.FocusedItem as CoverViewItem;
-        if (coverViewItem != null && base.Main != null)
+        if (itemView.FocusedItem is CoverViewItem coverViewItem && base.Main != null)
         {
             coverViewItem.Comic.LastOpenedFromListId = BookList.Id;
             base.Main.OpenBooks.Open(coverViewItem.Comic, Program.Settings.OpenInNewTab ^ ((Control.ModifierKeys & Keys.Control) != 0 || (itemView.ActivateButton & MouseButtons.Middle) != 0));
@@ -2638,8 +2613,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     public void OpenComicNewTab()
     {
-        CoverViewItem coverViewItem = itemView.FocusedItem as CoverViewItem;
-        if (coverViewItem != null && base.Main != null)
+        if (itemView.FocusedItem is CoverViewItem coverViewItem && base.Main != null)
         {
             coverViewItem.Comic.LastOpenedFromListId = BookList.Id;
             base.Main.OpenBooks.Open(coverViewItem.Comic, inNewSlot: true);
@@ -2673,8 +2647,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             IDataObject dataObject = Clipboard.GetDataObject();
             if (dataObject != null)
             {
-                DisplayListConfig displayListConfig = dataObject.GetData(typeof(DisplayListConfig)) as DisplayListConfig;
-                if (displayListConfig != null)
+                if (dataObject.GetData(typeof(DisplayListConfig)) is DisplayListConfig displayListConfig)
                 {
                     itemView.ViewConfig = displayListConfig.View;
                     ThumbnailConfig = displayListConfig.Thumbnail;
@@ -2729,10 +2702,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             {
             }
         }
-        if (quickFilter == null)
-        {
-            quickFilter = ComicBookAllPropertiesMatcher.Create(QuickSearch, 3, QuickSearchType, ShowOptionType, ShowComicType);
-        }
+        quickFilter ??= ComicBookAllPropertiesMatcher.Create(QuickSearch, 3, QuickSearchType, ShowOptionType, ShowComicType);
     }
 
     public void UpdateSearch()
@@ -2819,9 +2789,8 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         try
         {
-            ComicBook comicBook = Clipboard.GetData(ComicBook.ClipboardFormat) as ComicBook;
             IEnumerable<ComicBook> enumerable = GetBookList(ComicBookFilterType.Selected, asArray: true);
-            if (comicBook != null && !enumerable.IsEmpty())
+            if (Clipboard.GetData(ComicBook.ClipboardFormat) is ComicBook comicBook && !enumerable.IsEmpty())
             {
                 ComicDataPasteDialog.ShowAndPaste(this, comicBook, enumerable);
             }
@@ -2841,13 +2810,12 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IEnumerable<ComicBook> enumerable = GetBookList(ComicBookFilterType.Selected);
         IEnumerable<ComicBook> enumerable2 = GetBookList(ComicBookFilterType.Library | ComicBookFilterType.Selected);
         IEnumerable<ComicBook> list = GetBookList(ComicBookFilterType.NotInLibrary | ComicBookFilterType.Selected);
-        CoverViewItem coverViewItem = itemView.FocusedItem as CoverViewItem;
         bool flag = ComicEditMode.CanEditProperties();
         bool flag2 = ComicEditMode.CanEditList();
         bool flag3 = !enumerable2.IsEmpty();
         miAddLibrary.Visible = !list.IsEmpty();
         miEdit.Visible = flag && itemView.ItemViewMode == ItemViewMode.Detail;
-        miShowWeb.Visible = coverViewItem != null && coverViewItem.Comic != null && !string.IsNullOrEmpty(coverViewItem.Comic.Web);
+        miShowWeb.Visible = itemView.FocusedItem is CoverViewItem coverViewItem && coverViewItem.Comic != null && !string.IsNullOrEmpty(coverViewItem.Comic.Web);
         ToolStripMenuItem toolStripMenuItem = miMarkAs;
         bool visible = (miRateMenu.Visible = flag && flag3);
         toolStripMenuItem.Visible = visible;
@@ -3324,8 +3292,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         IDisplayListConfig displayListConfig = bookList.QueryService<IDisplayListConfig>();
         if (displayListConfig != null)
         {
-            CoverViewItem coverViewItem = stackItem as CoverViewItem;
-            if (coverViewItem != null)
+            if (stackItem is CoverViewItem coverViewItem)
             {
                 displayListConfig.Display = new DisplayListConfig(preStackConfig, ThumbnailConfig, null, stacksConfig, backgroundImageSource)
                 {

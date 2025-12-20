@@ -393,8 +393,7 @@ public partial class MultipleComicBooksDialog : FormEx
         checkBox.Top = c.Top + (c.Height - checkBox.Height) / 2;
         c.Left += checkBox.Width + 2;
         c.Width -= checkBox.Width + 2;
-        Label label = base.Controls[c.Name.Replace("tx", "label").Replace("cb", "label")] as Label;
-        if (label != null)
+        if (base.Controls[c.Name.Replace("tx", "label").Replace("cb", "label")] is Label label)
         {
             label.Left = c.Left;
         }
@@ -561,8 +560,7 @@ public partial class MultipleComicBooksDialog : FormEx
     private void SetText(TextBox textBox, string propName, Func<AutoCompleteStringCollection> autoCompletePredicate)
     {
         SetText(textBox, propName);
-        IDelayedAutoCompleteList delayedAutoCompleteList = textBox as IDelayedAutoCompleteList;
-        if (delayedAutoCompleteList != null)
+        if (textBox is IDelayedAutoCompleteList delayedAutoCompleteList)
         {
             if (autoCompletePredicate != null)
             {

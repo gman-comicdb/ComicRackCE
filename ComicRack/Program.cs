@@ -767,9 +767,8 @@ public static class Program
         {
             if (MainForm != null)
             {
-                IPAddress address = s as IPAddress;
                 e.IsPaired = QueueManager.Devices.Any((DeviceSyncSettings d) => d.DeviceKey == e.Key);
-                if (e.IsPaired && address != null)
+                if (e.IsPaired && s is IPAddress address)
                 {
                     MainForm.BeginInvoke(delegate
                     {

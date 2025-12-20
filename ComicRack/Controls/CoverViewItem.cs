@@ -1070,8 +1070,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             {
                 continue;
             }
-            ComicListField comicListField = column.Tag as ComicListField;
-            if (comicListField == null)
+            if (column.Tag is not ComicListField comicListField)
             {
                 continue;
             }
@@ -1466,8 +1465,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
 
     private void Editor_VisibleChanged(object sender, EventArgs e)
     {
-        Control c = sender as Control;
-        if (c == null || c.Visible)
+        if (sender is not Control c || c.Visible)
         {
             return;
         }

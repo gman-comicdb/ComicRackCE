@@ -268,8 +268,7 @@ public partial class PreferencesDialog : FormEx
 
     private void lvScripts_ItemChecked(object sender, ItemCheckedEventArgs e)
     {
-        Command command = e.Item.Tag as Command;
-        if (command != null)
+        if (e.Item.Tag is Command command)
         {
             command.Enabled = e.Item.Checked;
         }
@@ -372,8 +371,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btChangeFolder_Click(object sender, EventArgs e)
     {
-        string text = lbPaths.SelectedItem as string;
-        if (text == null)
+        if (lbPaths.SelectedItem is not string text)
         {
             return;
         }
@@ -1366,8 +1364,7 @@ public partial class PreferencesDialog : FormEx
         if (cbVirtualTags.SelectedIndex == -1)
             return;
 
-        VirtualTag vtag = cbVirtualTags.SelectedItem as VirtualTag;
-        if (vtag is null)
+        if (cbVirtualTags.SelectedItem is not VirtualTag vtag)
             return;
 
         //Fill UI with object from Combo Box

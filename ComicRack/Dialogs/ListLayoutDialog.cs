@@ -245,8 +245,7 @@ public partial class ListLayoutDialog : FormEx
         ListViewItem listViewItem = lvColumns.Items.Add(ci.Name);
         listViewItem.Checked = ci.Visible;
         listViewItem.Tag = ci;
-        ComicListField comicListField = ci.Tag as ComicListField;
-        if (comicListField != null)
+        if (ci.Tag is ComicListField comicListField)
         {
             listViewItem.SubItems.Add(comicListField.Description);
         }

@@ -379,13 +379,11 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public void OnRefreshRemoteLists(object sender, EventArgs e)
     {
-        ComicListLibraryBrowser comicListLibraryBrowser = sender as ComicListLibraryBrowser;
-        if (comicListLibraryBrowser == null)
+        if (sender is not ComicListLibraryBrowser comicListLibraryBrowser)
         {
             return;
         }
-        ComicLibraryClient clc = comicListLibraryBrowser.Tag as ComicLibraryClient;
-        if (clc != null)
+        if (comicListLibraryBrowser.Tag is ComicLibraryClient clc)
         {
             ComicLibrary cl = null;
             AutomaticProgressDialog.Process(this, TR.Messages["RefreshServer", "Refreshing Server Library"], TR.Messages["GetServerLibraryText", "Retrieving the shared Library from the Server"], 1000, delegate
@@ -419,8 +417,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
                 }
                 continue;
             }
-            ComicExplorerView comicExplorerView = item.Tag as ComicExplorerView;
-            if (comicExplorerView != null && object.Equals(address, comicExplorerView.Tag))
+            if (item.Tag is ComicExplorerView comicExplorerView && object.Equals(address, comicExplorerView.Tag))
             {
                 Program.Settings.UpdateExplorerViewSetting(comicExplorerView.ComicBrowser.Library.Id, comicExplorerView.ViewSettings);
                 tabStrip.Items.Remove(item);
@@ -587,8 +584,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         }
         foreach (TabBar.TabBarItem item in tabStrip.Items)
         {
-            Control control = item.Tag as Control;
-            if (control != null)
+            if (item.Tag is Control control)
             {
                 control.Visible = item == selectedTab;
             }

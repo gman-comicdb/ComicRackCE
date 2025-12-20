@@ -45,8 +45,7 @@ public class RemoteShareItem
 
     public override bool Equals(object obj)
     {
-        RemoteShareItem remoteShareItem = obj as RemoteShareItem;
-        return remoteShareItem != null && remoteShareItem.Name == Name ? remoteShareItem.Uri == Uri : false;
+        return obj is RemoteShareItem remoteShareItem && remoteShareItem.Name == Name ? remoteShareItem.Uri == Uri : false;
     }
 
     public override int GetHashCode()

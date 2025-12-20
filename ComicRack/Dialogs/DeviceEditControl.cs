@@ -151,8 +151,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         try
         {
-            DeviceSyncSettings deviceSyncSettings = Clipboard.GetData(DeviceSyncSettings.ClipboardFormat) as DeviceSyncSettings;
-            if (deviceSyncSettings != null)
+            if (Clipboard.GetData(DeviceSyncSettings.ClipboardFormat) is DeviceSyncSettings deviceSyncSettings)
             {
                 UpdateTree(deviceSyncSettings);
                 SetEditor(tvSharedLists.SelectedNode);
@@ -365,10 +364,7 @@ public partial class DeviceEditControl : UserControlEx
                 sharedList = CreateDefaultSharedList(comicListItem.Id);
                 SetSharedList(node, sharedList);
             }
-            if (sharedList == null)
-            {
-                sharedList = CreateDefaultSharedList(Guid.Empty);
-            }
+            sharedList ??= CreateDefaultSharedList(Guid.Empty);
             blockListUpdate = true;
             chkOnlyUnread.Checked = sharedList.OnlyUnread;
             chkKeepLastRead.Checked = sharedList.KeepLastRead;
@@ -394,10 +390,7 @@ public partial class DeviceEditControl : UserControlEx
             TreeNode treeNode = tnc.Find((TreeNode n) => ((TagElement)n.Tag).Item == cli, all: false);
             if (flag || fillAll)
             {
-                if (treeNode == null)
-                {
-                    treeNode = tnc.Add(cli.Name);
-                }
+                treeNode ??= tnc.Add(cli.Name);
                 treeNode.ImageKey = cli.ImageKey;
                 treeNode.SelectedImageKey = cli.ImageKey;
                 treeNode.Tag = new TagElement
@@ -406,8 +399,7 @@ public partial class DeviceEditControl : UserControlEx
                     List = (flag ? new DeviceSyncSettings.SharedList(sharedList) : null)
                 };
             }
-            ComicListItemFolder comicListItemFolder = cli as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (cli is ComicListItemFolder comicListItemFolder)
             {
                 num += FillListTree(flat ? tnc : treeNode.Nodes, settings, comicListItemFolder.Items, fillAll, flat);
             }
@@ -429,8 +421,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         if (node != null)
         {
-            TagElement tagElement = node.Tag as TagElement;
-            if (tagElement != null)
+            if (node.Tag is TagElement tagElement)
             {
                 tagElement.List = list;
             }

@@ -136,8 +136,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
 
     private void ItemView_ItemActivate(object sender, EventArgs e)
     {
-        PageViewItem pageViewItem = pagesView.ItemView.FocusedItem as PageViewItem;
-        if (pageViewItem != null)
+        if (pagesView.ItemView.FocusedItem is PageViewItem pageViewItem)
         {
             pagesView.Book.Navigate(pageViewItem.Page, PageSeekOrigin.Absolute);
             base.Main.ShowComic();

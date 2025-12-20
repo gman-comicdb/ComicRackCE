@@ -71,8 +71,7 @@ public static class EditControlUtility
     public static void SetText(TextBox textBox, string text, Func<AutoCompleteStringCollection> autoCompletePredicate)
     {
         SetText(textBox, text);
-        IDelayedAutoCompleteList delayedAutoCompleteList = textBox as IDelayedAutoCompleteList;
-        if (delayedAutoCompleteList != null)
+        if (textBox is IDelayedAutoCompleteList delayedAutoCompleteList)
         {
             if (autoCompletePredicate != null)
             {

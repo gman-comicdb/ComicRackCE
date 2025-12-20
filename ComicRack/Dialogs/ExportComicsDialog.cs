@@ -245,8 +245,7 @@ public partial class ExportComicsDialog : FormEx
 
     private void tvPresets_AfterSelect(object sender, TreeViewEventArgs e)
     {
-        ExportSetting exportSetting = tvPresets.SelectedNode.Tag as ExportSetting;
-        if (exportSetting != null)
+        if (tvPresets.SelectedNode.Tag is ExportSetting exportSetting)
         {
             Setting = exportSetting;
         }

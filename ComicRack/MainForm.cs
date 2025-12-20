@@ -388,10 +388,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (comicDisplay == null)
-            {
-                comicDisplay = CreateComicDisplay();
-            }
+            comicDisplay ??= CreateComicDisplay();
             return comicDisplay;
         }
     }
@@ -3033,7 +3030,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void OpenBooks_Selected(object sender, CancelEventArgs e)
     {
-        object obj = ((sender is ToolStripItem) ? ((ToolStripItem)sender).Tag : ((TabBar.TabBarItem)sender).Tag);
+        object obj = ((sender is ToolStripItem item) ? item.Tag : ((TabBar.TabBarItem)sender).Tag);
         OpenBooks.CurrentSlot = (int)obj;
     }
 
@@ -3439,16 +3436,10 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             enumMenuUtility.Enabled = enabled;
             pageTypeEditMenu.Value = (int)pageEditor.PageType;
             pageRotationEditMenu.Value = (int)pageEditor.Rotation;
-            if (miUndo.Tag == null)
-            {
-                miUndo.Tag = miUndo.Text;
-            }
+            miUndo.Tag ??= miUndo.Text;
             string undoLabel = Program.Database.Undo.UndoLabel;
             miUndo.Text = (string)miUndo.Tag + (string.IsNullOrEmpty(undoLabel) ? string.Empty : (": " + undoLabel));
-            if (miRedo.Tag == null)
-            {
-                miRedo.Tag = miRedo.Text;
-            }
+            miRedo.Tag ??= miRedo.Text;
             string text = Program.Database.Undo.RedoEntries.FirstOrDefault();
             miRedo.Text = (string)miRedo.Tag + (string.IsNullOrEmpty(text) ? string.Empty : (": " + text));
         }

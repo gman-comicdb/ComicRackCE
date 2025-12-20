@@ -155,13 +155,10 @@ public partial class ComicBookDialog : FormEx
         EditControlUtility.InitializeYesNo(cbSeriesComplete);
         EditControlUtility.InitializeYesNo(cbEnableProposed, withEmpty: false);
         EditControlUtility.InitializeYesNo(cbEnableDynamicUpdate, withEmpty: false);
-        if (allBooks == null)
-        {
-            allBooks = new ComicBook[1]
+        allBooks ??= new ComicBook[1]
             {
                 current
             };
-        }
         this.allBooks = allBooks;
         pagesView.PageFilter = ComicPageType.AllWithDeleted;
         pagesView.ItemView.SelectedIndexChanged += PagesViewSelectedIndexChanged;
@@ -724,8 +721,7 @@ public partial class ComicBookDialog : FormEx
         {
             return;
         }
-        TextBox textBox = e.Control as TextBox;
-        if (textBox == null)
+        if (e.Control is not TextBox textBox)
         {
             return;
         }
@@ -935,8 +931,7 @@ public partial class ComicBookDialog : FormEx
 
     private void ComicBookDialog_DragDrop(object sender, DragEventArgs e)
     {
-        string[] array = e.Data.GetData(DataFormats.FileDrop) as string[];
-        if (array != null && array.Length != 0)
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] array && array.Length != 0)
         {
             LinkFile(array[0]);
         }
@@ -951,13 +946,11 @@ public partial class ComicBookDialog : FormEx
     {
         try
         {
-            Bitmap bitmap = e.Data.GetData(DataFormats.Bitmap) as Bitmap;
-            string[] array = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (bitmap != null)
+            if (e.Data.GetData(DataFormats.Bitmap) is Bitmap bitmap)
             {
                 CustomThumbnailKey = Program.ImagePool.AddCustomThumbnail(bitmap);
             }
-            else if (array != null)
+            else if (e.Data.GetData(DataFormats.FileDrop) is string[] array)
             {
                 LoadThumbnail(array[0]);
             }
@@ -1084,10 +1077,7 @@ public partial class ComicBookDialog : FormEx
         }
         foreach (Command command in scriptEngine.GetCommands(PluginEngine.ScriptTypeEditor))
         {
-            if (btScript.ContextMenuStrip == null)
-            {
-                btScript.ContextMenuStrip = new ContextMenuStrip();
-            }
+            btScript.ContextMenuStrip ??= new ContextMenuStrip();
             string localizedName = command.GetLocalizedName();
             ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(localizedName)
             {

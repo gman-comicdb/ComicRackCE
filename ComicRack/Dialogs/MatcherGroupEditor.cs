@@ -251,8 +251,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
 
     public void PasteClipboard()
     {
-        ComicBookMatcher comicBookMatcher = Clipboard.GetData(ComicBookMatcher.ClipboardFormat) as ComicBookMatcher;
-        if (comicBookMatcher != null && (!(comicBookMatcher is ComicBookGroupMatcher) || level <= 5))
+        if (Clipboard.GetData(ComicBookMatcher.ClipboardFormat) is ComicBookMatcher comicBookMatcher && (!(comicBookMatcher is ComicBookGroupMatcher) || level <= 5))
         {
             matchers.Insert(matchers.IndexOf(currentComicBookMatcher) + 1, comicBookMatcher);
         }

@@ -43,13 +43,10 @@ public partial class OpenWithDialog : FormEx
         lvItems.Items.Clear();
         foreach (object item in Items)
         {
-            INamed named = item as INamed;
-            IPath path = item as IPath;
-            IOverride over = item as IOverride;
-            ListViewItem listViewItem = lvItems.Items.Add((named != null) ? named.Name : item.ToString());
-            if (path != null)
+            ListViewItem listViewItem = lvItems.Items.Add((item is INamed named) ? named.Name : item.ToString());
+            if (item is IPath path)
                 listViewItem.SubItems.Add(path.FullPath);
-            if (over != null)
+            if (item is IOverride over)
                 listViewItem.SubItems.Add(over.Override.ToString());
             listViewItem.Tag = item;
             listViewItem.Selected = item == selectedItem;

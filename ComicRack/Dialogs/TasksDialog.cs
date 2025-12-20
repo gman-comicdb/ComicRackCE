@@ -132,8 +132,7 @@ public partial class TasksDialog : FormEx
                     ListViewItem listViewItem = lvTasks.Items.Add(item.ToString());
                     listViewItem.ImageKey = process.Group;
                     listViewItem.Group = group;
-                    IProgressState progressState = item as IProgressState;
-                    if (progressState == null)
+                    if (item is not IProgressState progressState)
                     {
                         listViewItem.SubItems.Add(runningText);
                         continue;
@@ -301,8 +300,7 @@ public partial class TasksDialog : FormEx
 
     private void lvTasks_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
     {
-        IProgressState progressState = e.Item.Tag as IProgressState;
-        if (e.ColumnIndex != 1 || progressState == null || !progressState.ProgressAvailable || progressState.State != ProgressState.Running)
+        if (e.ColumnIndex != 1 || e.Item.Tag is not IProgressState progressState || !progressState.ProgressAvailable || progressState.State != ProgressState.Running)
         {
             e.DrawDefault = true;
             return;

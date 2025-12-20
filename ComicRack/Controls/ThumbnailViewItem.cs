@@ -134,8 +134,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
             {
                 return null;
             }
-            ComicListField comicListField = drawInfo.Header.Tag as ComicListField;
-            if (comicListField != null && comicListField.DisplayProperty != "Cover" && comicListField.DisplayProperty != "Thumbnail")
+            if (drawInfo.Header.Tag is ComicListField comicListField && comicListField.DisplayProperty != "Cover" && comicListField.DisplayProperty != "Thumbnail")
             {
                 return null;
             }
