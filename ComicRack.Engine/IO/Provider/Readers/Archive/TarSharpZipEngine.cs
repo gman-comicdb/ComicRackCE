@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 using cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo;
+
 using ICSharpCode.SharpZipLib.Tar;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive
@@ -103,7 +105,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive
                             nextEntry = tarInputStream.GetNextEntry();
                         } while (String.Compare(Path.GetFileName(nextEntry.Name), s, StringComparison.OrdinalIgnoreCase) != 0);
 
-						MemoryStream inStream = new MemoryStream();
+                        MemoryStream inStream = new MemoryStream();
                         int bytesRead;
                         while ((bytesRead = tarInputStream.Read(buffer, 0, buffer.Length)) > 0)
                         {

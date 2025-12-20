@@ -1,4 +1,5 @@
 ﻿using cYo.Common.Text.FunctionParser.Functions.Boolean;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace cYo.Common.Text.FunctionParser.Functions.Math
             if (Double.TryParse(param.doubleInText, out double result))
                 return result;
 
-			return -1.0d;
-		};
+            return -1.0d;
+        };
     }
 }

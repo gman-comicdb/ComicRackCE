@@ -2,29 +2,29 @@ using System.Collections.Generic;
 
 namespace cYo.Projects.ComicRack.Engine.Database.Storage
 {
-	public interface IComicStorage
-	{
-		bool IsConnected
-		{
-			get;
-		}
+    public interface IComicStorage
+    {
+        bool IsConnected
+        {
+            get;
+        }
 
-		bool Open(string connection);
+        bool Open(string connection);
 
-		void Close();
+        void Close();
 
-		void Delete(ComicBook book);
+        void Delete(ComicBook book);
 
-		bool Write(ComicBook book);
+        bool Write(ComicBook book);
 
-		IEnumerable<ComicBook> Load();
+        IEnumerable<ComicBook> Load();
 
-		bool Refresh(ComicBookContainer books);
+        bool Refresh(ComicBookContainer books);
 
-		void BeginTransaction();
+        void BeginTransaction();
 
-		void CommitTransaction();
+        void CommitTransaction();
 
-		void RollbackTransaction();
-	}
+        void RollbackTransaction();
+    }
 }

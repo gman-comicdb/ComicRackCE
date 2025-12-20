@@ -1,126 +1,127 @@
 using System;
 using System.Drawing;
+
 using cYo.Common.Drawing;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 
 namespace cYo.Projects.ComicRack.Engine.Display
 {
-	public interface IComicDisplay : IComicDisplayConfig
-	{
-		ComicBookNavigator Book
-		{
-			get;
-			set;
-		}
+    public interface IComicDisplay : IComicDisplayConfig
+    {
+        ComicBookNavigator Book
+        {
+            get;
+            set;
+        }
 
-		IPagePool PagePool
-		{
-			get;
-			set;
-		}
+        IPagePool PagePool
+        {
+            get;
+            set;
+        }
 
-		IThumbnailPool ThumbnailPool
-		{
-			get;
-			set;
-		}
+        IThumbnailPool ThumbnailPool
+        {
+            get;
+            set;
+        }
 
-		bool IsValid
-		{
-			get;
-		}
+        bool IsValid
+        {
+            get;
+        }
 
-		bool IsMovementFlipped
-		{
-			get;
-		}
+        bool IsMovementFlipped
+        {
+            get;
+        }
 
-		int CurrentPage
-		{
-			get;
-		}
+        int CurrentPage
+        {
+            get;
+        }
 
-		int CurrentMousePage
-		{
-			get;
-		}
+        int CurrentMousePage
+        {
+            get;
+        }
 
-		ImageRotation CurrentImageRotation
-		{
-			get;
-		}
+        ImageRotation CurrentImageRotation
+        {
+            get;
+        }
 
-		Size ImageSize
-		{
-			get;
-		}
+        Size ImageSize
+        {
+            get;
+        }
 
-		int ImagePartCount
-		{
-			get;
-		}
+        int ImagePartCount
+        {
+            get;
+        }
 
-		bool IsDoubleImage
-		{
-			get;
-		}
+        bool IsDoubleImage
+        {
+            get;
+        }
 
-		ImagePartInfo ImageVisiblePart
-		{
-			get;
-			set;
-		}
+        ImagePartInfo ImageVisiblePart
+        {
+            get;
+            set;
+        }
 
-		bool IsHardwareRenderer
-		{
-			get;
-		}
+        bool IsHardwareRenderer
+        {
+            get;
+        }
 
-		bool ShouldPagingBlend
-		{
-			get;
-		}
+        bool ShouldPagingBlend
+        {
+            get;
+        }
 
-		bool NavigationOverlayVisible
-		{
-			get;
-			set;
-		}
+        bool NavigationOverlayVisible
+        {
+            get;
+            set;
+        }
 
-		event EventHandler BookChanged;
+        event EventHandler BookChanged;
 
-		event EventHandler DrawnPageCountChanged;
+        event EventHandler DrawnPageCountChanged;
 
-		event EventHandler<BrowseEventArgs> Browse;
+        event EventHandler<BrowseEventArgs> Browse;
 
-		event EventHandler<BookPageEventArgs> PageChange;
+        event EventHandler<BookPageEventArgs> PageChange;
 
-		event EventHandler<BookPageEventArgs> PageChanged;
+        event EventHandler<BookPageEventArgs> PageChanged;
 
-		event EventHandler<GestureEventArgs> Gesture;
+        event EventHandler<GestureEventArgs> Gesture;
 
-		event EventHandler<GestureEventArgs> PreviewGesture;
+        event EventHandler<GestureEventArgs> PreviewGesture;
 
-		event EventHandler VisibleInfoOverlaysChanged;
+        event EventHandler VisibleInfoOverlaysChanged;
 
-		bool SetRenderer(bool hardware);
+        bool SetRenderer(bool hardware);
 
-		object GetState();
+        object GetState();
 
-		void Animate(object a, object b, int time);
+        void Animate(object a, object b, int time);
 
-		void Animate(Action<float> animate, int time);
+        void Animate(Action<float> animate, int time);
 
-		Bitmap CreatePageImage();
+        Bitmap CreatePageImage();
 
-		void MovePartDown(float percent);
+        void MovePartDown(float percent);
 
-		bool MovePart(Point offset);
+        bool MovePart(Point offset);
 
-		bool DisplayPart(PartPageToDisplay ptd);
+        bool DisplayPart(PartPageToDisplay ptd);
 
-		void DisplayOpenMessage();
+        void DisplayOpenMessage();
 
-		void ZoomTo(Point location, float zoom);
-	}
+        void ZoomTo(Point location, float zoom);
+    }
 }

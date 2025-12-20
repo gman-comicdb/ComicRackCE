@@ -2,6 +2,7 @@
 using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Resources;
+
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,7 +21,7 @@ internal partial class DarkControl
 
     private static void DarkCheckBox(CheckBox checkBox)
     {
-		checkBox.SafeSubscribe(nameof(CheckBox.Paint), PaintDark.CheckBox);
+        checkBox.SafeSubscribe(nameof(CheckBox.Paint), PaintDark.CheckBox);
         if (checkBox.Appearance == Appearance.Button)
             DarkButtonBase(checkBox);
         else if (checkBox.FlatStyle == FlatStyle.System)
@@ -57,7 +58,7 @@ internal partial class DarkControl
         if (!listView.OwnerDraw && listView.View == View.Details && listView.HeaderStyle != ColumnHeaderStyle.None)
         {
             listView.OwnerDraw = true;
-			listView.SafeSubscribe(nameof(ListView.DrawItem), DrawDarkListView.Item);
+            listView.SafeSubscribe(nameof(ListView.DrawItem), DrawDarkListView.Item);
             listView.SafeSubscribe(nameof(ListView.DrawColumnHeader), DrawDarkListView.ColumnHeader);
             listView.SafeSubscribe(nameof(ListView.DrawSubItem), DrawDarkListView.SubItem);
             if (listView.Items.Count > 0) listView.Items[0].UseItemStyleForSubItems = false;
@@ -134,5 +135,5 @@ internal partial class DarkControl
             button.FlatAppearance.BorderColor = DarkColors.Button.Border;
         }
     }
-	#endregion
+    #endregion
 }

@@ -12,7 +12,7 @@ namespace cYo.Common.Text.FunctionParser
         protected object[] Arguments { get; set; }
         protected abstract Func<TParam, TResult> Function { get; }
         public int ParameterCount => typeof(TParam).GetConstructors().FirstOrDefault()?.GetParameters().Length ?? 0;
-        public object Result { get ; private set ; }
+        public object Result { get; private set; }
         public string ResultAsText => Result.ToString();
 
         private object Execute()

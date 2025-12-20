@@ -3,27 +3,27 @@ using System.Drawing;
 
 namespace cYo.Projects.ComicRack.Engine
 {
-	public class BookPageRetrievalCompletedEventArgs : EventArgs
-	{
-		private readonly int page;
+    public class BookPageRetrievalCompletedEventArgs : EventArgs
+    {
+        private readonly int page;
 
-		private readonly bool twoPage;
+        private readonly bool twoPage;
 
-		public Bitmap Bitmap
-		{
-			get;
-			set;
-		}
+        public Bitmap Bitmap
+        {
+            get;
+            set;
+        }
 
-		public int Page => page;
+        public int Page => page;
 
-		public bool TwoPage => twoPage;
+        public bool TwoPage => twoPage;
 
-		public BookPageRetrievalCompletedEventArgs(Bitmap bitmap, int page, bool twoPage)
-		{
-			Bitmap = bitmap;
-			this.page = page;
-			this.twoPage = twoPage;
-		}
-	}
+        public BookPageRetrievalCompletedEventArgs(Bitmap bitmap, int page, bool twoPage)
+        {
+            Bitmap = bitmap;
+            this.page = page;
+            this.twoPage = twoPage;
+        }
+    }
 }

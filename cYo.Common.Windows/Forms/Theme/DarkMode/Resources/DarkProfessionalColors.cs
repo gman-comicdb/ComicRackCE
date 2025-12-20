@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+
 using cYo.Common.Drawing.ExtendedColors;
 
 namespace cYo.Common.Windows.Forms.Theme.DarkMode.Resources;

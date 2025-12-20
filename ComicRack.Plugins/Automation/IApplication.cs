@@ -1,52 +1,53 @@
 using System.Collections.Generic;
 using System.Drawing;
+
 using cYo.Projects.ComicRack.Engine;
 
 namespace cYo.Projects.ComicRack.Plugins.Automation
 {
-	public interface IApplication
-	{
-		string ProductVersion
-		{
-			get;
-		}
+    public interface IApplication
+    {
+        string ProductVersion
+        {
+            get;
+        }
 
-		void Restart();
+        void Restart();
 
-		void SynchronizeDevices();
+        void SynchronizeDevices();
 
-		void ScanFolders();
+        void ScanFolders();
 
-		IEnumerable<ComicBook> ReadDatabaseBooks(string file);
+        IEnumerable<ComicBook> ReadDatabaseBooks(string file);
 
-		IEnumerable<ComicBook> GetLibraryBooks();
+        IEnumerable<ComicBook> GetLibraryBooks();
 
-		ComicBook AddNewBook(bool showDialog);
+        ComicBook AddNewBook(bool showDialog);
 
-		bool RemoveBook(ComicBook cb);
+        bool RemoveBook(ComicBook cb);
 
-		bool SetCustomBookThumbnail(ComicBook cb, Bitmap bitmap);
+        bool SetCustomBookThumbnail(ComicBook cb, Bitmap bitmap);
 
-		ComicBook GetBook(string file);
+        ComicBook GetBook(string file);
 
-		Bitmap GetComicPage(ComicBook cb, int page);
+        Bitmap GetComicPage(ComicBook cb, int page);
 
-		Bitmap GetComicThumbnail(ComicBook cb, int page);
+        Bitmap GetComicThumbnail(ComicBook cb, int page);
 
-		IDictionary<string, string> GetComicFields();
+        IDictionary<string, string> GetComicFields();
 
-		Bitmap GetComicPublisherIcon(ComicBook cb);
+        Bitmap GetComicPublisherIcon(ComicBook cb);
 
-		Bitmap GetComicImprintIcon(ComicBook cb);
+        Bitmap GetComicImprintIcon(ComicBook cb);
 
-		Bitmap GetComicAgeRatingIcon(ComicBook cb);
+        Bitmap GetComicAgeRatingIcon(ComicBook cb);
 
-		Bitmap GetComicFormatIcon(ComicBook cb);
+        Bitmap GetComicFormatIcon(ComicBook cb);
 
-		string ReadInternet(string url);
+        string ReadInternet(string url);
 
-		int AskQuestion(string question, string buttonText, string optionText);
+        int AskQuestion(string question, string buttonText, string optionText);
 
-		void ShowComicInfo(IEnumerable<ComicBook> books);
-	}
+        void ShowComicInfo(IEnumerable<ComicBook> books);
+    }
 }

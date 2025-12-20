@@ -1,4 +1,5 @@
 ﻿using DynamicExpresso;
+
 using System;
 using System.Linq.Expressions;
 
@@ -6,7 +7,7 @@ namespace cYo.Common.Text.FunctionParser
 {
     public abstract record FunctionParameter
     {
-        public event EventHandler<ParameterEventArgs>  EvalError;
+        public event EventHandler<ParameterEventArgs> EvalError;
         protected virtual void OnEvalError(ParameterEventArgs e)
         {
             EvalError?.Invoke(this, e);

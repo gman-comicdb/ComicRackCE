@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+
 using cYo.Common.ComponentModel;
 using cYo.Common.Compression.SevenZip;
 using cYo.Common.IO;
@@ -199,9 +200,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive
         {
             try
             {
-				return XmlInfoProviders.Readers.DeserializeAll(s => new MemoryStream(GetFileData(source, s)));
-			}
-			catch
+                return XmlInfoProviders.Readers.DeserializeAll(s => new MemoryStream(GetFileData(source, s)));
+            }
+            catch
             {
                 return null;
             }

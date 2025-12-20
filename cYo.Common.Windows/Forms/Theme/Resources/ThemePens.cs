@@ -37,25 +37,25 @@ public static class ThemePens
         public static Pen Border => FromThemeColor(ThemeColors.ThumbnailViewItem.Border);
     }
 
-	public static class ItemView
-	{
-		public static Pen ResizeMarker
-		{
-			get
-			{
-				Pen pen = FromThemeColor(ThemeColors.ItemView.Marker);
-				pen.DashStyle = DashStyle.DashDot;
+    public static class ItemView
+    {
+        public static Pen ResizeMarker
+        {
+            get
+            {
+                Pen pen = FromThemeColor(ThemeColors.ItemView.Marker);
+                pen.DashStyle = DashStyle.DashDot;
                 return pen;
-			}
-		}
+            }
+        }
 
         public static Pen DragMarker => FromThemeColor(ThemeColors.ItemView.Marker);
-	}
+    }
 
-	/// <summary>
-	/// Returns a <see cref="Pen"/> with the specified <paramref name="color"/>.
-	/// </summary>
-	public static Pen FromThemeColor(Color color)
+    /// <summary>
+    /// Returns a <see cref="Pen"/> with the specified <paramref name="color"/>.
+    /// </summary>
+    public static Pen FromThemeColor(Color color)
     {
         if (!cache.TryGetValue(color, out var pen))
         {

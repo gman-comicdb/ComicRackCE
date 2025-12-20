@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+
 using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme.DarkMode;
 using cYo.Common.Windows.Forms.Theme.Internal;
@@ -129,7 +130,7 @@ public static class ThemeExtensions
     public static void SetTreeViewColor(this TreeView treeView)
         => InvokeAction(() => DarkThemeExtensions.SetTreeViewColor(treeView));
     #endregion
-    
+
     public static void ListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         => InvokeAction(
             () => e.DrawDefault = true,
@@ -171,7 +172,7 @@ public static class ControlPaintEx
             () => ControlPaint.DrawBorder3D(graphics, rectangle, borderStyle),
             () => DarkControlPaint.DrawBorder(graphics, rectangle)
         );
-    
+
     /// <summary>
     /// Draws a <b>themed</b> focus rectangle on the specified <paramref name="graphics"/> surface and within the specified <paramref name="bounds"/>.
     /// </summary>

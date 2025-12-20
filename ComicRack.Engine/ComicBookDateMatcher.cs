@@ -1,5 +1,6 @@
 using System;
 using System.Xml.Serialization;
+
 using cYo.Common;
 
 namespace cYo.Projects.ComicRack.Engine

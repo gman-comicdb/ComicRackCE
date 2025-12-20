@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+
 using cYo.Common.ComponentModel;
 
 namespace cYo.Projects.ComicRack.Engine
@@ -156,7 +157,7 @@ namespace cYo.Projects.ComicRack.Engine
                     yield return comicBook.Colorist;
                     yield return comicBook.Editor;
                     yield return comicBook.Translator;
-					yield return comicBook.Letterer;
+                    yield return comicBook.Letterer;
                     yield return comicBook.CoverArtist;
                     yield break;
                 case MatcherOption.File:
@@ -195,7 +196,7 @@ namespace cYo.Projects.ComicRack.Engine
             yield return comicBook.Letterer;
             yield return comicBook.Editor;
             yield return comicBook.Translator;
-			yield return comicBook.CoverArtist;
+            yield return comicBook.CoverArtist;
             yield return comicBook.Summary;
             yield return comicBook.FilePath;
             yield return comicBook.Genre;

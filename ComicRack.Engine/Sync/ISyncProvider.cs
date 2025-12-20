@@ -1,33 +1,34 @@
 using System;
 using System.Collections.Generic;
+
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 
 namespace cYo.Projects.ComicRack.Engine.Sync
 {
-	public interface ISyncProvider
-	{
-		DeviceInfo Device
-		{
-			get;
-		}
+    public interface ISyncProvider
+    {
+        DeviceInfo Device
+        {
+            get;
+        }
 
-		void ValidateDevice(DeviceInfo device);
+        void ValidateDevice(DeviceInfo device);
 
-		void Start();
+        void Start();
 
-		IEnumerable<ComicBook> GetBooks();
+        IEnumerable<ComicBook> GetBooks();
 
-		void Add(ComicBook book, bool optimize, IPagePool pagePool, Action working, Action start, Action completed);
+        void Add(ComicBook book, bool optimize, IPagePool pagePool, Action working, Action start, Action completed);
 
-		void Remove(ComicBook book);
+        void Remove(ComicBook book);
 
-		void SetLists(IEnumerable<ComicIdListItem> myBookLists);
+        void SetLists(IEnumerable<ComicIdListItem> myBookLists);
 
-		void WaitForWritesCompleted();
+        void WaitForWritesCompleted();
 
-		bool Progress(int percent);
+        bool Progress(int percent);
 
-		void Completed();
-	}
+        void Completed();
+    }
 }

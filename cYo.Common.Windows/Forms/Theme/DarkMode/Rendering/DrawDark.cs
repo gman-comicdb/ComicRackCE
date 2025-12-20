@@ -1,5 +1,6 @@
 ﻿
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
+
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -53,7 +54,7 @@ internal static class DrawDark
                 new Point(boxRect.Right - 4, boxRect.Top + (boxRect.Height/2) + 1)
             };
         }
-            
+
         g.DrawPolygon(checkBox.Enabled ? SystemPens.ControlLight : SystemPens.GrayText, checkMark);
     }
 

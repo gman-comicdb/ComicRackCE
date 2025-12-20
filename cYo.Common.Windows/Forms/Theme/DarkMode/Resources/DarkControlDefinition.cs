@@ -1,4 +1,5 @@
 ﻿using cYo.Common.Windows.Forms.Theme.Resources;
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -40,7 +41,7 @@ internal class DarkControlDefinition : ThemeControlDefinition
         if (!definition.AllowUXTheme)
             UXTheme = null;
 
-		if (component != UIComponent.None)
+        if (component != UIComponent.None)
             BackColor = DarkColors.GetUIComponentColor(component);
     }
 
@@ -63,14 +64,14 @@ internal class DarkControlDefinition : ThemeControlDefinition
         DarkControlDefinition definition = new DarkControlDefinition(this); // Make a copy so we don't modify the DefinitionTable.
 
         if (!definition.ForeColor.HasValue && TryGetSystemColor(control.ForeColor, out Color systemForeColor))
-			definition.ForeColor = systemForeColor;
+            definition.ForeColor = systemForeColor;
 
         if (control is ITheme itheme && itheme.UIComponent != UIComponent.None) // for controls that implement ITheme
-			definition.BackColor = DarkColors.GetUIComponentColor(itheme.UIComponent);
-		else if (control.GetAttachedTheme() is ITheme attached && attached != null && attached.UIComponent != UIComponent.None) // for controls where ITheme is dynamically attached (plugins)
-			definition.BackColor = DarkColors.GetUIComponentColor(attached.UIComponent);
-		else if (!definition.BackColor.HasValue && TryGetSystemColor(control.BackColor, out Color systemBackColor))
-			definition.BackColor = systemBackColor;
+            definition.BackColor = DarkColors.GetUIComponentColor(itheme.UIComponent);
+        else if (control.GetAttachedTheme() is ITheme attached && attached != null && attached.UIComponent != UIComponent.None) // for controls where ITheme is dynamically attached (plugins)
+            definition.BackColor = DarkColors.GetUIComponentColor(attached.UIComponent);
+        else if (!definition.BackColor.HasValue && TryGetSystemColor(control.BackColor, out Color systemBackColor))
+            definition.BackColor = systemBackColor;
 
         return definition;
     }

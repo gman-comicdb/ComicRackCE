@@ -9,7 +9,7 @@ namespace cYo.Common.Text.FunctionParser.Functions.Date
     public record DateFunctionParameters(string dateInText, string format) : FunctionParameter;
 
     [FunctionDefinition("date")]
-    public class DateFormatFunction(string name) : FunctionBase<DateFunctionParameters, string>(name) 
+    public class DateFormatFunction(string name) : FunctionBase<DateFunctionParameters, string>(name)
     {
         protected override Func<DateFunctionParameters, string> Function => param =>
         {

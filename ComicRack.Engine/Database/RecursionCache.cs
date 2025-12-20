@@ -1,12 +1,13 @@
 ﻿using cYo.Common.Collections;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace cYo.Projects.ComicRack.Engine.Database
 {
-    public class RecursionCache: Dictionary<Guid, RecursionCacheItem>
-	{
+    public class RecursionCache : Dictionary<Guid, RecursionCacheItem>
+    {
         private static Lazy<RecursionCache> instance = new Lazy<RecursionCache>(() => new RecursionCache());
 
         public static RecursionCache Items => instance.Value;
@@ -16,17 +17,17 @@ namespace cYo.Projects.ComicRack.Engine.Database
 
         }
 
-		public RecursionCacheItem GetValue(Guid guid)
-		{
-			if (Items.TryGetValue(guid, out RecursionCacheItem cachedResult))
-			{
-				return cachedResult;
-			}
+        public RecursionCacheItem GetValue(Guid guid)
+        {
+            if (Items.TryGetValue(guid, out RecursionCacheItem cachedResult))
+            {
+                return cachedResult;
+            }
 
-			RecursionCacheItem item = RecursionCacheItem.Empty();
-			this[guid] = item;
-			return item;
-		}
+            RecursionCacheItem item = RecursionCacheItem.Empty();
+            this[guid] = item;
+            return item;
+        }
 
         public void RemoveReference(Guid guid)
         {

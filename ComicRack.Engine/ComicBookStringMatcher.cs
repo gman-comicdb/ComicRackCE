@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
+
 using cYo.Common.Text;
 
 namespace cYo.Projects.ComicRack.Engine
@@ -146,8 +147,8 @@ namespace cYo.Projects.ComicRack.Engine
         protected override void OnMatchValueChanged()
         {
             base.OnMatchValueChanged();
-            parsedMatchValues = Regex.Split((MatchColumn == 0) ? MatchValue : MatchValue2, @"[,;]|(?<![,;].*)\s+(?!.*[,;])").Where(x=> !string.IsNullOrEmpty(x.Trim())).Select(x => x.Trim()).ToArray();
-			try
+            parsedMatchValues = Regex.Split((MatchColumn == 0) ? MatchValue : MatchValue2, @"[,;]|(?<![,;].*)\s+(?!.*[,;])").Where(x => !string.IsNullOrEmpty(x.Trim())).Select(x => x.Trim()).ToArray();
+            try
             {
                 rxList = new Regex($"(?<=^|[,;])\\s*{Regex.Escape(MatchValue.Trim())}\\s*(?=$|[,;])", RegexOptions.IgnoreCase | RegexOptions.Singleline);
             }

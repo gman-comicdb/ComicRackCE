@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
 using cYo.Common.Localize;
 
 namespace cYo.Common.Windows.Forms
@@ -70,14 +71,14 @@ namespace cYo.Common.Windows.Forms
             ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(TR.Default["Recent", "Recent"]);
             list.Add(toolStripMenuItem);
             List<MenuEntry> lastUsed = new List<MenuEntry>();
-			entries.ForEach(delegate(MenuEntry me)
+            entries.ForEach(delegate (MenuEntry me)
             {
                 if (!me.TopLevel)
                 {
                     lastUsed.Add(me);
                 }
             });
-			lastUsed.Sort(delegate(MenuEntry a, MenuEntry b)
+            lastUsed.Sort(delegate (MenuEntry a, MenuEntry b)
             {
                 int num4 = -DateTime.Compare(a.LastTimeUsed, b.LastTimeUsed);
                 return (num4 != 0) ? num4 : string.Compare(a.Text, b.Text);

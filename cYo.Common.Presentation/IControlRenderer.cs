@@ -4,20 +4,20 @@ using System.Windows.Forms;
 
 namespace cYo.Common.Presentation
 {
-	public interface IControlRenderer : IBitmapRenderer, IDisposable
-	{
-		Control Control
-		{
-			get;
-		}
+    public interface IControlRenderer : IBitmapRenderer, IDisposable
+    {
+        Control Control
+        {
+            get;
+        }
 
-		Size Size
-		{
-			get;
-		}
+        Size Size
+        {
+            get;
+        }
 
-		event EventHandler Paint;
+        event EventHandler Paint;
 
-		void Draw();
-	}
+        void Draw();
+    }
 }

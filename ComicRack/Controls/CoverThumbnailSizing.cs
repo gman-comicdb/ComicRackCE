@@ -1,9 +1,9 @@
 namespace cYo.Projects.ComicRack.Viewer.Controls
 {
-	public enum CoverThumbnailSizing
-	{
-		None,
-		Fit,
-		RightPage
-	}
+    public enum CoverThumbnailSizing
+    {
+        None,
+        Fit,
+        RightPage
+    }
 }

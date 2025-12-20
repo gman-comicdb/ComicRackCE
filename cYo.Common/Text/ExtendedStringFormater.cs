@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using cYo.Common.Text.FunctionParser;
 
 namespace cYo.Common.Text
@@ -71,11 +72,11 @@ namespace cYo.Common.Text
                             bool success3;
                             string value3 = Format(GetPart(format, ref i, '$', '>', ['<', '>', '$']), getValue, out success3, true);
                             string result = ParseFunction(value3, out success3);
-							stringBuilder.Append(result);
+                            stringBuilder.Append(result);
                             success &= success3 && !string.IsNullOrEmpty(result);
                             break;
                         }
-                     case '{':
+                    case '{':
                         {
                             string value = FormatValue(GetPart(format, ref i, '{', '}'), getValue);
                             success &= !string.IsNullOrEmpty(value);
@@ -107,13 +108,13 @@ namespace cYo.Common.Text
             name = regex.Match(value).Groups["function"].Value.ToLower();
             string paramsValue = regex.Match(value).Groups["params"]?.Value;
 
-			param = string.IsNullOrEmpty(paramsValue)
-				? Array.Empty<string>()  // Return an empty array if null or empty
-				: Regex.Split(paramsValue, @"(?<!\\),")
-					.Select(x => x.Trim().Replace(@"\,", ",")) // Remove escaping backslash
-					.ToArray();
+            param = string.IsNullOrEmpty(paramsValue)
+                ? Array.Empty<string>()  // Return an empty array if null or empty
+                : Regex.Split(paramsValue, @"(?<!\\),")
+                    .Select(x => x.Trim().Replace(@"\,", ",")) // Remove escaping backslash
+                    .ToArray();
 
-			IFunction func = FunctionFactory.Functions.CreateFunction(name);
+            IFunction func = FunctionFactory.Functions.CreateFunction(name);
             func.SetParameters(param);
             result = func.ResultAsText;
             success = true;
@@ -161,7 +162,7 @@ namespace cYo.Common.Text
             {
                 char c = text[index];
                 char n = index + 1 < text.Length ? text[index + 1] : '\0';
-                if(c == '\\' && charToEscape.Contains(n))
+                if (c == '\\' && charToEscape.Contains(n))
                 {
                     index += 2;
                     continue;

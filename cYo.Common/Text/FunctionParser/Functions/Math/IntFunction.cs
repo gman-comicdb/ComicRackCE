@@ -1,4 +1,5 @@
 ﻿using cYo.Common.Text.FunctionParser.Functions.Boolean;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,6 @@ namespace cYo.Common.Text.FunctionParser.Functions.Math
                 return result;
 
             return -1;
-		};
+        };
     }
 }

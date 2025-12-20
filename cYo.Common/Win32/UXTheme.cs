@@ -17,8 +17,8 @@ public static class UXTheme
 {
 
     /// <summary>
-		/// Win32 API native things
-		/// </summary>
+    /// Win32 API native things
+    /// </summary>
     private static class Native
     {
 
@@ -171,7 +171,7 @@ public static class UXTheme
     public static bool IsDarkModeSupported = false;
 
     /// <summary>
-		/// Checks if current Windows OS version has Dark Mode theming support and set <c><see cref="IsDarkModeSupported"/></c> accordingly.
+    /// Checks if current Windows OS version has Dark Mode theming support and set <c><see cref="IsDarkModeSupported"/></c> accordingly.
     /// </summary>
     /// <remarks>
     /// If <c><see cref="IsDarkModeSupported"/></c> is set to false, all calls to others <c><see cref="UXTheme"/></c> functions will immediately return.
@@ -207,16 +207,16 @@ public static class UXTheme
     }
 
     /// <summary>
-		/// Sets Dark Mode for a single <c><see cref="System.Windows.Forms.Control"/></c>.<br/>
+    /// Sets Dark Mode for a single <c><see cref="System.Windows.Forms.Control"/></c>.<br/>
     /// Uses an undocumented API. Support varies between Windows OS versions.
-		/// </summary>
-		/// <param name="hwnd">The handle to the <c><see cref="System.Windows.Forms.Control"/></c> for which Dark Mode will be set.</param>
+    /// </summary>
+    /// <param name="hwnd">The handle to the <c><see cref="System.Windows.Forms.Control"/></c> for which Dark Mode will be set.</param>
     /// <param name="themeClass">Maps to <paramref name="pszSubAppName"/> parameter of <c><see cref="Native.SetWindowTheme(IntPtr, string, string)"/></c></param>
     /// <param name="subClass">Maps to <paramref name="pszSubIdList"/> parameter of <c><see cref="Native.SetWindowTheme(IntPtr, string, string)"/></c></param>
     /// <remarks>
     /// We are essentially asking the Theme Engine to theme a Control for us, hence the high dependence on Windows OS version.<br/>
     /// Think how early Windows Dark Mode still had Light File/Folder properties, Notepad and Task Manager.
-		/// </remarks>
+    /// </remarks>
     public static void SetControlTheme(IntPtr hwnd, string themeClass = "DarkMode_Explorer", string subClass = null)
     {
         if (!IsDarkModeSupported || hwnd == null || hwnd == IntPtr.Zero) return;
@@ -246,9 +246,9 @@ public static class UXTheme
         //IntPtr comboHandle = pcbi.hwndCombo;
         //if (comboHandle != IntPtr.Zero)
         //{
-            //Native.SetWindowTheme(comboHandle, "DarkMode_CFD", null);
-            //Native.SetWindowTheme(comboHandle, null, "DarkMode_CFD::Combobox");
-            //Native.DwmSetWindowAttribute(comboHandle, Native.DWMWA_USE_IMMERSIVE_DARK_MODE, ref Native.YES, sizeof(int));
+        //Native.SetWindowTheme(comboHandle, "DarkMode_CFD", null);
+        //Native.SetWindowTheme(comboHandle, null, "DarkMode_CFD::Combobox");
+        //Native.DwmSetWindowAttribute(comboHandle, Native.DWMWA_USE_IMMERSIVE_DARK_MODE, ref Native.YES, sizeof(int));
         //}
 
         IntPtr listHandle = pcbi.hwndList;
@@ -261,9 +261,9 @@ public static class UXTheme
         //IntPtr textHandle = pcbi.hwndEdit;
         //if (textHandle != IntPtr.Zero)
         //{
-            //Native.SetWindowTheme(textHandle, "DarkMode_CEdit", null);
-            //Native.SetWindowTheme(textHandle, null, "DarkMode_CFD::Edit");
-            //Native.DwmSetWindowAttribute(textHandle, Native.DWMWA_USE_IMMERSIVE_DARK_MODE, ref Native.YES, sizeof(int));
+        //Native.SetWindowTheme(textHandle, "DarkMode_CEdit", null);
+        //Native.SetWindowTheme(textHandle, null, "DarkMode_CFD::Edit");
+        //Native.DwmSetWindowAttribute(textHandle, Native.DWMWA_USE_IMMERSIVE_DARK_MODE, ref Native.YES, sizeof(int));
         //}
     }
 
@@ -302,7 +302,7 @@ public static class UXTheme
     }
 
     /// <summary>
-		/// Gets the Desktop Window Manager (DWM) "Dark Mode" value. Returns 0 if the Windows OS version (Theme Engine) is too old to support Dark Mode.
+    /// Gets the Desktop Window Manager (DWM) "Dark Mode" value. Returns 0 if the Windows OS version (Theme Engine) is too old to support Dark Mode.
     /// </summary>
     private static int GetDwmDarkModeAttribute()
     {

@@ -1,9 +1,9 @@
 namespace cYo.Common.Drawing
 {
-	public enum ResizeFastInterpolation
-	{
-		NearestNeighbor,
-		Bilinear,
-		Bicubic
-	}
+    public enum ResizeFastInterpolation
+    {
+        NearestNeighbor,
+        Bilinear,
+        Bicubic
+    }
 }

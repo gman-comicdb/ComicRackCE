@@ -2,6 +2,7 @@
 using cYo.Common.Win32;
 using cYo.Common.Windows.Forms.Theme.Internal;
 using cYo.Common.Windows.Forms.Theme.Resources;
+
 using System.Drawing;
 
 namespace cYo.Common.Windows.Forms.Theme;
@@ -48,7 +49,8 @@ public class ThemeManager
             default:
                 ThemeColors.Register<ThemeColorTable>();
                 return false;
-        };
+        }
+        ;
     }
 
     /// <summary>

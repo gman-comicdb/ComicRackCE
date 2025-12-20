@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace cYo.Common.Text.FunctionParser
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class FunctionDefinitionAttribute: Attribute
+    public class FunctionDefinitionAttribute : Attribute
     {
         public string Name { get; set; }
 

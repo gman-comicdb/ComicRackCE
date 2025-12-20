@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+
 using DynamicExpresso;
 
 namespace cYo.Common.Text.FunctionParser.Functions.Math

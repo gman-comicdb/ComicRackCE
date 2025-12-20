@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+
 using cYo.Common.Drawing;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Internal;
@@ -13,16 +14,16 @@ namespace cYo.Common.Windows.Forms.Theme.Resources;
 /// </remarks>
 public static class ThemeColors
 {
-	internal static ThemeColorTable ColorTable => colorTable ??= new ThemeColorTable();
+    internal static ThemeColorTable ColorTable => colorTable ??= new ThemeColorTable();
 
-	private static ThemeColorTable colorTable;
+    private static ThemeColorTable colorTable;
 
     public static bool IsDefault => ColorTable?.GetType() == typeof(ThemeColorTable);
 
-	internal static void Register<T>() where T : ThemeColorTable, new()
-	{
-		colorTable = new T();
-	}
+    internal static void Register<T>() where T : ThemeColorTable, new()
+    {
+        colorTable = new T();
+    }
 
     // Gainsboro  - RGB 220 - PreferencesDialog label(Navigation|Status|Page|VisiblePart)Overlay
     public static readonly Color Lossboro = SystemColors.ControlDarkDark;
@@ -108,7 +109,7 @@ public static class ThemeColors
         public static Color GroupText => ColorTable.ItemViewGroupText;
         public static Color GroupSeparator => ColorTable.ItemViewGroupSeparator;
         public static Color Marker => ColorTable.ItemViewMarker;
-	}
+    }
 
     public static class NiceTreeSkin
     {
@@ -139,7 +140,7 @@ public static class ThemeColors
     }
 
     public static class ToolTip
-	{
+    {
         public static readonly Color InfoText = ColorTable.ToolTipText;
     }
 

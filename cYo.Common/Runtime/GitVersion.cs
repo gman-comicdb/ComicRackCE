@@ -18,14 +18,14 @@ namespace cYo.Common.Runtime
         public static string CurrentCommit => currentCommit ??= GetString("CurrentCommit", Assembly.GetEntryAssembly()).Trim();
         public static bool IsDirty => isDirty ??= !string.IsNullOrEmpty(GetString("isDirty", Assembly.GetEntryAssembly())?.Trim());
 
-		public static string GetCurrentVersionInfo()
+        public static string GetCurrentVersionInfo()
         {
             Assembly assembly = Assembly.GetEntryAssembly();
             string isDirtyText = !IsDirty ? "" : "-dirty";
-			return string.IsNullOrEmpty(CurrentCommit) ? "" : $" [{CurrentCommit[..7]}{isDirtyText}]";
+            return string.IsNullOrEmpty(CurrentCommit) ? "" : $" [{CurrentCommit[..7]}{isDirtyText}]";
         }
 
-		public static Stream GetStream(string resourceName, Assembly assembly)
+        public static Stream GetStream(string resourceName, Assembly assembly)
         {
             string fullResourceName = assembly.GetManifestResourceNames().FirstOrDefault(x => x.Contains(resourceName));
             return assembly.GetManifestResourceStream(fullResourceName); ;

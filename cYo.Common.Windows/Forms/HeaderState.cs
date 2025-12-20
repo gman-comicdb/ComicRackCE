@@ -1,10 +1,10 @@
 namespace cYo.Common.Windows.Forms
 {
-	public enum HeaderState
-	{
-		Normal,
-		Active,
-		Hot,
-		Pressed
-	}
+    public enum HeaderState
+    {
+        Normal,
+        Active,
+        Hot,
+        Pressed
+    }
 }

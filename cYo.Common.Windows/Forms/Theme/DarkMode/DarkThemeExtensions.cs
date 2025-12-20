@@ -2,6 +2,7 @@
 using cYo.Common.Windows.Forms.Theme.DarkMode.Rendering;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Resources;
+
 using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
@@ -109,7 +110,7 @@ internal static class DarkControlPaint
         => DrawStringDisabled(graphics, text, font, bounds, textFormatFlags);
 
     public static void DrawStringDisabled(Graphics graphics, string text, Font font, Rectangle bounds, TextFormatFlags textFormatFlags)
-        => TextRenderer.DrawText(graphics, text, font, bounds, SystemColors.GrayText, textFormatFlags); 
+        => TextRenderer.DrawText(graphics, text, font, bounds, SystemColors.GrayText, textFormatFlags);
 }
 
 /// <summary>
@@ -145,7 +146,7 @@ internal static class DrawEventExtensions
     {
         // Re-evaluate the backColor using the Control focus state as well as the Item focus state
         backColor = GetBackColor(e.State, backColor, controlFocused);
-        e.Graphics.FillRectangle(DarkBrushes.FromDarkColor(backColor),e.Bounds);
+        e.Graphics.FillRectangle(DarkBrushes.FromDarkColor(backColor), e.Bounds);
     }
 
     //internal static void DrawDarkString(this DrawItemEventArgs e, string text)

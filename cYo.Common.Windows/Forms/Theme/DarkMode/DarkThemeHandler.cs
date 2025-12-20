@@ -2,6 +2,7 @@
 using cYo.Common.Windows.Forms.Theme.DarkMode.Handlers;
 using cYo.Common.Windows.Forms.Theme.DarkMode.Resources;
 using cYo.Common.Windows.Forms.Theme.Internal;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,18 +55,18 @@ internal class DarkThemeHandler : IThemeHandler
     /// </summary>
     public void Handle(Control control)
     {
-		// Get a custom ThemeDefinition if one exists. 
-		if (!TryGetDarkCustomControlDefinition(control, out var darkControlDefinition))
-		{
-		    // Get a Dark Mode DarkControlDefinition if one exists. 
-			if (TryGetDarkControlDefinition(control.GetType(), out darkControlDefinition))
-				darkControlDefinition = darkControlDefinition.SetColor(control);
-			// Fall back to default DarkControlDefinition
-			else
-				darkControlDefinition = new DarkControlDefinition(control);
-		}
+        // Get a custom ThemeDefinition if one exists. 
+        if (!TryGetDarkCustomControlDefinition(control, out var darkControlDefinition))
+        {
+            // Get a Dark Mode DarkControlDefinition if one exists. 
+            if (TryGetDarkControlDefinition(control.GetType(), out darkControlDefinition))
+                darkControlDefinition = darkControlDefinition.SetColor(control);
+            // Fall back to default DarkControlDefinition
+            else
+                darkControlDefinition = new DarkControlDefinition(control);
+        }
 
-		SetDarkMode(control, darkControlDefinition!);
+        SetDarkMode(control, darkControlDefinition!);
     }
 
     /// <summary>
@@ -74,23 +75,23 @@ internal class DarkThemeHandler : IThemeHandler
     /// <param name="control">Control to set Dark Mode for</param>
     /// <param name="dark">Definition of how to set Dark Mode for <paramref name="control"/></param>
     private void SetDarkMode(Control control, DarkControlDefinition dark)
-	{
-		TrySetValue(dark.BorderStyle, b => control.GetType().GetProperty("BorderStyle")?.SetValue(control, b));
-		TrySetValue(dark.ForeColor, c => control.ForeColor = c);
-		TrySetValue(dark.BackColor, c => control.BackColor = c);
+    {
+        TrySetValue(dark.BorderStyle, b => control.GetType().GetProperty("BorderStyle")?.SetValue(control, b));
+        TrySetValue(dark.ForeColor, c => control.ForeColor = c);
+        TrySetValue(dark.BackColor, c => control.BackColor = c);
 
-		// Invoke custom Theme handler method if required. This is often due to branching property-value logic, or custom Draw/Paint EventHandlers
-		dark.Theme?.Invoke(control);
+        // Invoke custom Theme handler method if required. This is often due to branching property-value logic, or custom Draw/Paint EventHandlers
+        dark.Theme?.Invoke(control);
 
-		// Apply UXTheme
-		control.WhenHandleCreated(dark.UXTheme);
-	}
+        // Apply UXTheme
+        control.WhenHandleCreated(dark.UXTheme);
+    }
 
     #region Helpers
     private void TrySetValue<T>(T? value, Action<T> action) where T : struct
         => SafeSet(() => action(value.Value), value is not null);
 
-	private void TrySetValue<T>(T value, Action<T> action) where T : class
+    private void TrySetValue<T>(T value, Action<T> action) where T : class
         => SafeSet(() => action(value), value is not null);
 
     private static void SafeSet(Action action) { try { action(); } catch { } }

@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace cYo.Projects.ComicRack.Engine
 {
-	public class ComicBookMainCharacterOrTeamComparer : Comparer<ComicBook>
-	{
-		public override int Compare(ComicBook x, ComicBook y)
-		{
-			return string.Compare(x.MainCharacterOrTeam, y.MainCharacterOrTeam, ignoreCase: true);
-		}
-	}
+    public class ComicBookMainCharacterOrTeamComparer : Comparer<ComicBook>
+    {
+        public override int Compare(ComicBook x, ComicBook y)
+        {
+            return string.Compare(x.MainCharacterOrTeam, y.MainCharacterOrTeam, ignoreCase: true);
+        }
+    }
 }

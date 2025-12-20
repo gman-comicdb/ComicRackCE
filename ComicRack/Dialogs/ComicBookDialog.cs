@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -98,31 +99,31 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             }
         }
 
-		public static Size SafeSize { get; set; }
+        public static Size SafeSize { get; set; }
 
 
-		protected override void OnResizeEnd(EventArgs e)
-		{
-			base.OnResizeEnd(e);
-			UpdateSafeSize();
-		}
+        protected override void OnResizeEnd(EventArgs e)
+        {
+            base.OnResizeEnd(e);
+            UpdateSafeSize();
+        }
 
-		private void SetSize()
-		{
-			Size = !SafeSize.IsEmpty ? SafeSize : MinimumSize;
-			this.CenterToParent();
-		}
+        private void SetSize()
+        {
+            Size = !SafeSize.IsEmpty ? SafeSize : MinimumSize;
+            this.CenterToParent();
+        }
 
-		private void UpdateSafeSize()
-		{
-			if (base.IsHandleCreated && SafeSize != null)
-			{
-				SafeSize = base.Size != base.MinimumSize ? base.Size : Size.Empty;
-			}
-		}
+        private void UpdateSafeSize()
+        {
+            if (base.IsHandleCreated && SafeSize != null)
+            {
+                SafeSize = base.Size != base.MinimumSize ? base.Size : Size.Empty;
+            }
+        }
 
 
-		private ComicBookDialog(ComicBook current, ComicBook[] allBooks)
+        private ComicBookDialog(ComicBook current, ComicBook[] allBooks)
         {
             LocalizeUtility.UpdateRightToLeft(this);
             InitializeComponent();
@@ -143,7 +144,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
                 pagesView.ViewConfig = PagesConfig;
             }
             new ComboBoxSkinner(cbImprint, ComicBook.PublisherIcons) { MaxHeightScale = 2 };
-            new ComboBoxSkinner(cbPublisher, ComicBook.PublisherIcons) { MaxHeightScale = 2};
+            new ComboBoxSkinner(cbPublisher, ComicBook.PublisherIcons) { MaxHeightScale = 2 };
             new ComboBoxSkinner(cbFormat, ComicBook.FormatIcons) { MaxHeightScale = 2 };
             new ComboBoxSkinner(cbAgeRating, ComicBook.AgeRatingIcons) { MaxHeightScale = 2 };
             new ComboBoxSkinner(cbBookPrice);
@@ -189,7 +190,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             EditControlUtility.SetText(txCoverArtist, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.CoverArtist));
             EditControlUtility.SetText(txEditor, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Editor));
             EditControlUtility.SetText(txTranslator, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Translator));
-			EditControlUtility.SetText(txCharacters, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Characters));
+            EditControlUtility.SetText(txCharacters, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Characters));
             EditControlUtility.SetText(txTeams, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Teams));
             EditControlUtility.SetText(txMainCharacterOrTeam, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.MainCharacterOrTeam));
             EditControlUtility.SetText(txLocations, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Locations));
@@ -207,22 +208,22 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             EditControlUtility.SetText(txCollectionStatus, null, Program.Lists.GetBookCollectionStatusList);
             coverThumbnail.ThreeD = Program.Settings.InformationCover3D;
             InitializeScriptButton();
-            this.ForEachControl(delegate(TextBox tb)
+            this.ForEachControl(delegate (TextBox tb)
             {
                 tb.Enter += delegate
                 {
                     currentTextBox = tb;
                 };
             });
-			this.ForEachControl(delegate(ComboBox tb)
+            this.ForEachControl(delegate (ComboBox tb)
             {
                 tb.Enter += delegate
                 {
                     currentTextBox = tb;
                 };
             });
-			AnchorStyles anchorStyles = AnchorStyles.Top | AnchorStyles.Right;
-			SpinButton.AddUpDown(txVolume, anchorStyles: anchorStyles);
+            AnchorStyles anchorStyles = AnchorStyles.Top | AnchorStyles.Right;
+            SpinButton.AddUpDown(txVolume, anchorStyles: anchorStyles);
             SpinButton.AddUpDown(txCount, 1, 0, anchorStyles: anchorStyles);
             SpinButton.AddUpDown(txNumber, anchorStyles: anchorStyles);
             SpinButton.AddUpDown(txYear, DateTime.Now.Year, anchorStyles: anchorStyles);
@@ -366,7 +367,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             EditControlUtility.SetText(txCoverArtist, comic.CoverArtist);
             EditControlUtility.SetText(txEditor, comic.Editor);
             EditControlUtility.SetText(txTranslator, comic.Translator);
-			EditControlUtility.SetText(cbFormat, comic.Format);
+            EditControlUtility.SetText(cbFormat, comic.Format);
             EditControlUtility.SetText(cbAgeRating, comic.AgeRating);
             EditControlUtility.SetText(cbPublisher, comic.Publisher);
             EditControlUtility.SetText(cbImprint, comic.Imprint);
@@ -474,7 +475,7 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
             comic.CoverArtist = EditControlUtility.GetText(txCoverArtist, comic.CoverArtist);
             comic.Editor = EditControlUtility.GetText(txEditor, comic.Editor);
             comic.Translator = EditControlUtility.GetText(txTranslator, comic.Translator);
-			comic.Colorist = EditControlUtility.GetText(txColorist, comic.Colorist);
+            comic.Colorist = EditControlUtility.GetText(txColorist, comic.Colorist);
             comic.Genre = EditControlUtility.GetText(txGenre, comic.Genre);
             comic.Characters = EditControlUtility.GetText(txCharacters, comic.Characters);
             comic.Teams = EditControlUtility.GetText(txTeams, comic.Teams);
@@ -785,8 +786,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
         {
             SaveBook();
             SetCurrentBook(current);
-			Program.Settings.CurrentWorkspace.ComicBookDialogOutputSize = SafeSize;
-		}
+            Program.Settings.CurrentWorkspace.ComicBookDialogOutputSize = SafeSize;
+        }
 
         private void btPrev_Click(object sender, EventArgs e)
         {
@@ -805,8 +806,8 @@ namespace cYo.Projects.ComicRack.Viewer.Dialogs
         private void btOK_Click(object sender, EventArgs e)
         {
             SaveBook();
-			Program.Settings.CurrentWorkspace.ComicBookDialogOutputSize = SafeSize;
-		}
+            Program.Settings.CurrentWorkspace.ComicBookDialogOutputSize = SafeSize;
+        }
 
         private void ColorAdjustment_Scroll(object sender, EventArgs e)
         {

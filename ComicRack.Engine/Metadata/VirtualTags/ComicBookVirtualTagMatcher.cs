@@ -11,54 +11,54 @@ namespace cYo.Projects.ComicRack.Engine
 {
     public abstract class ComicBookVirtualTagMatcher : ComicBookStringMatcher
     {
-		public string VirtualDescription => GetType().Description() ?? string.Empty;
+        public string VirtualDescription => GetType().Description() ?? string.Empty;
 
-		private IVirtualTag GetVirtualTag()
-		{
-			var matcherHintAttribute = GetAttribute();
-			IVirtualTag vtag = VirtualTagsCollection.Tags.Values.FirstOrDefault(x => x.IsEnabled && x.PropertyName == matcherHintAttribute?.Properties.First());
-			return vtag;
-		}
+        private IVirtualTag GetVirtualTag()
+        {
+            var matcherHintAttribute = GetAttribute();
+            IVirtualTag vtag = VirtualTagsCollection.Tags.Values.FirstOrDefault(x => x.IsEnabled && x.PropertyName == matcherHintAttribute?.Properties.First());
+            return vtag;
+        }
 
-		public ComicBookMatcherHintAttribute GetAttribute()
+        public ComicBookMatcherHintAttribute GetAttribute()
         {
             return GetAttribute(GetType());
-		}
+        }
 
-		public static ComicBookMatcherHintAttribute GetAttribute(Type type)
-		{
-			return Attribute.GetCustomAttribute(type, typeof(ComicBookMatcherHintAttribute)) as ComicBookMatcherHintAttribute;
-		}
+        public static ComicBookMatcherHintAttribute GetAttribute(Type type)
+        {
+            return Attribute.GetCustomAttribute(type, typeof(ComicBookMatcherHintAttribute)) as ComicBookMatcherHintAttribute;
+        }
 
-		public static Type GetMatcher(IVirtualTag tag)
-		{
+        public static Type GetMatcher(IVirtualTag tag)
+        {
             if (tag is null || string.IsNullOrEmpty(tag.PropertyName))
                 return default;
 
-            return GetAvailableMatcherTypes().FirstOrDefault(x => typeof(ComicBookVirtualTagMatcher).IsAssignableFrom(x) 
+            return GetAvailableMatcherTypes().FirstOrDefault(x => typeof(ComicBookVirtualTagMatcher).IsAssignableFrom(x)
                 && GetAttribute(x).Properties.FirstOrDefault() == tag.PropertyName);
-		}
+        }
 
-		/// <summary>
-		/// Finds the IVirtualTag based on the Hint Attribute & the corresponding IVirtualTag.
-		/// Returns an alternate string for the Description used in SmartLists
-		/// </summary>
-		public override string DescriptionNeutral
-		{
-			get
-			{
-				if (descriptionNeutral == null)
-				{
-					IVirtualTag vtag = GetVirtualTag();
-					descriptionNeutral = vtag?.Name ?? string.Empty;
-				}
-				return descriptionNeutral;
-			}
-		}
-		private string descriptionNeutral;
-	}
+        /// <summary>
+        /// Finds the IVirtualTag based on the Hint Attribute & the corresponding IVirtualTag.
+        /// Returns an alternate string for the Description used in SmartLists
+        /// </summary>
+        public override string DescriptionNeutral
+        {
+            get
+            {
+                if (descriptionNeutral == null)
+                {
+                    IVirtualTag vtag = GetVirtualTag();
+                    descriptionNeutral = vtag?.Name ?? string.Empty;
+                }
+                return descriptionNeutral;
+            }
+        }
+        private string descriptionNeutral;
+    }
 
-	[Serializable]
+    [Serializable]
     [Description("Virtual Tags #01")]
     [ComicBookMatcherHint("VirtualTag01", DisableOptimizedUpdate = true)]
     public class ComicBookVirtualTag1Matcher : ComicBookVirtualTagMatcher

@@ -2,16 +2,16 @@ using System;
 
 namespace cYo.Projects.ComicRack.Viewer.Views
 {
-	public interface ILibraryBrowser
-	{
-		bool SelectList(Guid listId);
+    public interface ILibraryBrowser
+    {
+        bool SelectList(Guid listId);
 
-		bool CanBrowsePrevious();
+        bool CanBrowsePrevious();
 
-		bool CanBrowseNext();
+        bool CanBrowseNext();
 
-		void BrowsePrevious();
+        void BrowsePrevious();
 
-		void BrowseNext();
-	}
+        void BrowseNext();
+    }
 }

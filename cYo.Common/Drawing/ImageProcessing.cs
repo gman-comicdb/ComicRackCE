@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
+
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Localize;
@@ -72,7 +73,7 @@ namespace cYo.Common.Drawing
                 {
                     if (num == 3)
                     {
-                        Parallel.For(0, height, delegate(int y)
+                        Parallel.For(0, height, delegate (int y)
                         {
                             byte* ptr7 = p + y * strideSource + i * pixelWidthSource;
                             byte* ptr8 = (byte*)(void*)scanTarget + y * strideTarget;
@@ -86,7 +87,7 @@ namespace cYo.Common.Drawing
                     }
                     else
                     {
-                        Parallel.For(0, height, delegate(int y)
+                        Parallel.For(0, height, delegate (int y)
                         {
                             byte* ptr5 = p + y * strideSource + i * pixelWidthSource;
                             byte* ptr6 = (byte*)(void*)scanTarget + y * strideTarget;
@@ -102,7 +103,7 @@ namespace cYo.Common.Drawing
                 }
                 else if (num == 3)
                 {
-                    Parallel.For(0, height, delegate(int y)
+                    Parallel.For(0, height, delegate (int y)
                     {
                         byte* ptr3 = p + y * strideSource + i * pixelWidthSource;
                         byte* ptr4 = (byte*)(void*)scanTarget + y * strideTarget;
@@ -117,7 +118,7 @@ namespace cYo.Common.Drawing
                 }
                 else
                 {
-                    Parallel.For(0, height, delegate(int y)
+                    Parallel.For(0, height, delegate (int y)
                     {
                         int* ptr = (int*)(p + y * strideSource + i * pixelWidthSource);
                         int* ptr2 = (int*)((byte*)(void*)scanTarget + y * strideTarget);
@@ -294,7 +295,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     for (byte* ptr2 = ptr + clipScanLen; ptr < ptr2; ptr += pixelWidth)
@@ -339,7 +340,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     for (byte* ptr2 = ptr + clipScanLen; ptr < ptr2; ptr += pixelWidth)
@@ -387,7 +388,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     for (byte* ptr2 = ptr + clipScanLen; ptr < ptr2; ptr += pixelWidth)
@@ -438,7 +439,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     for (byte* ptr2 = ptr + clipScanLen; ptr < ptr2; ptr += pixelWidth)
@@ -496,7 +497,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     for (byte* ptr2 = ptr + clipScanLen; ptr < ptr2; ptr += pixelWidth)
@@ -551,7 +552,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     byte* ptr2 = ptr + clipScanLen;
@@ -637,7 +638,7 @@ namespace cYo.Common.Drawing
                 int stride = bitmapData.Stride;
                 byte* pbase = (byte*)(void*)bitmapData.Scan0 + clipRectangle.Top * stride + clipRectangle.Left * pixelWidth;
                 int clipScanLen = clipRectangle.Width * pixelWidth;
-                Parallel.For(0, clipRectangle.Height, delegate(int h)
+                Parallel.For(0, clipRectangle.Height, delegate (int h)
                 {
                     byte* ptr = pbase + stride * h;
                     byte* ptr2 = ptr + clipScanLen;
@@ -727,7 +728,7 @@ namespace cYo.Common.Drawing
                     int mbr = m.BottomRight;
                     byte* porg = (byte*)(void*)scan + clipRectangle.Top * targetStride + clipRectangle.Left * pixelWidth;
                     byte* pSrcOrg = (byte*)(void*)scan2;
-                    Parallel.For(0, toExclusive, delegate(int h)
+                    Parallel.For(0, toExclusive, delegate (int h)
                     {
                         byte* ptr = porg + h * targetStride;
                         byte* ptr2 = pSrcOrg + h * sourceStride;
@@ -1091,8 +1092,8 @@ namespace cYo.Common.Drawing
                                     {
                                         byte* intPtr = dst + i;
                                         *intPtr = (byte)(*intPtr + (byte)array[i]);
-                                }
-                                dst += dstPixelSize;
+                                    }
+                                    dst += dstPixelSize;
                                 }
                             });
                             break;

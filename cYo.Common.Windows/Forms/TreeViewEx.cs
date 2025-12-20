@@ -1,5 +1,6 @@
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -141,15 +142,15 @@ namespace cYo.Common.Windows.Forms
         // REVIEW : Why is this required? TreeView base class ForeColor/BackColor is calling the native method anyway. Might be related to before/after handle creation
         public static void SetColor(TreeView treeView, Color? backColor = null, Color? foreColor = null)
         {
-           Native.SetBackColor(treeView.Handle, backColor ?? treeView.BackColor);
-           Native.SetForeColor(treeView.Handle, foreColor ?? treeView.ForeColor);
+            Native.SetBackColor(treeView.Handle, backColor ?? treeView.BackColor);
+            Native.SetForeColor(treeView.Handle, foreColor ?? treeView.ForeColor);
         }
 
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
             EnableDoubleBuffer(this);
-            this.SetTreeViewColor();;
+            this.SetTreeViewColor(); ;
         }
 
         private void scrollTimer_Tick(object sender, EventArgs e)

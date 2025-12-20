@@ -1,6 +1,6 @@
 namespace cYo.Projects.ComicRack.Engine
 {
-	public class ComicBookYearComparer : ComicBookPublishedComparer
-	{
-	}
+    public class ComicBookYearComparer : ComicBookPublishedComparer
+    {
+    }
 }

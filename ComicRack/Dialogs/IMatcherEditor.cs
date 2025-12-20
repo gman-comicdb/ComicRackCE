@@ -1,23 +1,23 @@
 namespace cYo.Projects.ComicRack.Viewer.Dialogs
 {
-	public interface IMatcherEditor
-	{
-		void AddRule();
+    public interface IMatcherEditor
+    {
+        void AddRule();
 
-		void AddGroup();
+        void AddGroup();
 
-		void DeleteRuleOrGroup();
+        void DeleteRuleOrGroup();
 
-		void CopyClipboard();
+        void CopyClipboard();
 
-		void CutClipboard();
+        void CutClipboard();
 
-		void MoveDown();
+        void MoveDown();
 
-		void MoveUp();
+        void MoveUp();
 
-		void PasteClipboard();
+        void PasteClipboard();
 
-		void SetFocus();
-	}
+        void SetFocus();
+    }
 }

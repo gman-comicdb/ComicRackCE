@@ -283,7 +283,7 @@ internal static partial class DrawDarkListView
             Native.RECT rc = new Native.RECT { top = Native.LVGGR_HEADER }; // LVGGR_HEADER = 1
             if (Native.SendMessageGetGroupRect(listView.Handle, Native.LVM_GETGROUPRECT, (IntPtr)id, ref rc) != 0)
                 return Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.bottom);
-                //return Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.top + FormUtility.ScaleDpiY(24));
+            //return Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.top + FormUtility.ScaleDpiY(24));
 
             return Rectangle.Empty;
         }

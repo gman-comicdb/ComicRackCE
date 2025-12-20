@@ -2,16 +2,17 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+
 using cYo.Common.Windows.Forms;
 
 namespace cYo.Projects.ComicRack.Viewer
 {
-	public partial class ScriptOutputForm : FormEx
-	{
-		public ScriptOutputForm()
-		{
-			InitializeComponent();
-		}
+    public partial class ScriptOutputForm : FormEx
+    {
+        public ScriptOutputForm()
+        {
+            InitializeComponent();
+        }
 
         private Rectangle safeBounds;
 

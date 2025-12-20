@@ -1,4 +1,4 @@
 namespace cYo.Common.Runtime
 {
-	public delegate void BarkEventHandler(object sender, BarkEventArgs bea);
+    public delegate void BarkEventHandler(object sender, BarkEventArgs bea);
 }

@@ -9,16 +9,16 @@ using System.Windows.Forms;
 
 namespace cYo.Common.Win32.FileOperations
 {
-	internal class NetFramework : FileOperation
-	{
-		public NetFramework() : base(ShellFileDeleteOptions.None)
-		{
-		}
+    internal class NetFramework : FileOperation
+    {
+        public NetFramework() : base(ShellFileDeleteOptions.None)
+        {
+        }
 
-		public override void DeleteFile(string file)
-		{
-			VerifyFile(file);
-			File.Delete(file);
-		}
-	}
+        public override void DeleteFile(string file)
+        {
+            VerifyFile(file);
+            File.Delete(file);
+        }
+    }
 }

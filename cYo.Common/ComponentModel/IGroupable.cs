@@ -2,15 +2,15 @@ using System.Collections.Generic;
 
 namespace cYo.Common.ComponentModel
 {
-	public interface IGroupable
-	{
-		bool IsMultiGroup
-		{
-			get;
-		}
+    public interface IGroupable
+    {
+        bool IsMultiGroup
+        {
+            get;
+        }
 
-		IGroupInfo GetGroup();
+        IGroupInfo GetGroup();
 
-		IEnumerable<IGroupInfo> GetGroups();
-	}
+        IEnumerable<IGroupInfo> GetGroups();
+    }
 }

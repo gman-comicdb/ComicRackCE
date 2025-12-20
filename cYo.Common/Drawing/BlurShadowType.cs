@@ -1,8 +1,8 @@
 namespace cYo.Common.Drawing
 {
-	public enum BlurShadowType
-	{
-		Inside,
-		Outside
-	}
+    public enum BlurShadowType
+    {
+        Inside,
+        Outside
+    }
 }

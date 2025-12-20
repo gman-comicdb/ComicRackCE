@@ -3,31 +3,31 @@ using System.Drawing;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider
 {
-	public interface IImageProvider : IDisposable
-	{
-		bool IsSlow
-		{
-			get;
-		}
+    public interface IImageProvider : IDisposable
+    {
+        bool IsSlow
+        {
+            get;
+        }
 
-		string Source
-		{
-			get;
-		}
+        string Source
+        {
+            get;
+        }
 
-		int Count
-		{
-			get;
-		}
+        int Count
+        {
+            get;
+        }
 
-		Bitmap GetImage(int index);
+        Bitmap GetImage(int index);
 
-		byte[] GetByteImage(int index);
+        byte[] GetByteImage(int index);
 
         ExportImageContainer GetByteImageForExport(int index);
 
         ProviderImageInfo GetImageInfo(int index);
 
-		ThumbnailImage GetThumbnail(int index);
+        ThumbnailImage GetThumbnail(int index);
     }
 }

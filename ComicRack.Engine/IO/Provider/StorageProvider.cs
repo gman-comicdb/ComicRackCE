@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+
 using cYo.Common.Drawing;
 using cYo.Common.IO;
 using cYo.Common.Localize;
@@ -47,8 +48,8 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
                 array = WebpImage.ConvertToJpeg(data);
                 array = DjVuImage.ConvertToJpeg(data);
                 array = HeifAvifImage.ConvertToJpeg(data);
-				array = Jpeg2000Image.ConvertToJpeg(data);
-				return BitmapExtensions.BitmapFromBytes(array);
+                array = Jpeg2000Image.ConvertToJpeg(data);
+                return BitmapExtensions.BitmapFromBytes(array);
             }
 
             public byte[] GetThumbnailData(StorageSetting setting)
@@ -206,33 +207,33 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
             StoragePageType storagePageType = (setting.PageType != StoragePageType.Original) ? setting.PageType : GetStoragePageTypeFromExtension(ext);
             if (!string.IsNullOrEmpty(ext) && setting.PageResize == StoragePageResize.Original && (setting.PageType == StoragePageType.Original || setting.PageType == GetStoragePageTypeFromExtension(ext)) && cpi.Rotation == ImageRotation.None && setting.DoublePages == DoublePageHandling.Keep && setting.ImageProcessing.IsEmpty)
             {
-				if (forExport)
-				{
-					ExportImageContainer data = provider.GetByteImageForExport(cpi.ImageIndex);
-					array = (data.NeedsToConvert) ? ConvertImage(storagePageType, data.Bitmap, setting) : data.Data;
+                if (forExport)
+                {
+                    ExportImageContainer data = provider.GetByteImageForExport(cpi.ImageIndex);
+                    array = (data.NeedsToConvert) ? ConvertImage(storagePageType, data.Bitmap, setting) : data.Data;
                 }
                 else
                 {
-					array = provider.GetByteImage(cpi.ImageIndex);
-				}
+                    array = provider.GetByteImage(cpi.ImageIndex);
+                }
 
-				if (setting.PageType == StoragePageType.Jpeg)
-				{
-					using (MemoryStream s = new MemoryStream(array))
-					{
-						if (!JpegFile.GetImageSize(s, out var size))
-						{
-							array = null;
-						}
-						else
-						{
-							cpi.ImageWidth = size.Width;
-							cpi.ImageHeight = size.Height;
-						}
-					}
-				}
+                if (setting.PageType == StoragePageType.Jpeg)
+                {
+                    using (MemoryStream s = new MemoryStream(array))
+                    {
+                        if (!JpegFile.GetImageSize(s, out var size))
+                        {
+                            array = null;
+                        }
+                        else
+                        {
+                            cpi.ImageWidth = size.Width;
+                            cpi.ImageHeight = size.Height;
+                        }
+                    }
+                }
 
-				if (array != null && array.Length != 0)
+                if (array != null && array.Length != 0)
                 {
                     return new PageResult[1]
                     {
@@ -289,8 +290,8 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
                     {
                         Bitmap bitmap4 = array2[i];
                         bool isDoublePage = bitmap4.Width > bitmap4.Height;
-						int width = (setting.DontEnlarge ? Math.Min(bitmap4.Width, setting.PageWidth) : setting.PageWidth); //This is the width of a single page
-						int height = (setting.DontEnlarge ? Math.Min(bitmap4.Height, setting.PageHeight) : setting.PageHeight);
+                        int width = (setting.DontEnlarge ? Math.Min(bitmap4.Width, setting.PageWidth) : setting.PageWidth); //This is the width of a single page
+                        int height = (setting.DontEnlarge ? Math.Min(bitmap4.Height, setting.PageHeight) : setting.PageHeight);
                         switch (setting.PageResize)
                         {
                             case StoragePageResize.WidthHeight:
@@ -300,9 +301,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
                                 if (setting.DoublePages == DoublePageHandling.AdaptWidth && isDoublePage)
                                 {
                                     int doublePageWidth = width *= 2;
-									//Recalculate the width for a double page so it respects dont't enlarge
-									width = setting.DontEnlarge ? Math.Min(bitmap4.Width, doublePageWidth) : doublePageWidth; 
-								}
+                                    //Recalculate the width for a double page so it respects dont't enlarge
+                                    width = setting.DontEnlarge ? Math.Min(bitmap4.Width, doublePageWidth) : doublePageWidth;
+                                }
                                 bitmap3 = bitmap4.Scale(new Size(width, 0), setting.Resampling, PixelFormat.Format24bppRgb);
                                 break;
                             case StoragePageResize.Height:
@@ -373,9 +374,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider
             ".webp" => StoragePageType.Webp,
             ".heif" or ".heic" => StoragePageType.Heif,
             ".avif" => StoragePageType.Avif,
-			//".jp2" or ".j2k" => StoragePageType.Jpeg2000,
-			//".jxl" => StoragePageType.JpegXL,
-			_ => StoragePageType.Jpeg,
+            //".jp2" or ".j2k" => StoragePageType.Jpeg2000,
+            //".jxl" => StoragePageType.JpegXL,
+            _ => StoragePageType.Jpeg,
         };
 
         private static string GetExtensionFromStoragePageType(StoragePageType storagePageType) => storagePageType switch

@@ -1,13 +1,13 @@
 namespace cYo.Projects.ComicRack.Engine
 {
-	public interface IEditRating
-	{
-		bool IsValid();
+    public interface IEditRating
+    {
+        bool IsValid();
 
-		void SetRating(float rating);
+        void SetRating(float rating);
 
-		float GetRating();
+        float GetRating();
 
-		bool QuickRatingAndReview();
-	}
+        bool QuickRatingAndReview();
+    }
 }

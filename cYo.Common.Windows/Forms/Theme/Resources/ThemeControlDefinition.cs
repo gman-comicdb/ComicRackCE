@@ -1,4 +1,5 @@
 ﻿using cYo.Common.Drawing.ExtendedColors;
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,7 +12,7 @@ namespace cYo.Common.Windows.Forms.Theme.Resources;
 public class ThemeControlDefinition
 {
     public bool AllowUXTheme { get; set; } = true;
-	public Color? ForeColor { get; set; }
+    public Color? ForeColor { get; set; }
     public Color? BackColor { get; set; }
     public BorderStyle? BorderStyle { get; set; }
     public Action<Control> Theme { get; set; }

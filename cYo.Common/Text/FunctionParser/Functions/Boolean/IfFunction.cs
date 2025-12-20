@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+
 using DynamicExpresso;
 
 namespace cYo.Common.Text.FunctionParser.Functions.Boolean
@@ -14,7 +15,7 @@ namespace cYo.Common.Text.FunctionParser.Functions.Boolean
         {
             //if condition doesn't resolve to a true or false, return an empty string
             if (param.BoolEval is null)
-                return string.Empty; 
+                return string.Empty;
 
             return param.BoolEval == true ? param.ifTrue : param.ifFalse;
         };

@@ -1,6 +1,7 @@
 ﻿using cYo.Common.Collections;
 using cYo.Common.Reflection;
 using cYo.Common.Text.FunctionParser.Functions;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,7 +35,7 @@ namespace cYo.Common.Text.FunctionParser
                 Debug.WriteLine($"Category: {f.Key}");
                 f.Value.ForEach(x => Debug.WriteLine($"    {x.Value}"));
             });
-        } 
+        }
 
 
         public IFunction CreateFunction(string name)
@@ -118,7 +119,7 @@ namespace cYo.Common.Text.FunctionParser
                 ret = FindReturnType(type.BaseType);
 
             return ret;
-        } 
+        }
         #endregion
     }
 }

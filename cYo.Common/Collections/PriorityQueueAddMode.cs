@@ -1,8 +1,8 @@
 namespace cYo.Common.Collections
 {
-	public enum PriorityQueueAddMode
-	{
-		AddToBottom,
-		AddToTop
-	}
+    public enum PriorityQueueAddMode
+    {
+        AddToBottom,
+        AddToTop
+    }
 }
