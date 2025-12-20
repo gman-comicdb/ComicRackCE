@@ -107,10 +107,7 @@ public partial class ServerEditControl : UserControlEx
 
     private void txSharedName_TextChanged(object sender, EventArgs e)
     {
-        if (this.ShareNameChanged != null)
-        {
-            this.ShareNameChanged(this, e);
-        }
+        this.ShareNameChanged?.Invoke(this, e);
     }
 
     private void tbPageQuality_ValueChanged(object sender, EventArgs e)

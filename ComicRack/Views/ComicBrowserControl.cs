@@ -3043,10 +3043,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         bookSelectorPanel.ClearNot();
         bookListDirty = true;
-        if (this.CurrentBookListChanged != null)
-        {
-            this.CurrentBookListChanged(this, EventArgs.Empty);
-        }
+        this.CurrentBookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnQuickSearchChanged()
@@ -3059,10 +3056,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         {
             quickSearchTimer.Stop();
             quickSearchTimer.Start();
-            if (this.QuickSearchChanged != null)
-            {
-                this.QuickSearchChanged(this, EventArgs.Empty);
-            }
+            this.QuickSearchChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -3079,10 +3073,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             searchBrowserContainer.Expanded = SearchBrowserVisible;
         }
         FillBookList();
-        if (this.SearchBrowserVisibleChanged != null)
-        {
-            this.SearchBrowserVisibleChanged(this, EventArgs.Empty);
-        }
+        this.SearchBrowserVisibleChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void toolTip_Popup(object sender, PopupEventArgs e)

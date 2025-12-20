@@ -68,10 +68,7 @@ public partial class DeviceEditControl : UserControlEx
             if (!(deviceName == value))
             {
                 deviceName = value;
-                if (this.DeviceNameChanged != null)
-                {
-                    this.DeviceNameChanged(this, EventArgs.Empty);
-                }
+                this.DeviceNameChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }

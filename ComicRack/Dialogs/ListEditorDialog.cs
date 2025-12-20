@@ -151,34 +151,22 @@ public partial class ListEditorDialog : FormEx
 
     protected virtual void OnNew()
     {
-        if (newAction != null)
-        {
-            newAction();
-        }
+        newAction?.Invoke();
     }
 
     protected virtual void OnEdit()
     {
-        if (editAction != null)
-        {
-            editAction();
-        }
+        editAction?.Invoke();
     }
 
     protected virtual void OnActivate()
     {
-        if (activateAction != null)
-        {
-            activateAction();
-        }
+        activateAction?.Invoke();
     }
 
     protected virtual void OnSetAll()
     {
-        if (setAllAction != null)
-        {
-            setAllAction();
-        }
+        setAllAction?.Invoke();
     }
 
     public static IList<T> Show<T>(IWin32Window parent, string caption, IList<T> items, Func<T> newAction = null, Func<T, bool> editAction = null, Action<T> activateAction = null, Action<T> setAllAction = null) where T : class

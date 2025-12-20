@@ -91,10 +91,7 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 
     protected virtual void OnCloseClicked()
     {
-        if (this.CloseClicked != null)
-        {
-            this.CloseClicked(this, EventArgs.Empty);
-        }
+        this.CloseClicked?.Invoke(this, EventArgs.Empty);
     }
 
     public void ShowPreview(ComicBook comicBook)

@@ -128,26 +128,17 @@ public partial class QuickOpenView : CaptionControl
 
     protected virtual void OnItemActivate()
     {
-        if (this.BookActivated != null)
-        {
-            this.BookActivated(this, EventArgs.Empty);
-        }
+        this.BookActivated?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnShowBrowser()
     {
-        if (this.ShowBrowser != null)
-        {
-            this.ShowBrowser(this, EventArgs.Empty);
-        }
+        this.ShowBrowser?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnOpenFile()
     {
-        if (this.OpenFile != null)
-        {
-            this.OpenFile(this, EventArgs.Empty);
-        }
+        this.OpenFile?.Invoke(this, EventArgs.Empty);
     }
 
     private void itemView_SelectedIndexChanged(object sender, EventArgs e)

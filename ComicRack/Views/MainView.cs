@@ -507,26 +507,17 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     protected virtual void OnTabChanged()
     {
-        if (this.TabChanged != null)
-        {
-            this.TabChanged(this, EventArgs.Empty);
-        }
+        this.TabChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnViewAdded()
     {
-        if (this.ViewAdded != null)
-        {
-            this.ViewAdded(this, EventArgs.Empty);
-        }
+        this.ViewAdded?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnViewRemoved()
     {
-        if (this.ViewRemoved != null)
-        {
-            this.ViewRemoved(this, EventArgs.Empty);
-        }
+        this.ViewRemoved?.Invoke(this, EventArgs.Empty);
     }
 
     public void SwitchDocking()

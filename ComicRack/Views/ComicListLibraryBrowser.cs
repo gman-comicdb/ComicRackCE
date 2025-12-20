@@ -262,10 +262,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
     protected virtual void OnLibraryChanged()
     {
         FillListTree();
-        if (this.LibraryChanged != null)
-        {
-            this.LibraryChanged(this, EventArgs.Empty);
-        }
+        this.LibraryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void OnLoad(EventArgs e)

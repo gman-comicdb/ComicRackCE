@@ -175,10 +175,7 @@ public partial class ListLayoutDialog : FormEx
     private void btApply_Click(object sender, EventArgs e)
     {
         Apply();
-        if (apply != null)
-        {
-            apply(DisplayListConfig);
-        }
+        apply?.Invoke(DisplayListConfig);
     }
 
     private static int GetCaptionId(ComboBox cb)

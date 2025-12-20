@@ -334,34 +334,22 @@ public class NavigatorManager : IOpenBooksManager
 
     protected virtual void OnBookOpened(BookEventArgs e)
     {
-        if (this.BookOpened != null)
-        {
-            this.BookOpened(this, e);
-        }
+        this.BookOpened?.Invoke(this, e);
     }
 
     protected virtual void OnBookClosed(BookEventArgs e)
     {
-        if (this.BookClosed != null)
-        {
-            this.BookClosed(this, e);
-        }
+        this.BookClosed?.Invoke(this, e);
     }
 
     protected virtual void OnBookClosing(BookEventArgs e)
     {
-        if (this.BookClosing != null)
-        {
-            this.BookClosing(this, e);
-        }
+        this.BookClosing?.Invoke(this, e);
     }
 
     protected virtual void OnOpenComicsChanged()
     {
-        if (this.OpenComicsChanged != null)
-        {
-            this.OpenComicsChanged(this, EventArgs.Empty);
-        }
+        this.OpenComicsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnCurrentSlotChanged()

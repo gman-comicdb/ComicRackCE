@@ -69,10 +69,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     protected virtual void OnBookListChanged()
     {
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        this.BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void bookList_ServiceRequest(object sender, ServiceRequestEventArgs e)
@@ -92,10 +89,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     protected virtual void OnRefreshDisplay()
     {
-        if (this.RefreshLists != null)
-        {
-            this.RefreshLists(this, EventArgs.Empty);
-        }
+        this.RefreshLists?.Invoke(this, EventArgs.Empty);
     }
 
     public void OpenListInNewWindow()

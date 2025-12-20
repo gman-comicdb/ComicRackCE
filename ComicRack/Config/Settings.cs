@@ -2258,10 +2258,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     private void FireEvent(EventHandler eh)
     {
         eh?.Invoke(this, EventArgs.Empty);
-        if (this.SettingsChanged != null)
-        {
-            this.SettingsChanged(this, EventArgs.Empty);
-        }
+        this.SettingsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Fix()

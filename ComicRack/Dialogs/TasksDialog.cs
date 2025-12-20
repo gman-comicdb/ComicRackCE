@@ -266,10 +266,7 @@ public partial class TasksDialog : FormEx
     {
         foreach (QueueManager.IPendingTasks process in processes)
         {
-            if (process.Abort != null)
-            {
-                process.Abort();
-            }
+            process.Abort?.Invoke();
         }
     }
 

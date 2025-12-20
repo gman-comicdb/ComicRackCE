@@ -137,26 +137,17 @@ public partial class OpenWithDialog : FormEx
 
     protected virtual void OnNew()
     {
-        if (newAction != null)
-        {
-            newAction();
-        }
+        newAction?.Invoke();
     }
 
     protected virtual void OnEdit()
     {
-        if (editAction != null)
-        {
-            editAction();
-        }
+        editAction?.Invoke();
     }
 
     protected virtual void OnOverride()
     {
-        if (overrideAction != null)
-        {
-            overrideAction();
-        }
+        overrideAction?.Invoke();
     }
 
     public static IList<T> Show<T>(IWin32Window parent, string caption, IList<T> items, Func<T> newAction = null, Func<T, bool> editAction = null, Func<T, bool> overrideAction = null) where T : class

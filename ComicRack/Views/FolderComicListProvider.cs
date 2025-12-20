@@ -74,10 +74,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
     public void Refresh()
     {
         currentBooks = GetFolderBookList(Path);
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        this.BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected List<ComicBook> GetFolderBookList(string folder)
@@ -155,10 +152,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
         }
         if (!flag)
         {
-            if (this.BookListChanged != null)
-            {
-                this.BookListChanged(this, EventArgs.Empty);
-            }
+            this.BookListChanged?.Invoke(this, EventArgs.Empty);
         }
         else
         {

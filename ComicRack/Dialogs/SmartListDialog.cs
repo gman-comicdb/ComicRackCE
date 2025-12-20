@@ -311,42 +311,24 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     private void btApply_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        this.Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btOK_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        this.Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btPrev_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Previous != null)
-        {
-            this.Previous(this, EventArgs.Empty);
-        }
+        this.Apply?.Invoke(this, EventArgs.Empty);
+        this.Previous?.Invoke(this, EventArgs.Empty);
     }
 
     private void btNext_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Next != null)
-        {
-            this.Next(this, EventArgs.Empty);
-        }
+        this.Apply?.Invoke(this, EventArgs.Empty);
+        this.Next?.Invoke(this, EventArgs.Empty);
     }
 
     private void cbBaseList_SelectedIndexChanged(object sender, EventArgs e)
