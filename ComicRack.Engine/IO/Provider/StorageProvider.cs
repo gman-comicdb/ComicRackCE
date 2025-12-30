@@ -138,7 +138,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
         {
             if (string.Equals(provider.Source, target, StringComparison.OrdinalIgnoreCase))
             {
-                target = (tempFile = EngineConfiguration.Default.GetTempFileName());
+                target = tempFile = EngineConfiguration.Default.GetTempFileName();
             }
             ComicInfo result = OnStore(provider, info, target, setting);
             if (tempFile != null)
@@ -159,12 +159,12 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
 
     protected bool FireProgressEvent(int percent)
     {
-        if (this.Progress == null)
+        if (Progress == null)
         {
             return false;
         }
-        StorageProgressEventArgs storageProgressEventArgs = new StorageProgressEventArgs(percent);
-        this.Progress(this, storageProgressEventArgs);
+        StorageProgressEventArgs storageProgressEventArgs = new(percent);
+        Progress(this, storageProgressEventArgs);
         return storageProgressEventArgs.Cancel;
     }
 
@@ -176,24 +176,22 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
         {
             Bitmap bitmap = bmp.CreateCopy(new Rectangle(0, 0, bmp.Width / 2, bmp.Height));
             Bitmap bitmap2 = bmp.CreateCopy(new Rectangle(bmp.Width / 2, 0, bmp.Width / 2, bmp.Height));
-            if (reverseSplit)
-            {
-                return new Bitmap[2]
-                {
+            return reverseSplit
+                ? 
+                [
                     bitmap2,
                     bitmap
-                };
-            }
-            return new Bitmap[2]
-            {
+                ]
+                : 
+            [
                 bitmap,
                 bitmap2
-            };
+            ];
         }
-        return new Bitmap[1]
-        {
+        return
+        [
             bmp
-        };
+        ];
     }
 
     public static PageResult[] GetImages(IImageProvider provider, ComicPageInfo cpi, string ext, StorageSetting setting, bool reverseSplit, bool createThumbnail, bool forExport = false)
@@ -201,7 +199,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
         byte[] array = null;
         if (setting.RemovePages && cpi.IsTypeOf(setting.RemovePageFilter))
         {
-            return new PageResult[0];
+            return [];
         }
 
         StoragePageType storagePageType = (setting.PageType != StoragePageType.Original) ? setting.PageType : GetStoragePageTypeFromExtension(ext);
@@ -210,7 +208,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
             if (forExport)
             {
                 ExportImageContainer data = provider.GetByteImageForExport(cpi.ImageIndex);
-                array = (data.NeedsToConvert) ? ConvertImage(storagePageType, data.Bitmap, setting) : data.Data;
+                array = data.NeedsToConvert ? ConvertImage(storagePageType, data.Bitmap, setting) : data.Data;
             }
             else
             {
@@ -219,7 +217,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
 
             if (setting.PageType == StoragePageType.Jpeg)
             {
-                using (MemoryStream s = new MemoryStream(array))
+                using (MemoryStream s = new(array))
                 {
                     if (!JpegFile.GetImageSize(s, out var size))
                     {
@@ -235,31 +233,29 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
 
             if (array != null && array.Length != 0)
             {
-                return new PageResult[1]
-                {
-                    new PageResult(array, null, cpi, ext)
-                };
+                return
+                [
+                    new(array, null, cpi, ext)
+                ];
             }
         }
         Bitmap bitmap = provider.GetImage(cpi.ImageIndex);
         if (bitmap == null)
         {
-            if (setting.IgnoreErrorPages)
-            {
-                return new PageResult[0];
-            }
-            throw new InvalidOperationException(StringUtility.Format(TR.Messages["FailedToReadImage", "Failed to read Image {0}"], cpi.ImageIndex + 1));
+            return setting.IgnoreErrorPages
+                ? []
+                : throw new InvalidOperationException(StringUtility.Format(TR.Messages["FailedToReadImage", "Failed to read Image {0}"], cpi.ImageIndex + 1));
         }
         if (array != null && !string.IsNullOrEmpty(ext) && setting.PageResize == StoragePageResize.Original && (setting.PageType == StoragePageType.Original || setting.PageType == GetStoragePageTypeFromExtension(ext)) && cpi.Rotation == ImageRotation.None && (setting.DoublePages == DoublePageHandling.Keep || bitmap.Height <= bitmap.Width) && !setting.ImageProcessing.IsEmpty)
         {
             bitmap.Dispose();
-            return new PageResult[1]
-            {
-                new PageResult(array, null, cpi, ext)
-            };
+            return
+            [
+                new(array, null, cpi, ext)
+            ];
         }
-        List<PageResult> list = new List<PageResult>();
-        Bitmap[] array2 = new Bitmap[0];
+        List<PageResult> list = new();
+        Bitmap[] array2 = [];
         try
         {
             ImageRotation imageRotation = cpi.Rotation;
@@ -290,8 +286,8 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
                 {
                     Bitmap bitmap4 = array2[i];
                     bool isDoublePage = bitmap4.Width > bitmap4.Height;
-                    int width = (setting.DontEnlarge ? Math.Min(bitmap4.Width, setting.PageWidth) : setting.PageWidth); //This is the width of a single page
-                    int height = (setting.DontEnlarge ? Math.Min(bitmap4.Height, setting.PageHeight) : setting.PageHeight);
+                    int width = setting.DontEnlarge ? Math.Min(bitmap4.Width, setting.PageWidth) : setting.PageWidth; //This is the width of a single page
+                    int height = setting.DontEnlarge ? Math.Min(bitmap4.Height, setting.PageHeight) : setting.PageHeight;
                     switch (setting.PageResize)
                     {
                         case StoragePageResize.WidthHeight:
@@ -313,7 +309,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
                     if (bitmap3 != null)
                     {
                         array2[i].Dispose();
-                        bitmap4 = (array2[i] = bitmap3);
+                        bitmap4 = array2[i] = bitmap3;
                         bitmap3 = null;
                     }
                     cpi.ImageWidth = bitmap4.Width;
@@ -323,7 +319,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
                         try
                         {
                             Bitmap bitmap5 = bitmap4;
-                            bitmap4 = (array2[i] = bitmap4.CreateAdjustedBitmap(setting.ImageProcessing, PixelFormat.Format24bppRgb, alwaysClone: true));
+                            bitmap4 = array2[i] = bitmap4.CreateAdjustedBitmap(setting.ImageProcessing, PixelFormat.Format24bppRgb, alwaysClone: true);
                             bitmap5.Dispose();
                         }
                         catch
@@ -333,7 +329,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
                     if ((storagePageType == StoragePageType.Bmp || storagePageType == StoragePageType.Png) && bitmap4.PixelFormat != PixelFormat.Format24bppRgb)
                     {
                         Bitmap bitmap6 = bitmap4;
-                        bitmap4 = (array2[i] = bitmap4.CreateCopy(PixelFormat.Format24bppRgb));
+                        bitmap4 = array2[i] = bitmap4.CreateCopy(PixelFormat.Format24bppRgb);
                         if (bitmap4 != bitmap6)
                         {
                             bitmap6.Dispose();
@@ -354,10 +350,7 @@ public abstract class StorageProvider : FileProviderBase, IStorageProvider
         {
             for (int j = 0; j < array2.Length; j++)
             {
-                if (array2[j] != null)
-                {
-                    array2[j].Dispose();
-                }
+                array2[j]?.Dispose();
             }
             bitmap?.Dispose();
         }

@@ -8,10 +8,7 @@ namespace cYo.Projects.ComicRack.Engine.Sync;
 
 public interface ISyncProvider
 {
-    DeviceInfo Device
-    {
-        get;
-    }
+    DeviceInfo Device { get; }
 
     void ValidateDevice(DeviceInfo device);
 

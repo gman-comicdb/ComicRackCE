@@ -13,11 +13,11 @@ public static class CloneUtility
             return null;
         }
 
-        DataContractSerializer serializer = new DataContractSerializer(typeof(T), new DataContractSerializerSettings()
+        DataContractSerializer serializer = new(typeof(T), new DataContractSerializerSettings()
         {
             PreserveObjectReferences = true,
         });
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             serializer.WriteObject(memoryStream, data);
             memoryStream.Seek(0L, SeekOrigin.Begin);
@@ -34,10 +34,6 @@ public static class CloneUtility
 
     public static T Clone<T>(this ICloneable data) where T : class
     {
-        if (data != null)
-        {
-            return data.Clone() as T;
-        }
-        return null;
+        return data != null ? data.Clone() as T : null;
     }
 }

@@ -12,15 +12,15 @@ namespace cYo.Common.Windows.Forms;
 
 public class ScrollControl : Control
 {
-    private readonly HScrollBar hScrollbar = new HScrollBar();
+    private readonly HScrollBar hScrollbar = new();
 
-    private readonly VScrollBar vScrollBar = new VScrollBar();
+    private readonly VScrollBar vScrollBar = new();
 
-    private readonly ThumbStickControl thumbStick = new ThumbStickControl();
+    private readonly ThumbStickControl thumbStick = new();
 
-    private readonly Timer scrollTimer = new Timer();
+    private readonly Timer scrollTimer = new();
 
-    private readonly Timer scrollEndTimer = new Timer();
+    private readonly Timer scrollEndTimer = new();
 
     private bool hVisible;
 
@@ -51,10 +51,7 @@ public class ScrollControl : Control
     [DefaultValue(ExtendedBorderStyle.Flat)]
     public ExtendedBorderStyle BorderStyle
     {
-        get
-        {
-            return borderStyle;
-        }
+        get => borderStyle;
         set
         {
             if (borderStyle != value)
@@ -69,23 +66,14 @@ public class ScrollControl : Control
     [DefaultValue(AutoScrollMode.Drag)]
     public AutoScrollMode AutoScrollMode
     {
-        get
-        {
-            return autoScrollMode;
-        }
-        set
-        {
-            autoScrollMode = value;
-        }
+        get => autoScrollMode;
+        set => autoScrollMode = value;
     }
 
     [DefaultValue(true)]
     public bool EnableStick
     {
-        get
-        {
-            return enableStick;
-        }
+        get => enableStick;
         set
         {
             if (enableStick != value)
@@ -96,23 +84,13 @@ public class ScrollControl : Control
     }
 
     [DefaultValue(null)]
-    public Cursor PanCursor
-    {
-        get;
-        set;
-    }
+    public Cursor PanCursor { get; set; }
 
     [DefaultValue(10)]
     public int DragScrollRegion
     {
-        get
-        {
-            return dragScrollRegion;
-        }
-        set
-        {
-            dragScrollRegion = value;
-        }
+        get => dragScrollRegion;
+        set => dragScrollRegion = value;
     }
 
     public override Rectangle DisplayRectangle
@@ -120,8 +98,8 @@ public class ScrollControl : Control
         get
         {
             Rectangle result = BorderUtility.AdjustBorder(base.DisplayRectangle, borderStyle);
-            result.Width -= (vVisible ? vScrollBar.Width : 0);
-            result.Height -= (hVisible ? hScrollbar.Height : 0);
+            result.Width -= vVisible ? vScrollBar.Width : 0;
+            result.Height -= hVisible ? hScrollbar.Height : 0;
             if (result.Width < 0)
             {
                 result.Width = 0;
@@ -140,24 +118,15 @@ public class ScrollControl : Control
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int ScrollPositionX
     {
-        get
-        {
-            return hScrollbar.Value;
-        }
-        set
-        {
-            hScrollbar.Value = value.Clamp(hScrollbar.Minimum, hScrollbar.Maximum - hScrollbar.LargeChange);
-        }
+        get => hScrollbar.Value;
+        set => hScrollbar.Value = value.Clamp(hScrollbar.Minimum, hScrollbar.Maximum - hScrollbar.LargeChange);
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int ScrollPositionY
     {
-        get
-        {
-            return vScrollBar.Value;
-        }
+        get => vScrollBar.Value;
         set
         {
             if (oldValue > value)
@@ -172,10 +141,7 @@ public class ScrollControl : Control
     [DefaultValue(typeof(Point), "0, 0")]
     public Point ScrollPosition
     {
-        get
-        {
-            return new Point(ScrollPositionX, ScrollPositionY);
-        }
+        get => new(ScrollPositionX, ScrollPositionY);
         set
         {
             ScrollPositionX = value.X;
@@ -186,10 +152,7 @@ public class ScrollControl : Control
     [DefaultValue(typeof(Size), "0, 0")]
     public Size VirtualSize
     {
-        get
-        {
-            return virtualSize;
-        }
+        get => virtualSize;
         set
         {
             if (!(virtualSize == value))
@@ -217,17 +180,9 @@ public class ScrollControl : Control
 
 
     [DefaultValue(false)]
-    public bool ScrollResizeRefresh
-    {
-        get;
-        set;
-    }
+    public bool ScrollResizeRefresh { get; set; }
 
-    public bool InScrollOrResize
-    {
-        get;
-        private set;
-    }
+    public bool InScrollOrResize { get; private set; }
 
     protected override bool ScaleChildren => false;
 
@@ -252,9 +207,9 @@ public class ScrollControl : Control
             InScrollOrResize = false;
             Invalidate();
         };
-        hScrollbar.TabStop = (vScrollBar.TabStop = (thumbStick.TabStop = false));
-        hScrollbar.Visible = (vScrollBar.Visible = (thumbStick.Visible = true));
-        hVisible = (vVisible = true);
+        hScrollbar.TabStop = vScrollBar.TabStop = thumbStick.TabStop = false;
+        hScrollbar.Visible = vScrollBar.Visible = thumbStick.Visible = true;
+        hVisible = vVisible = true;
         thumbStick.Sensitivity = new SizeF(32f, 32f);
         thumbStick.Acceleration = 4f;
         hScrollbar.ValueChanged += ScrollValueChanged;
@@ -303,7 +258,7 @@ public class ScrollControl : Control
 
     protected virtual void OnAutoScrolling(AutoScrollEventArgs e)
     {
-        this.AutoScrolling?.Invoke(this, e);
+        AutoScrolling?.Invoke(this, e);
     }
 
     private void ScrollValueChanged(object sender, EventArgs e)
@@ -337,7 +292,7 @@ public class ScrollControl : Control
             scrollEndTimer.Stop();
             scrollEndTimer.Start();
         }
-        this.Scroll?.Invoke(this, EventArgs.Empty);
+        Scroll?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnViewResized()
@@ -349,7 +304,7 @@ public class ScrollControl : Control
             scrollEndTimer.Start();
         }
         OnResize(EventArgs.Empty);
-        this.ViewResized?.Invoke(this, EventArgs.Empty);
+        ViewResized?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual bool OnPanHitTest(MouseButtons buttons, Point location)
@@ -576,7 +531,7 @@ public class ScrollControl : Control
         }
         delta.X *= num;
         delta.Y *= num2;
-        AutoScrollEventArgs autoScrollEventArgs = new AutoScrollEventArgs
+        AutoScrollEventArgs autoScrollEventArgs = new()
         {
             Delta = delta
         };

@@ -17,7 +17,7 @@ public class DjVuStorageProvider : StorageProvider, IValidateProvider
 
     protected override ComicInfo OnStore(IImageProvider provider, ComicInfo info, string target, StorageSetting setting)
     {
-        ComicInfo comicInfo = new ComicInfo(info);
+        ComicInfo comicInfo = new(info);
         comicInfo.Pages.Clear();
         int num = 0;
         for (int i = 0; i < provider.Count; i++)

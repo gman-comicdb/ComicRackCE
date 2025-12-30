@@ -13,11 +13,7 @@ public static class FileMethods
 
     public static string GetShortName(string path)
     {
-        StringBuilder stringBuilder = new StringBuilder(255);
-        if (NativeMethods.GetShortPathName(path, stringBuilder, stringBuilder.Capacity) == 0)
-        {
-            return path;
-        }
-        return stringBuilder.ToString();
+        StringBuilder stringBuilder = new(255);
+        return NativeMethods.GetShortPathName(path, stringBuilder, stringBuilder.Capacity) == 0 ? path : stringBuilder.ToString();
     }
 }

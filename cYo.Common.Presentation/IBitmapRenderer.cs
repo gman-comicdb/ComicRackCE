@@ -9,45 +9,19 @@ namespace cYo.Common.Presentation;
 
 public interface IBitmapRenderer
 {
-    Matrix Transform
-    {
-        get;
-        set;
-    }
+    Matrix Transform { get; set; }
 
-    bool HighQuality
-    {
-        get;
-        set;
-    }
+    bool HighQuality { get; set; }
 
-    float Opacity
-    {
-        get;
-        set;
-    }
+    float Opacity { get; set; }
 
-    CompositingMode CompositingMode
-    {
-        get;
-        set;
-    }
+    CompositingMode CompositingMode { get; set; }
 
-    RectangleF Clip
-    {
-        get;
-        set;
-    }
+    RectangleF Clip { get; set; }
 
-    bool IsHardware
-    {
-        get;
-    }
+    bool IsHardware { get; }
 
-    bool IsLocked
-    {
-        get;
-    }
+    bool IsLocked { get; }
 
     void Clear(Color color);
 

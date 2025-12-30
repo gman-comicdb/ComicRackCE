@@ -17,30 +17,20 @@ public class TR
 
     private CultureInfo culture = CultureInfo.CurrentUICulture;
 
-    private static readonly TRDictionary languageResources = new TRDictionary();
+    private static readonly TRDictionary languageResources = new();
 
     private static TR defaultTR;
 
     private static TR messagesTR;
 
     [XmlAttribute]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [XmlAttribute]
     public string CultureName
     {
-        get
-        {
-            return culture.Name;
-        }
-        set
-        {
-            culture = new CultureInfo(value);
-        }
+        get => culture.Name;
+        set => culture = new CultureInfo(value);
     }
 
     [XmlArray("Texts")]
@@ -50,22 +40,12 @@ public class TR
     [XmlIgnore]
     public CultureInfo Culture
     {
-        get
-        {
-            return culture;
-        }
-        set
-        {
-            culture = value;
-        }
+        get => culture;
+        set => culture = value;
     }
 
     [XmlIgnore]
-    public string File
-    {
-        get;
-        set;
-    }
+    public string File { get; set; }
 
     public string FileName => Path.GetFileName(File);
 
@@ -81,36 +61,21 @@ public class TR
 
     public static CultureInfo DefaultCulture
     {
-        get
-        {
-            return LanguageResources.DefaultCulture;
-        }
-        set
-        {
-            LanguageResources.DefaultCulture = value;
-        }
+        get => LanguageResources.DefaultCulture;
+        set => LanguageResources.DefaultCulture = value;
     }
 
     public static IVirtualFolder ResourceFolder
     {
-        get
-        {
-            return LanguageResources.ResourceFolder;
-        }
-        set
-        {
-            LanguageResources.ResourceFolder = value;
-        }
+        get => LanguageResources.ResourceFolder;
+        set => LanguageResources.ResourceFolder = value;
     }
 
     public static TR Default
     {
         get
         {
-            if (defaultTR == null)
-            {
-                defaultTR = Load("Default");
-            }
+            defaultTR ??= Load("Default");
             return defaultTR;
         }
     }
@@ -119,10 +84,7 @@ public class TR
     {
         get
         {
-            if (messagesTR == null)
-            {
-                messagesTR = Load("Messages");
-            }
+            messagesTR ??= Load("Messages");
             return messagesTR;
         }
     }
@@ -145,11 +107,7 @@ public class TR
         try
         {
             string[] array3 = this[key, array].Split(sep);
-            if (array2.Length == array3.Length)
-            {
-                return array3;
-            }
-            return array2;
+            return array2.Length == array3.Length ? array3 : array2;
         }
         catch (Exception)
         {

@@ -23,40 +23,22 @@ public class AutoRepeatButton : Button
     [DefaultValue(250)]
     public int RepeatTime
     {
-        get
-        {
-            return repeatTime;
-        }
-        set
-        {
-            repeatTime = value;
-        }
+        get => repeatTime;
+        set => repeatTime = value;
     }
 
     [DefaultValue(10)]
     public int SpeedUp
     {
-        get
-        {
-            return speedUp;
-        }
-        set
-        {
-            speedUp = value;
-        }
+        get => speedUp;
+        set => speedUp = value;
     }
 
     [DefaultValue(true)]
     public bool RepeatEnabled
     {
-        get
-        {
-            return repeatEnabled;
-        }
-        set
-        {
-            repeatEnabled = value;
-        }
+        get => repeatEnabled;
+        set => repeatEnabled = value;
     }
 
     protected override void Dispose(bool disposing)

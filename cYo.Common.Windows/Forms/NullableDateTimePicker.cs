@@ -13,14 +13,7 @@ public class NullableDateTimePicker : DateTimePicker
 
     public new DateTime Value
     {
-        get
-        {
-            if (!isNull)
-            {
-                return base.Value;
-            }
-            return DateTime.MinValue;
-        }
+        get => !isNull ? base.Value : DateTime.MinValue;
         set
         {
             if (value < base.MinDate || value > base.MaxDate)

@@ -25,23 +25,11 @@ public class PythonCommand : Command
 {
     private class PythonSettings
     {
-        public bool PythonDebug
-        {
-            get;
-            set;
-        }
+        public bool PythonDebug { get; set; }
 
-        public bool PythonEnableFrames
-        {
-            get;
-            set;
-        }
+        public bool PythonEnableFrames { get; set; }
 
-        public bool PythonEnableFullFrames
-        {
-            get;
-            set;
-        }
+        public bool PythonEnableFullFrames { get; set; }
     }
 
     private delegate Delegate ScriptCreateHandler(ScriptScope scope, string method);
@@ -64,42 +52,18 @@ public class PythonCommand : Command
 
     private ScriptCreateHandler hookType;
 
-    public static bool Optimized
-    {
-        get;
-        set;
-    }
+    public static bool Optimized { get; set; }
 
-    public static Stream Output
-    {
-        get;
-        set;
-    }
+    public static Stream Output { get; set; }
 
-    public static bool EnableLog
-    {
-        get;
-        set;
-    }
+    public static bool EnableLog { get; set; }
 
-    public string ScriptFile
-    {
-        get;
-        set;
-    }
+    public string ScriptFile { get; set; }
 
-    public string Method
-    {
-        get;
-        set;
-    }
+    public string Method { get; set; }
 
     [XmlIgnore]
-    public string LibPath
-    {
-        get;
-        private set;
-    }
+    public string LibPath { get; private set; }
 
     private ScriptScope Scope
     {
@@ -129,17 +93,7 @@ public class PythonCommand : Command
         }
     }
 
-    protected override bool IsValid
-    {
-        get
-        {
-            if (base.IsValid && !string.IsNullOrEmpty(Method))
-            {
-                return !string.IsNullOrEmpty(ScriptFile);
-            }
-            return false;
-        }
-    }
+    protected override bool IsValid => base.IsValid && !string.IsNullOrEmpty(Method) ? !string.IsNullOrEmpty(ScriptFile) : false;
 
     private string ConfigFileName => ScriptFile + "-" + Method + ".config";
 
@@ -218,11 +172,11 @@ public class PythonCommand : Command
 
     private static ScriptEngine CreateEngine()
     {
-        ScriptRuntimeSetup scriptRuntimeSetup = new ScriptRuntimeSetup
+        ScriptRuntimeSetup scriptRuntimeSetup = new()
         {
             DebugMode = settings.PythonDebug
         };
-        Dictionary<string, object> dictionary = new Dictionary<string, object>();
+        Dictionary<string, object> dictionary = new();
         if (settings.PythonEnableFrames)
         {
             dictionary["Frames"] = true;
@@ -232,7 +186,7 @@ public class PythonCommand : Command
             dictionary["FullFrames"] = true;
         }
         scriptRuntimeSetup.LanguageSetups.Add(Python.CreateLanguageSetup(dictionary));
-        ScriptRuntime scriptRuntime = new ScriptRuntime(scriptRuntimeSetup);
+        ScriptRuntime scriptRuntime = new(scriptRuntimeSetup);
         ScriptEngine engineByTypeName = scriptRuntime.GetEngineByTypeName(typeof(PythonContext).AssemblyQualifiedName);
         engineByTypeName.Runtime.LoadAssembly(typeof(ArgumentNullException).Assembly);
         engineByTypeName.Runtime.LoadAssembly(typeof(ArrayModule).Assembly);
@@ -250,7 +204,7 @@ public class PythonCommand : Command
         source = "def f(" + parameters.ToListString(",") + "):\n\treturn " + source.Trim();
         try
         {
-            ScriptEngine scriptEngine = expressionEngine ?? (expressionEngine = CreateEngine());
+            ScriptEngine scriptEngine = expressionEngine ??= CreateEngine();
             ScriptSource scriptSource = scriptEngine.CreateScriptSourceFromString(source);
             ScriptScope scriptScope = scriptEngine.CreateScope();
             scriptSource.Execute(scriptScope);
@@ -267,7 +221,7 @@ public class PythonCommand : Command
     {
         if (Output != null && EnableLog)
         {
-            using (StreamWriter streamWriter = new StreamWriter(Output))
+            using (StreamWriter streamWriter = new(Output))
             {
                 streamWriter.WriteLine(text, o);
             }
@@ -309,11 +263,11 @@ public class PythonCommand : Command
             {
                 CheckScript();
             }
-            if ((object)script == null && HookType != null)
+            if (script is null && HookType != null)
             {
                 script = HookType(Scope, Method);
             }
-            if ((object)script != null)
+            if (script is not null)
             {
                 return script.DynamicInvoke(data);
             }
@@ -403,8 +357,7 @@ public class PythonCommand : Command
         {
             e = e.InnerException;
         }
-        SyntaxErrorException ex = e as SyntaxErrorException;
-        if (ex == null)
+        if (e is not SyntaxErrorException ex)
         {
             Log(e.Message);
             return;

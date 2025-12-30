@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using System.Xml.Linq;
 
 namespace cYo.Common.Text.FunctionParser;
 
@@ -17,10 +15,7 @@ public abstract class FunctionBase<TParam, TResult>(string Name) : IFunction whe
 
     private object Execute()
     {
-        if (Param != default(TParam))
-            return Function.Invoke(Param);
-
-        return default;
+        return Param != default(TParam) ? Function.Invoke(Param) : (object)default;
     }
 
     public event EventHandler Initialized;

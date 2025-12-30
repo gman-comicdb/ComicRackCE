@@ -48,12 +48,12 @@ public class LuDecomposition
         {
             int rows = LU.Rows;
             int columns = LU.Columns;
-            Matrix matrix = new Matrix(rows, columns);
+            Matrix matrix = new(rows, columns);
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    matrix[i, j] = ((i > j) ? LU[i, j] : ((i == j) ? 1.0 : 0.0));
+                    matrix[i, j] = (i > j) ? LU[i, j] : ((i == j) ? 1.0 : 0.0);
                 }
             }
             return matrix;
@@ -66,12 +66,12 @@ public class LuDecomposition
         {
             int rows = LU.Rows;
             int columns = LU.Columns;
-            Matrix matrix = new Matrix(rows, columns);
+            Matrix matrix = new(rows, columns);
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    matrix[i, j] = ((i <= j) ? LU[i, j] : 0.0);
+                    matrix[i, j] = (i <= j) ? LU[i, j] : 0.0;
                 }
             }
             return matrix;
@@ -110,7 +110,7 @@ public class LuDecomposition
                 {
                     num2 += array3[m] * array2[m];
                 }
-                array3[j] = (array2[l] -= num2);
+                array3[j] = array2[l] -= num2;
             }
             int num3 = j;
             for (int n = j + 1; n < rows; n++)

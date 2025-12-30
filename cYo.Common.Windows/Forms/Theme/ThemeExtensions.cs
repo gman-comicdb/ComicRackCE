@@ -64,10 +64,7 @@ public static class ThemeExtensions
     /// <param name="darkModeFunc"><see cref="Func{TResult}"/> to run when <see cref="ThemeManager.IsDarkModeEnabled"/> is <paramref name="true"/> </param>
     public static TResult InvokeFunc<TResult>(Func<TResult> defaultFunc, Func<TResult> darkModeFunc)
     {
-        if (ThemeManager.IsDarkModeEnabled)
-            return darkModeFunc();
-        else
-            return defaultFunc();
+        return ThemeManager.IsDarkModeEnabled ? darkModeFunc() : defaultFunc();
     }
 
     /// <summary>

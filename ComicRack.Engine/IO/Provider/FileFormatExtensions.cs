@@ -10,8 +10,8 @@ public static class FileFormatExtensions
 {
     public static string GetDialogFilter(this IEnumerable<FileFormat> formats, bool withAllFilter)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        StringBuilder stringBuilder2 = (withAllFilter ? new StringBuilder() : null);
+        StringBuilder stringBuilder = new();
+        StringBuilder stringBuilder2 = withAllFilter ? new StringBuilder() : null;
         foreach (FileFormat format in formats)
         {
             if (format == null)

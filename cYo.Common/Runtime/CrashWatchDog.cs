@@ -11,9 +11,9 @@ public class CrashWatchDog : DisposableObject
 {
     private const int WatcherTimeSpanMS = 1000;
 
-    private readonly object timeLock = new object();
+    private readonly object timeLock = new();
 
-    private TimeSpan lockTestTime = new TimeSpan(0, 0, 10);
+    private TimeSpan lockTestTime = new(0, 0, 10);
 
     private DateTime lastTimeRunning = DateTime.Now;
 
@@ -21,7 +21,7 @@ public class CrashWatchDog : DisposableObject
 
     private Thread lockWatcherThread;
 
-    private readonly EventWaitHandle lockWatcherHandle = new EventWaitHandle(initialState: false, EventResetMode.ManualReset);
+    private readonly EventWaitHandle lockWatcherHandle = new(initialState: false, EventResetMode.ManualReset);
 
     public TimeSpan LockTestTime
     {
@@ -83,10 +83,7 @@ public class CrashWatchDog : DisposableObject
         try
         {
             inBark = true;
-            if (this.Bark != null)
-            {
-                this.Bark(this, new BarkEventArgs(bark, e));
-            }
+            Bark?.Invoke(this, new BarkEventArgs(bark, e));
         }
         finally
         {

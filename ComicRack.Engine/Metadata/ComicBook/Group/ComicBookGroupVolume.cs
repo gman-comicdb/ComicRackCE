@@ -10,20 +10,16 @@ public class ComicBookGroupVolume : SingleComicGrouper
     public override IGroupInfo GetGroup(ComicBook item)
     {
         int shadowVolume = item.ShadowVolume;
-        if (shadowVolume < 0)
-        {
-            return new GroupInfo(captions[0], 0);
-        }
-        if (shadowVolume > 10000)
-        {
-            return new GroupInfo(captions[2], 1002);
-        }
-        return new GroupInfo(StringUtility.Format(captions[1], shadowVolume), shadowVolume + 1);
+        return shadowVolume < 0
+            ? new GroupInfo(captions[0], 0)
+            : shadowVolume > 10000
+            ? new GroupInfo(captions[2], 1002)
+            : new GroupInfo(StringUtility.Format(captions[1], shadowVolume), shadowVolume + 1);
     }
 
     public override ComicBookMatcher CreateMatcher(IGroupInfo info)
     {
-        ComicBookVolumeMatcher comicBookVolumeMatcher = new ComicBookVolumeMatcher();
+        ComicBookVolumeMatcher comicBookVolumeMatcher = new();
         if (info.Index == 0)
         {
             return comicBookVolumeMatcher;

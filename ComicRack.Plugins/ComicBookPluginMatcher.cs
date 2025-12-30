@@ -15,11 +15,7 @@ namespace cYo.Projects.ComicRack.Plugins;
 [ComicBookMatcherHint(true)]
 public class ComicBookPluginMatcher : ComicBookValueMatcher
 {
-    public static PluginEngine PluginEngine
-    {
-        get;
-        set;
-    }
+    public static PluginEngine PluginEngine { get; set; }
 
     public static IEnumerable<Command> Commands
     {
@@ -31,18 +27,14 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
             }
             catch
             {
-                return Enumerable.Empty<Command>();
+                return [];
             }
         }
     }
 
     [XmlAttribute]
     [DefaultValue(null)]
-    public string PluginKey
-    {
-        get;
-        set;
-    }
+    public string PluginKey { get; set; }
 
     public override int ArgumentCount
     {
@@ -63,7 +55,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
     {
         get
         {
-            List<string> list = new List<string>();
+            List<string> list = new();
             list.Add(TR.Default["None", "None"]);
             list.AddRange(Commands.Select((Command cmd) => cmd.GetLocalizedName()));
             return list.ToArray();
@@ -89,10 +81,8 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
             }
             return 0;
         }
-        set
-        {
-            base.MatchOperator = value;
-        }
+
+        set => base.MatchOperator = value;
     }
 
     public override object Clone()
@@ -105,8 +95,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
     public override bool Set(ComicBookValueMatcher matcher)
     {
         bool flag = base.Set(matcher);
-        ComicBookPluginMatcher comicBookPluginMatcher = matcher as ComicBookPluginMatcher;
-        if (flag && comicBookPluginMatcher != null)
+        if (flag && matcher is ComicBookPluginMatcher comicBookPluginMatcher)
         {
             PluginKey = comicBookPluginMatcher.PluginKey;
         }
@@ -118,14 +107,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
         base.OnMatchOperatorChanged();
         try
         {
-            if (base.MatchOperator == 0)
-            {
-                PluginKey = null;
-            }
-            else
-            {
-                PluginKey = Commands.ElementAt(base.MatchOperator - 1).Key;
-            }
+            PluginKey = base.MatchOperator == 0 ? null : Commands.ElementAt(base.MatchOperator - 1).Key;
         }
         catch
         {
@@ -142,17 +124,17 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
             {
                 return items;
             }
-            object obj = command.Invoke(new object[3]
-            {
+            object obj = command.Invoke(
+            [
                 items.ToArray(),
                 MatchValue,
                 MatchValue2
-            });
+            ]);
             return (IEnumerable<ComicBook>)obj;
         }
         catch
         {
-            return Enumerable.Empty<ComicBook>();
+            return [];
         }
     }
 

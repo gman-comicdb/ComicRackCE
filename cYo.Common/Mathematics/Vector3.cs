@@ -14,67 +14,45 @@ public struct Vector3
 
     public float X
     {
-        get
-        {
-            return x;
-        }
-        set
-        {
-            x = value;
-        }
+        get => x;
+        set => x = value;
     }
 
     public float Y
     {
-        get
-        {
-            return y;
-        }
-        set
-        {
-            y = value;
-        }
+        get => y;
+        set => y = value;
     }
 
     public float Z
     {
-        get
-        {
-            return z;
-        }
-        set
-        {
-            z = value;
-        }
+        get => z;
+        set => z = value;
     }
 
-    public static Vector3 Zero => default(Vector3);
+    public static Vector3 Zero => default;
 
-    public static Vector3 LookAt => new Vector3(0f, 0f, 1f);
+    public static Vector3 LookAt => new(0f, 0f, 1f);
 
-    public static Vector3 Up => new Vector3(0f, 1f, 0f);
+    public static Vector3 Up => new(0f, 1f, 0f);
 
-    public static Vector3 Right => new Vector3(1f, 0f, 0f);
+    public static Vector3 Right => new(1f, 0f, 0f);
 
-    public Vector2 Vector2 => new Vector2(x, y);
+    public Vector2 Vector2 => new(x, y);
 
-    public Vector4 Vector4 => new Vector4(x, y, z, 0f);
+    public Vector4 Vector4 => new(x, y, z, 0f);
 
     public float this[int index]
     {
         get
         {
-            switch (index)
+            return index switch
             {
-                case 0:
-                    return x;
-                case 1:
-                    return y;
-                case 2:
-                    return z;
-                default:
-                    throw new IndexOutOfRangeException("Invalid vector index!");
-            }
+                0 => x,
+                1 => y,
+                2 => z,
+                _ => throw new IndexOutOfRangeException("Invalid vector index!"),
+            };
         }
         set
         {
@@ -149,11 +127,7 @@ public struct Vector3
             return false;
         }
         Vector3 vector = (Vector3)obj;
-        if (vector.x == x && vector.y == y)
-        {
-            return vector.z == z;
-        }
-        return false;
+        return vector.x == x && vector.y == y ? vector.z == z : false;
     }
 
     public override string ToString()
@@ -192,7 +166,7 @@ public struct Vector3
 
     public static Vector3 CrossUnit(Vector3 a, Vector3 b)
     {
-        Vector3 result = new Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+        Vector3 result = new(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         float num = Numeric.InvSqrt(result.x * result.x + result.y * result.y * result.z * result.z);
         result.x *= num;
         result.y *= num;
@@ -288,38 +262,22 @@ public struct Vector3
 
     public static bool AllLess(Vector3 a, Vector3 b)
     {
-        if (a.x < b.x && a.y < b.y)
-        {
-            return a.z < b.z;
-        }
-        return false;
+        return a.x < b.x && a.y < b.y ? a.z < b.z : false;
     }
 
     public static bool AllLessOrEqual(Vector3 a, Vector3 b)
     {
-        if (a.x <= b.x && a.y <= b.y)
-        {
-            return a.z <= b.z;
-        }
-        return false;
+        return a.x <= b.x && a.y <= b.y ? a.z <= b.z : false;
     }
 
     public static bool OneLess(Vector3 a, Vector3 b)
     {
-        if (!(a.x < b.x) && !(a.y < b.y))
-        {
-            return a.z < b.z;
-        }
-        return true;
+        return !(a.x < b.x) && !(a.y < b.y) ? a.z < b.z : true;
     }
 
     public static bool OneLessOrEqual(Vector3 a, Vector3 b)
     {
-        if (!(a.x <= b.x) && !(a.y <= b.y))
-        {
-            return a.z <= b.z;
-        }
-        return true;
+        return !(a.x <= b.x) && !(a.y <= b.y) ? a.z <= b.z : true;
     }
 
     public static Vector3 operator *(Vector3 vec, float scalar)
@@ -341,19 +299,11 @@ public struct Vector3
 
     public static bool operator ==(Vector3 vec, Vector3 vec2)
     {
-        if (vec.x == vec2.x && vec.y == vec2.y)
-        {
-            return vec.z == vec2.z;
-        }
-        return false;
+        return vec.x == vec2.x && vec.y == vec2.y ? vec.z == vec2.z : false;
     }
 
     public static bool operator !=(Vector3 vec, Vector3 vec2)
     {
-        if (vec.x == vec2.x && vec.y == vec2.y)
-        {
-            return vec.z != vec2.z;
-        }
-        return true;
+        return vec.x == vec2.x && vec.y == vec2.y ? vec.z != vec2.z : true;
     }
 }

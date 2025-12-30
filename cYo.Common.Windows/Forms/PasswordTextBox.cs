@@ -1,8 +1,6 @@
 using System;
 using System.Windows.Forms;
 
-using cYo.Common.Cryptography;
-
 namespace cYo.Common.Windows.Forms;
 
 public class PasswordTextBox : TextBox
@@ -13,15 +11,12 @@ public class PasswordTextBox : TextBox
 
     public string Password
     {
-        get
-        {
-            return password;
-        }
+        get => password;
         set
         {
             if (!(value == password))
             {
-                Text = (string.IsNullOrEmpty(value) ? string.Empty : dummyPassword);
+                Text = string.IsNullOrEmpty(value) ? string.Empty : dummyPassword;
                 password = value;
             }
         }

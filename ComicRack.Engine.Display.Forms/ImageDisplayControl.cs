@@ -57,7 +57,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         private readonly bool twoPageAutoScroll;
 
-        public static readonly DisplayOutputConfig Empty = new DisplayOutputConfig(Size.Empty, Size.Empty, ImageFitMode.Original, fitOnlyIfOversized: true, RightToLeftReadingMode.FlipPages, rightToLeftReading: false, ImagePartInfo.Empty, 1f, 1f, ImageRotation.None, twoPageAutoScroll: true);
+        public static readonly DisplayOutputConfig Empty = new(Size.Empty, Size.Empty, ImageFitMode.Original, fitOnlyIfOversized: true, RightToLeftReadingMode.FlipPages, rightToLeftReading: false, ImagePartInfo.Empty, 1f, 1f, ImageRotation.None, twoPageAutoScroll: true);
 
         public Size ViewSize => viewSize;
 
@@ -65,14 +65,8 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         public ImageRotation Rotation
         {
-            get
-            {
-                return rotation;
-            }
-            set
-            {
-                rotation = value;
-            }
+            get => rotation;
+            set => rotation = value;
         }
 
         public ImageFitMode ImageDisplayMode => imageDisplayMode;
@@ -91,17 +85,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         public bool TwoPageAutoScroll => twoPageAutoScroll;
 
-        public bool IsEmpty
-        {
-            get
-            {
-                if (!viewSize.IsEmpty)
-                {
-                    return imageSize.IsEmpty;
-                }
-                return true;
-            }
-        }
+        public bool IsEmpty => !viewSize.IsEmpty ? imageSize.IsEmpty : true;
 
         public DisplayOutputConfig(Size viewSize, Size imageSize, ImageFitMode imageDisplayMode, bool fitOnlyIfOversized, RightToLeftReadingMode rightToLeftReadingMode, bool rightToLeftReading, ImagePartInfo part, float imageZoom, float zoom, ImageRotation rotation, bool twoPageAutoScroll)
         {
@@ -133,7 +117,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         private int partCount;
 
-        private Rectangle[] parts = new Rectangle[0];
+        private Rectangle[] parts = [];
 
         public DisplayOutputConfig Config => config;
 
@@ -166,27 +150,13 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         public int PartCount => partCount;
 
-        public float ImageZoom
-        {
-            get;
-            private set;
-        }
+        public float ImageZoom { get; private set; }
 
         public bool PartIsStart => IsStartPart(partBounds);
 
         public bool PartIsEnd => IsEndPart(partBounds);
 
-        public bool IsEmpty
-        {
-            get
-            {
-                if (!OutputBounds.IsEmpty)
-                {
-                    return Transform == null;
-                }
-                return true;
-            }
-        }
+        public bool IsEmpty => !OutputBounds.IsEmpty ? Transform == null : true;
 
         public bool IsAllVisible => parts.Length < 2;
 
@@ -218,11 +188,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         public Rectangle GetPart(int index)
         {
-            if (parts.Length == 0)
-            {
-                return Rectangle.Empty;
-            }
-            return parts[index.Clamp(0, parts.Length - 1)];
+            return parts.Length == 0 ? Rectangle.Empty : parts[index.Clamp(0, parts.Length - 1)];
         }
 
         public Point GetPartOffset(int partIndex, Point offset)
@@ -266,7 +232,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             if (startIndex >= endIndex)
             {
-                return new Rectangle[0];
+                return [];
             }
             startIndex = Math.Max(startIndex, 0);
             endIndex = Math.Min(endIndex, parts.Length);
@@ -340,16 +306,14 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         private static bool RectangleEquals(Rectangle part, Rectangle rectangle)
         {
-            if (Eps(part.X, rectangle.X) && Eps(part.Y, rectangle.Y) && Eps(part.Right, rectangle.Right))
-            {
-                return Eps(part.Bottom, rectangle.Bottom);
-            }
-            return false;
+            return Eps(part.X, rectangle.X) && Eps(part.Y, rectangle.Y) && Eps(part.Right, rectangle.Right)
+                ? Eps(part.Bottom, rectangle.Bottom)
+                : false;
         }
 
         public static DisplayOutput Create(DisplayOutputConfig dp, float anamorphicTolerance)
         {
-            DisplayOutput displayOutput = new DisplayOutput();
+            DisplayOutput displayOutput = new();
             int pageRotation = dp.Rotation.ToDegrees();
             displayOutput.config = dp;
             displayOutput.ImageZoom = dp.ImageZoom;
@@ -398,7 +362,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             try
             {
-                DisplayOutput displayOutput = new DisplayOutput
+                DisplayOutput displayOutput = new()
                 {
                     part = b.part,
                     parts = b.parts,
@@ -443,7 +407,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             float num2 = bitmapSize.Height;
             float num3 = (float)clientSize.Width / num * zoom;
             float num4 = (float)clientSize.Height / num2 * zoom;
-            SizeF result = new SizeF(zoom, zoom);
+            SizeF result = new(zoom, zoom);
             switch (pageDisplayMode)
             {
                 default:
@@ -523,19 +487,13 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             int num = (int)((float)bitmapSize.Height * realZoom.Height);
             int num2 = (int)((float)bitmapSize.Width * realZoom.Width);
-            if (clientSize.Width == 0 || clientSize.Height == 0)
-            {
-                return new Size(1, 1);
-            }
-            if (num <= clientSize.Height && num2 <= clientSize.Width)
-            {
-                return new Size(1, 1);
-            }
-            if (!doubleSpread || num > num2)
-            {
-                return new Size((num2 - 1) / clientSize.Width + 1, (num - 1) / clientSize.Height + 1);
-            }
-            return new Size(((num2 / 2 - 1) / clientSize.Width + 1) * 2, (num - 1) / clientSize.Height + 1);
+            return clientSize.Width == 0 || clientSize.Height == 0
+                ? new Size(1, 1)
+                : num <= clientSize.Height && num2 <= clientSize.Width
+                ? new Size(1, 1)
+                : !doubleSpread || num > num2
+                ? new Size((num2 - 1) / clientSize.Width + 1, (num - 1) / clientSize.Height + 1)
+                : new Size(((num2 / 2 - 1) / clientSize.Width + 1) * 2, (num - 1) / clientSize.Height + 1);
         }
 
         private static Rectangle GetPartRectangle(Size clientSize, Size bitmapSize, SizeF realZoom, int part, Size partGrid, bool doubleSpread, RightToLeftReadingMode rightToLeftReadingMode, bool rightToLeftReading)
@@ -683,20 +641,11 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
         public override bool Equals(object obj)
         {
-            DisplayOutput displayOutput = obj as DisplayOutput;
-            if (displayOutput == null)
-            {
-                return false;
-            }
-            if (!object.Equals(Config, displayOutput.Config) || part != displayOutput.part || partBounds != displayOutput.partBounds || partCount != displayOutput.partCount || scale != displayOutput.scale)
-            {
-                return false;
-            }
-            if (transform == null && displayOutput.transform == null)
-            {
-                return true;
-            }
-            return object.Equals(transform, displayOutput.transform);
+            return obj is not DisplayOutput displayOutput
+                ? false
+                : !object.Equals(Config, displayOutput.Config) || part != displayOutput.part || partBounds != displayOutput.partBounds || partCount != displayOutput.partCount || scale != displayOutput.scale
+                ? false
+                : transform == null && displayOutput.transform == null ? true : object.Equals(transform, displayOutput.transform);
         }
 
         public override int GetHashCode()
@@ -712,17 +661,9 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     public class GestureArea
     {
-        public ContentAlignment Alignment
-        {
-            get;
-            set;
-        }
+        public ContentAlignment Alignment { get; set; }
 
-        public Rectangle Area
-        {
-            get;
-            set;
-        }
+        public Rectangle Area { get; set; }
 
         public GestureArea(ContentAlignment alignment, Rectangle area)
         {
@@ -768,9 +709,9 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected IBitmapRenderer renderer;
 
-    private readonly BackgroundRunner flowRunner = new BackgroundRunner();
+    private readonly BackgroundRunner flowRunner = new();
 
-    private readonly BackgroundRunner partScrollRunner = new BackgroundRunner();
+    private readonly BackgroundRunner partScrollRunner = new();
 
     private int pageScrollingTime = 1000;
 
@@ -882,7 +823,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private static HardwareAccelerationType hardwareAcceleration = HardwareAccelerationType.Enabled;
 
-    private static readonly TextureManagerSettings hardwareSettings = new TextureManagerSettings();
+    private static readonly TextureManagerSettings hardwareSettings = new();
 
     private IContainer components;
 
@@ -890,17 +831,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private Timer mouseClickTimer;
 
-    public bool IsHardwareRenderer
-    {
-        get
-        {
-            if (renderer != null)
-            {
-                return renderer.IsHardware;
-            }
-            return false;
-        }
-    }
+    public bool IsHardwareRenderer => renderer != null ? renderer.IsHardware : false;
 
     public virtual bool IsValid => true;
 
@@ -909,14 +840,8 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(1000)]
     public virtual int PageScrollingTime
     {
-        get
-        {
-            return pageScrollingTime;
-        }
-        set
-        {
-            pageScrollingTime = value;
-        }
+        get => pageScrollingTime;
+        set => pageScrollingTime = value;
     }
 
     [Category("Behavior")]
@@ -924,14 +849,8 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(true)]
     public bool SmoothScrolling
     {
-        get
-        {
-            return smoothScrolling;
-        }
-        set
-        {
-            smoothScrolling = value;
-        }
+        get => smoothScrolling;
+        set => smoothScrolling = value;
     }
 
     [Category("Behavior")]
@@ -939,10 +858,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(ContentAlignment.MiddleCenter)]
     public ContentAlignment TextAlignment
     {
-        get
-        {
-            return textAlignment;
-        }
+        get => textAlignment;
         set
         {
             if (textAlignment != value)
@@ -958,10 +874,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(ImageFitMode.Fit)]
     public ImageFitMode ImageFitMode
     {
-        get
-        {
-            return imageFitMode;
-        }
+        get => imageFitMode;
         set
         {
             if (imageFitMode != value)
@@ -979,10 +892,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool ImageFitOnlyIfOversized
     {
-        get
-        {
-            return imageFitOnlyIfOversized;
-        }
+        get => imageFitOnlyIfOversized;
         set
         {
             if (imageFitOnlyIfOversized != value)
@@ -998,10 +908,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool RightToLeftReading
     {
-        get
-        {
-            return rightToLeftReading;
-        }
+        get => rightToLeftReading;
         set
         {
             if (rightToLeftReading != value)
@@ -1016,10 +923,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(RightToLeftReadingMode.FlipParts)]
     public RightToLeftReadingMode RightToLeftReadingMode
     {
-        get
-        {
-            return rightToLeftReadingMode;
-        }
+        get => rightToLeftReadingMode;
         set
         {
             if (rightToLeftReadingMode != value)
@@ -1034,10 +938,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(true)]
     public bool TwoPageNavigation
     {
-        get
-        {
-            return twoPageNavigation;
-        }
+        get => twoPageNavigation;
         set
         {
             if (twoPageNavigation != value)
@@ -1071,23 +972,14 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(1f)]
     public float ImageZoom
     {
-        get
-        {
-            return imageZoom;
-        }
-        set
-        {
-            DoZoom(Display.PartBounds.GetCenter(), value);
-        }
+        get => imageZoom;
+        set => DoZoom(Display.PartBounds.GetCenter(), value);
     }
 
     [DefaultValue(0.05f)]
     public float PageMarginPercentWidth
     {
-        get
-        {
-            return pageMarginPercent;
-        }
+        get => pageMarginPercent;
         set
         {
             if (pageMarginPercent != value)
@@ -1101,10 +993,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool PageMargin
     {
-        get
-        {
-            return pageMargin;
-        }
+        get => pageMargin;
         set
         {
             if (pageMargin != value)
@@ -1123,10 +1012,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(ImageDisplayOptions.None)]
     public ImageDisplayOptions ImageDisplayOptions
     {
-        get
-        {
-            return imageDisplayOptions;
-        }
+        get => imageDisplayOptions;
         set
         {
             if (imageDisplayOptions != value)
@@ -1143,10 +1029,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(ImageBackgroundMode.Color)]
     public ImageBackgroundMode ImageBackgroundMode
     {
-        get
-        {
-            return imageBackgroundMode;
-        }
+        get => imageBackgroundMode;
         set
         {
             if (imageBackgroundMode != value)
@@ -1163,10 +1046,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(null)]
     public string BackgroundTexture
     {
-        get
-        {
-            return backgroundTexture;
-        }
+        get => backgroundTexture;
         set
         {
             if (!(backgroundTexture == value))
@@ -1193,10 +1073,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(ImageRotation.None)]
     public ImageRotation ImageRotation
     {
-        get
-        {
-            return imageRotation;
-        }
+        get => imageRotation;
         set
         {
             if (imageRotation != value)
@@ -1213,10 +1090,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool ImageAutoRotate
     {
-        get
-        {
-            return imageAutoRotate;
-        }
+        get => imageAutoRotate;
         set
         {
             if (imageAutoRotate != value)
@@ -1233,10 +1107,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(5000)]
     public int AutoHideCursorDelay
     {
-        get
-        {
-            return autoHideCursorDelay;
-        }
+        get => autoHideCursorDelay;
         set
         {
             autoHideCursorDelay = value;
@@ -1249,10 +1120,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool AutoHideCursor
     {
-        get
-        {
-            return cursorAutoHide;
-        }
+        get => cursorAutoHide;
         set
         {
             cursorAutoHide = value;
@@ -1261,33 +1129,18 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     }
 
     [DefaultValue(true)]
-    public bool DisplayChangeAnimation
-    {
-        get;
-        set;
-    }
+    public bool DisplayChangeAnimation { get; set; }
 
     [DefaultValue(true)]
-    public bool FlowingMouseScrolling
-    {
-        get;
-        set;
-    }
+    public bool FlowingMouseScrolling { get; set; }
 
     [DefaultValue(false)]
-    public bool DisableHardwareAcceleration
-    {
-        get;
-        set;
-    }
+    public bool DisableHardwareAcceleration { get; set; }
 
     [DefaultValue(0.25f)]
     public float AnamorphicTolerance
     {
-        get
-        {
-            return anamorphicTolerance;
-        }
+        get => anamorphicTolerance;
         set
         {
             if (anamorphicTolerance != value)
@@ -1301,10 +1154,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     [DefaultValue(false)]
     public bool ClipToDestination
     {
-        get
-        {
-            return clipToDestination;
-        }
+        get => clipToDestination;
         set
         {
             if (clipToDestination != value)
@@ -1315,17 +1165,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         }
     }
 
-    public float CurrentAnamorphicTolerance
-    {
-        get
-        {
-            if ((ImageDisplayOptions & ImageDisplayOptions.AnamorphicScaling) == 0)
-            {
-                return 0f;
-            }
-            return AnamorphicTolerance;
-        }
-    }
+    public float CurrentAnamorphicTolerance => (ImageDisplayOptions & ImageDisplayOptions.AnamorphicScaling) == 0 ? 0f : AnamorphicTolerance;
 
     public ImageRotation CurrentImageRotation => LastRenderedDisplay.Config.Rotation;
 
@@ -1339,11 +1179,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             Size imageSize = ImageSize;
             Size size = PagePartBounds.Size;
-            if (size.Width >= imageSize.Width - 2)
-            {
-                return size.Height >= imageSize.Height - 2;
-            }
-            return false;
+            return size.Width >= imageSize.Width - 2 ? size.Height >= imageSize.Height - 2 : false;
         }
     }
 
@@ -1353,11 +1189,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         protected set;
     }
 
-    protected bool DisableScrolling
-    {
-        get;
-        set;
-    }
+    protected bool DisableScrolling { get; set; }
 
     protected DisplayOutputConfig DisplayConfig
     {
@@ -1366,7 +1198,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             OnUpdateDisplayConfig();
             Size imageSize = GetImageSize();
             bool flag = imageSize.Width > imageSize.Height && !IsDoubleImage;
-            ImageRotation rotation = ((ImageAutoRotate && imageSize.Width > imageSize.Height) ? ImageRotation.RotateLeft() : ImageRotation);
+            ImageRotation rotation = (ImageAutoRotate && imageSize.Width > imageSize.Height) ? ImageRotation.RotateLeft() : ImageRotation;
             return new DisplayOutputConfig(base.ClientRectangle.Size, imageSize, ImageFitMode, ImageFitOnlyIfOversized, (!flag) ? RightToLeftReadingMode : RightToLeftReadingMode.FlipParts, RightToLeftReading, ImageVisiblePart, ImageZoom, ImageZoom * (PageMargin ? (1f - PageMarginPercentWidth) : 1f), rotation, flag && TwoPageNavigation);
         }
     }
@@ -1377,10 +1209,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             if (display == null || !object.Equals(display.Config, DisplayConfig))
             {
-                if (display != null)
-                {
-                    display.Dispose();
-                }
+                display?.Dispose();
                 display = DisplayOutput.Create(DisplayConfig, CurrentAnamorphicTolerance);
             }
             return display;
@@ -1389,10 +1218,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected DisplayOutput LastRenderedDisplay
     {
-        get
-        {
-            return lastRenderedDisplay ?? Display;
-        }
+        get => lastRenderedDisplay ?? Display;
         set
         {
             lastRenderedDisplay.SafeDispose();
@@ -1404,7 +1230,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     {
         get
         {
-            Color color = ((ImageBackgroundMode == ImageBackgroundMode.Auto) ? GetAutoBackgroundColor() : BackColor);
+            Color color = (ImageBackgroundMode == ImageBackgroundMode.Auto) ? GetAutoBackgroundColor() : BackColor;
             if (color == Color.Empty)
             {
                 color = BackColor;
@@ -1413,63 +1239,35 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         }
     }
 
-    protected bool IsTexturedBackground
-    {
-        get
-        {
-            if (imageBackgroundMode == ImageBackgroundMode.Texture)
-            {
-                return BackgroundImage is Bitmap;
-            }
-            return false;
-        }
-    }
+    protected bool IsTexturedBackground => imageBackgroundMode == ImageBackgroundMode.Texture ? BackgroundImage is Bitmap : false;
 
     protected bool IsConstantBackground => imageBackgroundMode != ImageBackgroundMode.Auto;
 
     public bool HardwareFiltering
     {
-        get
-        {
-            return hardwareFiltering;
-        }
+        get => hardwareFiltering;
         set
         {
             hardwareFiltering = value;
-            IHardwareRenderer hardwareRenderer = renderer as IHardwareRenderer;
-            if (hardwareRenderer != null)
+            if (renderer is IHardwareRenderer hardwareRenderer)
             {
                 hardwareRenderer.EnableFilter = hardwareFiltering;
             }
         }
     }
 
-    protected bool DisplayEventsDisabled
-    {
-        get;
-        set;
-    }
+    protected bool DisplayEventsDisabled { get; set; }
 
     public virtual bool IsDoubleImage => false;
 
     protected virtual bool MouseHandled => false;
 
-    protected Point GestureLocation
-    {
-        get;
-        private set;
-    }
+    protected Point GestureLocation { get; private set; }
 
     public static HardwareAccelerationType HardwareAcceleration
     {
-        get
-        {
-            return hardwareAcceleration;
-        }
-        set
-        {
-            hardwareAcceleration = value;
-        }
+        get => hardwareAcceleration;
+        set => hardwareAcceleration = value;
     }
 
     public static TextureManagerSettings HardwareSettings => hardwareSettings;
@@ -1519,14 +1317,8 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     {
         if (disposing)
         {
-            if (display != null)
-            {
-                display.Dispose();
-            }
-            if (components != null)
-            {
-                components.Dispose();
-            }
+            display?.Dispose();
+            components?.Dispose();
         }
         base.Dispose(disposing);
     }
@@ -1581,7 +1373,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             float num = output?.ImageZoom ?? ImageZoom;
             bitmapRenderer.TranslateTransform((float)base.ClientRectangle.Width / 2f, (float)base.ClientRectangle.Height / 2f);
             bitmapRenderer.ScaleTransform(num, num);
-            bitmapRenderer.TranslateTransform((float)(-base.ClientRectangle.Width) / 2f, (float)(-base.ClientRectangle.Height) / 2f);
+            bitmapRenderer.TranslateTransform((float)-base.ClientRectangle.Width / 2f, (float)-base.ClientRectangle.Height / 2f);
             bitmapRenderer.FillRectangle(bitmap, BackgroundImageLayout, base.ClientRectangle, bitmap.Size.ToRectangle(), BitmapAdjustment.Empty, 1f);
         }
     }
@@ -1652,7 +1444,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         Bitmap bitmap = null;
         try
         {
-            Rectangle rectangle = new Rectangle(Point.Empty, GetImageSize());
+            Rectangle rectangle = new(Point.Empty, GetImageSize());
             bitmap = new Bitmap(rectangle.Width, rectangle.Height, PixelFormat.Format24bppRgb);
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
@@ -1680,10 +1472,10 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         }
         try
         {
-            Point[] array = new Point[1]
-            {
+            Point[] array =
+            [
                 pt
-            };
+            ];
             System.Drawing.Drawing2D.Matrix transform = output.Transform;
             transform.Invert();
             transform.TransformPoints(array);
@@ -1708,11 +1500,11 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     public bool MovePart(Point offset)
     {
-        ImagePartInfo ipi = (partScrollRunner.Enabled ? scrollPartEnd : ImageVisiblePart);
+        ImagePartInfo ipi = partScrollRunner.Enabled ? scrollPartEnd : ImageVisiblePart;
         Point offset2 = offset;
         offset2.Offset(ipi.Offset);
         Point partOffset = display.GetPartOffset(ipi.Part, offset2);
-        ImagePartInfo ipi2 = new ImagePartInfo(ipi.Part, partOffset);
+        ImagePartInfo ipi2 = new(ipi.Part, partOffset);
         if (SmoothScrolling)
         {
             ScrollToPart(ipi2);
@@ -1723,11 +1515,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         }
         Rectangle part = Display.GetPart(ipi2);
         Rectangle part2 = Display.GetPart(ipi);
-        if (Math.Abs(part.X - part2.X) <= 1)
-        {
-            return Math.Abs(part.Y - part2.Y) > 1;
-        }
-        return true;
+        return Math.Abs(part.X - part2.X) <= 1 ? Math.Abs(part.Y - part2.Y) > 1 : true;
     }
 
     public bool DisplayPart(PartPageToDisplay ptd)
@@ -1736,7 +1524,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             return false;
         }
-        ImagePartInfo imagePartInfo = ((ptd != 0 && ptd != PartPageToDisplay.Last && partScrollRunner.Enabled) ? scrollPartEnd : ImageVisiblePart);
+        ImagePartInfo imagePartInfo = (ptd != 0 && ptd != PartPageToDisplay.Last && partScrollRunner.Enabled) ? scrollPartEnd : ImageVisiblePart;
         ImagePartInfo ipi;
         switch (ptd)
         {
@@ -1793,9 +1581,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             return;
         }
-        DisplayOutput a = state1 as DisplayOutput;
-        DisplayOutput b = state2 as DisplayOutput;
-        if (a != null && !a.IsEmpty && b != null && !b.IsEmpty && !a.Equals(b))
+        if (state1 is DisplayOutput a && !a.IsEmpty && state2 is DisplayOutput b && !b.IsEmpty && !a.Equals(b))
         {
             RenderScene(null, a);
             ThreadUtility.Animate(time, delegate (float p)
@@ -1838,7 +1624,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
                 {
                     return true;
                 }
-                if (renderer != null && renderer is IDisposable)
+                if (renderer is not null and IDisposable)
                 {
                     IDisposable disposable = renderer as IDisposable;
                     renderer = null;
@@ -1920,16 +1706,16 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         long ticks = Machine.Ticks;
         int num = (int)((scrollLastTime != 0L) ? (ticks - scrollLastTime) : partScrollRunner.Interval);
         Size imageSize = Display.Config.ImageSize;
-        float num2 = ((imageSize.Width == 0) ? 0f : (Math.Abs(scrollDelta.X) / (float)imageSize.Width));
-        float num3 = ((imageSize.Height == 0) ? 0f : (Math.Abs(scrollDelta.Y) / (float)imageSize.Height));
+        float num2 = (imageSize.Width == 0) ? 0f : (Math.Abs(scrollDelta.X) / (float)imageSize.Width);
+        float num3 = (imageSize.Height == 0) ? 0f : (Math.Abs(scrollDelta.Y) / (float)imageSize.Height);
         float num4 = num2 * (float)PageScrollingTime;
         float num5 = num3 * (float)PageScrollingTime;
-        float num6 = ((num4 > 0f) ? (scrollDelta.X * (float)num / num4) : 0f);
-        float num7 = ((num5 > 0f) ? (scrollDelta.Y * (float)num / num5) : 0f);
+        float num6 = (num4 > 0f) ? (scrollDelta.X * (float)num / num4) : 0f;
+        float num7 = (num5 > 0f) ? (scrollDelta.Y * (float)num / num5) : 0f;
         scrollStartOffs.X += num6;
         scrollStartOffs.Y += num7;
-        scrollStartOffs.X = ((scrollDelta.X < 0f) ? Math.Max(scrollStartOffs.X, scrollEndOffs.X) : Math.Min(scrollStartOffs.X, scrollEndOffs.X));
-        scrollStartOffs.Y = ((scrollDelta.Y < 0f) ? Math.Max(scrollStartOffs.Y, scrollEndOffs.Y) : Math.Min(scrollStartOffs.Y, scrollEndOffs.Y));
+        scrollStartOffs.X = (scrollDelta.X < 0f) ? Math.Max(scrollStartOffs.X, scrollEndOffs.X) : Math.Min(scrollStartOffs.X, scrollEndOffs.X);
+        scrollStartOffs.Y = (scrollDelta.Y < 0f) ? Math.Max(scrollStartOffs.Y, scrollEndOffs.Y) : Math.Min(scrollStartOffs.Y, scrollEndOffs.Y);
         if (scrollStartOffs == scrollEndOffs)
         {
             ImageVisiblePart = scrollPartEnd;
@@ -1942,7 +1728,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private void DoZoom(Point center, float zoom)
     {
-        if (zoom < MinimumZoom || zoom > MaximumZoom)
+        if (zoom is < MinimumZoom or > MaximumZoom)
         {
             throw new ArgumentOutOfRangeException("value", "zoom value is out of range");
         }
@@ -1954,8 +1740,8 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             float num2 = (float)(center.Y - partBounds.Y) / (float)partBounds.Height;
             imageZoom = zoom;
             Rectangle part = Display.GetPart(0);
-            Point point2 = new Point((int)((float)part.X + (float)part.Width * num), (int)((float)part.Y + (float)part.Height * num2));
-            ImagePartInfo imagePartInfo2 = (ImageVisiblePart = new ImagePartInfo(0, point.X - point2.X, point.Y - point2.Y));
+            Point point2 = new((int)((float)part.X + (float)part.Width * num), (int)((float)part.Y + (float)part.Height * num2));
+            ImagePartInfo imagePartInfo2 = ImageVisiblePart = new ImagePartInfo(0, point.X - point2.X, point.Y - point2.Y);
             OnPageDisplayModeChanged();
             Invalidate();
         }
@@ -1988,7 +1774,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private void FireMouseHWheel(int wParam, int lParam)
     {
-        Point point = new Point(lParam);
+        Point point = new(lParam);
         int delta = wParam >> 16;
         OnMouseHWheel(new MouseEventArgs(MouseButtons.None, 0, point.X, point.Y, delta));
     }
@@ -2032,42 +1818,27 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected virtual void OnMouseHWheel(MouseEventArgs e)
     {
-        if (this.MouseHWheel != null)
-        {
-            this.MouseHWheel(this, e);
-        }
+        MouseHWheel?.Invoke(this, e);
     }
 
     protected virtual void OnPageDisplayModeChanged()
     {
-        if (this.PageDisplayModeChanged != null)
-        {
-            this.PageDisplayModeChanged(this, EventArgs.Empty);
-        }
+        PageDisplayModeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnVisiblePartChanged()
     {
-        if (this.VisiblePartChanged != null)
-        {
-            this.VisiblePartChanged(this, EventArgs.Empty);
-        }
+        VisiblePartChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnUpdateDisplayConfig()
     {
-        if (this.UpdateDisplayConfig != null)
-        {
-            this.UpdateDisplayConfig(this, EventArgs.Empty);
-        }
+        UpdateDisplayConfig?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnPreviewGesture(GestureEventArgs e)
     {
-        if (this.PreviewGesture != null)
-        {
-            this.PreviewGesture(this, e);
-        }
+        PreviewGesture?.Invoke(this, e);
     }
 
     protected virtual void OnGesture(GestureEventArgs e)
@@ -2077,10 +1848,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         if (e.Handled)
         {
             e.Handled = false;
-            if (this.Gesture != null)
-            {
-                this.Gesture(this, e);
-            }
+            Gesture?.Invoke(this, e);
         }
     }
 
@@ -2110,10 +1878,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected virtual void OnRenderImageOverlay(RenderEventArgs e)
     {
-        if (this.RendeImageOverlay != null)
-        {
-            this.RendeImageOverlay(this, e);
-        }
+        RendeImageOverlay?.Invoke(this, e);
     }
 
     protected virtual bool IsMouseOk(Point point)
@@ -2174,7 +1939,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
     {
         int width = FormUtility.ScaleDpiX(EngineConfiguration.Default.GestureAreaSize);
         int height = FormUtility.ScaleDpiY(EngineConfiguration.Default.GestureAreaSize);
-        Rectangle rectangle = new Rectangle(0, 0, width, height);
+        Rectangle rectangle = new(0, 0, width, height);
         foreach (ContentAlignment value in Enum.GetValues(typeof(ContentAlignment)))
         {
             Rectangle area = rectangle.Align(base.ClientRectangle, value);
@@ -2195,7 +1960,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             bool flag = false;
             if (gestureArea != null)
             {
-                GestureEventArgs gestureEventArgs = new GestureEventArgs(GestureType.Touch)
+                GestureEventArgs gestureEventArgs = new(GestureType.Touch)
                 {
                     Area = gestureArea.Alignment,
                     AreaBounds = gestureArea.Area,
@@ -2269,13 +2034,13 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
                 {
                     return;
                 }
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center
                 })
                 {
-                    using (SolidBrush brush = new SolidBrush(ForeColor))
+                    using (SolidBrush brush = new(ForeColor))
                     {
                         e.Graphics.DrawString(Text, Font, brush, base.ClientRectangle, format);
                     }
@@ -2298,7 +2063,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             orgPart = ImageVisiblePart;
             orgZoom = ImageZoom;
             clickPoint = e.Location;
-            flowMouseDelta = (flowMinDelta = PointF.Empty);
+            flowMouseDelta = flowMinDelta = PointF.Empty;
             MouseActionHappened = false;
             if (renderer != null && renderer.IsHardware && FlowingMouseScrolling)
             {
@@ -2319,7 +2084,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
                 Cursor.Current = Cursors.Hand;
                 Point point = ClientToImage(clickPoint);
                 Point point2 = ClientToImage(e.Location);
-                Point offset = new Point(orgPart.Offset.X + (point.X - point2.X), orgPart.Offset.Y + (point.Y - point2.Y));
+                Point offset = new(orgPart.Offset.X + (point.X - point2.X), orgPart.Offset.Y + (point.Y - point2.Y));
                 SetVisiblePart(new ImagePartInfo(orgPart.Part, offset));
             }
         }
@@ -2388,11 +2153,11 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
             flowMinDelta.Y = flowMouseDelta.Y / num2;
         }
         ImagePartInfo imagePartInfo = ImageVisiblePart;
-        float num3 = ((flowLastTime <= 0) ? ((float)flowRunner.Interval) : ((float)(ticks - flowLastTime)));
+        float num3 = (flowLastTime <= 0) ? ((float)flowRunner.Interval) : ((float)(ticks - flowLastTime));
         flowMouseDelta.X -= flowMinDelta.X;
         flowMouseDelta.Y -= flowMinDelta.Y;
-        flowMouseDelta.X = ((flowMinDelta.X > 0f) ? Math.Max(0f, flowMouseDelta.X) : Math.Min(0f, flowMouseDelta.X));
-        flowMouseDelta.Y = ((flowMinDelta.Y > 0f) ? Math.Max(0f, flowMouseDelta.Y) : Math.Min(0f, flowMouseDelta.Y));
+        flowMouseDelta.X = (flowMinDelta.X > 0f) ? Math.Max(0f, flowMouseDelta.X) : Math.Min(0f, flowMouseDelta.X);
+        flowMouseDelta.Y = (flowMinDelta.Y > 0f) ? Math.Max(0f, flowMouseDelta.Y) : Math.Min(0f, flowMouseDelta.Y);
         if (flowMouseDelta.IsEmpty)
         {
             flowRunner.Stop();
@@ -2400,7 +2165,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         }
         else
         {
-            Point offset = new Point((int)((float)imagePartInfo.Offset.X + flowMouseDelta.X * num3), (int)((float)imagePartInfo.Offset.Y + flowMouseDelta.Y * num3));
+            Point offset = new((int)((float)imagePartInfo.Offset.X + flowMouseDelta.X * num3), (int)((float)imagePartInfo.Offset.Y + flowMouseDelta.Y * num3));
             SetVisiblePart(new ImagePartInfo(imagePartInfo.Part, offset));
         }
         flowLastTime = ticks;
@@ -2462,7 +2227,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         double num = gestureRotationStart / Math.PI * 180.0;
         double num2 = e.RotateAngle / Math.PI * 180.0;
         double num3 = num - num2;
-        ImageRotation imageRotation2 = (ImageRotation = gestureRotation.Add((int)num3 + 45));
+        ImageRotation imageRotation2 = ImageRotation = gestureRotation.Add((int)num3 + 45);
     }
 
     private void gestureHandler_ZoomBegin(object sender, Windows7.Multitouch.GestureEventArgs e)
@@ -2525,7 +2290,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
         {
             Point point = ClientToImage(panStart);
             Point point2 = ClientToImage(panLocation);
-            Point offset = new Point(panPart.Offset.X + (point.X - point2.X), panPart.Offset.Y + (point.Y - point2.Y));
+            Point offset = new(panPart.Offset.X + (point.X - point2.X), panPart.Offset.Y + (point.Y - point2.Y));
             SetVisiblePart(new ImagePartInfo(panPart.Part, offset));
         }
     }
@@ -2539,7 +2304,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private void gestureHandler_PressAndTap(object sender, Windows7.Multitouch.GestureEventArgs e)
     {
-        GestureLocation = (panLocation = e.Location);
+        GestureLocation = panLocation = e.Location;
         if (e.IsBegin)
         {
             OnGestureStart();
@@ -2558,7 +2323,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     private void gestureHandler_TwoFingerTap(object sender, Windows7.Multitouch.GestureEventArgs e)
     {
-        GestureLocation = (panLocation = e.Location);
+        GestureLocation = panLocation = e.Location;
         if (e.IsBegin)
         {
             OnGestureStart();
@@ -2580,26 +2345,17 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected virtual void OnPanStart()
     {
-        if (this.PanStart != null)
-        {
-            this.PanStart(this, EventArgs.Empty);
-        }
+        PanStart?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnPan()
     {
-        if (this.Pan != null)
-        {
-            this.Pan(this, EventArgs.Empty);
-        }
+        Pan?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnPanEnd()
     {
-        if (this.PanEnd != null)
-        {
-            this.PanEnd(this, EventArgs.Empty);
-        }
+        PanEnd?.Invoke(this, EventArgs.Empty);
         panStart = Point.Empty;
     }
 

@@ -13,45 +13,30 @@ public struct Vector2
 
     public float X
     {
-        get
-        {
-            return x;
-        }
-        set
-        {
-            x = value;
-        }
+        get => x;
+        set => x = value;
     }
 
     public float Y
     {
-        get
-        {
-            return y;
-        }
-        set
-        {
-            y = value;
-        }
+        get => y;
+        set => y = value;
     }
 
-    public static Vector2 Zero => default(Vector2);
+    public static Vector2 Zero => default;
 
-    public static Vector2 One => new Vector2(1f, 1f);
+    public static Vector2 One => new(1f, 1f);
 
     public float this[int index]
     {
         get
         {
-            switch (index)
+            return index switch
             {
-                case 0:
-                    return x;
-                case 1:
-                    return y;
-                default:
-                    throw new IndexOutOfRangeException("Invalid vector index!");
-            }
+                0 => x,
+                1 => y,
+                _ => throw new IndexOutOfRangeException("Invalid vector index!"),
+            };
         }
         set
         {
@@ -188,20 +173,12 @@ public struct Vector2
 
     public static bool operator ==(Vector2 a, Vector2 b)
     {
-        if (a.x == b.x)
-        {
-            return a.y == b.y;
-        }
-        return false;
+        return a.x == b.x ? a.y == b.y : false;
     }
 
     public static bool operator !=(Vector2 a, Vector2 b)
     {
-        if (a.x == b.x)
-        {
-            return a.y != b.y;
-        }
-        return true;
+        return a.x == b.x ? a.y != b.y : true;
     }
 
     public static Vector2 Max(Vector2 a, Vector2 b)
@@ -221,11 +198,7 @@ public struct Vector2
             return false;
         }
         Vector2 vector = (Vector2)obj;
-        if (vector.x == x)
-        {
-            return vector.y == y;
-        }
-        return false;
+        return vector.x == x ? vector.y == y : false;
     }
 
     public override int GetHashCode()

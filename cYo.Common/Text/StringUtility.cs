@@ -62,18 +62,15 @@ public static class StringUtility
 
     public static string Articles
     {
-        get
-        {
-            return articles.ToListString(", ");
-        }
+        get => articles.ToListString(", ");
         set
         {
             if (string.IsNullOrEmpty(value))
             {
                 return;
             }
-            List<string> list = new List<string>();
-            List<string> list2 = new List<string>();
+            List<string> list = new();
+            List<string> list2 = new();
             string[] array = value.Split(',');
             foreach (string text in array)
             {
@@ -93,8 +90,8 @@ public static class StringUtility
 
     static StringUtility()
     {
-        CommonSeparators = new char[15]
-        {
+        CommonSeparators =
+        [
             ' ',
             '\t',
             '\n',
@@ -110,7 +107,7 @@ public static class StringUtility
             '\'',
             '\u00b4',
             '`'
-        };
+        ];
         rxFloat = new Regex("[-\\+]?\\d*\\.?\\d+", RegexOptions.Compiled);
         rxInt = new Regex("[-\\+]?\\d+", RegexOptions.Compiled);
         rxUpperWordStart = new Regex("\\b(?<letter>)[A-Z0-9]", RegexOptions.Compiled);
@@ -181,27 +178,27 @@ public static class StringUtility
 
     public static string[] Split(this string s, char c, StringSplitOptions options)
     {
-        return s.Split(new char[1]
-        {
+        return s.Split(
+        [
             c
-        }, options);
+        ], options);
     }
 
     public static string[] Split(this string s, string c, StringSplitOptions options)
     {
-        return s.Split(new string[1]
-        {
+        return s.Split(
+        [
             c
-        }, options);
+        ], options);
     }
 
     public static string[] Split(this string s, int lengthFirstPart, int between)
     {
-        return new string[2]
-        {
+        return
+        [
             s.Left(lengthFirstPart),
             s.Substring(lengthFirstPart + between)
-        };
+        ];
     }
 
     public static string[] Split(this string s, int lengthFirstPart)
@@ -211,11 +208,7 @@ public static class StringUtility
 
     public static string ToXmlString(this string s)
     {
-        if (string.IsNullOrEmpty(s))
-        {
-            return string.Empty;
-        }
-        return SecurityElement.Escape(s);
+        return string.IsNullOrEmpty(s) ? string.Empty : SecurityElement.Escape(s);
     }
 
     public static bool IsArticle(this string text)
@@ -225,11 +218,7 @@ public static class StringUtility
 
     public static bool Contains(this string s, string search, StringComparison comparison)
     {
-        if (s != null)
-        {
-            return s.IndexOf(search, comparison) != -1;
-        }
-        return false;
+        return s != null ? s.IndexOf(search, comparison) != -1 : false;
     }
 
     public static int IndexAfterArticle(this string s)
@@ -253,11 +242,7 @@ public static class StringUtility
     public static string RemoveArticle(this string s)
     {
         int num = s.IndexAfterArticle();
-        if (num != -1)
-        {
-            return s.Substring(num);
-        }
-        return s;
+        return num != -1 ? s.Substring(num) : s;
     }
 
     public static int ExtendedCompareTo(this string a, string b, ExtendedStringComparison mode)
@@ -286,7 +271,7 @@ public static class StringUtility
         {
             return pascalFormattedString;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         bool flag = true;
         bool flag2 = false;
         foreach (char c in pascalFormattedString)
@@ -310,7 +295,7 @@ public static class StringUtility
 
     public static string StartToUpper(this string s)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         foreach (char c in s)
         {
             stringBuilder.Append((stringBuilder.Length == 0) ? char.ToUpper(c) : c);
@@ -320,40 +305,30 @@ public static class StringUtility
 
     public static int CompareNumberString(this string a, string b, StringComparison ct, bool invariantNumber)
     {
-        if (a.TryParse(out float f, invariantNumber) && b.TryParse(out float f2, invariantNumber))
-        {
-            return f.CompareTo(f2);
-        }
-        return string.Compare(a, b, ct);
+        return a.TryParse(out float f, invariantNumber) && b.TryParse(out float f2, invariantNumber)
+            ? f.CompareTo(f2)
+            : string.Compare(a, b, ct);
     }
 
     public static bool TryParse(this string number, out float f, bool invariant)
     {
         Match match = rxFloat.Match(number ?? string.Empty);
-        CultureInfo provider = (invariant ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+        CultureInfo provider = invariant ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture;
         f = 0f;
-        if (match.Success)
-        {
-            return float.TryParse(match.Value, NumberStyles.Float, provider, out f);
-        }
-        return false;
+        return match.Success ? float.TryParse(match.Value, NumberStyles.Float, provider, out f) : false;
     }
 
     public static bool TryParse(this string number, out int n, bool invariant)
     {
         Match match = rxInt.Match(number ?? string.Empty);
-        CultureInfo provider = (invariant ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+        CultureInfo provider = invariant ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture;
         n = 0;
-        if (match.Success)
-        {
-            return int.TryParse(match.Value, NumberStyles.Integer, provider, out n);
-        }
-        return false;
+        return match.Success ? int.TryParse(match.Value, NumberStyles.Integer, provider, out n) : false;
     }
 
     public static string ToListString(this IEnumerable list, string separator)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         foreach (object item in list)
         {
             if (stringBuilder.Length != 0)
@@ -367,18 +342,14 @@ public static class StringUtility
 
     public static IEnumerable<string> FromListString(this string listString, char separator)
     {
-        if (string.IsNullOrEmpty(listString))
-        {
-            return Enumerable.Empty<string>();
-        }
-        if (!listString.Contains(separator.ToString()))
-        {
-            return ListExtensions.AsEnumerable<string>(listString.Trim());
-        }
-        return from s in listString.Split(separator)
+        return string.IsNullOrEmpty(listString)
+            ? []
+            : !listString.Contains(separator.ToString())
+            ? ListExtensions.AsEnumerable<string>(listString.Trim())
+            : (from s in listString.Split(separator)
                select s.Trim() into s
                where !string.IsNullOrEmpty(s)
-               select s;
+               select s);
     }
 
     public static HashSet<string> ListStringToSet(this string listString, char separator)
@@ -415,8 +386,8 @@ public static class StringUtility
 
     public static void Prefix(IList<string> texts, char prefix, PrefixOptions options = PrefixOptions.Default)
     {
-        HashSet<char> used = new HashSet<char>();
-        Regex regex = new Regex($"\\{prefix}(?=[a-zA-Z0-9])");
+        HashSet<char> used = new();
+        Regex regex = new($"\\{prefix}(?=[a-zA-Z0-9])");
         for (int i = 0; i < texts.Count; i++)
         {
             string text = texts[i];
@@ -484,7 +455,7 @@ public static class StringUtility
 
     public static string AppendWithSeparator(this string text, string separator, params string[] texts)
     {
-        text = text ?? string.Empty;
+        text ??= string.Empty;
         foreach (string text2 in texts)
         {
             if (!string.IsNullOrEmpty(text2))
@@ -504,8 +475,8 @@ public static class StringUtility
         string returnValue = target;
         if (!string.IsNullOrEmpty(value))
         {
-            HashSet<string> uniqueValues = new HashSet<string>() { };
-            StringBuilder stringBuilder = new StringBuilder(returnValue); //create a new StringBuilder containing the current value
+            HashSet<string> uniqueValues = new() { };
+            StringBuilder stringBuilder = new(returnValue); //create a new StringBuilder containing the current value
 
             var values = value.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
             var existing = returnValue.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
@@ -559,11 +530,7 @@ public static class StringUtility
     public static string CutOff(this string text, params char[] delimiters)
     {
         int num = text.IndexOfAny(delimiters);
-        if (num == -1)
-        {
-            return text;
-        }
-        return text.Substring(0, num);
+        return num == -1 ? text : text.Substring(0, num);
     }
 
     public static bool IsNumber(this string text)
@@ -581,11 +548,7 @@ public static class StringUtility
     public static char Normalize(this char c)
     {
         int num = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÖöÜüÄä".IndexOf(c);
-        if (num == -1)
-        {
-            return c;
-        }
-        return "AAAAAAACEEEEIIIIDNOOOOOOUUUUYPSaaaaaaaceeeeiiiionoooooouuuuybyOoUuAa"[num];
+        return num == -1 ? c : "AAAAAAACEEEEIIIIDNOOOOOOUUUUYPSaaaaaaaceeeeiiiionoooooouuuuybyOoUuAa"[num];
     }
 
     public static string ReplaceAny(this string s, string search, char newChar)
@@ -616,11 +579,7 @@ public static class StringUtility
 
     public static bool ContainsAny(this string s, string characters)
     {
-        if (string.IsNullOrEmpty(s) || string.IsNullOrEmpty(characters))
-        {
-            return false;
-        }
-        return characters.Any((char c) => s.Contains(c));
+        return string.IsNullOrEmpty(s) || string.IsNullOrEmpty(characters) ? false : characters.Any((char c) => s.Contains(c));
     }
 
     public static string Left(this string s, int len)
@@ -646,17 +605,13 @@ public static class StringUtility
         {
             len = minLength;
         }
-        if (s.Length < len)
-        {
-            return s;
-        }
-        return s.Left(len) + append;
+        return s.Length < len ? s : s.Left(len) + append;
     }
 
     public static string LineBreak(this string s, int lineLength)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        StringBuilder stringBuilder2 = new StringBuilder();
+        StringBuilder stringBuilder = new();
+        StringBuilder stringBuilder2 = new();
         if (string.IsNullOrEmpty(s))
         {
             return s;
@@ -703,8 +658,8 @@ public static class StringUtility
 
     public static string Intent(this string s, int intention)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        string value = new string(' ', intention);
+        StringBuilder stringBuilder = new();
+        string value = new(' ', intention);
         string[] array = s.Replace(Environment.NewLine, "\n").Split('\n');
         for (int i = 0; i < array.Length; i++)
         {
@@ -721,8 +676,8 @@ public static class StringUtility
 
     public static string ToHexString(this byte[] data, bool trimZeros = false)
     {
-        StringBuilder stringBuilder = new StringBuilder(data.Length * 2);
-        string format = (trimZeros ? "{0:x}" : "{0:x2}");
+        StringBuilder stringBuilder = new(data.Length * 2);
+        string format = trimZeros ? "{0:x}" : "{0:x2}";
         foreach (byte b in data)
         {
             stringBuilder.AppendFormat(format, b);
@@ -768,7 +723,7 @@ public static class StringUtility
         {
             text = rxNonWordLetters.Replace(text, string.Empty);
         }
-        text = ((!options.HasFlag(ShortenTextOptions.RemoveSpaces)) ? rxMultiSpace.Replace(text, " ") : rxSpace.Replace(text, string.Empty));
+        text = (!options.HasFlag(ShortenTextOptions.RemoveSpaces)) ? rxMultiSpace.Replace(text, " ") : rxSpace.Replace(text, string.Empty);
         return text.Trim().Left(maxLength);
     }
 }

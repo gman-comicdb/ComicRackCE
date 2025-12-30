@@ -72,14 +72,14 @@ public static class SimpleTextRenderer
                         StringFormat format = textLine.Format;
                         if (format.Alignment != StringAlignment.Far)
                         {
-                            format.SetTabStops(0f, new float[1]
-                            {
+                            format.SetTabStops(0f,
+                            [
                                 num
-                            });
+                            ]);
                         }
                         Rectangle b = DrawString(gr, textLine.Text, textLine.Font, br, ref rect, format, onlyMeassure);
                         if (rect.Height != 0)
-                            a = (a.IsEmpty ? b : Rectangle.Union(a, b));
+                            a = a.IsEmpty ? b : Rectangle.Union(a, b);
                         else
                             break;
                     }
@@ -123,7 +123,7 @@ public static class SimpleTextRenderer
         {
             gr.DrawString(text, f, br, rect, sf);
         }
-        Rectangle rectangle = new Rectangle(0, 0, size.Width, size.Height);
+        Rectangle rectangle = new(0, 0, size.Width, size.Height);
         rectangle = rectangle.Align(rect, EnumExtensions.FromAlignments(sf.Alignment, sf.LineAlignment));
         Space(ref rect, size.Height);
         return rectangle;

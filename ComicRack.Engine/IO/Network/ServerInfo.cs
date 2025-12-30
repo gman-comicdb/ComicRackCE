@@ -13,27 +13,11 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network;
 [SoapType(Namespace = "urn:ServerRegistration")]
 public class ServerInfo
 {
-    public string Uri
-    {
-        get;
-        set;
-    }
+    public string Uri { get; set; }
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public string Comment
-    {
-        get;
-        set;
-    }
+    public string Comment { get; set; }
 
-    public int Options
-    {
-        get;
-        set;
-    }
+    public int Options { get; set; }
 }

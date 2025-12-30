@@ -105,17 +105,17 @@ public class PdfNative : IComicAccessor
 
     public IEnumerable<ProviderImageInfo> GetEntryList(string source)
     {
-        Match streamStartTag = new Match("stream");
-        Match streamEndTag = new Match("endstream");
+        Match streamStartTag = new("stream");
+        Match streamEndTag = new("endstream");
         using (FileStream readStream = File.OpenRead(source))
         {
-            Reader reader = new Reader(readStream);
+            Reader reader = new(readStream);
             int b = 0;
             while (b != -1)
             {
                 while ((b = reader.ReadByte()) != -1 && !streamStartTag.IsMatch(b)) ;
                 b = reader.ReadByte();
-                while (b != -1 && (b == 10 || b == 13))
+                while (b is not (-1) and (10 or 13))
                 {
                     b = reader.ReadByte();
                 }
@@ -157,11 +157,7 @@ public class PdfNative : IComicAccessor
             using (FileStream fileStream = File.OpenRead(file))
             {
                 fileStream.Seek(si.Offset, SeekOrigin.Begin);
-                if (fileStream.Read(array, 0, array.Length) != array.Length)
-                {
-                    return null;
-                }
-                return array;
+                return fileStream.Read(array, 0, array.Length) != array.Length ? null : array;
             }
         }
         catch (Exception)

@@ -13,18 +13,11 @@ public class KeySequenceHandler : Component
 
         private DateTime lastKeyEntered = DateTime.Now;
 
-        public KeySequence Sequence
-        {
-            get;
-            set;
-        }
+        public KeySequence Sequence { get; set; }
 
         public int Position
         {
-            get
-            {
-                return position;
-            }
+            get => position;
             set
             {
                 if (position != value)
@@ -59,11 +52,11 @@ public class KeySequenceHandler : Component
 
     private Control control;
 
-    private readonly KeySequenceCollection sequences = new KeySequenceCollection();
+    private readonly KeySequenceCollection sequences = new();
 
     private int intervallTime = 1000;
 
-    private readonly List<SequenceState> activeSequences = new List<SequenceState>();
+    private readonly List<SequenceState> activeSequences = new();
 
     private Keys keyState;
 
@@ -72,10 +65,7 @@ public class KeySequenceHandler : Component
     [DefaultValue(null)]
     public Control Control
     {
-        get
-        {
-            return control;
-        }
+        get => control;
         set
         {
             if (control != value)
@@ -102,7 +92,7 @@ public class KeySequenceHandler : Component
     {
         get
         {
-            KeySequenceCollection keySequenceCollection = new KeySequenceCollection();
+            KeySequenceCollection keySequenceCollection = new();
             foreach (SequenceState activeSequence in activeSequences)
             {
                 keySequenceCollection.Add(activeSequence.Sequence);
@@ -114,14 +104,8 @@ public class KeySequenceHandler : Component
     [DefaultValue(1000)]
     public int IntervallTime
     {
-        get
-        {
-            return intervallTime;
-        }
-        set
-        {
-            intervallTime = value;
-        }
+        get => intervallTime;
+        set => intervallTime = value;
     }
 
     public event KeyEventHandler KeyDown;
@@ -145,10 +129,7 @@ public class KeySequenceHandler : Component
     {
         if (disposing)
         {
-            if (components != null)
-            {
-                components.Dispose();
-            }
+            components?.Dispose();
             Control = null;
         }
         base.Dispose(disposing);
@@ -175,7 +156,7 @@ public class KeySequenceHandler : Component
             KeySequence ksrun = sequence;
             if (activeSequences.Find((SequenceState ss) => ss.Sequence == ksrun) == null)
             {
-                SequenceState sequenceState2 = new SequenceState(sequence);
+                SequenceState sequenceState2 = new(sequence);
                 if (sequenceState2.Parse(key, intervallTime))
                 {
                     activeSequences.Add(sequenceState2);
@@ -196,24 +177,18 @@ public class KeySequenceHandler : Component
 
     protected virtual void OnSequenceCompleted(KeySequence sequence)
     {
-        FireSequenceEvent(this.SequenceCompleted, sequence);
+        FireSequenceEvent(SequenceCompleted, sequence);
     }
 
     protected virtual void OnKeyDown(KeyEventArgs e)
     {
-        if (this.KeyDown != null)
-        {
-            this.KeyDown(this, e);
-        }
+        KeyDown?.Invoke(this, e);
     }
 
     protected virtual void OnKeyUp(KeyEventArgs e)
     {
         ParseKey(e.KeyCode | keyState);
-        if (this.KeyUp != null)
-        {
-            this.KeyUp(this, e);
-        }
+        KeyUp?.Invoke(this, e);
     }
 
     private void control_KeyDown(object sender, KeyEventArgs e)

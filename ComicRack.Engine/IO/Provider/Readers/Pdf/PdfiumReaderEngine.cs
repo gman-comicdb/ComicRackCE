@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 using cYo.Common.Drawing;
 
 using PDFiumSharp;
-using PDFiumSharp.Enums;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Pdf;
 
@@ -39,12 +35,12 @@ public class PdfiumReaderEngine : IComicAccessor
     {
         try
         {
-            using (PdfDocument pdfDocument = new PdfDocument(source))
+            using (PdfDocument pdfDocument = new(source))
             {
                 using (PdfPage pdfPage = pdfDocument.Pages[info.Index])
                 {
                     Size size = CalculateSize(pdfPage.Width, pdfPage.Height);
-                    using (Bitmap bitmap = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb))
+                    using (Bitmap bitmap = new(size.Width, size.Height, PixelFormat.Format24bppRgb))
                     {
                         pdfPage.Render(bitmap);
                         return bitmap.ImageToBytes(ImageFormat.Jpeg);
@@ -69,9 +65,9 @@ public class PdfiumReaderEngine : IComicAccessor
         int maxHeight = maxSize.Height; //2540 is 11in at 225dpi
 
         //Calculate the width based on the max height
-        int targeWidth = (int)((width * maxHeight) / height);
+        int targeWidth = (int)(width * maxHeight / height);
         //Calculate the height based on the max width
-        int targeHeight = (int)((height * maxWidth) / width);
+        int targeHeight = (int)(height * maxWidth / width);
 
         //if the page is a landscape page (width > height), use the max height, if not we use the max width
         Size outSize = width > height ? new Size(targeWidth, maxHeight) : new Size(maxWidth, targeHeight);

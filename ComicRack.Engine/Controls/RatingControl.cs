@@ -32,10 +32,7 @@ public class RatingControl : Control
 
     public override string Text
     {
-        get
-        {
-            return base.Text;
-        }
+        get => base.Text;
         set
         {
             if (!(base.Text == value))
@@ -51,10 +48,7 @@ public class RatingControl : Control
     [DefaultValue(null)]
     public Image RatingImage
     {
-        get
-        {
-            return ratingImage;
-        }
+        get => ratingImage;
         set
         {
             if (ratingImage != value)
@@ -70,10 +64,7 @@ public class RatingControl : Control
     [DefaultValue(5)]
     public int MaximumRating
     {
-        get
-        {
-            return maximumRating;
-        }
+        get => maximumRating;
         set
         {
             value = value.Clamp(0, 100);
@@ -110,14 +101,8 @@ public class RatingControl : Control
     [DefaultValue(1)]
     public int RatingDigits
     {
-        get
-        {
-            return ratingDigits;
-        }
-        set
-        {
-            ratingDigits = value;
-        }
+        get => ratingDigits;
+        set => ratingDigits = value;
     }
 
     [Category("Display")]
@@ -125,10 +110,7 @@ public class RatingControl : Control
     [DefaultValue(false)]
     public bool DrawText
     {
-        get
-        {
-            return drawText;
-        }
+        get => drawText;
         set
         {
             if (drawText != value)
@@ -144,10 +126,7 @@ public class RatingControl : Control
     [DefaultValue(true)]
     public bool DrawBorder
     {
-        get
-        {
-            return drawBorder;
-        }
+        get => drawBorder;
         set
         {
             if (drawBorder != value)
@@ -163,10 +142,7 @@ public class RatingControl : Control
     [DefaultValue(true)]
     public bool CenterRating
     {
-        get
-        {
-            return centerRating;
-        }
+        get => centerRating;
         set
         {
             if (centerRating != value)
@@ -195,8 +171,8 @@ public class RatingControl : Control
         {
             if (drawBorder)
             {
-                VisualStyleElement element = (Focused ? VisualStyleElement.TextBox.TextEdit.Focused : VisualStyleElement.TextBox.TextEdit.Normal);
-                VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(element);
+                VisualStyleElement element = Focused ? VisualStyleElement.TextBox.TextEdit.Focused : VisualStyleElement.TextBox.TextEdit.Normal;
+                VisualStyleRenderer visualStyleRenderer = new(element);
                 //visualStyleRenderer.DrawBackground(graphics, base.ClientRectangle);
                 visualStyleRenderer.DrawThemeBackground(graphics, base.ClientRectangle);
             }
@@ -287,20 +263,11 @@ public class RatingControl : Control
 
     protected override bool IsInputKey(Keys keyData)
     {
-        switch (keyData)
+        return keyData switch
         {
-            case Keys.Prior:
-            case Keys.Next:
-            case Keys.End:
-            case Keys.Home:
-            case Keys.Left:
-            case Keys.Up:
-            case Keys.Right:
-            case Keys.Down:
-                return true;
-            default:
-                return base.IsInputKey(keyData);
-        }
+            Keys.Prior or Keys.Next or Keys.End or Keys.Home or Keys.Left or Keys.Up or Keys.Right or Keys.Down => true,
+            _ => base.IsInputKey(keyData),
+        };
     }
 
     private void AdjustRating(int direction)
@@ -323,14 +290,14 @@ public class RatingControl : Control
             string ratingText = GetRatingText(Rating);
             Size size = gr.MeasureString(ratingText, Font).ToSize();
             size.Width += 4;
-            Rectangle rectangle2 = new Rectangle(rectangle.Right - size.Width - 2, rectangle.Top + (rectangle.Height - size.Height) / 2, size.Width, size.Height + 1);
+            Rectangle rectangle2 = new(rectangle.Right - size.Width - 2, rectangle.Top + (rectangle.Height - size.Height) / 2, size.Width, size.Height + 1);
             using (gr.AntiAlias())
             {
-                using (Pen pen = new Pen(color, 1.5f))
+                using (Pen pen = new(color, 1.5f))
                 {
                     using (Brush brush = new SolidBrush(color))
                     {
-                        using (StringFormat format = new StringFormat
+                        using (StringFormat format = new()
                         {
                             Alignment = StringAlignment.Center,
                             LineAlignment = StringAlignment.Center
@@ -348,17 +315,13 @@ public class RatingControl : Control
             rectangle = rectangle.Pad(0, 0, size.Width + 2);
         }
         Renderer = new RatingRenderer(RatingImage, rectangle, MaximumRating);
-        Renderer.RatingScaleMode = (CenterRating ? RectangleScaleMode.Center : RectangleScaleMode.None);
+        Renderer.RatingScaleMode = CenterRating ? RectangleScaleMode.Center : RectangleScaleMode.None;
         Renderer.DrawRatingStrip(gr, Rating);
     }
 
     private int GetRatingTextWidth(Graphics gr)
     {
-        if (!DrawText)
-        {
-            return 0;
-        }
-        return (int)Math.Ceiling(gr.MeasureString(GetRatingText(MaximumRating), Font).Width);
+        return !DrawText ? 0 : (int)Math.Ceiling(gr.MeasureString(GetRatingText(MaximumRating), Font).Width);
     }
 
     private string GetRatingText(float rating)
@@ -368,7 +331,7 @@ public class RatingControl : Control
 
     public static ToolStripControlHost InsertRatingControl(ContextMenuStrip strip, int index, Image star, Func<IEditRating> rating)
     {
-        RatingControl r = new RatingControl();
+        RatingControl r = new();
         r.Height = FormUtility.ScaleDpiY(18);
         r.Width = FormUtility.ScaleDpiX(200);
         r.RatingImage = star;
@@ -386,7 +349,7 @@ public class RatingControl : Control
         {
             (r.Tag as IEditRating).SetRating(r.Rating);
         };
-        ToolStripControlHost toolStripControlHost = new ToolStripControlHost(r);
+        ToolStripControlHost toolStripControlHost = new(r);
         strip.Items.Insert(index, toolStripControlHost);
         return toolStripControlHost;
     }

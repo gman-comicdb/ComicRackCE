@@ -13,42 +13,27 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 [Serializable]
 public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallback, ICloneable
 {
-    private readonly ComicListItemCollection items = new ComicListItemCollection();
+    private readonly ComicListItemCollection items = new();
 
     [XmlArrayItem("Item")]
     public ComicListItemCollection Items => items;
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool Collapsed
-    {
-        get;
-        set;
-    }
+    public bool Collapsed { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool Temporary
-    {
-        get;
-        set;
-    }
+    public bool Temporary { get; set; }
 
     [XmlAttribute]
     [DefaultValue(ComicFolderCombineMode.Or)]
-    public ComicFolderCombineMode CombineMode
-    {
-        get;
-        set;
-    }
+    public ComicFolderCombineMode CombineMode { get; set; }
 
     [XmlIgnore]
     public override ComicLibrary Library
     {
-        get
-        {
-            return base.Library;
-        }
+        get => base.Library;
         set
         {
             base.Library = value;
@@ -59,17 +44,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
         }
     }
 
-    public override string ImageKey
-    {
-        get
-        {
-            if (!Temporary)
-            {
-                return "Folder";
-            }
-            return "TempFolder";
-        }
-    }
+    public override string ImageKey => !Temporary ? "Folder" : "TempFolder";
 
     public ComicListItemFolder()
     {
@@ -160,7 +135,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
             default:
                 foreach (ComicListItem item in Items)
                 {
-                    enumerable = ((enumerable == null) ? item.GetBooks() : enumerable.Union(item.GetBooks(), ComicBook.GuidEquality));
+                    enumerable = (enumerable == null) ? item.GetBooks() : enumerable.Union(item.GetBooks(), ComicBook.GuidEquality);
                     if (Library != null && enumerable.Count() == Library.BookCount)
                     {
                         break;
@@ -170,7 +145,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
             case ComicFolderCombineMode.And:
                 foreach (ComicListItem item2 in Items)
                 {
-                    enumerable = ((enumerable == null) ? item2.GetBooks() : enumerable.Intersect(item2.GetBooks(), ComicBook.GuidEquality));
+                    enumerable = (enumerable == null) ? item2.GetBooks() : enumerable.Intersect(item2.GetBooks(), ComicBook.GuidEquality);
                     if (enumerable.IsEmpty())
                     {
                         break;
@@ -180,7 +155,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
             case ComicFolderCombineMode.Empty:
                 break;
         }
-        return enumerable ?? Enumerable.Empty<ComicBook>();
+        return enumerable ?? [];
     }
 
     void IDeserializationCallback.OnDeserialization(object sender)

@@ -11,79 +11,31 @@ namespace cYo.Projects.ComicRack.Engine.Sync;
 
 public class DeviceInfo
 {
-    public string Name
-    {
-        get;
-        private set;
-    }
+    public string Name { get; private set; }
 
-    public string Model
-    {
-        get;
-        private set;
-    }
+    public string Model { get; private set; }
 
-    public string SerialNumber
-    {
-        get;
-        private set;
-    }
+    public string SerialNumber { get; private set; }
 
-    public string Key
-    {
-        get;
-        private set;
-    }
+    public string Key { get; private set; }
 
-    public string Manufacturer
-    {
-        get;
-        private set;
-    }
+    public string Manufacturer { get; private set; }
 
-    public SyncAppEdition Edition
-    {
-        get;
-        private set;
-    }
+    public SyncAppEdition Edition { get; private set; }
 
-    public int Version
-    {
-        get;
-        private set;
-    }
+    public int Version { get; private set; }
 
-    public string DeviceHash
-    {
-        get;
-        private set;
-    }
+    public string DeviceHash { get; private set; }
 
-    public Size ScreenPixelSize
-    {
-        get;
-        private set;
-    }
+    public Size ScreenPixelSize { get; private set; }
 
-    public PointF ScreenDpi
-    {
-        get;
-        private set;
-    }
+    public PointF ScreenDpi { get; private set; }
 
-    public DeviceCapabilites Capabilites
-    {
-        get;
-        private set;
-    }
+    public DeviceCapabilites Capabilites { get; private set; }
 
-    public int BookSyncLimit
-    {
-        get;
-        set;
-    }
+    public int BookSyncLimit { get; set; }
 
-    public SizeF ScreenPhysicalSize => new SizeF((float)ScreenPixelSize.Width / ScreenDpi.X, (float)ScreenPixelSize.Height / ScreenDpi.Y);
+    public SizeF ScreenPhysicalSize => new((float)ScreenPixelSize.Width / ScreenDpi.X, (float)ScreenPixelSize.Height / ScreenDpi.Y);
 
     public DeviceInfo(IDictionary<string, string> values)
     {
@@ -96,21 +48,13 @@ public class DeviceInfo
         Version = int.Parse(values["Version"]);
         string property = GetProperty(values, "Edition");
         string a = new SHA1Managed().ComputeHash(Encoding.UTF8.GetBytes(Model + Manufacturer + SerialNumber + property + Version)).ToHexString(trimZeros: true);
-        switch (property)
+        Edition = property switch
         {
-            case "Android Free":
-                Edition = SyncAppEdition.AndroidFree;
-                break;
-            case "Android Full":
-                Edition = SyncAppEdition.AndroidFull;
-                break;
-            case "iOS":
-                Edition = SyncAppEdition.iOS;
-                break;
-            default:
-                Edition = SyncAppEdition.Unknown;
-                break;
-        }
+            "Android Free" => SyncAppEdition.AndroidFree,
+            "Android Full" => SyncAppEdition.AndroidFull,
+            "iOS" => SyncAppEdition.iOS,
+            _ => SyncAppEdition.Unknown,
+        };
         string[] array = GetProperty(values, "Screen").Split(',');
         ScreenPixelSize = new Size(int.Parse(array[0]), int.Parse(array[1]));
         ScreenDpi = new PointF(float.Parse(array[2], CultureInfo.InvariantCulture), float.Parse(array[3], CultureInfo.InvariantCulture));
@@ -127,10 +71,6 @@ public class DeviceInfo
 
     private string GetProperty(IDictionary<string, string> bag, string key)
     {
-        if (!bag.TryGetValue(key, out var value))
-        {
-            return null;
-        }
-        return value;
+        return !bag.TryGetValue(key, out var value) ? null : value;
     }
 }

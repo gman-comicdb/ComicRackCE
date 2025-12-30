@@ -14,26 +14,13 @@ public class SimpleColorPicker : ComboBox
 
     public string SelectedColorName
     {
-        get
-        {
-            return SelectedColor.Name;
-        }
-        set
-        {
-            SelectedColor = Color.FromName(value);
-        }
+        get => SelectedColor.Name;
+        set => SelectedColor = Color.FromName(value);
     }
 
     public Color SelectedColor
     {
-        get
-        {
-            if (base.SelectedItem != null)
-            {
-                return (Color)base.SelectedItem;
-            }
-            return Color.Empty;
-        }
+        get => base.SelectedItem != null ? (Color)base.SelectedItem : Color.Empty;
         set
         {
             foreach (Color item in base.Items)
@@ -62,7 +49,7 @@ public class SimpleColorPicker : ComboBox
         e.DrawThemeBackground();
         // does not draw a FocusRectangle in light mode, maintaining current functionality
         e.DrawThemeFocusRectangle();
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             Alignment = StringAlignment.Near,
             LineAlignment = StringAlignment.Center
@@ -78,7 +65,7 @@ public class SimpleColorPicker : ComboBox
                 {
                     graphics.FillRectangle(brush, bounds);
                 }
-                using (Pen pen = new Pen(e.ForeColor))
+                using (Pen pen = new(e.ForeColor))
                 {
                     graphics.DrawRectangle(pen, bounds);
                 }

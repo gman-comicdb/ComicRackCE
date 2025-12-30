@@ -13,11 +13,7 @@ public class TabControlEx : TabControl, ITheme
     private Point downPoint;
 
     [DefaultValue(false)]
-    public bool ReorderTabsWhileDragging
-    {
-        get;
-        set;
-    }
+    public bool ReorderTabsWhileDragging { get; set; }
 
     public virtual UIComponent UIComponent => UIComponent.None;
 

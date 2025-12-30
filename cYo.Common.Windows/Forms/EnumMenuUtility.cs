@@ -36,7 +36,7 @@ public class EnumMenuUtility
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach (object value in Enum.GetValues(enumType))
             {
                 int num = Convert.ToInt32(value);
@@ -55,10 +55,7 @@ public class EnumMenuUtility
 
     public int Value
     {
-        get
-        {
-            return enumValue;
-        }
+        get => enumValue;
         set
         {
             if (enumValue != value)
@@ -71,10 +68,7 @@ public class EnumMenuUtility
 
     public bool Enabled
     {
-        get
-        {
-            return items.All((ToolStripItem ti) => ti.Enabled);
-        }
+        get => items.All((ToolStripItem ti) => ti.Enabled);
         set
         {
             items.ForEach(delegate (ToolStripItem ti)
@@ -110,15 +104,12 @@ public class EnumMenuUtility
 
     protected virtual void OnValueChanged()
     {
-        if (this.ValueChanged != null)
-        {
-            this.ValueChanged(this, EventArgs.Empty);
-        }
+        ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private ToolStripItem[] MakeEnumMenu(IDictionary<int, Image> images, Keys startKey)
     {
-        List<ToolStripItem> list = new List<ToolStripItem>();
+        List<ToolStripItem> list = new();
         foreach (object value in Enum.GetValues(enumType))
         {
             int num = Convert.ToInt32(value);
@@ -127,7 +118,7 @@ public class EnumMenuUtility
                 .FirstOrDefault();
             if ((browsableAttribute == null || browsableAttribute.Browsable) && ((isFlags && BitUtility.GetBitCount(num) == 1) || !isFlags))
             {
-                ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem
+                ToolStripMenuItem toolStripMenuItem = new()
                 {
                     Text = LocalizeUtility.LocalizeEnum(enumType, num),
                     Tag = num
@@ -174,14 +165,7 @@ public class EnumMenuUtility
             if (item.Tag != null)
             {
                 int num = (int)item.Tag;
-                if (flagsMode)
-                {
-                    item.Checked = (Value & num) == num;
-                }
-                else
-                {
-                    item.Checked = Value.Equals(item.Tag);
-                }
+                item.Checked = flagsMode ? (Value & num) == num : Value.Equals(item.Tag);
             }
         }
     }
@@ -189,14 +173,7 @@ public class EnumMenuUtility
     private void EnumClicked(object sender, EventArgs e)
     {
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
-        if (flagsMode)
-        {
-            Value = enumValue ^ Convert.ToInt32(toolStripMenuItem.Tag);
-        }
-        else
-        {
-            Value = (int)toolStripMenuItem.Tag;
-        }
+        Value = flagsMode ? enumValue ^ Convert.ToInt32(toolStripMenuItem.Tag) : (int)toolStripMenuItem.Tag;
     }
 
     private void EnumAllClicked(object sender, EventArgs e)

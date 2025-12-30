@@ -13,32 +13,17 @@ public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl,
 
     private Bitmap image;
 
-    public ContentAlignment Alignment
-    {
-        get;
-        set;
-    }
+    public ContentAlignment Alignment { get; set; }
 
-    public bool AutoDispose
-    {
-        get;
-        set;
-    }
+    public bool AutoDispose { get; set; }
 
     public Control Control => control;
 
-    public float Opacity
-    {
-        get;
-        set;
-    }
+    public float Opacity { get; set; }
 
     public Bitmap Bitmap
     {
-        get
-        {
-            return image;
-        }
+        get => image;
         set
         {
             SetBitmap(value);
@@ -52,14 +37,8 @@ public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl,
 
     public object Tag
     {
-        get
-        {
-            return control.Tag;
-        }
-        set
-        {
-            control.Tag = value;
-        }
+        get => control.Tag;
+        set => control.Tag = value;
     }
 
     public BackgroundImageDisplayer(Control c)
@@ -79,20 +58,17 @@ public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl,
         {
             return;
         }
-        Bitmap bitmap = ((image == null) ? null : new Bitmap(control.ClientRectangle.Width, control.ClientRectangle.Height));
+        Bitmap bitmap = (image == null) ? null : new Bitmap(control.ClientRectangle.Width, control.ClientRectangle.Height);
         if (bitmap != null)
         {
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 graphics.Clear(control.BackColor);
-                Rectangle rectangle = new Rectangle(0, 0, image.Width, image.Height);
+                Rectangle rectangle = new(0, 0, image.Width, image.Height);
                 Rectangle bounds = rectangle.Align(control.ClientRectangle, Alignment);
                 graphics.DrawImage(image, bounds, Opacity);
             }
-            if (control.BackgroundImage != null)
-            {
-                control.BackgroundImage.Dispose();
-            }
+            control.BackgroundImage?.Dispose();
         }
         control.BackgroundImage = bitmap;
     }
@@ -104,10 +80,7 @@ public class BackgroundImageDisplayer : DisposableObject, IBitmapDisplayControl,
 
     protected override void Dispose(bool disposing)
     {
-        if (control.BackgroundImage != null)
-        {
-            control.BackgroundImage.Dispose();
-        }
+        control.BackgroundImage?.Dispose();
         control.Dispose();
     }
 }

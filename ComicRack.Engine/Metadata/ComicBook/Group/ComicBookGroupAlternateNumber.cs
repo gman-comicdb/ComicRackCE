@@ -6,10 +6,8 @@ public class ComicBookGroupAlternateNumber : SingleComicGrouper
 {
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        if (item.CompareAlternateNumber.IsNumber)
-        {
-            return ItemGroupCount.GetNumberGroup((int)item.CompareAlternateNumber.Number);
-        }
-        return SingleComicGrouper.GetNameGroup(item.CompareAlternateNumber.Text);
+        return item.CompareAlternateNumber.IsNumber
+            ? ItemGroupCount.GetNumberGroup((int)item.CompareAlternateNumber.Number)
+            : SingleComicGrouper.GetNameGroup(item.CompareAlternateNumber.Text);
     }
 }

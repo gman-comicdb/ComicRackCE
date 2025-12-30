@@ -6,15 +6,9 @@ namespace cYo.Common.Presentation;
 
 public interface IControlRenderer : IBitmapRenderer, IDisposable
 {
-    Control Control
-    {
-        get;
-    }
+    Control Control { get; }
 
-    Size Size
-    {
-        get;
-    }
+    Size Size { get; }
 
     event EventHandler Paint;
 

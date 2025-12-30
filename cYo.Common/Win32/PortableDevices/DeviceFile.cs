@@ -4,11 +4,7 @@ namespace cYo.Common.Win32.PortableDevices;
 
 public class DeviceFile : DeviceItem
 {
-    public long Size
-    {
-        get;
-        set;
-    }
+    public long Size { get; set; }
 
     public DeviceFile(DeviceFolder parent, string id, string name, long size)
         : base(parent, id, name)

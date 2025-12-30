@@ -8,10 +8,6 @@ public class ComicBookGroupChecked : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        if (!item.Checked)
-        {
-            return new GroupInfo(captions[1], 1);
-        }
-        return new GroupInfo(captions[0], 0);
+        return !item.Checked ? new GroupInfo(captions[1], 1) : new GroupInfo(captions[0], 0);
     }
 }

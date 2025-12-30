@@ -15,88 +15,48 @@ public partial class FastScrollControl : UserControlEx
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int ScrollPositionX
     {
-        get
-        {
-            return base.AutoScrollPosition.X;
-        }
-        set
-        {
-            base.AutoScrollPosition = new Point(value, -base.AutoScrollPosition.Y);
-        }
+        get => base.AutoScrollPosition.X;
+        set => base.AutoScrollPosition = new Point(value, -base.AutoScrollPosition.Y);
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int ScrollPositionY
     {
-        get
-        {
-            return -base.AutoScrollPosition.Y;
-        }
-        set
-        {
-            base.AutoScrollPosition = new Point(base.AutoScrollPosition.X, value);
-        }
+        get => -base.AutoScrollPosition.Y;
+        set => base.AutoScrollPosition = new Point(base.AutoScrollPosition.X, value);
     }
 
     [DefaultValue(typeof(Point), "0, 0")]
     public Point ScrollPosition
     {
-        get
-        {
-            return new Point(base.AutoScrollPosition.X, -base.AutoScrollPosition.Y);
-        }
-        set
-        {
-            base.AutoScrollPosition = new Point(value.X, value.Y);
-        }
+        get => new(base.AutoScrollPosition.X, -base.AutoScrollPosition.Y);
+        set => base.AutoScrollPosition = new Point(value.X, value.Y);
     }
 
     [DefaultValue(typeof(Size), "0, 0")]
     public Size VirtualSize
     {
-        get
-        {
-            return base.AutoScrollMinSize;
-        }
-        set
-        {
-            base.AutoScrollMinSize = value;
-        }
+        get => base.AutoScrollMinSize;
+        set => base.AutoScrollMinSize = value;
     }
 
     [DefaultValue(16)]
     public virtual int LineHeight
     {
-        get
-        {
-            return lineHeight;
-        }
-        set
-        {
-            lineHeight = value;
-        }
+        get => lineHeight;
+        set => lineHeight = value;
     }
 
     [DefaultValue(16)]
     public virtual int ColumnWidth
     {
-        get
-        {
-            return columnWidth;
-        }
-        set
-        {
-            columnWidth = value;
-        }
+        get => columnWidth;
+        set => columnWidth = value;
     }
 
     [DefaultValue(true)]
-    public bool EnableStick
-    {
-        get;
-        set;
-    }
+    public bool EnableStick { get; set; }
 
     public virtual Rectangle ViewRectangle
     {
@@ -153,17 +113,11 @@ public partial class FastScrollControl : UserControlEx
 
     protected virtual void OnAutoScrolling(AutoScrollEventArgs e)
     {
-        if (this.AutoScrolling != null)
-        {
-            this.AutoScrolling(this, e);
-        }
+        AutoScrolling?.Invoke(this, e);
     }
 
     protected virtual void OnMouseHWheel(MouseEventArgs e)
     {
-        if (this.MouseHWheel != null)
-        {
-            this.MouseHWheel(this, e);
-        }
+        MouseHWheel?.Invoke(this, e);
     }
 }

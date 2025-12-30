@@ -59,11 +59,10 @@ internal class DarkThemeHandler : IThemeHandler
         if (!TryGetDarkCustomControlDefinition(control, out var darkControlDefinition))
         {
             // Get a Dark Mode DarkControlDefinition if one exists. 
-            if (TryGetDarkControlDefinition(control.GetType(), out darkControlDefinition))
-                darkControlDefinition = darkControlDefinition.SetColor(control);
-            // Fall back to default DarkControlDefinition
-            else
-                darkControlDefinition = new DarkControlDefinition(control);
+            darkControlDefinition = TryGetDarkControlDefinition(control.GetType(), out darkControlDefinition)
+                ? darkControlDefinition.SetColor(control)
+                // Fall back to default DarkControlDefinition
+                : new DarkControlDefinition(control);
         }
 
         SetDarkMode(control, darkControlDefinition!);

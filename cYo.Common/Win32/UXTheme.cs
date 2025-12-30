@@ -239,7 +239,7 @@ public static class UXTheme
         if (!IsDarkModeSupported || hwnd == null || hwnd == IntPtr.Zero) return;
 
         Native.SetWindowTheme(hwnd, null, "DarkMode_CFD::Combobox");
-        Native.COMBOBOXINFO pcbi = default(Native.COMBOBOXINFO);
+        Native.COMBOBOXINFO pcbi = default;
         pcbi.cbSize = Marshal.SizeOf((object)pcbi);
         Native.GetComboBoxInfo(hwnd, ref pcbi);
 
@@ -279,7 +279,7 @@ public static class UXTheme
     {
         if (!IsDarkModeSupported || hwnd == null || hwnd == IntPtr.Zero) return;
 
-        SetControlTheme((hwnd));
+        SetControlTheme(hwnd);
 
         // header has to be themed separately
         IntPtr columnHeaderHandle = Native.SendMessage(hwnd, Native.LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);

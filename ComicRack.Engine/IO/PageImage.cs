@@ -15,11 +15,7 @@ public class PageImage : MemoryOptimizedImage, IDataSize
 
     public bool Merged { get; set; } = false;
 
-    public Color BackgrounColor
-    {
-        get;
-        set;
-    }
+    public Color BackgrounColor { get; set; }
 
     public int DataSize
     {

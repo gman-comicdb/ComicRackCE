@@ -32,7 +32,7 @@ internal record SupportedBackupOption(BackupOptions BackupOption) : ISupportedBa
 internal class BackupLocationProviderRegistry
 {
     private readonly Dictionary<ISupportedBackupOption, IBackupLocationProviderStrategy> strategies =
-        new Dictionary<ISupportedBackupOption, IBackupLocationProviderStrategy>();
+        new();
 
     /// <summary>
     /// Registers a backup location provider strategy.
@@ -50,10 +50,9 @@ internal class BackupLocationProviderRegistry
     /// </summary>
     public IBackupLocationProvider Create(ISupportedBackupOption backupOption, bool includeAllConfigs)
     {
-        if (strategies.TryGetValue(backupOption, out var strategy))
-            return strategy.CreateProvider(includeAllConfigs);
-
-        throw new ArgumentException(
+        return strategies.TryGetValue(backupOption, out var strategy)
+            ? strategy.CreateProvider(includeAllConfigs)
+            : throw new ArgumentException(
             $"Unsupported backup option: {backupOption}. No strategy registered.",
             nameof(backupOption));
     }
@@ -75,10 +74,9 @@ internal abstract class BackupLocationProviderStrategy : IBackupLocationProvider
 
     protected IBackupLocationProvider GetBackupLocationProvider(IEnumerable<string> pathProvider, bool isFile, string baseFolder, bool includeAllConfigs)
     {
-        if (includeAllConfigs)
-            return new FullBackupLocationProvider(pathProvider, isFile, baseFolder, systemPaths);
-        else
-            return new BackupLocationProvider(pathProvider, isFile, baseFolder);
+        return includeAllConfigs
+            ? new FullBackupLocationProvider(pathProvider, isFile, baseFolder, systemPaths)
+            : (IBackupLocationProvider)new BackupLocationProvider(pathProvider, isFile, baseFolder);
     }
 }
 

@@ -9,7 +9,7 @@ public class WrappingCheckBox : CheckBox
 {
     private Size cachedSizeOfOneLineOfText = Size.Empty;
 
-    private readonly Dictionary<Size, Size> preferredSizeHash = new Dictionary<Size, Size>(3);
+    private readonly Dictionary<Size, Size> preferredSizeHash = new(3);
 
     protected override void OnAutoSizeChanged(EventArgs e)
     {
@@ -32,7 +32,7 @@ public class WrappingCheckBox : CheckBox
     private void CacheTextSize()
     {
         preferredSizeHash.Clear();
-        cachedSizeOfOneLineOfText = (string.IsNullOrEmpty(Text) ? Size.Empty : TextRenderer.MeasureText(Text, Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.WordBreak));
+        cachedSizeOfOneLineOfText = string.IsNullOrEmpty(Text) ? Size.Empty : TextRenderer.MeasureText(Text, Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.WordBreak);
     }
 
     public override Size GetPreferredSize(Size proposedSize)

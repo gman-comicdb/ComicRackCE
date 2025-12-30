@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 using cYo.Common.Windows.Forms.Theme.Resources;
@@ -233,7 +231,7 @@ internal static partial class DrawDarkListView
                         continue;
 
                     // Get rectangle for the group header (LVGGR_HEADER = 1)
-                    Native.RECT rc = new Native.RECT { top = Native.LVGGR_HEADER }; // top, not left
+                    Native.RECT rc = new() { top = Native.LVGGR_HEADER }; // top, not left
                     int res = Native.SendMessageGetGroupRect(listView.Handle, Native.LVM_GETGROUPRECT, (IntPtr)nativeGroupId, ref rc);
                     if (res == 0)
                         continue; // failed
@@ -254,7 +252,7 @@ internal static partial class DrawDarkListView
 
                     Size headerTextSize = TextRenderer.MeasureText(headerText, listView.Font);
 
-                    using (Pen pen = new Pen(ThemeColors.ItemView.GroupSeparator, 1))
+                    using (Pen pen = new(ThemeColors.ItemView.GroupSeparator, 1))
                         g.DrawLine(pen, rc.left + headerTextSize.Width + 10, rc.top + FormUtility.ScaleDpiY(10), rc.right - FormUtility.ScaleDpiY(12), rc.top + FormUtility.ScaleDpiY(10));
                 }
             }
@@ -281,7 +279,7 @@ internal static partial class DrawDarkListView
             if (id < 0)
                 return Rectangle.Empty;
 
-            Native.RECT rc = new Native.RECT { top = Native.LVGGR_HEADER }; // LVGGR_HEADER = 1
+            Native.RECT rc = new() { top = Native.LVGGR_HEADER }; // LVGGR_HEADER = 1
             if (Native.SendMessageGetGroupRect(listView.Handle, Native.LVM_GETGROUPRECT, (IntPtr)id, ref rc) != 0)
                 return Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.bottom);
             //return Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.top + FormUtility.ScaleDpiY(24));
@@ -292,7 +290,7 @@ internal static partial class DrawDarkListView
         private string GetGroupHeaderText(int nativeGroupId)
         {
             // Build LVGROUP with buffer for header (unicode)
-            Native.LVGROUP group = new Native.LVGROUP();
+            Native.LVGROUP group = new();
             group.cbSize = (uint)Marshal.SizeOf(typeof(Native.LVGROUP));
             group.mask = Native.LVGF_HEADER;
             // allocate buffer (260 chars)
@@ -334,7 +332,7 @@ internal static partial class DrawDarkListView
             if (group == null) return -1;
 
             // Try common internal field names that WinForms uses across versions:
-            string[] possibleFieldNames = new[] { "ID", "id", "nativeId", "_id" };
+            string[] possibleFieldNames = ["ID", "id", "nativeId", "_id"];
 
             foreach (var name in possibleFieldNames)
             {

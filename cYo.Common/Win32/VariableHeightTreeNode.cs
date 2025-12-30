@@ -53,7 +53,7 @@ public static class VariableHeightTreeNode
 
     public static int GetHeight(this TreeNode tn)
     {
-        TVITEMEX tVITEMEX = default(TVITEMEX);
+        TVITEMEX tVITEMEX = default;
         tVITEMEX.mask = Mask.Handle | Mask.Integral;
         tVITEMEX.item = tn.Handle;
         tVITEMEX.iIntegral = 1;
@@ -64,7 +64,7 @@ public static class VariableHeightTreeNode
 
     public static void SetHeight(this TreeNode tn, int height)
     {
-        TVITEMEX tVITEMEX = default(TVITEMEX);
+        TVITEMEX tVITEMEX = default;
         tVITEMEX.mask = Mask.Handle | Mask.Integral;
         tVITEMEX.item = tn.Handle;
         tVITEMEX.iIntegral = height;

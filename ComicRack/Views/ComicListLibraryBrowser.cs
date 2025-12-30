@@ -39,14 +39,8 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
         public DisplayListConfig Display
         {
-            get
-            {
-                return Program.Settings.GetRemoteViewConfig(id, vc.Display);
-            }
-            set
-            {
-                Program.Settings.UpdateRemoteViewConfig(id, value);
-            }
+            get => Program.Settings.GetRemoteViewConfig(id, vc.Display);
+            set => Program.Settings.UpdateRemoteViewConfig(id, value);
         }
 
         public ViewConfigurationHandler(Guid id, IDisplayListConfig vc)
@@ -105,7 +99,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 }
                 else
                 {
-                    deleteFromLibrary = ((filteredComicBookList != null) ? Program.Settings.AlsoRemoveFromLibraryFiltered : Program.Settings.AlsoRemoveFromLibrary);
+                    deleteFromLibrary = (filteredComicBookList != null) ? Program.Settings.AlsoRemoveFromLibraryFiltered : Program.Settings.AlsoRemoveFromLibrary;
                     if (ask)
                     {
                         QuestionResult questionResult2 = QuestionDialog.AskQuestion(parent, TR.Messages["AskRemoveComics", "Are you sure you want to remove these books from the list?"], TR.Messages["Remove", "Remove"], delegate (QuestionDialog qd)
@@ -183,9 +177,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
     }
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
-    private readonly Dictionary<Guid, TreeNode> nodeMap = new Dictionary<Guid, TreeNode>();
+    private readonly Dictionary<Guid, TreeNode> nodeMap = new();
 
     private bool treeDirty;
 
@@ -203,10 +197,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     public ComicLibrary Library
     {
-        get
-        {
-            return library;
-        }
+        get => library;
         set
         {
             if (library != value)
@@ -227,40 +218,18 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
     }
 
-    public ComicsEditModes ComicEditMode
-    {
-        get
-        {
-            if (Library != null)
-            {
-                return Library.EditMode;
-            }
-            return ComicsEditModes.Default;
-        }
-    }
+    public ComicsEditModes ComicEditMode => Library != null ? Library.EditMode : ComicsEditModes.Default;
 
     public override bool TopBrowserVisible
     {
-        get
-        {
-            return favContainer.Expanded;
-        }
-        set
-        {
-            favContainer.Expanded = value;
-        }
+        get => favContainer.Expanded;
+        set => favContainer.Expanded = value;
     }
 
     public override int TopBrowserSplit
     {
-        get
-        {
-            return favContainer.ExpandedWidth;
-        }
-        set
-        {
-            favContainer.ExpandedWidth = value;
-        }
+        get => favContainer.ExpandedWidth;
+        set => favContainer.ExpandedWidth = value;
     }
 
     public event EventHandler LibraryChanged;
@@ -280,7 +249,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         favContainer.Expanded = false;
         LocalizeUtility.Localize(this, components);
         quickSearch.SetCueText(tsQuickSearch.Text);
-        queryCacheTimer.Interval = (ComicLibrary.IsQueryCacheInstantUpdate ? 100 : 2500);
+        queryCacheTimer.Interval = ComicLibrary.IsQueryCacheInstantUpdate ? 100 : 2500;
         miPasteList.Click += new EventHandler((sender, e) => PasteList());
     }
 
@@ -293,10 +262,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
     protected virtual void OnLibraryChanged()
     {
         FillListTree();
-        if (this.LibraryChanged != null)
-        {
-            this.LibraryChanged(this, EventArgs.Empty);
-        }
+        LibraryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void OnLoad(EventArgs e)
@@ -325,7 +291,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             commands.Add(NewSmartList, () => ComicEditMode.CanEditList(), miNewSmartList, tbNewSmartList);
             commands.Add(NewFolder, () => ComicEditMode.CanEditList(), miNewFolder, tbNewFolder);
             commands.Add(NewList, () => ComicEditMode.CanEditList(), miNewList, tbNewList);
-            commands.Add(RemoveListOrFolder, () => tvQueries.SelectedNode != null && !tvQueries.SelectedNode.IsEditing && !(tvQueries.SelectedNode.Tag is ComicLibraryListItem) && ComicEditMode.CanEditList(), miRemoveListOrFolder);
+            commands.Add(RemoveListOrFolder, () => tvQueries.SelectedNode != null && !tvQueries.SelectedNode.IsEditing && tvQueries.SelectedNode.Tag is not ComicLibraryListItem && ComicEditMode.CanEditList(), miRemoveListOrFolder);
             commands.Add(OpenWindow, miOpenWindow, tbOpenWindow);
             commands.Add(OpenTab, miOpenTab, tbOpenTab);
             commands.Add(RefreshDisplay, tbRefresh);
@@ -355,8 +321,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         base.OnListServiceRequest(senderList, e);
         if (e.ServiceType == typeof(IDisplayListConfig) && !ComicEditMode.IsLocalComic())
         {
-            IDisplayListConfig displayListConfig = senderList as IDisplayListConfig;
-            if (displayListConfig != null)
+            if (senderList is IDisplayListConfig displayListConfig)
             {
                 e.Service = new ViewConfigurationHandler(senderList.Id, displayListConfig);
             }
@@ -369,20 +334,12 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private TreeNode FindItemNode(Guid id)
     {
-        if (!nodeMap.TryGetValue(id, out var value))
-        {
-            return null;
-        }
-        return value;
+        return !nodeMap.TryGetValue(id, out var value) ? null : value;
     }
 
     private TreeNode FindItemNode(IComicBookListProvider item)
     {
-        if (item == null)
-        {
-            return null;
-        }
-        return FindItemNode(item.Id);
+        return item == null ? null : FindItemNode(item.Id);
     }
 
     [Conditional("BIGITEMS")]
@@ -396,7 +353,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         TreeNode treeNode = nodes.Add(item.Name);
         nodeMap[item.Id] = treeNode;
         treeNode.Tag = item;
-        string text2 = (treeNode.ImageKey = (treeNode.SelectedImageKey = item.ImageKey));
+        string text2 = treeNode.ImageKey = treeNode.SelectedImageKey = item.ImageKey;
         _ = item is ComicLibraryListItem;
         return treeNode;
     }
@@ -472,7 +429,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 _ = item is ComicLibraryListItem;
             }
             num++;
-            treeNode.ForeColor = (item.RecursionTest() ? Color.Red : SystemColors.WindowText);
+            treeNode.ForeColor = item.RecursionTest() ? Color.Red : SystemColors.WindowText;
             if (comicListItemFolder != null)
             {
                 FillListTree(treeNode.Nodes, comicListItemFolder.Items, filter);
@@ -515,19 +472,13 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             return false;
         }
         TreeNode selectedNode = tvQueries.SelectedNode;
-        if (selectedNode == null)
-        {
-            return false;
-        }
-        if (selectedNode.Tag is ComicSmartListItem)
-        {
-            return EditSmartListItem(selectedNode, selectedNode.Tag as ComicSmartListItem);
-        }
-        if (selectedNode.Tag is ComicListItemFolder || selectedNode.Tag is ComicIdListItem)
-        {
-            return EditListItem(selectedNode.Tag as ComicListItem);
-        }
-        return false;
+        return selectedNode == null
+            ? false
+            : selectedNode.Tag is ComicSmartListItem
+            ? EditSmartListItem(selectedNode, selectedNode.Tag as ComicSmartListItem)
+            : selectedNode.Tag is ComicListItemFolder or ComicIdListItem
+            ? EditListItem(selectedNode.Tag as ComicListItem)
+            : false;
     }
 
     private bool EditListItem(ComicListItem cli)
@@ -556,13 +507,13 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         Action<Func<TreeNode>> setItem;
         while (comicSmartListItem != null)
         {
-            using (Form form = (flag ? ((Form)new SmartListQueryDialog()) : ((Form)new SmartListDialog())))
+            using (Form form = flag ? ((Form)new SmartListQueryDialog()) : ((Form)new SmartListDialog()))
             {
                 sld = form as ISmartListDialog;
                 sld.Library = csli.Library;
                 sld.EditId = csli.Id;
                 sld.SmartComicList = comicSmartListItem;
-                tnc = ((tn.Parent != null) ? tn.Parent.Nodes : tvQueries.Nodes);
+                tnc = (tn.Parent != null) ? tn.Parent.Nodes : tvQueries.Nodes;
                 sld.EnableNavigation = tnc.OfType<TreeNode>().Count((TreeNode n) => n.Tag is ComicSmartListItem) > 1;
                 getNext = () => tnc.OfType<TreeNode>().SkipWhile((TreeNode n) => n != tn).Skip(1)
                     .FirstOrDefault((TreeNode n) => n.Tag is ComicSmartListItem);
@@ -576,7 +527,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                     {
                         using (new WaitCursor(this))
                         {
-                            tvQueries.SelectedNode = (tn = treeNode);
+                            tvQueries.SelectedNode = tn = treeNode;
                             UpdateBookList();
                         }
                         csli = treeNode.Tag as ComicSmartListItem;
@@ -637,11 +588,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private ComicListItem GetCurrentNodeComicList()
     {
-        if (tvQueries.SelectedNode != null)
-        {
-            return (ComicListItem)tvQueries.SelectedNode.Tag;
-        }
-        return null;
+        return tvQueries.SelectedNode != null ? (ComicListItem)tvQueries.SelectedNode.Tag : null;
     }
 
     private ComicListItemCollection GetCurrentNodeComicListCollection()
@@ -651,19 +598,11 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private ComicListItemCollection GetNodeComicListCollection(TreeNode sn)
     {
-        if (sn == null)
-        {
-            return Library.ComicLists;
-        }
-        if (sn.Tag is ComicListItemFolder)
-        {
-            return ((ComicListItemFolder)sn.Tag).Items;
-        }
-        if (sn.Parent != null)
-        {
-            return ((ComicListItemFolder)sn.Parent.Tag).Items;
-        }
-        return Library.ComicLists;
+        return sn == null
+            ? Library.ComicLists
+            : sn.Tag is ComicListItemFolder
+            ? ((ComicListItemFolder)sn.Tag).Items
+            : sn.Parent != null ? ((ComicListItemFolder)sn.Parent.Tag).Items : Library.ComicLists;
     }
 
     private void OpenWindow()
@@ -753,7 +692,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
     {
-        ComicListItem comicListItem = ((e.Node == null) ? null : (e.Node.Tag as ComicListItem));
+        ComicListItem comicListItem = (e.Node == null) ? null : (e.Node.Tag as ComicListItem);
         if (comicListItem == null || string.IsNullOrEmpty(e.Label))
         {
             e.CancelEdit = true;
@@ -786,10 +725,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         dragCursor = treeSkin.GetDragCursor(dragNode, 64, cursorLocation);
         try
         {
-            DataObjectEx dataObjectEx = new DataObjectEx();
+            DataObjectEx dataObjectEx = new();
             dataObjectEx.SetData(dragNode);
-            ShareableComicListItem sc = dragNode.Tag as ShareableComicListItem;
-            if (sc != null)
+            if (dragNode.Tag is ShareableComicListItem sc)
             {
                 dataObjectEx.SetFile(FileUtility.MakeValidFilename(sc.Name + ".cbl"), delegate (Stream stream)
                 {
@@ -804,14 +742,11 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             }
             DragDropEffects dragDropEffects = tvQueries.DoDragDrop(dataObjectEx, DragDropEffects.Copy | DragDropEffects.Move);
             OnIdle();
-            tvQueries.SelectedNode = ((dragDropEffects == DragDropEffects.None) ? dragNode : FindItemNode((ComicListItem)dragNode.Tag));
+            tvQueries.SelectedNode = (dragDropEffects == DragDropEffects.None) ? dragNode : FindItemNode((ComicListItem)dragNode.Tag);
         }
         finally
         {
-            if (dragCursor != null)
-            {
-                dragCursor.Dispose();
-            }
+            dragCursor?.Dispose();
             dragCursor = null;
             dragNode = null;
         }
@@ -819,7 +754,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_MouseDown(object sender, MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.XButton1 || e.Button == MouseButtons.XButton2)
+        if (e.Button is MouseButtons.XButton1 or MouseButtons.XButton2)
         {
             Program.MainForm.MouseDownHandler(this, e);
             return;
@@ -838,8 +773,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_AfterExpand(object sender, TreeViewEventArgs e)
     {
-        ComicListItemFolder comicListItemFolder = e.Node.Tag as ComicListItemFolder;
-        if (comicListItemFolder != null)
+        if (e.Node.Tag is ComicListItemFolder comicListItemFolder)
         {
             comicListItemFolder.Collapsed = false;
         }
@@ -847,8 +781,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_AfterCollapse(object sender, TreeViewEventArgs e)
     {
-        ComicListItemFolder comicListItemFolder = e.Node.Tag as ComicListItemFolder;
-        if (comicListItemFolder != null)
+        if (e.Node.Tag is ComicListItemFolder comicListItemFolder)
         {
             comicListItemFolder.Collapsed = true;
         }
@@ -856,8 +789,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void tvQueries_DrawNode(object sender, DrawTreeNodeEventArgs e)
     {
-        ComicListItem comicListItem = e.Node.Tag as ComicListItem;
-        if (comicListItem != null && comicListItem.PendingCacheUpdate)
+        if (e.Node.Tag is ComicListItem comicListItem && comicListItem.PendingCacheUpdate)
         {
             OnListCacheChanged();
         }
@@ -886,9 +818,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         cmEditDevices.Tag = null;
         foreach (DeviceSyncSettings device in Program.Settings.Devices)
         {
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(device.DeviceName + "...")
+            ToolStripMenuItem toolStripMenuItem = new(device.DeviceName + "...")
             {
-                Checked = (device.Lists.FirstOrDefault((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id) != null)
+                Checked = device.Lists.FirstOrDefault((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id) != null
             };
             DeviceSyncSettings dss1 = device;
             toolStripMenuItem.Click += delegate
@@ -902,8 +834,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void cmEditDevices_Click(object sender, EventArgs e)
     {
-        ComicListItem comicListItem = cmEditDevices.Tag as ComicListItem;
-        if (comicListItem != null)
+        if (cmEditDevices.Tag is ComicListItem comicListItem)
         {
             base.Main.ShowPortableDevices(Program.Settings.Devices[0], comicListItem.Id);
             tvQueries.Refresh();
@@ -968,8 +899,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         TreeNode selectedNode = tvQueries.SelectedNode;
         if (selectedNode != null)
         {
-            ComicListItem comicListItem = selectedNode.Tag as ComicListItem;
-            if (comicListItem != null)
+            if (selectedNode.Tag is ComicListItem comicListItem)
             {
                 comicListItem.Favorite = true;
             }
@@ -987,8 +917,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void favView_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ItemViewItem itemViewItem = favView.FocusedItem as ItemViewItem;
-        if (itemViewItem != null)
+        if (favView.FocusedItem is ItemViewItem itemViewItem)
         {
             SelectList((Guid)itemViewItem.Tag);
         }
@@ -1010,10 +939,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private bool CreateDragContainter(DragEventArgs e)
     {
-        if (dragBookContainer == null)
-        {
-            dragBookContainer = DragDropContainer.Create(e.Data);
-        }
+        dragBookContainer ??= DragDropContainer.Create(e.Data);
         return dragBookContainer.IsValid;
     }
 
@@ -1031,7 +957,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             }
             foreach (ComicBook book in bookContainer.Books.GetBooks())
             {
-                ComicBook comicBook = (book.IsLinked ? Program.BookFactory.Create(book.FilePath, CreateBookOption.AddToStorage) : book);
+                ComicBook comicBook = book.IsLinked ? Program.BookFactory.Create(book.FilePath, CreateBookOption.AddToStorage) : book;
                 if (index != -1)
                 {
                     index = list.Insert(index, comicBook) + 1;
@@ -1058,13 +984,13 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             if (node != dragNode && dragNode == e.Data.GetData(typeof(TreeNode)) && dragNode.Nodes.Find((TreeNode cn) => cn == node) == null)
             {
-                e.Effect = ((dragNode.Tag is ShareableComicListItem && ((uint)e.KeyState & 8u) != 0) ? DragDropEffects.Copy : DragDropEffects.Move);
+                e.Effect = (dragNode.Tag is ShareableComicListItem && ((uint)e.KeyState & 8u) != 0) ? DragDropEffects.Copy : DragDropEffects.Move;
                 Point point2 = point;
                 if (node != null)
                 {
                     point2.Y -= node.Bounds.Y;
                 }
-                treeSkin.SeparatorDropNodeStyle = node != null && ((point2.Y >= 0 && point2.Y < 4) || !(node.Tag is ComicListItemFolder));
+                treeSkin.SeparatorDropNodeStyle = node != null && ((point2.Y >= 0 && point2.Y < 4) || node.Tag is not ComicListItemFolder);
             }
         }
         else if (dragBookContainer.IsBookContainer)
@@ -1085,14 +1011,14 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         else if (dragBookContainer.IsFilesContainer)
         {
-            IEditableComicBookListProvider editableComicBookListProvider = ((node == null) ? null : (node.Tag as IEditableComicBookListProvider));
+            IEditableComicBookListProvider editableComicBookListProvider = (node == null) ? null : (node.Tag as IEditableComicBookListProvider);
             if (editableComicBookListProvider != null && editableComicBookListProvider.IsLibrary)
             {
                 e.Effect = e.AllowedEffect;
             }
             treeSkin.SeparatorDropNodeStyle = false;
         }
-        treeSkin.DropNode = ((e.Effect == DragDropEffects.None) ? null : node);
+        treeSkin.DropNode = (e.Effect == DragDropEffects.None) ? null : node;
     }
 
     private void tvQueries_DragEnter(object sender, DragEventArgs e)
@@ -1123,7 +1049,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             if (dragNode != e.Data.GetData(typeof(TreeNode)))
                 return;
 
-            ComicListItemCollection comicListItemCollection = ((dragNode.Parent == null) ? Library.ComicLists : ((ComicListItemFolder)dragNode.Parent.Tag).Items); // get the source parent collection
+            ComicListItemCollection comicListItemCollection = (dragNode.Parent == null) ? Library.ComicLists : ((ComicListItemFolder)dragNode.Parent.Tag).Items; // get the source parent collection
             ComicListItem comicListItem = dragNode.Tag as ComicListItem;
             RecursionCache.Items.RemoveReference(comicListItem.Id); // remove from recursion cache as we are moving it
 
@@ -1138,7 +1064,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             }
             else if (separatorDropNodeStyle)
             {
-                ComicListItemCollection comicListItemCollection2 = ((dropNode.Parent == null) ? Library.ComicLists : ((ComicListItemFolder)dropNode.Parent.Tag).Items); // get the destination parent collection
+                ComicListItemCollection comicListItemCollection2 = (dropNode.Parent == null) ? Library.ComicLists : ((ComicListItemFolder)dropNode.Parent.Tag).Items; // get the destination parent collection
                 int dropIndex = dropNode.Index; // get the index of destination node
                 int sourceIndex = comicListItemCollection.IndexOf(comicListItem); // get the index of source node, is -1 when copying because it is a new object
                 if (comicListItemCollection.Remove(comicListItem) && comicListItemCollection == comicListItemCollection2 && sourceIndex < dropIndex)
@@ -1159,9 +1085,9 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         else if (dragDropContainer.IsBookContainer)
         {
-            IEditableComicBookListProvider editableComicBookListProvider = ((dropNode == null) ? null : (dropNode.Tag as IEditableComicBookListProvider));
-            ComicSmartListItem comicSmartListItem = ((dropNode == null) ? null : (dropNode.Tag as ComicSmartListItem));
-            ComicListItemFolder comicListItemFolder = ((dropNode == null) ? null : (dropNode.Tag as ComicListItemFolder));
+            IEditableComicBookListProvider editableComicBookListProvider = (dropNode == null) ? null : (dropNode.Tag as IEditableComicBookListProvider);
+            ComicSmartListItem comicSmartListItem = (dropNode == null) ? null : (dropNode.Tag as ComicSmartListItem);
+            ComicListItemFolder comicListItemFolder = (dropNode == null) ? null : (dropNode.Tag as ComicListItemFolder);
             if (editableComicBookListProvider != null)
             {
                 InsertBooksIntoToList(editableComicBookListProvider, -1, dragDropContainer);
@@ -1174,7 +1100,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 return;
             }
             ComicListItem comicListItem2 = null;
-            comicListItem2 = ((!Control.ModifierKeys.IsSet(Keys.Alt) && !dragDropContainer.HasMatcher) ? ((ShareableComicListItem)dragDropContainer.CreateComicIdList()) : ((ShareableComicListItem)dragDropContainer.CreateSeriesSmartList()));
+            comicListItem2 = (!Control.ModifierKeys.IsSet(Keys.Alt) && !dragDropContainer.HasMatcher) ? ((ShareableComicListItem)dragDropContainer.CreateComicIdList()) : ((ShareableComicListItem)dragDropContainer.CreateSeriesSmartList());
             if (comicListItem2 != null)
             {
                 if (string.IsNullOrEmpty(comicListItem2.Name))
@@ -1193,7 +1119,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         else if (dragDropContainer.IsReadingListsContainer)
         {
-            ComicListItemCollection fc = ((dropNode == null) ? Library.ComicLists : ((dropNode.Tag is ComicListItemFolder) ? ((ComicListItemFolder)dropNode.Tag).Items : null));
+            ComicListItemCollection fc = (dropNode == null) ? Library.ComicLists : ((dropNode.Tag is ComicListItemFolder) ? ((ComicListItemFolder)dropNode.Tag).Items : null);
             using (new WaitCursor(this))
             {
                 foreach (string readingList in dragDropContainer.ReadingLists)
@@ -1213,18 +1139,15 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         if (dragCursor != null && !(dragCursor.Cursor == null))
         {
             e.UseDefaultCursors = false;
-            dragCursor.OverlayCursor = ((e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default);
-            dragCursor.OverlayEffect = ((e.Effect == DragDropEffects.Copy) ? BitmapCursorOverlayEffect.Plus : BitmapCursorOverlayEffect.None);
+            dragCursor.OverlayCursor = (e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default;
+            dragCursor.OverlayEffect = (e.Effect == DragDropEffects.Copy) ? BitmapCursorOverlayEffect.Plus : BitmapCursorOverlayEffect.None;
             Cursor.Current = dragCursor.Cursor;
         }
     }
 
     private void RenameNode()
     {
-        if (tvQueries.SelectedNode != null)
-        {
-            tvQueries.SelectedNode.BeginEdit();
-        }
+        tvQueries.SelectedNode?.BeginEdit();
     }
 
     private void ExpandCollapseAllNodes()
@@ -1246,8 +1169,8 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             currentNodeComicListCollection.Sort(delegate (ComicListItem a, ComicListItem b)
             {
-                int num = ((a is ComicListItemFolder) ? 1 : 0);
-                int num2 = ((b is ComicListItemFolder) ? 1 : 0);
+                int num = (a is ComicListItemFolder) ? 1 : 0;
+                int num2 = (b is ComicListItemFolder) ? 1 : 0;
                 int num3 = Math.Sign(num2 - num);
                 return (num3 == 0) ? ExtendedStringComparer.Compare(a.Name, b.Name, ExtendedStringComparison.ZeroesFirst | ExtendedStringComparison.IgnoreArticles | ExtendedStringComparison.IgnoreCase) : num3;
             });
@@ -1263,7 +1186,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             string name = TR.Load(base.Name)["NewSmartList", "New Smart List"];
             TreeNode selectedNode = tvQueries.SelectedNode;
-            ComicSmartListItem item = new ComicSmartListItem(name, string.Empty);
+            ComicSmartListItem item = new(name, string.Empty);
             currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
             FillListTree();
             tvQueries.SelectedNode = FindItemNode(item);
@@ -1284,7 +1207,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         ComicListItemCollection currentNodeComicListCollection = GetCurrentNodeComicListCollection();
         if (currentNodeComicListCollection != null)
         {
-            ComicListItemFolder item = new ComicListItemFolder(TR.Load(base.Name)["NewFolder", "New Folder"]);
+            ComicListItemFolder item = new(TR.Load(base.Name)["NewFolder", "New Folder"]);
             if (EditListDialog.Edit(this, item))
             {
                 currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
@@ -1298,7 +1221,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         ComicListItemCollection currentNodeComicListCollection = GetCurrentNodeComicListCollection();
         if (currentNodeComicListCollection != null)
         {
-            ComicIdListItem item = new ComicIdListItem(TR.Load(base.Name)["NewList", "New List"]);
+            ComicIdListItem item = new(TR.Load(base.Name)["NewList", "New List"]);
             if (EditListDialog.Edit(this, item))
             {
                 currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
@@ -1323,7 +1246,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         try
         {
-            DataObject dataObject = new DataObject();
+            DataObject dataObject = new();
             if (comicListItem is ComicSmartListItem)
             {
                 dataObject.SetText(comicListItem.ToString());
@@ -1342,14 +1265,13 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
             return;
 
         base.Main.StoreWorkspace(); // We need to store the workspace because it ensures the sortKey is up to date.
-        ShareableComicListItem shareableComicListItem = tvQueries.SelectedNode.Tag as ShareableComicListItem;
-        if (shareableComicListItem == null)
+        if (tvQueries.SelectedNode.Tag is not ShareableComicListItem shareableComicListItem)
             return;
 
         if (shareableComicListItem is ComicListItemFolder comicListItemFolder)
         {
             // TODO: Maybe add a way to also export the folder as a single list containing all items.
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            using (FolderBrowserDialog dialog = new())
             {
                 dialog.Description = miExportReadingList.Text.Replace("&", "");
                 dialog.ShowNewFolderButton = true;
@@ -1362,7 +1284,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         else
         {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            using (SaveFileDialog saveFileDialog = new())
             {
                 saveFileDialog.Title = miExportReadingList.Text.Replace("&", "");
                 saveFileDialog.Filter = TR.Load("FileFilter")["ReadingListSaveFilter", "ComicRack Reading List|*.cbl|ComicRack Reading List (Single Entries)|*.cbl"];
@@ -1459,8 +1381,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             return;
         }
-        ShareableComicListItem shareableComicListItem = Clipboard.GetData(ShareableComicListItem.ClipboardFormat) as ShareableComicListItem;
-        if (shareableComicListItem != null)
+        if (Clipboard.GetData(ShareableComicListItem.ClipboardFormat) is ShareableComicListItem shareableComicListItem)
         {
             shareableComicListItem = ((ICloneable)shareableComicListItem).Clone<ShareableComicListItem>();
             if (shareableComicListItem != null)
@@ -1471,8 +1392,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         }
         if (Program.ExtendedSettings.AllowCopyListFolders)
         {
-            ComicListItemFolder comicListItemFolder = Clipboard.GetData(ShareableComicListItem.ClipboardFormat) as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (Clipboard.GetData(ShareableComicListItem.ClipboardFormat) is ComicListItemFolder comicListItemFolder)
             {
                 comicListItemFolder = ((ICloneable)comicListItemFolder).Clone<ComicListItemFolder>();
                 if (comicListItemFolder != null)
@@ -1485,7 +1405,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         string text = Clipboard.GetText();
         try
         {
-            ComicSmartListItem item = new ComicSmartListItem(TR.Load(base.Name)["NewList", "New List"], text, Library);
+            ComicSmartListItem item = new(TR.Load(base.Name)["NewList", "New List"], text, Library);
             currentNodeComicListCollection.Insert(currentNodeComicListCollection.IndexOf(currentNodeComicList) + 1, item);
         }
         catch (Exception ex)
@@ -1496,7 +1416,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void ImportLists()
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = miImportReadingList.Text.Replace("&", "");
             openFileDialog.Filter = TR.Load("FileFilter")["ReadingListLoad", "ComicRack Reading List|*.cbl|Xml File|*.xml|All Files|*.*"];
@@ -1545,7 +1465,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             try
             {
-                HashSet<string> collection = new HashSet<string>(quickSearch.AutoCompleteList.Cast<string>());
+                HashSet<string> collection = new(quickSearch.AutoCompleteList.Cast<string>());
                 Program.Settings.LibraryQuickSearchList.Clear();
                 Program.Settings.LibraryQuickSearchList.AddRange(collection);
             }
@@ -1578,15 +1498,15 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 }
                 else
                 {
-                    List<ComicBook> newBooks = new List<ComicBook>();
+                    List<ComicBook> newBooks = new();
                     ComicIdListItem idli = null;
                     AutomaticProgressDialog.Process(this, TR.Messages["ImportReadingList", "Import Reading List"], TR.Messages["MatchBooksWithLibrary", "Matching list with Library"], 3000, delegate
                     {
-                        li = (idli = ComicIdListItem.CreateFromReadingList(Library.Books, crlc.Items, newBooks, delegate (int x)
+                        li = idli = ComicIdListItem.CreateFromReadingList(Library.Books, crlc.Items, newBooks, delegate (int x)
                         {
                             AutomaticProgressDialog.Value = x;
                             return !AutomaticProgressDialog.ShouldAbort;
-                        }));
+                        });
                     }, AutomaticProgressDialogOptions.EnableCancel);
                     if (li == null)
                     {
@@ -1663,7 +1583,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         while (history.CanMoveCursorPrevious)
         {
             LinkedListNode<IComicBookListProvider> linkedListNode = history.MoveCursorPrevious();
-            TreeNode treeNode = ((linkedListNode != null) ? FindItemNode(linkedListNode.Value) : null);
+            TreeNode treeNode = (linkedListNode != null) ? FindItemNode(linkedListNode.Value) : null;
             if (treeNode != null)
             {
                 tvQueries.SelectedNode = treeNode;
@@ -1678,7 +1598,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         while (history.CanMoveCursorNext)
         {
             LinkedListNode<IComicBookListProvider> linkedListNode = history.MoveCursorNext();
-            TreeNode treeNode = ((linkedListNode != null) ? FindItemNode(linkedListNode.Value) : null);
+            TreeNode treeNode = (linkedListNode != null) ? FindItemNode(linkedListNode.Value) : null;
             if (treeNode != null)
             {
                 tvQueries.SelectedNode = treeNode;

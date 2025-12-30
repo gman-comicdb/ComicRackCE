@@ -8,10 +8,6 @@ public class ComicBookGroupHasBeenRead : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        if (!item.HasBeenRead)
-        {
-            return new GroupInfo(captions[1], 1);
-        }
-        return new GroupInfo(captions[0], 0);
+        return !item.HasBeenRead ? new GroupInfo(captions[1], 1) : new GroupInfo(captions[0], 0);
     }
 }

@@ -15,33 +15,13 @@ public static class ThreadUtility
 {
     private class ThreadPoolState : IAsyncResult, IDisposable
     {
-        public object AsyncState
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public object AsyncState => throw new NotImplementedException();
 
-        public WaitHandle AsyncWaitHandle
-        {
-            get;
-            private set;
-        }
+        public WaitHandle AsyncWaitHandle { get; private set; }
 
-        public bool CompletedSynchronously
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool CompletedSynchronously => throw new NotImplementedException();
 
-        public bool IsCompleted
-        {
-            get;
-            private set;
-        }
+        public bool IsCompleted { get; private set; }
 
         public ThreadPoolState()
         {
@@ -66,11 +46,11 @@ public static class ThreadUtility
         ES_SYSTEM_REQUIRED = 0x1u
     }
 
-    private static readonly HashSet<Thread> activeThreads = new HashSet<Thread>();
+    private static readonly HashSet<Thread> activeThreads = new();
 
     private const int MaxThreadQueueSize = 64;
 
-    private static readonly HashSet<Thread> threadQueue = new HashSet<Thread>();
+    private static readonly HashSet<Thread> threadQueue = new();
 
     private static HashSet<Action> blocks;
 
@@ -85,11 +65,7 @@ public static class ThreadUtility
         get
         {
             Thread forgroundThread = ForgroundThread;
-            if (forgroundThread != null)
-            {
-                return forgroundThread.ThreadState == System.Threading.ThreadState.WaitSleepJoin;
-            }
-            return false;
+            return forgroundThread != null ? forgroundThread.ThreadState == System.Threading.ThreadState.WaitSleepJoin : false;
         }
     }
 
@@ -97,7 +73,7 @@ public static class ThreadUtility
     {
         get
         {
-            StringWriter stringWriter = new StringWriter();
+            StringWriter stringWriter = new();
             DumpStacks(stringWriter);
             return stringWriter.ToString();
         }
@@ -142,7 +118,7 @@ public static class ThreadUtility
 
     public static IAsyncResult RunInThreadPool(Action method)
     {
-        ThreadPoolState threadPoolState = new ThreadPoolState();
+        ThreadPoolState threadPoolState = new();
         try
         {
             ThreadPoolState localState = threadPoolState;
@@ -171,7 +147,7 @@ public static class ThreadUtility
 
     public static IAsyncResult RunInThreadQueue(Action method)
     {
-        ThreadPoolState threadPoolState = new ThreadPoolState();
+        ThreadPoolState threadPoolState = new();
         try
         {
             ThreadPoolState localState = threadPoolState;
@@ -329,10 +305,7 @@ public static class ThreadUtility
 
     public static void Block(Action method)
     {
-        if (blocks == null)
-        {
-            blocks = new HashSet<Action>();
-        }
+        blocks ??= new HashSet<Action>();
         if (!blocks.Contains(method))
         {
             try

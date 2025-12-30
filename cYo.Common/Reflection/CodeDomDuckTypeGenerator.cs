@@ -14,7 +14,7 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
 {
     private class ReferenceList
     {
-        private readonly List<string> list = new List<string>();
+        private readonly List<string> list = new();
 
         private static readonly Assembly mscorlib = typeof(object).Assembly;
 
@@ -53,24 +53,24 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
     public Type[] CreateDuckTypes(Type interfaceType, Type[] duckedTypes)
     {
         string text = $"{CommonNamespace}.{interfaceType.Name}";
-        CodeCompileUnit codeCompileUnit = new CodeCompileUnit();
-        CodeNamespace codeNamespace = new CodeNamespace(text);
+        CodeCompileUnit codeCompileUnit = new();
+        CodeNamespace codeNamespace = new(text);
         codeCompileUnit.Namespaces.Add(codeNamespace);
-        CodeTypeReference codeTypeReference = new CodeTypeReference(interfaceType);
-        ReferenceList referenceList = new ReferenceList();
+        CodeTypeReference codeTypeReference = new(interfaceType);
+        ReferenceList referenceList = new();
         for (int i = 0; i < duckedTypes.Length; i++)
         {
             Type type = duckedTypes[i];
-            CodeTypeReference type2 = new CodeTypeReference(type);
+            CodeTypeReference type2 = new(type);
             referenceList.AddReference(type);
-            CodeTypeDeclaration codeTypeDeclaration = new CodeTypeDeclaration(TypePrefix + i);
+            CodeTypeDeclaration codeTypeDeclaration = new(TypePrefix + i);
             codeNamespace.Types.Add(codeTypeDeclaration);
             codeTypeDeclaration.TypeAttributes = TypeAttributes.Public;
             codeTypeDeclaration.BaseTypes.Add(codeTypeReference);
-            CodeMemberField codeMemberField = new CodeMemberField(type2, "_obj");
+            CodeMemberField codeMemberField = new(type2, "_obj");
             codeTypeDeclaration.Members.Add(codeMemberField);
-            CodeFieldReferenceExpression codeFieldReferenceExpression = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), codeMemberField.Name);
-            CodeConstructor codeConstructor = new CodeConstructor();
+            CodeFieldReferenceExpression codeFieldReferenceExpression = new(new CodeThisReferenceExpression(), codeMemberField.Name);
+            CodeConstructor codeConstructor = new();
             codeTypeDeclaration.Members.Add(codeConstructor);
             codeConstructor.Attributes = MemberAttributes.Public;
             codeConstructor.Parameters.Add(new CodeParameterDeclarationExpression(type2, "obj"));
@@ -80,7 +80,7 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
             {
                 if ((methodInfo.Attributes & MethodAttributes.SpecialName) == 0)
                 {
-                    CodeMemberMethod codeMemberMethod = new CodeMemberMethod();
+                    CodeMemberMethod codeMemberMethod = new();
                     codeTypeDeclaration.Members.Add(codeMemberMethod);
                     codeMemberMethod.Name = methodInfo.Name;
                     codeMemberMethod.ReturnType = new CodeTypeReference(methodInfo.ReturnType);
@@ -93,11 +93,11 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
                     foreach (ParameterInfo parameterInfo in array2)
                     {
                         referenceList.AddReference(parameterInfo.ParameterType);
-                        CodeParameterDeclarationExpression value = new CodeParameterDeclarationExpression(parameterInfo.ParameterType, parameterInfo.Name);
+                        CodeParameterDeclarationExpression value = new(parameterInfo.ParameterType, parameterInfo.Name);
                         codeMemberMethod.Parameters.Add(value);
                         array[num++] = new CodeArgumentReferenceExpression(parameterInfo.Name);
                     }
-                    CodeMethodInvokeExpression codeMethodInvokeExpression = new CodeMethodInvokeExpression(codeFieldReferenceExpression, methodInfo.Name, array);
+                    CodeMethodInvokeExpression codeMethodInvokeExpression = new(codeFieldReferenceExpression, methodInfo.Name, array);
                     if (methodInfo.ReturnType == typeof(void))
                     {
                         codeMemberMethod.Statements.Add(codeMethodInvokeExpression);
@@ -111,7 +111,7 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
             PropertyInfo[] properties = interfaceType.GetProperties();
             foreach (PropertyInfo propertyInfo in properties)
             {
-                CodeMemberProperty codeMemberProperty = new CodeMemberProperty();
+                CodeMemberProperty codeMemberProperty = new();
                 codeTypeDeclaration.Members.Add(codeMemberProperty);
                 codeMemberProperty.Name = propertyInfo.Name;
                 codeMemberProperty.Type = new CodeTypeReference(propertyInfo.PropertyType);
@@ -124,10 +124,10 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
                 ParameterInfo[] array4 = indexParameters;
                 foreach (ParameterInfo parameterInfo2 in array4)
                 {
-                    CodeParameterDeclarationExpression value2 = new CodeParameterDeclarationExpression(parameterInfo2.ParameterType, parameterInfo2.Name);
+                    CodeParameterDeclarationExpression value2 = new(parameterInfo2.ParameterType, parameterInfo2.Name);
                     codeMemberProperty.Parameters.Add(value2);
                     referenceList.AddReference(parameterInfo2.ParameterType);
-                    CodeArgumentReferenceExpression codeArgumentReferenceExpression = new CodeArgumentReferenceExpression(parameterInfo2.Name);
+                    CodeArgumentReferenceExpression codeArgumentReferenceExpression = new(parameterInfo2.Name);
                     array3[num2++] = codeArgumentReferenceExpression;
                 }
                 if (propertyInfo.CanRead)
@@ -158,7 +158,7 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
             EventInfo[] events = interfaceType.GetEvents();
             foreach (EventInfo eventInfo in events)
             {
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
                 stringBuilder.Append("public event " + eventInfo.EventHandlerType.FullName + " @" + eventInfo.Name + "{");
                 stringBuilder.Append("add    {" + codeMemberField.Name + "." + eventInfo.Name + "+=value;}");
                 stringBuilder.Append("remove {" + codeMemberField.Name + "." + eventInfo.Name + "-=value;}");
@@ -167,19 +167,19 @@ internal class CodeDomDuckTypeGenerator : IDuckTypeGenerator
                 codeTypeDeclaration.Members.Add(new CodeSnippetTypeMember(stringBuilder.ToString()));
             }
         }
-        CSharpCodeProvider cSharpCodeProvider = new CSharpCodeProvider();
-        StringWriter stringWriter = new StringWriter();
+        CSharpCodeProvider cSharpCodeProvider = new();
+        StringWriter stringWriter = new();
         cSharpCodeProvider.GenerateCodeFromCompileUnit(codeCompileUnit, stringWriter, new CodeGeneratorOptions());
         string value3 = stringWriter.ToString();
         Console.WriteLine(value3);
-        CompilerParameters compilerParameters = new CompilerParameters();
+        CompilerParameters compilerParameters = new();
         compilerParameters.GenerateInMemory = true;
         compilerParameters.ReferencedAssemblies.Add(interfaceType.Assembly.Location);
         referenceList.SetToCompilerParameters(compilerParameters);
         CompilerResults compilerResults = cSharpCodeProvider.CompileAssemblyFromDom(compilerParameters, codeCompileUnit);
         if (compilerResults.Errors.Count > 0)
         {
-            StringWriter stringWriter2 = new StringWriter();
+            StringWriter stringWriter2 = new();
             foreach (CompilerError error in compilerResults.Errors)
             {
                 stringWriter2.WriteLine(error.ErrorText);

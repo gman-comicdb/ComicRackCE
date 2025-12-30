@@ -16,10 +16,7 @@ public class SimpleButtonPanel : OverlayPanel
 
     public ScalableBitmap Background
     {
-        get
-        {
-            return background;
-        }
+        get => background;
         set
         {
             if (background != value)
@@ -32,10 +29,7 @@ public class SimpleButtonPanel : OverlayPanel
 
     public ScalableBitmap Icon
     {
-        get
-        {
-            return icon;
-        }
+        get => icon;
         set
         {
             if (icon != value)
@@ -48,10 +42,7 @@ public class SimpleButtonPanel : OverlayPanel
 
     public float HilightBrightness
     {
-        get
-        {
-            return hilightBrightness;
-        }
+        get => hilightBrightness;
         set
         {
             if (hilightBrightness != value)
@@ -84,18 +75,15 @@ public class SimpleButtonPanel : OverlayPanel
         Graphics graphics = e.Graphics;
         IBitmapRenderer gr = new BitmapGdiRenderer(graphics);
         Rectangle clientRectangle = base.ClientRectangle;
-        BitmapAdjustment itf = ((base.PanelState == PanelState.Selected) ? new BitmapAdjustment(0f, hilightBrightness) : BitmapAdjustment.Empty);
+        BitmapAdjustment itf = (base.PanelState == PanelState.Selected) ? new BitmapAdjustment(0f, hilightBrightness) : BitmapAdjustment.Empty;
         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        if (background != null)
-        {
-            background.Draw(gr, clientRectangle, itf, 1f);
-        }
+        background?.Draw(gr, clientRectangle, itf, 1f);
         if (icon != null)
         {
             clientRectangle = clientRectangle.Pad(base.Margin);
             clientRectangle = icon.Bitmap.Size.ToRectangle(clientRectangle, RectangleScaleMode.Center | RectangleScaleMode.OnlyShrink);
             icon.Draw(gr, clientRectangle, itf, 1f);
         }
-        base.Opacity = ((base.PanelState == PanelState.Normal) ? 0.9f : 1f);
+        base.Opacity = (base.PanelState == PanelState.Normal) ? 0.9f : 1f;
     }
 }

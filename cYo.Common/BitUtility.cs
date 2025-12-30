@@ -7,11 +7,7 @@ public static class BitUtility
 {
     public static int SetMask(this int n, int mask, bool set = true)
     {
-        if (!set)
-        {
-            return n & ~mask;
-        }
-        return n | mask;
+        return !set ? n & ~mask : n | mask;
     }
 
     public static int Clear(this int n, int mask)
@@ -43,11 +39,7 @@ public static class BitUtility
 
     public static bool IsSet(this int n, int mask, bool all)
     {
-        if (all)
-        {
-            return (n & mask) == mask;
-        }
-        return (n & mask) != 0;
+        return all ? (n & mask) == mask : (n & mask) != 0;
     }
 
     public static bool IsSet(this int n, int mask)
@@ -64,11 +56,7 @@ public static class BitUtility
     {
         int num = Convert.ToInt32(n);
         int num2 = Convert.ToInt32(mask);
-        if (all)
-        {
-            return (num & num2) == num2;
-        }
-        return (num & num2) != 0;
+        return all ? (num & num2) == num2 : (num & num2) != 0;
     }
 
     public static bool IsNotSet<T>(this Enum n, T mask, bool all = true)

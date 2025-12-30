@@ -53,9 +53,6 @@ public class InlineCollection : Collection<Inline>
 
     protected virtual void OnCollectionChanged(CollectionChangeEventArgs e)
     {
-        if (this.Changed != null)
-        {
-            this.Changed(this, e);
-        }
+        Changed?.Invoke(this, e);
     }
 }

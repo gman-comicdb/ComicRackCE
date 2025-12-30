@@ -14,29 +14,13 @@ public class CacheManager
 {
     public const int MemoryThumbnailCacheSize = 8192;
 
-    public DatabaseManager DatabaseManager
-    {
-        get;
-        private set;
-    }
+    public DatabaseManager DatabaseManager { get; private set; }
 
-    public FileCache InternetCache
-    {
-        get;
-        private set;
-    }
+    public FileCache InternetCache { get; private set; }
 
-    public ImagePool ImagePool
-    {
-        get;
-        private set;
-    }
+    public ImagePool ImagePool { get; private set; }
 
-    public ResourceManager ResourceManager
-    {
-        get;
-        private set;
-    }
+    public ResourceManager ResourceManager { get; private set; }
 
     public CacheManager(DatabaseManager databaseManager, SystemPaths paths, ICacheSettings settings, ResourceManager resourceManager = null)
     {

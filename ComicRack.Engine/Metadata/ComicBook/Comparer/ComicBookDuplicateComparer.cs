@@ -61,10 +61,7 @@ public static class ComicBookDuplicateComparer
 
         public int GetHashCode(ComicBook obj)
         {
-            if (obj == null || !obj.IsLinked)
-                return 0;
-
-            return obj.FilePath?.GetHashCode() ?? 0;
+            return obj == null || !obj.IsLinked ? 0 : obj.FilePath?.GetHashCode() ?? 0;
         }
     }
 }

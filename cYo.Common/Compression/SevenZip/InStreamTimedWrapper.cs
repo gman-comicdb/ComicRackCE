@@ -20,8 +20,7 @@ public class InStreamTimedWrapper : StreamWrapper, ISequentialInStream, IInStrea
     public InStreamTimedWrapper(Stream baseStream)
         : base(baseStream)
     {
-        FileStream fileStream = baseStream as FileStream;
-        if (fileStream != null && !baseStream.CanWrite && baseStream.CanSeek)
+        if (baseStream is FileStream fileStream && !baseStream.CanWrite && baseStream.CanSeek)
         {
             baseStreamFileName = fileStream.Name;
             closeTimer = new Timer(CloseStream, null, 5000, -1);
@@ -36,11 +35,8 @@ public class InStreamTimedWrapper : StreamWrapper, ISequentialInStream, IInStrea
 
     private void CloseStream(object state)
     {
-        if (closeTimer != null)
-        {
-            closeTimer.Dispose();
-            closeTimer = null;
-        }
+        closeTimer?.Dispose();
+        closeTimer = null;
         if (base.BaseStream != null)
         {
             if (base.BaseStream.CanSeek)
@@ -64,9 +60,9 @@ public class InStreamTimedWrapper : StreamWrapper, ISequentialInStream, IInStrea
             base.BaseStream.Position = baseStreamLastPosition;
             closeTimer = new Timer(CloseStream, null, KeepAliveInterval, -1);
         }
-        else if (closeTimer != null)
+        else
         {
-            closeTimer.Change(KeepAliveInterval, -1);
+            closeTimer?.Change(KeepAliveInterval, -1);
         }
     }
 

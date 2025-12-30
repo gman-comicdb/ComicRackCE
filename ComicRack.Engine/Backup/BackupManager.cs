@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 
-using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Text;
 using cYo.Common.Threading;
 
 namespace cYo.Projects.ComicRack.Engine.Backup;
@@ -19,9 +15,9 @@ public class BackupManager : DisposableObject
 {
     private readonly ProcessingQueue<IEnumerable<BackupFileEntry>> backupQueue;
     private readonly BackupLocationProviderFactory locationProviderFactory;
-    private readonly BackupFileCollector fileCollector = new BackupFileCollector();
-    private readonly BackupArchiveCreator archiveCreator = new BackupArchiveCreator();
-    private readonly BackupRetentionManager retentionManager = new BackupRetentionManager();
+    private readonly BackupFileCollector fileCollector = new();
+    private readonly BackupArchiveCreator archiveCreator = new();
+    private readonly BackupRetentionManager retentionManager = new();
 
     public bool IsInBackupProcess => backupQueue.IsActive;
 

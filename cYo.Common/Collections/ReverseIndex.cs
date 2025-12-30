@@ -9,9 +9,9 @@ namespace cYo.Common.Collections;
 [Serializable]
 public class ReverseIndex<T, K>
 {
-    private readonly List<T> complete = new List<T>();
+    private readonly List<T> complete = new();
 
-    private readonly Dictionary<K, ICollection<T>> index = new Dictionary<K, ICollection<T>>();
+    private readonly Dictionary<K, ICollection<T>> index = new();
 
     public int Size => index.Count;
 
@@ -24,7 +24,7 @@ public class ReverseIndex<T, K>
         {
             if (!index.TryGetValue(key, out value))
             {
-                value = (index[key] = new List<T>());
+                value = index[key] = new List<T>();
             }
         }
         using (ItemMonitor.Lock(value))
@@ -49,7 +49,7 @@ public class ReverseIndex<T, K>
     {
         foreach (T t in items)
         {
-            this.Add(t, predicate(t));
+            Add(t, predicate(t));
         }
     }
 
@@ -59,7 +59,7 @@ public class ReverseIndex<T, K>
         {
             foreach (K key in predicate(item))
             {
-                this.Add(item, key);
+                Add(item, key);
             }
         });
     }
@@ -93,7 +93,7 @@ public class ReverseIndex<T, K>
         using (ItemMonitor.Lock(index))
         {
             ICollection<T> value;
-            return index.TryGetValue(key, out value) ? value.ToArray() : new T[0];
+            return index.TryGetValue(key, out value) ? value.ToArray() : [];
         }
     }
 

@@ -25,10 +25,7 @@ public class TextBoxEx : TextBox, IPromptText, IDelayedAutoCompleteList
     [DefaultValue(null)]
     public string PromptText
     {
-        get
-        {
-            return promptText;
-        }
+        get => promptText;
         set
         {
             promptText = value;
@@ -44,11 +41,7 @@ public class TextBoxEx : TextBox, IPromptText, IDelayedAutoCompleteList
     [Category("Behavior")]
     [Description("Automatically select the text when control receives the focus.")]
     [DefaultValue(true)]
-    public bool FocusSelect
-    {
-        get;
-        set;
-    }
+    public bool FocusSelect { get; set; }
 
     public TextBoxEx()
     {
@@ -57,11 +50,7 @@ public class TextBoxEx : TextBox, IPromptText, IDelayedAutoCompleteList
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (!Multiline && (keyData == Keys.Down || keyData == Keys.Up))
-        {
-            return true;
-        }
-        return base.IsInputKey(keyData);
+        return !Multiline && (keyData == Keys.Down || keyData == Keys.Up) ? true : base.IsInputKey(keyData);
     }
 
     protected override void OnHandleCreated(EventArgs e)

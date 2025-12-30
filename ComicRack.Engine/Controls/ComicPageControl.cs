@@ -15,11 +15,7 @@ public class ComicPageControl : UserControlEx
     private ComicBook[] pendingBooks;
 
     [DefaultValue(null)]
-    public virtual Image Icon
-    {
-        get;
-        set;
-    }
+    public virtual Image Icon { get; set; }
 
     public void MarkAsDirty()
     {
@@ -49,7 +45,7 @@ public class ComicPageControl : UserControlEx
         {
             if (pendingUpdate)
             {
-                OnShowInfo(pendingBooks ?? new ComicBook[0]);
+                OnShowInfo(pendingBooks ?? []);
             }
             pendingUpdate = false;
             pendingBooks = null;

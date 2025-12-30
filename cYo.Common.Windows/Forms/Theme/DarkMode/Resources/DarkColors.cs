@@ -165,17 +165,13 @@ internal class DarkColors
 
     public static Color GetUIComponentColor(Theme.UIComponent component)
     {
-        switch (component)
+        return component switch
         {
-            case Theme.UIComponent.SidePanel:
-                return UIComponent.SidePanel;
-            case Theme.UIComponent.Content:
-                return UIComponent.Content;
-            case Theme.UIComponent.Window:
-                return UIComponent.Window;
-            default:
-                return Color.Empty; // Theme.UIComponent.None or null, if that's a possibility
-        }
+            Theme.UIComponent.SidePanel => UIComponent.SidePanel,
+            Theme.UIComponent.Content => UIComponent.Content,
+            Theme.UIComponent.Window => UIComponent.Window,
+            _ => Color.Empty,// Theme.UIComponent.None or null, if that's a possibility
+        };
     }
 }
 

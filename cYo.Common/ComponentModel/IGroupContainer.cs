@@ -5,14 +5,7 @@ namespace cYo.Common.ComponentModel;
 
 public interface IGroupContainer<T> : IGroupInfo, IComparable<IGroupInfo>
 {
-    IGroupInfo Info
-    {
-        get;
-        set;
-    }
+    IGroupInfo Info { get; set; }
 
-    List<T> Items
-    {
-        get;
-    }
+    List<T> Items { get; }
 }

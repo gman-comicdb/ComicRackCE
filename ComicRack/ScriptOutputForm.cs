@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -18,10 +17,7 @@ public partial class ScriptOutputForm : FormEx
 
     public Rectangle SafeBounds
     {
-        get
-        {
-            return safeBounds;
-        }
+        get => safeBounds;
         set
         {
             base.StartPosition = FormStartPosition.Manual;

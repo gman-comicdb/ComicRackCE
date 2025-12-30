@@ -37,24 +37,11 @@ public class CommandMapper : Component
             Update = update;
             Check = check;
             IdleUpdate = true;
-            if (Sender is ToolStripItem)
-            {
-                ToolStripItem tsi = (ToolStripItem)Sender;
-                checkVisibility = () => tsi.Visible;
-            }
-            else if (Sender is ButtonBase)
-            {
-                ButtonBase bb = (ButtonBase)Sender;
-                checkVisibility = () => bb.Visible;
-            }
-            else
-            {
-                checkVisibility = () => false;
-            }
+            checkVisibility = Sender is ToolStripItem tsi ? (() => tsi.Visible) : (Func<bool>)(Sender is ButtonBase bb ? (() => bb.Visible) : (() => false));
         }
     }
 
-    private readonly Dictionary<object, HandleItem> ht = new Dictionary<object, HandleItem>();
+    private readonly Dictionary<object, HandleItem> ht = new();
 
     private bool enable = true;
 
@@ -62,14 +49,8 @@ public class CommandMapper : Component
 
     public bool Enable
     {
-        get
-        {
-            return enable;
-        }
-        set
-        {
-            enable = value;
-        }
+        get => enable;
+        set => enable = value;
     }
 
     public CommandMapper(bool enable)
@@ -96,21 +77,17 @@ public class CommandMapper : Component
     {
         foreach (object obj in senders)
         {
-            HandleItem hi = new HandleItem(obj, clickHandler, enabledHandler, checkedHandler);
+            HandleItem hi = new(obj, clickHandler, enabledHandler, checkedHandler);
             ht[obj] = hi;
-            ToolStripItem toolStripItem;
-            ButtonBase buttonBase;
-            if ((toolStripItem = obj as ToolStripItem) != null)
+            if (obj is ToolStripItem toolStripItem)
             {
-                ToolStripMenuItem toolStripMenuItem = toolStripItem as ToolStripMenuItem;
-                if (toolStripMenuItem != null && toolStripMenuItem.ShortcutKeys != 0)
+                if (toolStripItem is ToolStripMenuItem toolStripMenuItem && toolStripMenuItem.ShortcutKeys != 0)
                 {
                     hi.ForcedUpdate = true;
                 }
                 else if (!toolStripItem.IsOnOverflow)
                 {
-                    ContextMenuStrip contextMenuStrip = toolStripItem.GetCurrentParent() as ContextMenuStrip;
-                    if (contextMenuStrip != null)
+                    if (toolStripItem.GetCurrentParent() is ContextMenuStrip contextMenuStrip)
                     {
                         contextMenuStrip.Opening += delegate
                         {
@@ -120,8 +97,7 @@ public class CommandMapper : Component
                     }
                     else
                     {
-                        ToolStripDropDown toolStripDropDown = toolStripItem.GetCurrentParent() as ToolStripDropDown;
-                        if (toolStripDropDown != null)
+                        if (toolStripItem.GetCurrentParent() is ToolStripDropDown toolStripDropDown)
                         {
                             toolStripDropDown.Opening += delegate
                             {
@@ -131,8 +107,7 @@ public class CommandMapper : Component
                         }
                     }
                 }
-                ToolStripSplitButton toolStripSplitButton = toolStripItem as ToolStripSplitButton;
-                if (toolStripSplitButton != null)
+                if (toolStripItem is ToolStripSplitButton toolStripSplitButton)
                 {
                     toolStripSplitButton.ButtonClick += CommandMapperClick;
                 }
@@ -141,7 +116,7 @@ public class CommandMapper : Component
                     toolStripItem.Click += CommandMapperClick;
                 }
             }
-            else if ((buttonBase = obj as ButtonBase) != null)
+            else if (obj is ButtonBase buttonBase)
             {
                 buttonBase.Click += CommandMapperClick;
             }
@@ -284,13 +259,11 @@ public class CommandMapper : Component
         if (hi.Update != null)
         {
             bool enabled = hi.Update();
-            ToolStripItem toolStripItem;
-            ButtonBase buttonBase;
-            if ((toolStripItem = hi.Sender as ToolStripItem) != null)
+            if (hi.Sender is ToolStripItem toolStripItem)
             {
                 toolStripItem.Enabled = enabled;
             }
-            else if ((buttonBase = hi.Sender as ButtonBase) != null)
+            else if (hi.Sender is ButtonBase buttonBase)
             {
                 buttonBase.Enabled = enabled;
             }
@@ -298,13 +271,11 @@ public class CommandMapper : Component
         if (hi.Check != null)
         {
             bool @checked = hi.Check();
-            ToolStripButton toolStripButton;
-            if ((toolStripButton = hi.Sender as ToolStripButton) != null)
+            if (hi.Sender is ToolStripButton toolStripButton)
             {
                 toolStripButton.Checked = @checked;
             }
-            ToolStripMenuItem toolStripMenuItem;
-            if ((toolStripMenuItem = hi.Sender as ToolStripMenuItem) != null)
+            if (hi.Sender is ToolStripMenuItem toolStripMenuItem)
             {
                 toolStripMenuItem.Checked = @checked;
             }

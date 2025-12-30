@@ -41,14 +41,8 @@ public class ComicBookAllPropertiesMatcher : ComicBookStringMatcher
 
     public MatcherOption Option
     {
-        get
-        {
-            return option;
-        }
-        set
-        {
-            option = value;
-        }
+        get => option;
+        set => option = value;
     }
 
     private bool MatchOption(ComicBook comicBook, MatcherOption option)
@@ -68,7 +62,7 @@ public class ComicBookAllPropertiesMatcher : ComicBookStringMatcher
 
     public static ComicBookMatcher Create(string query, int matchOperator, MatcherOption searchOption, ShowOptionType showOption, ShowComicType showComic, params ComicBookMatcher[] additonalMatchers)
     {
-        List<ComicBookMatcher> list = new List<ComicBookMatcher>();
+        List<ComicBookMatcher> list = new();
         switch (showOption)
         {
             case ShowOptionType.Read:
@@ -130,7 +124,7 @@ public class ComicBookAllPropertiesMatcher : ComicBookStringMatcher
         {
             return list[0];
         }
-        ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+        ComicBookGroupMatcher comicBookGroupMatcher = new();
         comicBookGroupMatcher.Matchers.AddRange(list);
         comicBookGroupMatcher.MatcherMode = MatcherMode.And;
         return comicBookGroupMatcher;

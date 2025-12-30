@@ -21,7 +21,7 @@ namespace cYo.Projects.ComicRack.Engine;
 [Serializable]
 public class ComicInfo
 {
-    private static volatile string[] coverKeyFilter = new string[0];
+    private static volatile string[] coverKeyFilter = [];
 
     private string title = string.Empty;
 
@@ -115,26 +115,23 @@ public class ComicInfo
 
     private int cachedBookmarkCount = -1;
 
-    private static readonly Lazy<string> yesText = new Lazy<string>(() => TR.Default["Yes"]);
+    private static readonly Lazy<string> yesText = new(() => TR.Default["Yes"]);
 
-    private static readonly Lazy<string> noText = new Lazy<string>(() => TR.Default["No"]);
+    private static readonly Lazy<string> noText = new(() => TR.Default["No"]);
 
-    private static readonly Lazy<string> yesRightToLeftText = new Lazy<string>(() => TR.Load("ComicInfo")["YesRightToLeft", "Yes (Right to Left)"]);
+    private static readonly Lazy<string> yesRightToLeftText = new(() => TR.Load("ComicInfo")["YesRightToLeft", "Yes (Right to Left)"]);
 
-    private static readonly Regex rxVolume = new Regex("\\bv(ol(ume)?)?\\.?\\s?\\d+\\b\\s*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex rxVolume = new("\\bv(ol(ume)?)?\\.?\\s?\\d+\\b\\s*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    private static readonly Regex rxSpecial = new Regex("[^a-z0-9]|\\bthe\\b|\\band\\b|", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex rxSpecial = new("[^a-z0-9]|\\bthe\\b|\\band\\b|", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static string CoverKeyFilter
     {
-        get
-        {
-            return coverKeyFilter.ToListString(";");
-        }
+        get => coverKeyFilter.ToListString(";");
         set
         {
-            coverKeyFilter = ((value == null) ? new string[0] : (from s in value.Split(';')
-                                                                 select s.Trim()).RemoveEmpty().ToArray());
+            coverKeyFilter = (value == null) ? [] : (from s in value.Split(';')
+                                                                 select s.Trim()).RemoveEmpty().ToArray();
         }
     }
 
@@ -144,14 +141,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Title
     {
-        get
-        {
-            return title;
-        }
-        set
-        {
-            SetProperty("Title", ref title, value);
-        }
+        get => title;
+        set => SetProperty("Title", ref title, value);
     }
 
     [Browsable(true)]
@@ -160,14 +151,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Series
     {
-        get
-        {
-            return series;
-        }
-        set
-        {
-            SetProperty("Series", ref series, value);
-        }
+        get => series;
+        set => SetProperty("Series", ref series, value);
     }
 
     [Browsable(true)]
@@ -175,14 +160,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Number
     {
-        get
-        {
-            return number;
-        }
-        set
-        {
-            SetProperty("Number", ref number, value);
-        }
+        get => number;
+        set => SetProperty("Number", ref number, value);
     }
 
     [Browsable(true)]
@@ -190,14 +169,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int Count
     {
-        get
-        {
-            return count;
-        }
-        set
-        {
-            SetProperty("Count", ref count, value);
-        }
+        get => count;
+        set => SetProperty("Count", ref count, value);
     }
 
     [Browsable(true)]
@@ -205,14 +178,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int Volume
     {
-        get
-        {
-            return volume;
-        }
-        set
-        {
-            SetProperty("Volume", ref volume, value);
-        }
+        get => volume;
+        set => SetProperty("Volume", ref volume, value);
     }
 
     [Browsable(true)]
@@ -221,14 +188,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string AlternateSeries
     {
-        get
-        {
-            return alternateSeries;
-        }
-        set
-        {
-            SetProperty("AlternateSeries", ref alternateSeries, value);
-        }
+        get => alternateSeries;
+        set => SetProperty("AlternateSeries", ref alternateSeries, value);
     }
 
     [Browsable(true)]
@@ -236,14 +197,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string AlternateNumber
     {
-        get
-        {
-            return alternateNumber;
-        }
-        set
-        {
-            SetProperty("AlternateNumber", ref alternateNumber, value);
-        }
+        get => alternateNumber;
+        set => SetProperty("AlternateNumber", ref alternateNumber, value);
     }
 
     [Browsable(true)]
@@ -252,14 +207,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string StoryArc
     {
-        get
-        {
-            return storyArc;
-        }
-        set
-        {
-            SetProperty("StoryArc", ref storyArc, value);
-        }
+        get => storyArc;
+        set => SetProperty("StoryArc", ref storyArc, value);
     }
 
     [Browsable(true)]
@@ -268,14 +217,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string SeriesGroup
     {
-        get
-        {
-            return seriesGroup;
-        }
-        set
-        {
-            SetProperty("SeriesGroup", ref seriesGroup, value);
-        }
+        get => seriesGroup;
+        set => SetProperty("SeriesGroup", ref seriesGroup, value);
     }
 
     [Browsable(true)]
@@ -283,14 +226,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int AlternateCount
     {
-        get
-        {
-            return alternateCount;
-        }
-        set
-        {
-            SetProperty("AlternateCount", ref alternateCount, value);
-        }
+        get => alternateCount;
+        set => SetProperty("AlternateCount", ref alternateCount, value);
     }
 
     [Browsable(true)]
@@ -298,14 +235,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Summary
     {
-        get
-        {
-            return summary;
-        }
-        set
-        {
-            SetProperty("Summary", ref summary, value);
-        }
+        get => summary;
+        set => SetProperty("Summary", ref summary, value);
     }
 
     [Browsable(true)]
@@ -313,14 +244,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Notes
     {
-        get
-        {
-            return notes;
-        }
-        set
-        {
-            SetProperty("Notes", ref notes, value);
-        }
+        get => notes;
+        set => SetProperty("Notes", ref notes, value);
     }
 
     [Browsable(true)]
@@ -328,14 +253,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Review
     {
-        get
-        {
-            return review;
-        }
-        set
-        {
-            SetProperty("Review", ref review, value);
-        }
+        get => review;
+        set => SetProperty("Review", ref review, value);
     }
 
     [Browsable(true)]
@@ -343,14 +262,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int Year
     {
-        get
-        {
-            return year;
-        }
-        set
-        {
-            SetProperty("Year", ref year, value);
-        }
+        get => year;
+        set => SetProperty("Year", ref year, value);
     }
 
     [Browsable(true)]
@@ -358,14 +271,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int Month
     {
-        get
-        {
-            return month;
-        }
-        set
-        {
-            SetProperty("Month", ref month, value);
-        }
+        get => month;
+        set => SetProperty("Month", ref month, value);
     }
 
     [Browsable(true)]
@@ -373,14 +280,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int Day
     {
-        get
-        {
-            return day;
-        }
-        set
-        {
-            SetProperty("Day", ref day, value);
-        }
+        get => day;
+        set => SetProperty("Day", ref day, value);
     }
 
     [Browsable(true)]
@@ -389,14 +290,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Writer
     {
-        get
-        {
-            return writer;
-        }
-        set
-        {
-            SetProperty("Writer", ref writer, value);
-        }
+        get => writer;
+        set => SetProperty("Writer", ref writer, value);
     }
 
     [Browsable(true)]
@@ -405,14 +300,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Penciller
     {
-        get
-        {
-            return penciller;
-        }
-        set
-        {
-            SetProperty("Penciller", ref penciller, value);
-        }
+        get => penciller;
+        set => SetProperty("Penciller", ref penciller, value);
     }
 
     [Browsable(true)]
@@ -421,14 +310,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Inker
     {
-        get
-        {
-            return inker;
-        }
-        set
-        {
-            SetProperty("Inker", ref inker, value);
-        }
+        get => inker;
+        set => SetProperty("Inker", ref inker, value);
     }
 
     [Browsable(true)]
@@ -437,14 +320,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Colorist
     {
-        get
-        {
-            return colorist;
-        }
-        set
-        {
-            SetProperty("Colorist", ref colorist, value);
-        }
+        get => colorist;
+        set => SetProperty("Colorist", ref colorist, value);
     }
 
     [Browsable(true)]
@@ -453,14 +330,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Letterer
     {
-        get
-        {
-            return letterer;
-        }
-        set
-        {
-            SetProperty("Letterer", ref letterer, value);
-        }
+        get => letterer;
+        set => SetProperty("Letterer", ref letterer, value);
     }
 
     [Browsable(true)]
@@ -469,14 +340,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string CoverArtist
     {
-        get
-        {
-            return coverArtist;
-        }
-        set
-        {
-            SetProperty("CoverArtist", ref coverArtist, value);
-        }
+        get => coverArtist;
+        set => SetProperty("CoverArtist", ref coverArtist, value);
     }
 
     [Browsable(true)]
@@ -485,14 +350,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Editor
     {
-        get
-        {
-            return editor;
-        }
-        set
-        {
-            SetProperty("Editor", ref editor, value);
-        }
+        get => editor;
+        set => SetProperty("Editor", ref editor, value);
     }
 
     [Browsable(true)]
@@ -501,14 +360,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Translator
     {
-        get
-        {
-            return translator;
-        }
-        set
-        {
-            SetProperty("Translator", ref translator, value);
-        }
+        get => translator;
+        set => SetProperty("Translator", ref translator, value);
     }
 
     [Browsable(true)]
@@ -517,14 +370,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Publisher
     {
-        get
-        {
-            return publisher;
-        }
-        set
-        {
-            SetProperty("Publisher", ref publisher, value);
-        }
+        get => publisher;
+        set => SetProperty("Publisher", ref publisher, value);
     }
 
     [Browsable(true)]
@@ -533,14 +380,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Imprint
     {
-        get
-        {
-            return imprint;
-        }
-        set
-        {
-            SetProperty("Imprint", ref imprint, value);
-        }
+        get => imprint;
+        set => SetProperty("Imprint", ref imprint, value);
     }
 
     [Browsable(true)]
@@ -549,14 +390,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Genre
     {
-        get
-        {
-            return genre;
-        }
-        set
-        {
-            SetProperty("Genre", ref genre, value);
-        }
+        get => genre;
+        set => SetProperty("Genre", ref genre, value);
     }
 
     [Browsable(true)]
@@ -564,14 +399,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Web
     {
-        get
-        {
-            return web;
-        }
-        set
-        {
-            SetProperty("Web", ref web, value);
-        }
+        get => web;
+        set => SetProperty("Web", ref web, value);
     }
 
     [Browsable(true)]
@@ -579,14 +408,8 @@ public class ComicInfo
     [ResetValue(0)]
     public int PageCount
     {
-        get
-        {
-            return pageCount;
-        }
-        set
-        {
-            SetProperty("PageCount", ref pageCount, value);
-        }
+        get => pageCount;
+        set => SetProperty("PageCount", ref pageCount, value);
     }
 
     [Browsable(true)]
@@ -594,14 +417,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string LanguageISO
     {
-        get
-        {
-            return languageISO;
-        }
-        set
-        {
-            SetProperty("LanguageISO", ref languageISO, value);
-        }
+        get => languageISO;
+        set => SetProperty("LanguageISO", ref languageISO, value);
     }
 
     [Browsable(true)]
@@ -610,14 +427,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Format
     {
-        get
-        {
-            return format;
-        }
-        set
-        {
-            SetProperty("Format", ref format, value);
-        }
+        get => format;
+        set => SetProperty("Format", ref format, value);
     }
 
     [Browsable(true)]
@@ -625,14 +436,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string AgeRating
     {
-        get
-        {
-            return ageRating;
-        }
-        set
-        {
-            SetProperty("AgeRating", ref ageRating, value);
-        }
+        get => ageRating;
+        set => SetProperty("AgeRating", ref ageRating, value);
     }
 
     [Browsable(true)]
@@ -640,14 +445,8 @@ public class ComicInfo
     [ResetValue(0)]
     public YesNo BlackAndWhite
     {
-        get
-        {
-            return blackAndWhite;
-        }
-        set
-        {
-            SetProperty("BlackAndWhite", ref blackAndWhite, value);
-        }
+        get => blackAndWhite;
+        set => SetProperty("BlackAndWhite", ref blackAndWhite, value);
     }
 
     [Browsable(true)]
@@ -655,14 +454,8 @@ public class ComicInfo
     [ResetValue(0)]
     public MangaYesNo Manga
     {
-        get
-        {
-            return manga;
-        }
-        set
-        {
-            SetProperty("Manga", ref manga, value);
-        }
+        get => manga;
+        set => SetProperty("Manga", ref manga, value);
     }
 
     [Browsable(true)]
@@ -670,10 +463,7 @@ public class ComicInfo
     [ResetValue(1)]
     public int PreferredFrontCover
     {
-        get
-        {
-            return preferredFrontCover;
-        }
+        get => preferredFrontCover;
         set
         {
             if (SetProperty("PreferredFrontCover", ref preferredFrontCover, value))
@@ -689,14 +479,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Characters
     {
-        get
-        {
-            return characters;
-        }
-        set
-        {
-            SetProperty("Characters", ref characters, value);
-        }
+        get => characters;
+        set => SetProperty("Characters", ref characters, value);
     }
 
     [Browsable(true)]
@@ -705,14 +489,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Teams
     {
-        get
-        {
-            return teams;
-        }
-        set
-        {
-            SetProperty("Teams", ref teams, value);
-        }
+        get => teams;
+        set => SetProperty("Teams", ref teams, value);
     }
 
     [Browsable(true)]
@@ -721,14 +499,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string MainCharacterOrTeam
     {
-        get
-        {
-            return mainCharacterOrTeam;
-        }
-        set
-        {
-            SetProperty("MainCharacterOrTeam", ref mainCharacterOrTeam, value);
-        }
+        get => mainCharacterOrTeam;
+        set => SetProperty("MainCharacterOrTeam", ref mainCharacterOrTeam, value);
     }
 
     [Browsable(true)]
@@ -737,14 +509,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Locations
     {
-        get
-        {
-            return locations;
-        }
-        set
-        {
-            SetProperty("Locations", ref locations, value);
-        }
+        get => locations;
+        set => SetProperty("Locations", ref locations, value);
     }
 
     [Browsable(true)]
@@ -752,14 +518,8 @@ public class ComicInfo
     [ResetValue(0)]
     public float CommunityRating
     {
-        get
-        {
-            return communityRating;
-        }
-        set
-        {
-            SetProperty("CommunityRating", ref communityRating, value.Clamp(0f, 5f));
-        }
+        get => communityRating;
+        set => SetProperty("CommunityRating", ref communityRating, value.Clamp(0f, 5f));
     }
 
     [Browsable(true)]
@@ -768,14 +528,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string ScanInformation
     {
-        get
-        {
-            return scanInformation;
-        }
-        set
-        {
-            SetProperty("ScanInformation", ref scanInformation, value);
-        }
+        get => scanInformation;
+        set => SetProperty("ScanInformation", ref scanInformation, value);
     }
 
     [Browsable(true)]
@@ -784,14 +538,8 @@ public class ComicInfo
     [ResetValue(0)]
     public string Tags
     {
-        get
-        {
-            return tags;
-        }
-        set
-        {
-            SetProperty("Tags", ref tags, value);
-        }
+        get => tags;
+        set => SetProperty("Tags", ref tags, value);
     }
 
     public int FrontCoverPageIndex
@@ -805,12 +553,12 @@ public class ComicInfo
             ComicPageInfo[] source = GetPageList().ToArray();
             ComicPageInfo[] array = source.Where((ComicPageInfo pi) => pi.PageType == ComicPageType.FrontCover).ToArray();
             int num = PreferredFrontCover.Clamp(0, array.Length - 1);
-            ComicPageInfo comicPageInfo = ((num == -1 || array.Length == 0) ? ComicPageInfo.Empty : array[num]);
+            ComicPageInfo comicPageInfo = (num == -1 || array.Length == 0) ? ComicPageInfo.Empty : array[num];
             if (comicPageInfo.IsEmpty)
             {
                 comicPageInfo = source.Where((ComicPageInfo p) => p.PageType != ComicPageType.Other).FirstOrDefault();
             }
-            cachedFrontCoverPageIndex = ((!comicPageInfo.IsEmpty) ? TranslateImageIndexToPage(comicPageInfo.ImageIndex) : 0);
+            cachedFrontCoverPageIndex = (!comicPageInfo.IsEmpty) ? TranslateImageIndexToPage(comicPageInfo.ImageIndex) : 0;
             return cachedFrontCoverPageIndex;
         }
     }
@@ -838,7 +586,7 @@ public class ComicInfo
 
     [XmlArrayItem("Page")]
     [Browsable(false)]
-    public ComicPageInfoCollection Pages => pages ?? (pages = new ComicPageInfoCollection());
+    public ComicPageInfoCollection Pages => pages ??= new ComicPageInfoCollection();
 
     [XmlIgnore]
     public int BookmarkCount
@@ -847,7 +595,7 @@ public class ComicInfo
         {
             if (cachedBookmarkCount == -1)
             {
-                cachedBookmarkCount = ((pages != null) ? pages.Lock().Count((ComicPageInfo pi) => !string.IsNullOrEmpty(pi.Bookmark)) : 0);
+                cachedBookmarkCount = (pages != null) ? pages.Lock().Count((ComicPageInfo pi) => !string.IsNullOrEmpty(pi.Bookmark)) : 0;
             }
             return cachedBookmarkCount;
         }
@@ -857,13 +605,11 @@ public class ComicInfo
     {
         get
         {
-            if (pages != null)
-            {
-                return from pi in pages.Lock()
-                       where !string.IsNullOrEmpty(pi.Bookmark)
-                       select pi.Bookmark;
-            }
-            return Enumerable.Empty<string>();
+            return pages != null
+                ? (from pi in pages.Lock()
+                   where !string.IsNullOrEmpty(pi.Bookmark)
+                   select pi.Bookmark)
+                : [];
         }
     }
 
@@ -989,11 +735,7 @@ public class ComicInfo
 
     public int TranslatePageToImageIndex(int page)
     {
-        if (page < 0)
-        {
-            return page;
-        }
-        return GetPage(page).ImageIndex;
+        return page < 0 ? page : GetPage(page).ImageIndex;
     }
 
     public int TranslateImageIndexToPage(int imageIndex)
@@ -1039,11 +781,7 @@ public class ComicInfo
     public ComicPageInfo GetPageByImageIndex(int imageIndex)
     {
         ComicPageInfo result = Pages.FindByImageIndex(imageIndex);
-        if (result.IsEmpty)
-        {
-            return GetPage(imageIndex);
-        }
-        return result;
+        return result.IsEmpty ? GetPage(imageIndex) : result;
     }
 
     public IEnumerable<ComicPageInfo> GetPageList()
@@ -1177,16 +915,13 @@ public class ComicInfo
 
     private void FirePageChanged(int page, bool updateComicInfo = true)
     {
-        cachedFrontCoverPageIndex = (cachedFrontCoverCount = -1);
+        cachedFrontCoverPageIndex = cachedFrontCoverCount = -1;
         OnBookChanged(new BookChangedEventArgs("Pages", page, updateComicInfo));
     }
 
     protected virtual void OnBookChanged(BookChangedEventArgs e)
     {
-        if (this.BookChanged != null)
-        {
-            this.BookChanged(this, e);
-        }
+        BookChanged?.Invoke(this, e);
     }
 
     protected virtual ComicPageInfo OnNewComicPageAdded(ComicPageInfo info)
@@ -1419,7 +1154,7 @@ public class ComicInfo
     {
         using (ItemMonitor.Lock(this))
         {
-            ComicInfo ci = new ComicInfo
+            ComicInfo ci = new()
             {
                 Writer = Writer,
                 Publisher = Publisher,
@@ -1474,15 +1209,9 @@ public class ComicInfo
 
     public bool IsSameContent(ComicInfo ci, bool withPages = true)
     {
-        if (ci != null && ci.Writer == Writer && ci.Publisher == Publisher && ci.Imprint == Imprint && ci.Inker == Inker && ci.Penciller == Penciller && ci.Title == Title && ci.Number == Number && ci.Count == Count && ci.Summary == Summary && ci.Series == Series && ci.Volume == Volume && ci.AlternateSeries == AlternateSeries && ci.AlternateNumber == AlternateNumber && ci.AlternateCount == AlternateCount && ci.StoryArc == StoryArc && ci.SeriesGroup == SeriesGroup && ci.Year == Year && ci.Month == Month && ci.Day == Day && ci.Notes == Notes && ci.Review == Review && ci.Genre == Genre && ci.Colorist == Colorist && ci.Editor == Editor && ci.Translator == Translator && ci.Letterer == Letterer && ci.CoverArtist == CoverArtist && ci.Web == Web && ci.LanguageISO == LanguageISO && ci.PageCount == PageCount && ci.Format == Format && ci.AgeRating == AgeRating && ci.BlackAndWhite == BlackAndWhite && ci.Manga == Manga && ci.Characters == Characters && ci.Teams == Teams && ci.MainCharacterOrTeam == MainCharacterOrTeam && ci.Locations == Locations && ci.ScanInformation == ScanInformation && ci.Tags == Tags)
-        {
-            if (withPages)
-            {
-                return ci.Pages.PagesAreEqual(Pages);
-            }
-            return true;
-        }
-        return false;
+        return ci != null && ci.Writer == Writer && ci.Publisher == Publisher && ci.Imprint == Imprint && ci.Inker == Inker && ci.Penciller == Penciller && ci.Title == Title && ci.Number == Number && ci.Count == Count && ci.Summary == Summary && ci.Series == Series && ci.Volume == Volume && ci.AlternateSeries == AlternateSeries && ci.AlternateNumber == AlternateNumber && ci.AlternateCount == AlternateCount && ci.StoryArc == StoryArc && ci.SeriesGroup == SeriesGroup && ci.Year == Year && ci.Month == Month && ci.Day == Day && ci.Notes == Notes && ci.Review == Review && ci.Genre == Genre && ci.Colorist == Colorist && ci.Editor == Editor && ci.Translator == Translator && ci.Letterer == Letterer && ci.CoverArtist == CoverArtist && ci.Web == Web && ci.LanguageISO == LanguageISO && ci.PageCount == PageCount && ci.Format == Format && ci.AgeRating == AgeRating && ci.BlackAndWhite == BlackAndWhite && ci.Manga == Manga && ci.Characters == Characters && ci.Teams == Teams && ci.MainCharacterOrTeam == MainCharacterOrTeam && ci.Locations == Locations && ci.ScanInformation == ScanInformation && ci.Tags == Tags
+            ? withPages ? ci.Pages.PagesAreEqual(Pages) : true
+            : false;
     }
 
     public void Serialize(Stream outStream)
@@ -1529,7 +1258,7 @@ public class ComicInfo
 
     public byte[] ToArray()
     {
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             Serialize(memoryStream);
             return memoryStream.ToArray();
@@ -1543,24 +1272,17 @@ public class ComicInfo
 
     public static string GetYesNoAsText(YesNo yn)
     {
-        switch (yn)
+        return yn switch
         {
-            case YesNo.Yes:
-                return yesText.Value;
-            case YesNo.No:
-                return noText.Value;
-            default:
-                return string.Empty;
-        }
+            YesNo.Yes => yesText.Value,
+            YesNo.No => noText.Value,
+            _ => string.Empty,
+        };
     }
 
     public static string GetYesNoAsText(MangaYesNo yn)
     {
-        if (yn == MangaYesNo.YesAndRightToLeft)
-        {
-            return yesRightToLeftText.Value;
-        }
-        return GetYesNoAsText((YesNo)yn);
+        return yn == MangaYesNo.YesAndRightToLeft ? yesRightToLeftText.Value : GetYesNoAsText((YesNo)yn);
     }
 
     public static string GetYesNoAsText(bool b)

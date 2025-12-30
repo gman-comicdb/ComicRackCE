@@ -43,13 +43,13 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     private volatile float opacity = 1f;
 
-    private Size border = new Size(4, 4);
+    private Size border = new(4, 4);
 
     private volatile bool disposed;
 
     private static Timer animationTimer;
 
-    private static readonly LinkedList<ThumbnailViewItem> animatedItems = new LinkedList<ThumbnailViewItem>();
+    private static readonly LinkedList<ThumbnailViewItem> animatedItems = new();
 
     private static long animationTime;
 
@@ -59,10 +59,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     public float Opacity
     {
-        get
-        {
-            return opacity;
-        }
+        get => opacity;
         set
         {
             value = value.Clamp(0f, 1f);
@@ -76,10 +73,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     public Size Border
     {
-        get
-        {
-            return border;
-        }
+        get => border;
         set
         {
             if (!(border == value))
@@ -90,10 +84,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
         }
     }
 
-    public abstract ThumbnailKey ThumbnailKey
-    {
-        get;
-    }
+    public abstract ThumbnailKey ThumbnailKey { get; }
 
     public bool IsDisposed => disposed;
 
@@ -134,8 +125,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
             {
                 return null;
             }
-            ComicListField comicListField = drawInfo.Header.Tag as ComicListField;
-            if (comicListField != null && comicListField.DisplayProperty != "Cover" && comicListField.DisplayProperty != "Thumbnail")
+            if (drawInfo.Header.Tag is ComicListField comicListField && comicListField.DisplayProperty != "Cover" && comicListField.DisplayProperty != "Thumbnail")
             {
                 return null;
             }
@@ -172,7 +162,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
         using (ItemMonitor.Lock(animatedItems))
         {
             long ticks = Machine.Ticks;
-            long num = ((animationTime == 0L) ? 12 : (ticks - animationTime));
+            long num = (animationTime == 0L) ? 12 : (ticks - animationTime);
             animationTime = ticks;
             LinkedListNode<ThumbnailViewItem> linkedListNode = animatedItems.First;
             bool flag = false;

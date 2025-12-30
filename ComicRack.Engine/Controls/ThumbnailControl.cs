@@ -62,10 +62,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [Browsable(false)]
     public ComicBook ComicBook
     {
-        get
-        {
-            return comicBook;
-        }
+        get => comicBook;
         set
         {
             if (ComicBook != value)
@@ -87,10 +84,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(null)]
     public Bitmap Bitmap
     {
-        get
-        {
-            return image;
-        }
+        get => image;
         set
         {
             if (image != value)
@@ -104,10 +98,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(null)]
     public IThumbnailPool ThumbnailPool
     {
-        get
-        {
-            return thumbnailPool;
-        }
+        get => thumbnailPool;
         set
         {
             if (thumbnailPool != value)
@@ -121,10 +112,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(-1)]
     public int Page
     {
-        get
-        {
-            return page;
-        }
+        get => page;
         set
         {
             if (page != value)
@@ -138,10 +126,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(ThumbnailDrawingOptions.Default)]
     public ThumbnailDrawingOptions DrawingFlags
     {
-        get
-        {
-            return drawingFlags;
-        }
+        get => drawingFlags;
         set
         {
             if (drawingFlags != value)
@@ -155,10 +140,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(ComicTextElements.DefaultComic)]
     public ComicTextElements TextElements
     {
-        get
-        {
-            return textElements;
-        }
+        get => textElements;
         set
         {
             if (textElements != value)
@@ -172,10 +154,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(false)]
     public bool Tile
     {
-        get
-        {
-            return tile;
-        }
+        get => tile;
         set
         {
             if (tile != value)
@@ -189,10 +168,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(typeof(BitmapAdjustment), "0, 0, 0")]
     public BitmapAdjustment ColorAdjustment
     {
-        get
-        {
-            return colorAdjustment;
-        }
+        get => colorAdjustment;
         set
         {
             if (!(colorAdjustment == value))
@@ -206,10 +182,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(true)]
     public bool HighQuality
     {
-        get
-        {
-            return highQuality;
-        }
+        get => highQuality;
         set
         {
             if (highQuality != value)
@@ -223,10 +196,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(false)]
     public bool ThreeD
     {
-        get
-        {
-            return threeD;
-        }
+        get => threeD;
         set
         {
             if (value != threeD)
@@ -396,18 +366,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(YesNo.Unknown)]
     public YesNo SeriesCompleteIcon
     {
-        get
-        {
-            if (!seriesCompleteIcon.HasValue)
-            {
-                if (comicBook == null)
-                {
-                    return YesNo.Unknown;
-                }
-                return comicBook.SeriesComplete;
-            }
-            return seriesCompleteIcon.Value;
-        }
+        get => !seriesCompleteIcon.HasValue ? comicBook == null ? YesNo.Unknown : comicBook.SeriesComplete : seriesCompleteIcon.Value;
         set
         {
             if (!seriesCompleteIcon.HasValue || seriesCompleteIcon.Value != value)
@@ -421,18 +380,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(YesNo.Unknown)]
     public YesNo BlackAndWhiteIcon
     {
-        get
-        {
-            if (!blackAndWhiteIcon.HasValue)
-            {
-                if (comicBook == null)
-                {
-                    return YesNo.Unknown;
-                }
-                return comicBook.BlackAndWhite;
-            }
-            return blackAndWhiteIcon.Value;
-        }
+        get => !blackAndWhiteIcon.HasValue ? comicBook == null ? YesNo.Unknown : comicBook.BlackAndWhite : blackAndWhiteIcon.Value;
         set
         {
             if (!blackAndWhiteIcon.HasValue || blackAndWhiteIcon.Value != value)
@@ -446,18 +394,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     [DefaultValue(MangaYesNo.Unknown)]
     public MangaYesNo MangaIcon
     {
-        get
-        {
-            if (!mangaIcon.HasValue)
-            {
-                if (comicBook == null)
-                {
-                    return MangaYesNo.Unknown;
-                }
-                return comicBook.Manga;
-            }
-            return mangaIcon.Value;
-        }
+        get => !mangaIcon.HasValue ? comicBook == null ? MangaYesNo.Unknown : comicBook.Manga : mangaIcon.Value;
         set
         {
             if (!mangaIcon.HasValue || mangaIcon.Value != value)
@@ -506,7 +443,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
                     {
                         if (itemLock != null && itemLock.Item != null)
                         {
-                            bitmap = (bitmap2 = itemLock.Item.Bitmap.Clone() as Bitmap);
+                            bitmap = bitmap2 = itemLock.Item.Bitmap.Clone() as Bitmap;
                         }
                     }
                 }
@@ -542,7 +479,7 @@ public class ThumbnailControl : Control, IBitmapDisplayControl, IDisposable
     {
         if (ComicBook == null)
         {
-            return Enumerable.Empty<Image>();
+            return [];
         }
         ComicBook comicBook = (ComicBook)ComicBook.Clone();
         if (!int.TryParse(PublishedYear, out var result))

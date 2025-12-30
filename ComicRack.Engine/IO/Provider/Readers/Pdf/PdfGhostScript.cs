@@ -15,11 +15,9 @@ public class PdfGhostScript : IComicAccessor
         {
             PdfImages.GhostscriptPath = EngineConfiguration.Default.GhostscriptExecutable;
         }
-        if (EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Ghostscript)
-        {
-            return PdfImages.IsGhostscriptAvailable;
-        }
-        return false;
+        return EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Ghostscript
+            ? PdfImages.IsGhostscriptAvailable
+            : false;
     }
 
     public bool IsFormat(string source)
@@ -29,7 +27,7 @@ public class PdfGhostScript : IComicAccessor
 
     public IEnumerable<ProviderImageInfo> GetEntryList(string source)
     {
-        PdfImages pdf = new PdfImages(source, EngineConfiguration.Default.TempPath);
+        PdfImages pdf = new(source, EngineConfiguration.Default.TempPath);
         for (int i = 0; i < pdf.PageCount; i++)
         {
             yield return new ProviderImageInfo(i);
@@ -39,18 +37,18 @@ public class PdfGhostScript : IComicAccessor
     public byte[] ReadByteImage(string source, ProviderImageInfo info)
     {
         int index = info.Index;
-        PdfImages pdfImages = new PdfImages(source, EngineConfiguration.Default.TempPath);
+        PdfImages pdfImages = new(source, EngineConfiguration.Default.TempPath);
         byte[] pageData = pdfImages.GetPageData(index, currentDpi);
         if (pageData == null)
         {
             return null;
         }
-        JpegFile jpegFile = new JpegFile(pageData);
+        JpegFile jpegFile = new(pageData);
         if (!jpegFile.IsValid)
         {
             return null;
         }
-        if (jpegFile.Height >= 1024 && jpegFile.Height < 2048)
+        if (jpegFile.Height is >= 1024 and < 2048)
         {
             return pageData;
         }

@@ -13,32 +13,16 @@ public class VisibilityAnimator : Component
 {
     private class AnimationInfo
     {
-        public Control Control
-        {
-            get;
-            set;
-        }
+        public Control Control { get; set; }
 
-        public int Height
-        {
-            get;
-            set;
-        }
+        public int Height { get; set; }
 
-        public bool AutoSize
-        {
-            get;
-            set;
-        }
+        public bool AutoSize { get; set; }
 
-        public Size MinimumSize
-        {
-            get;
-            set;
-        }
+        public Size MinimumSize { get; set; }
     }
 
-    private readonly Timer timer = new Timer();
+    private readonly Timer timer = new();
 
     private AnimationInfo[] animations;
 
@@ -48,14 +32,7 @@ public class VisibilityAnimator : Component
 
     public bool Visible
     {
-        get
-        {
-            if (pendingVisible.HasValue)
-            {
-                return pendingVisible.Value;
-            }
-            return GetVisibility();
-        }
+        get => pendingVisible.HasValue ? pendingVisible.Value : GetVisibility();
         set
         {
             if (value != Visible)
@@ -65,31 +42,15 @@ public class VisibilityAnimator : Component
         }
     }
 
-    public bool Enabled
-    {
-        get;
-        set;
-    }
+    public bool Enabled { get; set; }
 
-    public List<Control> Controls
-    {
-        get;
-        private set;
-    }
+    public List<Control> Controls { get; private set; }
 
     private static long Ticks => DateTime.Now.Ticks / 10000;
 
-    public static bool EnableAnimation
-    {
-        get;
-        set;
-    }
+    public static bool EnableAnimation { get; set; }
 
-    public static int AnimationDuration
-    {
-        get;
-        set;
-    }
+    public static int AnimationDuration { get; set; }
 
     static VisibilityAnimator()
     {
@@ -157,12 +118,7 @@ public class VisibilityAnimator : Component
 
     private bool IsContainerVisible()
     {
-        Control control = base.Container as Control;
-        if (control != null && control.TopLevelControl != null)
-        {
-            return control.TopLevelControl.Visible;
-        }
-        return true;
+        return base.Container is Control control && control.TopLevelControl != null ? control.TopLevelControl.Visible : true;
     }
 
     private void SetHeight(Control control, int h)

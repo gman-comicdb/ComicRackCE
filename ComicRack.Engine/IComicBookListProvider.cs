@@ -6,11 +6,7 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IComicBookListProvider : ILiteComponent, IDisposable, IIdentity, IComicBookList
 {
-    int BookCount
-    {
-        get;
-        set;
-    }
+    int BookCount { get; set; }
 
     event EventHandler BookListChanged;
 

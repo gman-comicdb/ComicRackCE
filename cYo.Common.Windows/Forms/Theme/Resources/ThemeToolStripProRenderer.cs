@@ -58,12 +58,12 @@ public class ThemeToolStripProRenderer : ToolStripProfessionalRenderer
         using (var pen = new Pen(checkColor ?? Color.White, 2))
         {
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            graphics.DrawLines(pen, new[]
-            {
+            graphics.DrawLines(pen,
+            [
                 new Point(rect.Left + 4, rect.Top + rect.Height/2 - 1),
                 new Point(rect.Left + rect.Width/3 + rect.Width/6, rect.Bottom - 5),
                 new Point(rect.Right - 4, rect.Top + 3)
-            });
+            ]);
         }
     }
 
@@ -73,14 +73,14 @@ public class ThemeToolStripProRenderer : ToolStripProfessionalRenderer
         var item = e.Item as ToolStripOverflowButton;
 
         const int overflowButtonWidth = 12;
-        Rectangle overflowArrowRect = new Rectangle(item.Width - overflowButtonWidth + 1, item.Height - 8, 9, 5);
+        Rectangle overflowArrowRect = new(item.Width - overflowButtonWidth + 1, item.Height - 8, 9, 5);
 
-        Point middle = new Point(overflowArrowRect.Left + overflowArrowRect.Width / 2, overflowArrowRect.Top + overflowArrowRect.Height / 2);
-        Point[] arrow = new Point[] {
-                new Point(middle.X - 2, middle.Y - 1),
-                new Point(middle.X + 3, middle.Y - 1),
-                new Point(middle.X,     middle.Y + 2)
-            };
+        Point middle = new(overflowArrowRect.Left + overflowArrowRect.Width / 2, overflowArrowRect.Top + overflowArrowRect.Height / 2);
+        Point[] arrow = [
+                new(middle.X - 2, middle.Y - 1),
+                new(middle.X + 3, middle.Y - 1),
+                new(middle.X,     middle.Y + 2)
+            ];
 
         g.FillPolygon(SystemBrushes.ControlText, arrow);
         g.DrawLine(SystemPens.ControlText, overflowArrowRect.Right - 7, overflowArrowRect.Y - 2, overflowArrowRect.Right - 3, overflowArrowRect.Y - 2);

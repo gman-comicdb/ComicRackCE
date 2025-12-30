@@ -20,10 +20,7 @@ public class LabelPanel : OverlayPanel
 
     public string Text
     {
-        get
-        {
-            return text;
-        }
+        get => text;
         set
         {
             if (!(text == value))
@@ -36,10 +33,7 @@ public class LabelPanel : OverlayPanel
 
     public ContentAlignment TextAlignment
     {
-        get
-        {
-            return textAlignment;
-        }
+        get => textAlignment;
         set
         {
             if (textAlignment != value)
@@ -52,10 +46,7 @@ public class LabelPanel : OverlayPanel
 
     public Color TextColor
     {
-        get
-        {
-            return textColor;
-        }
+        get => textColor;
         set
         {
             if (!(textColor == value))
@@ -68,10 +59,7 @@ public class LabelPanel : OverlayPanel
 
     public string TextFont
     {
-        get
-        {
-            return textFont;
-        }
+        get => textFont;
         set
         {
             if (!(textFont == value))
@@ -84,10 +72,7 @@ public class LabelPanel : OverlayPanel
 
     public float TextSize
     {
-        get
-        {
-            return textSize;
-        }
+        get => textSize;
         set
         {
             if (textSize != value)
@@ -119,7 +104,7 @@ public class LabelPanel : OverlayPanel
         {
             using (Brush brush = new SolidBrush(textColor))
             {
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     Alignment = textAlignment.ToAlignment(),
                     LineAlignment = textAlignment.ToLineAlignment()

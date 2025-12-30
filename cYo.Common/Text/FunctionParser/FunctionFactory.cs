@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime;
 using System.Text;
-using System.Windows.Forms;
 
 using cYo.Common.Collections;
 using cYo.Common.Reflection;
-using cYo.Common.Text.FunctionParser.Functions;
 
 
 namespace cYo.Common.Text.FunctionParser;
 
 public class FunctionFactory
 {
-    private static readonly Lazy<FunctionFactory> instance = new Lazy<FunctionFactory>();
+    private static readonly Lazy<FunctionFactory> instance = new();
     public static FunctionFactory Functions => instance.Value;
     private Dictionary<string, Type> FunctionTypes;
 
@@ -40,10 +36,9 @@ public class FunctionFactory
 
     public IFunction CreateFunction(string name)
     {
-        if (FunctionTypes.TryGetValue(name, out Type functionType))
-            return Activator.CreateInstance(functionType, name) as IFunction;
-
-        throw new NotImplementedException($"{name} Function not implemented.");
+        return FunctionTypes.TryGetValue(name, out Type functionType)
+            ? Activator.CreateInstance(functionType, name) as IFunction
+            : throw new NotImplementedException($"{name} Function not implemented.");
     }
 
     public static Dictionary<string, Type> Register()

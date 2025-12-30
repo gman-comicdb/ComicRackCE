@@ -15,43 +15,19 @@ public class TaskQueue<K> : DisposableObject
     {
         private volatile ProgressState state;
 
-        public Action<IProcessingItem<K>> Action
-        {
-            get;
-            private set;
-        }
+        public Action<IProcessingItem<K>> Action { get; private set; }
 
-        public K Item
-        {
-            get;
-            private set;
-        }
+        public K Item { get; private set; }
 
         public ProgressState State => state;
 
-        public int ProgressPercentage
-        {
-            get;
-            set;
-        }
+        public int ProgressPercentage { get; set; }
 
-        public string ProgressMessage
-        {
-            get;
-            set;
-        }
+        public string ProgressMessage { get; set; }
 
-        public bool ProgressAvailable
-        {
-            get;
-            set;
-        }
+        public bool ProgressAvailable { get; set; }
 
-        public bool Abort
-        {
-            get;
-            set;
-        }
+        public bool Abort { get; set; }
 
         public event Action<IProcessingItem<K>> Completed;
 
@@ -74,21 +50,13 @@ public class TaskQueue<K> : DisposableObject
             finally
             {
                 state = ProgressState.Completed;
-                if (this.Completed != null)
-                {
-                    this.Completed(this);
-                }
+                Completed?.Invoke(this);
             }
         }
 
         public override bool Equals(object x)
         {
-            ProcessingItem processingItem = x as ProcessingItem;
-            if (processingItem != null)
-            {
-                return object.Equals(processingItem.Item, Item);
-            }
-            return false;
+            return x is ProcessingItem processingItem ? object.Equals(processingItem.Item, Item) : false;
         }
 
         public override int GetHashCode()
@@ -97,13 +65,13 @@ public class TaskQueue<K> : DisposableObject
         }
     }
 
-    private CancellationTokenSource cts = new CancellationTokenSource();
+    private CancellationTokenSource cts = new();
 
-    private AutoResetEvent queueChanged = new AutoResetEvent(initialState: false);
+    private AutoResetEvent queueChanged = new(initialState: false);
 
     private IDictionary<K, ProcessingItem> working = new ConcurrentDictionary<K, ProcessingItem>();
 
-    private ConcurrentBag<Task> runningTasks = new ConcurrentBag<Task>();
+    private ConcurrentBag<Task> runningTasks = new();
 
     private IProducerConsumerCollection<ProcessingItem> queue;
 
@@ -162,11 +130,11 @@ public class TaskQueue<K> : DisposableObject
             {
                 while (true)
                 {
-                    WaitHandle.WaitAny(new WaitHandle[2]
-                    {
+                    WaitHandle.WaitAny(
+                    [
                         queueChanged,
                         ct.WaitHandle
-                    });
+                    ]);
                     ct.ThrowIfCancellationRequested();
                     ProcessingItem item;
                     while (queue.TryTake(out item))

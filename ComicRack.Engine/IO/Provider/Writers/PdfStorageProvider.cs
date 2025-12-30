@@ -12,8 +12,8 @@ public class PdfStorageProvider : StorageProvider
 {
     protected override ComicInfo OnStore(IImageProvider provider, ComicInfo info, string target, StorageSetting setting)
     {
-        pdfDocument pdfDocument = new pdfDocument(Path.GetFileNameWithoutExtension(target), Application.ProductName);
-        ComicInfo comicInfo = new ComicInfo(info);
+        pdfDocument pdfDocument = new(Path.GetFileNameWithoutExtension(target), Application.ProductName);
+        ComicInfo comicInfo = new(info);
         comicInfo.Pages.Clear();
         int num = 0;
         for (int i = 0; i < provider.Count; i++)

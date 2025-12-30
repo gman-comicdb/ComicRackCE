@@ -48,13 +48,13 @@ public class NavigationOverlay : OverlayPanel
 
     private readonly BatteryStatus batteryStatus;
 
-    private readonly ScalableBitmap thumbBack = new ScalableBitmap(Resources.GradientFramedBackground, 0, 3, 0, 3);
+    private readonly ScalableBitmap thumbBack = new(Resources.GradientFramedBackground, 0, 3, 0, 3);
 
-    private readonly BitmapAdjustment adjustment = new BitmapAdjustment(-1f);
+    private readonly BitmapAdjustment adjustment = new(-1f);
 
     private bool mirror;
 
-    private int[] pages = new int[0];
+    private int[] pages = [];
 
     private bool isDoublePage;
 
@@ -70,14 +70,11 @@ public class NavigationOverlay : OverlayPanel
 
     private bool thumbnailScroll;
 
-    private readonly List<IndexRectangle> thumbnailAreas = new List<IndexRectangle>();
+    private readonly List<IndexRectangle> thumbnailAreas = new();
 
     public bool Mirror
     {
-        get
-        {
-            return mirror;
-        }
+        get => mirror;
         set
         {
             if (mirror != value)
@@ -91,10 +88,7 @@ public class NavigationOverlay : OverlayPanel
 
     public int[] Pages
     {
-        get
-        {
-            return pages;
-        }
+        get => pages;
         set
         {
             pages = value;
@@ -104,10 +98,7 @@ public class NavigationOverlay : OverlayPanel
 
     public int DisplayedPageIndex
     {
-        get
-        {
-            return pageSlider.Value;
-        }
+        get => pageSlider.Value;
         set
         {
             if (value != -1 && pageSlider.Value != value)
@@ -119,10 +110,7 @@ public class NavigationOverlay : OverlayPanel
 
     public bool IsDoublePage
     {
-        get
-        {
-            return isDoublePage;
-        }
+        get => isDoublePage;
         set
         {
             if (isDoublePage != value)
@@ -135,10 +123,7 @@ public class NavigationOverlay : OverlayPanel
 
     public IThumbnailPool Pool
     {
-        get
-        {
-            return pool;
-        }
+        get => pool;
         set
         {
             if (pool != value)
@@ -159,10 +144,7 @@ public class NavigationOverlay : OverlayPanel
 
     public IImageProvider Provider
     {
-        get
-        {
-            return provider;
-        }
+        get => provider;
         set
         {
             if (provider != value)
@@ -173,30 +155,17 @@ public class NavigationOverlay : OverlayPanel
         }
     }
 
-    public IImageKeyProvider ImageKeyProvider
-    {
-        get;
-        set;
-    }
+    public IImageKeyProvider ImageKeyProvider { get; set; }
 
     public string Caption
     {
-        get
-        {
-            return comicNameLabel.Text;
-        }
-        set
-        {
-            comicNameLabel.Text = value;
-        }
+        get => comicNameLabel.Text;
+        set => comicNameLabel.Text = value;
     }
 
     public int SelectedPage
     {
-        get
-        {
-            return selectedPage;
-        }
+        get => selectedPage;
         set
         {
             if (selectedPage != value)
@@ -298,8 +267,8 @@ public class NavigationOverlay : OverlayPanel
 
     private void AddButton(int buttonSize, ContentAlignment align, int offset, Bitmap bi, EventHandler click)
     {
-        Size size = new Size(buttonSize, buttonSize);
-        SimpleButtonPanel simpleButtonPanel = new SimpleButtonPanel(size)
+        Size size = new(buttonSize, buttonSize);
+        SimpleButtonPanel simpleButtonPanel = new(size)
         {
             Background = Resources.GrayGlassButton.Resize(size, BitmapResampling.GdiPlusHQ),
             Icon = bi.CreateAdjustedBitmap(adjustment, alwaysClone: true),
@@ -443,7 +412,7 @@ public class NavigationOverlay : OverlayPanel
     {
         base.OnMouseUp(e);
         downPoint = Point.Empty;
-        int num = (thumbnailScroll ? pages[pageSlider.Value] : PageHitTest(e.Location));
+        int num = thumbnailScroll ? pages[pageSlider.Value] : PageHitTest(e.Location);
         if (num != -1)
         {
             OnBrowse(new BrowseEventArgs(PageSeekOrigin.Absolute, num));
@@ -536,10 +505,7 @@ public class NavigationOverlay : OverlayPanel
 
     protected virtual void OnBrowse(BrowseEventArgs e)
     {
-        if (this.Browse != null)
-        {
-            this.Browse(this, e);
-        }
+        Browse?.Invoke(this, e);
     }
 
     private int PageHitTest(Point pt)
@@ -555,7 +521,7 @@ public class NavigationOverlay : OverlayPanel
         {
             return new ItemLock<ThumbnailImage>(null);
         }
-        ThumbnailKey key = new ThumbnailKey(ImageKeyProvider.GetImageKey(pages[pageIndex]));
+        ThumbnailKey key = new(ImageKeyProvider.GetImageKey(pages[pageIndex]));
         IItemLock<ThumbnailImage> thumbnail = pool.GetThumbnail(key, onlyMemory: true);
         if (thumbnail != null)
         {
@@ -585,11 +551,9 @@ public class NavigationOverlay : OverlayPanel
         }
         using (IItemLock<ThumbnailImage> itemLock = GetThumbnail(pageIndex))
         {
-            if (itemLock.Item == null)
-            {
-                return new Size(rc.Height * 3 / 4, rc.Height);
-            }
-            return itemLock.Item.OriginalSize.ToRectangle(new Size(0, rc.Height), RectangleScaleMode.None).Size;
+            return itemLock.Item == null
+                ? new Size(rc.Height * 3 / 4, rc.Height)
+                : itemLock.Item.OriginalSize.ToRectangle(new Size(0, rc.Height), RectangleScaleMode.None).Size;
         }
     }
 
@@ -602,11 +566,11 @@ public class NavigationOverlay : OverlayPanel
         int num = pages[pageIndex];
         using (IItemLock<ThumbnailImage> itemLock = GetThumbnail(pageIndex))
         {
-            Image image = ((itemLock.Item == null) ? null : itemLock.Item.GetThumbnail(trc.Height));
-            float num2 = (isSelected ? 1f : 0.3f);
+            Image image = itemLock.Item?.GetThumbnail(trc.Height);
+            float num2 = isSelected ? 1f : 0.3f;
             if (image == null)
             {
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center
@@ -622,7 +586,7 @@ public class NavigationOverlay : OverlayPanel
             {
                 ThumbnailDrawingOptions thumbnailDrawingOptions = ThumbnailDrawingOptions.Default | ThumbnailDrawingOptions.EnablePageNumber | ThumbnailDrawingOptions.KeepAspect | ThumbnailDrawingOptions.DisableMissingThumbnail;
                 thumbnailDrawingOptions &= ~ThumbnailDrawingOptions.EnableShadow;
-                ThumbRenderer thumbRenderer = new ThumbRenderer(image, thumbnailDrawingOptions)
+                ThumbRenderer thumbRenderer = new(image, thumbnailDrawingOptions)
                 {
                     PageNumber = num + 1,
                     ImageOpacity = num2

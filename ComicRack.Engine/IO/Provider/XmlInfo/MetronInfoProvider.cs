@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 using cYo.Common.Threading;
 using cYo.Common.Windows;
-using cYo.Common.Xml;
-using cYo.Projects.ComicRack.Engine.Drawing;
 
 namespace cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo;
 
@@ -26,14 +18,14 @@ public class MetronInfoProvider : XmlInfoProvider<MetronInfo>
 
         using (ItemMonitor.Lock(this))
         {
-            ComicInfo comicInfo = new ComicInfo()
+            ComicInfo comicInfo = new()
             {
                 Publisher = metronInfo.Publisher?.Name ?? string.Empty,
                 Imprint = metronInfo.Publisher?.Imprint?.Value ?? string.Empty,
                 Writer = string.Join(delimiter, metronInfo.Credits.SelectMany(c =>
                     c.Roles.Where(r =>
-                        r.Value == RoleValues.Writer ||
-                        r.Value == RoleValues.Plot
+                        r.Value is RoleValues.Writer or
+                        RoleValues.Plot
                     ).Select(r => c.Creator.Value))),
                 Penciller = string.Join(delimiter, metronInfo.Credits.SelectMany(c =>
                     c.Roles.Where(r =>
@@ -41,8 +33,8 @@ public class MetronInfoProvider : XmlInfoProvider<MetronInfo>
                     ).Select(r => c.Creator.Value))),
                 Inker = string.Join(delimiter, metronInfo.Credits.SelectMany(c =>
                     c.Roles.Where(r =>
-                        r.Value == RoleValues.Inker ||
-                        r.Value == RoleValues.InkAssists
+                        r.Value is RoleValues.Inker or
+                        RoleValues.InkAssists
                     ).Select(r => c.Creator.Value))),
                 Colorist = string.Join(delimiter, metronInfo.Credits.SelectMany(c =>
                     c.Roles.Where(r =>

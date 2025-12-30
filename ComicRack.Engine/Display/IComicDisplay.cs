@@ -8,85 +8,35 @@ namespace cYo.Projects.ComicRack.Engine.Display;
 
 public interface IComicDisplay : IComicDisplayConfig
 {
-    ComicBookNavigator Book
-    {
-        get;
-        set;
-    }
+    ComicBookNavigator Book { get; set; }
 
-    IPagePool PagePool
-    {
-        get;
-        set;
-    }
+    IPagePool PagePool { get; set; }
 
-    IThumbnailPool ThumbnailPool
-    {
-        get;
-        set;
-    }
+    IThumbnailPool ThumbnailPool { get; set; }
 
-    bool IsValid
-    {
-        get;
-    }
+    bool IsValid { get; }
 
-    bool IsMovementFlipped
-    {
-        get;
-    }
+    bool IsMovementFlipped { get; }
 
-    int CurrentPage
-    {
-        get;
-    }
+    int CurrentPage { get; }
 
-    int CurrentMousePage
-    {
-        get;
-    }
+    int CurrentMousePage { get; }
 
-    ImageRotation CurrentImageRotation
-    {
-        get;
-    }
+    ImageRotation CurrentImageRotation { get; }
 
-    Size ImageSize
-    {
-        get;
-    }
+    Size ImageSize { get; }
 
-    int ImagePartCount
-    {
-        get;
-    }
+    int ImagePartCount { get; }
 
-    bool IsDoubleImage
-    {
-        get;
-    }
+    bool IsDoubleImage { get; }
 
-    ImagePartInfo ImageVisiblePart
-    {
-        get;
-        set;
-    }
+    ImagePartInfo ImageVisiblePart { get; set; }
 
-    bool IsHardwareRenderer
-    {
-        get;
-    }
+    bool IsHardwareRenderer { get; }
 
-    bool ShouldPagingBlend
-    {
-        get;
-    }
+    bool ShouldPagingBlend { get; }
 
-    bool NavigationOverlayVisible
-    {
-        get;
-        set;
-    }
+    bool NavigationOverlayVisible { get; set; }
 
     event EventHandler BookChanged;
 

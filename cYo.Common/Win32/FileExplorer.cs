@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace cYo.Common.Win32;
 
@@ -51,10 +47,7 @@ public static class FileExplorer
     /// <returns>Returns if the operation was successful (or not)</returns>
     public static bool OpenFolderAndSelect(string path, bool useAPI = true)
     {
-        if (useAPI)
-            return SelectUsingAPI(path);
-        else
-            return SelectUsingExplorer(path);
+        return useAPI ? SelectUsingAPI(path) : SelectUsingExplorer(path);
     }
 
     /// <summary>
@@ -65,10 +58,7 @@ public static class FileExplorer
     /// <returns>Returns if the operation was successful (or not)</returns>
     public static bool OpenFolder(string folderPath, bool useAPI = true)
     {
-        if (useAPI)
-            return OpenFolderUsingAPI(folderPath);
-        else
-            return OpenFolderUsingExplorer(folderPath);
+        return useAPI ? OpenFolderUsingAPI(folderPath) : OpenFolderUsingExplorer(folderPath);
     }
 
     // This method is more reliable && doesn't spam the explorer process

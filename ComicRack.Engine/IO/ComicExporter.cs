@@ -137,9 +137,6 @@ public class ComicExporter
 
     protected virtual void OnProgress(StorageProgressEventArgs e)
     {
-        if (this.Progress != null)
-        {
-            this.Progress(this, e);
-        }
+        Progress?.Invoke(this, e);
     }
 }

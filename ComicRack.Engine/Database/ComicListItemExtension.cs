@@ -10,11 +10,7 @@ public static class ComicListItemExtension
 {
     public static ComicListItemFolder GetItemParent(this ComicListItem item)
     {
-        if (item.Library == null)
-        {
-            return null;
-        }
-        return item.Library.ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault((ComicListItemFolder clif) => clif.Items.Contains(item));
+        return item.Library?.ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault((ComicListItemFolder clif) => clif.Items.Contains(item));
     }
 
     public static IEnumerable<ComicListItem> GetItemPath(this ComicListItem item)
@@ -23,7 +19,7 @@ public static class ComicListItemExtension
         while (true)
         {
             ComicListItemFolder itemParent;
-            ComicListItemFolder p = (itemParent = item.GetItemParent());
+            ComicListItemFolder p = itemParent = item.GetItemParent();
             if (itemParent != null)
             {
                 yield return p;
@@ -46,10 +42,6 @@ public static class ComicListItemExtension
 
     public static int GetLevel(this ComicListItem item)
     {
-        if (item.Library == null)
-        {
-            return 0;
-        }
-        return item.Library.ComicLists.GetChildLevel(item);
+        return item.Library == null ? 0 : item.Library.ComicLists.GetChildLevel(item);
     }
 }

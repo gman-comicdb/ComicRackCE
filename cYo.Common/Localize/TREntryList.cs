@@ -8,7 +8,7 @@ namespace cYo.Common.Localize;
 
 public class TREntryList : SmartList<TREntry>
 {
-    private readonly Dictionary<string, TREntry> rs = new Dictionary<string, TREntry>();
+    private readonly Dictionary<string, TREntry> rs = new();
 
     private readonly TR owner;
 
@@ -18,11 +18,7 @@ public class TREntryList : SmartList<TREntry>
     {
         get
         {
-            if (!rs.TryGetValue(key, out var value))
-            {
-                return null;
-            }
-            return value;
+            return !rs.TryGetValue(key, out var value) ? null : value;
         }
     }
 
@@ -53,11 +49,7 @@ public class TREntryList : SmartList<TREntry>
         }
         using (ItemMonitor.Lock(base.SyncRoot))
         {
-            if (rs.TryGetValue(key, out var value2) && !string.IsNullOrEmpty(value2.Text))
-            {
-                return value2.Text;
-            }
-            return value;
+            return rs.TryGetValue(key, out var value2) && !string.IsNullOrEmpty(value2.Text) ? value2.Text : value;
         }
     }
 

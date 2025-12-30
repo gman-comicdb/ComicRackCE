@@ -14,10 +14,7 @@ public class HorizontalRule : Block
 
     public int Thickness
     {
-        get
-        {
-            return thickness;
-        }
+        get => thickness;
         set
         {
             if (thickness != value)
@@ -30,10 +27,7 @@ public class HorizontalRule : Block
 
     public bool Noshade
     {
-        get
-        {
-            return noshade;
-        }
+        get => noshade;
         set
         {
             if (noshade != value)
@@ -47,7 +41,7 @@ public class HorizontalRule : Block
     protected override void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl)
     {
         base.Width = base.BlockWidth.GetSize(maxWidth);
-        base.MinimumWidth = (base.BlockWidth.IsFixed ? base.Width : 0);
+        base.MinimumWidth = base.BlockWidth.IsFixed ? base.Width : 0;
         base.Height = Thickness + ((!Noshade) ? 1 : 0);
     }
 

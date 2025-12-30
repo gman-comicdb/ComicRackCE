@@ -10,8 +10,8 @@ namespace cYo.Projects.ComicRack.Engine;
 [ComicBookMatcherHint("FilePath, EnableProposed, Series, Format, Count, Number, Volume, LanguageISO, Year, Month, Day", DisableOptimizedUpdate = true)]
 public class ComicBookDuplicateMatcher : ComicBookValueMatcher
 {
-    private static readonly ComicBookDuplicateComparer.EqualityComparer duplicateComparer = new ComicBookDuplicateComparer.EqualityComparer();
-    private static readonly ComicBookDuplicateComparer.FilePathComparer filePathComparer = new ComicBookDuplicateComparer.FilePathComparer();
+    private static readonly ComicBookDuplicateComparer.EqualityComparer duplicateComparer = new();
+    private static readonly ComicBookDuplicateComparer.FilePathComparer filePathComparer = new();
 
     private static readonly string[] opListNeutral = "on|off".Split('|');
 

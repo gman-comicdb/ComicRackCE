@@ -100,35 +100,17 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
     {
         private long fileSize = -1L;
 
-        public string FileName
-        {
-            get;
-            set;
-        }
+        public string FileName { get; set; }
 
         public long FileSize
         {
-            get
-            {
-                return fileSize;
-            }
-            set
-            {
-                fileSize = value;
-            }
+            get => fileSize;
+            set => fileSize = value;
         }
 
-        public DateTime WriteTime
-        {
-            get;
-            set;
-        }
+        public DateTime WriteTime { get; set; }
 
-        public object Tag
-        {
-            get;
-            set;
-        }
+        public object Tag { get; set; }
 
         public event EventHandler<VirtualFileItemWriteEventArgs> WriteData;
 
@@ -151,25 +133,22 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
 
         protected virtual void OnWriteData(VirtualFileItemWriteEventArgs e)
         {
-            if (this.WriteData != null)
-            {
-                this.WriteData(this, e);
-            }
+            WriteData?.Invoke(this, e);
         }
     }
 
     private VirtualFileItem currentVirtualFileItem;
 
-    private readonly List<VirtualFileItem> virtualFiles = new List<VirtualFileItem>();
+    private readonly List<VirtualFileItem> virtualFiles = new();
 
-    private static readonly TYMED[] usableTymeds = new TYMED[5]
-    {
+    private static readonly TYMED[] usableTymeds =
+    [
         TYMED.TYMED_HGLOBAL,
         TYMED.TYMED_ISTREAM,
         TYMED.TYMED_ENHMF,
         TYMED.TYMED_MFPICT,
         TYMED.TYMED_GDI
-    };
+    ];
 
     public void SetFile(VirtualFileItem vfi)
     {
@@ -186,7 +165,7 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
 
     public void SetFile(string fileName, Action<Stream> handler)
     {
-        VirtualFileItem virtualFileItem = new VirtualFileItem(fileName);
+        VirtualFileItem virtualFileItem = new(fileName);
         virtualFileItem.WriteData += delegate (object sender, VirtualFileItemWriteEventArgs e)
         {
             handler(e.Stream);
@@ -229,7 +208,7 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
                 currentVirtualFileItem = null;
             }
         }
-        medium = default(STGMEDIUM);
+        medium = default;
         if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
         {
             medium.tymed = TYMED.TYMED_HGLOBAL;
@@ -258,11 +237,11 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
 
     private static MemoryStream GetVirtualFilesDescriptor(ICollection<VirtualFileItem> virtualFileItems)
     {
-        MemoryStream memoryStream = new MemoryStream();
+        MemoryStream memoryStream = new();
         memoryStream.Write(BitConverter.GetBytes(virtualFileItems.Count), 0, 4);
         foreach (VirtualFileItem virtualFileItem in virtualFileItems)
         {
-            NativeMethods.FILEDESCRIPTOR fILEDESCRIPTOR = default(NativeMethods.FILEDESCRIPTOR);
+            NativeMethods.FILEDESCRIPTOR fILEDESCRIPTOR = default;
             long num = virtualFileItem.WriteTime.ToFileTimeUtc();
             fILEDESCRIPTOR.cFileName = virtualFileItem.FileName;
             fILEDESCRIPTOR.ftLastWriteTime.dwHighDateTime = (int)(num >> 32);
@@ -297,7 +276,7 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
         {
             return null;
         }
-        MemoryStream memoryStream = new MemoryStream();
+        MemoryStream memoryStream = new();
         OnWriteVirtualFile(memoryStream, vfi);
         if (memoryStream.Length == 0L)
         {

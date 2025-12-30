@@ -26,23 +26,20 @@ public static class KnownFileFormats
 
     public static IEnumerable<byte> GetSignature(int format)
     {
-        switch (format)
+        return format switch
         {
-            case CBZ:
-                return new byte[2]
-                {
+            CBZ => new byte[2]
+                            {
                 80,
                 75
-                };
-            case CB7:
-                return new byte[2]
-                {
+                            },
+            CB7 =>
+                [
                 55,
                 122
-                };
-            case CBR:
-                return new byte[7]
-                {
+                ],
+            CBR =>
+                [
                 82,
                 97,
                 114,
@@ -50,10 +47,9 @@ public static class KnownFileFormats
                 26,
                 7,
                 0
-                };
-            case RAR5:
-                return new byte[7]
-                {
+                ],
+            RAR5 =>
+                [
                 82,
                 97,
                 114,
@@ -61,9 +57,8 @@ public static class KnownFileFormats
                 26,
                 7,
                 1
-                };
-            default:
-                return null;
-        }
+                ],
+            _ => null,
+        };
     }
 }

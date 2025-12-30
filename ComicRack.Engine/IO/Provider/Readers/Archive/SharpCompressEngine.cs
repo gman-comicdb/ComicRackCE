@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using cYo.Common.Xml;
 using cYo.Projects.ComicRack.Engine.IO.Provider.XmlInfo;
 
 using SharpCompress.Archives;
@@ -31,19 +30,14 @@ public class SharpCompressEngine : FileBasedAccessor
         {
             using (IArchive archive = ArchiveFactory.Open(source))
             {
-                switch (archive.Type)
+                return archive.Type switch
                 {
-                    case ArchiveType.Rar:
-                        return format == KnownFileFormats.CBR;
-                    case ArchiveType.Zip:
-                        return format == KnownFileFormats.CBZ;
-                    case ArchiveType.Tar:
-                        return format == KnownFileFormats.CBT;
-                    case ArchiveType.SevenZip:
-                        return format == KnownFileFormats.CB7;
-                    default:
-                        return false;
-                }
+                    ArchiveType.Rar => format == KnownFileFormats.CBR,
+                    ArchiveType.Zip => format == KnownFileFormats.CBZ,
+                    ArchiveType.Tar => format == KnownFileFormats.CBT,
+                    ArchiveType.SevenZip => format == KnownFileFormats.CB7,
+                    _ => false,
+                };
             }
         }
         catch
@@ -73,7 +67,7 @@ public class SharpCompressEngine : FileBasedAccessor
         using (IArchive archive = ArchiveFactory.Open(source))
         {
             IArchiveEntry archiveEntry = archive.Entries.Skip(info.Index).First();
-            MemoryStream memoryStream = new MemoryStream((int)archiveEntry.Size);
+            MemoryStream memoryStream = new((int)archiveEntry.Size);
             archiveEntry.WriteTo(memoryStream);
             return memoryStream.ToArray();
         }
@@ -87,10 +81,7 @@ public class SharpCompressEngine : FileBasedAccessor
             {
                 IArchiveEntry archiveEntry = archive.Entries.FirstOrDefault((IArchiveEntry e) => Path.GetFileName(e.Key).Equals(s, StringComparison.OrdinalIgnoreCase));
 
-                if (archiveEntry == null)
-                    return null;
-
-                return archiveEntry.OpenEntryStream();
+                return archiveEntry?.OpenEntryStream();
             });
         }
     }

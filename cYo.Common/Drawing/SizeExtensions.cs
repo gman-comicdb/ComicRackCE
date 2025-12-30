@@ -7,20 +7,12 @@ public static class SizeExtensions
 {
     public static bool IsEmpty(this Size size)
     {
-        if (size.Width != 0)
-        {
-            return size.Height == 0;
-        }
-        return true;
+        return size.Width != 0 ? size.Height == 0 : true;
     }
 
     public static bool IsEmpty(this SizeF size)
     {
-        if (size.Width != 0f)
-        {
-            return size.Height == 0f;
-        }
-        return true;
+        return size.Width != 0f ? size.Height == 0f : true;
     }
 
     public static float GetScale(this SizeF size, SizeF targetSize, ScaleMode scaleMode = ScaleMode.FitAll, bool allowOverSize = true)
@@ -31,41 +23,19 @@ public static class SizeExtensions
         }
         float num = targetSize.Width / size.Width;
         float num2 = targetSize.Height / size.Height;
-        float num3;
-        if (num == 0f)
-        {
-            num3 = num2;
-        }
-        else if (num2 == 0f)
-        {
-            num3 = num;
-        }
-        else
-        {
-            switch (scaleMode)
-            {
-                case ScaleMode.FitWidth:
-                    num3 = num;
-                    break;
-                case ScaleMode.FitHeight:
-                    num3 = num2;
-                    break;
-                case ScaleMode.Center:
-                    num3 = ((num2 >= num) ? num2 : num);
-                    break;
-                case ScaleMode.Fill:
-                    num3 = ((num2 > num) ? num2 : num);
-                    break;
-                default:
-                    num3 = ((num2 < num) ? num2 : num);
-                    break;
-            }
-        }
-        if (!allowOverSize)
-        {
-            return Math.Min(1f, num3);
-        }
-        return num3;
+        float num3 = num == 0f
+            ? num2
+            : num2 == 0f
+                ? num
+                : scaleMode switch
+                {
+                    ScaleMode.FitWidth => num,
+                    ScaleMode.FitHeight => num2,
+                    ScaleMode.Center => (num2 >= num) ? num2 : num,
+                    ScaleMode.Fill => (num2 > num) ? num2 : num,
+                    _ => (num2 < num) ? num2 : num,
+                };
+        return !allowOverSize ? Math.Min(1f, num3) : num3;
     }
 
     public static float GetScale(this Size size, Size targetSize, ScaleMode scaleMode = ScaleMode.FitAll, bool allowOversize = true)
@@ -110,7 +80,7 @@ public static class SizeExtensions
         {
             num = 1f;
         }
-        RectangleF result = new RectangleF(0f, 0f, size.Width * num, size.Height * num);
+        RectangleF result = new(0f, 0f, size.Width * num, size.Height * num);
         if (flag)
         {
             if (targetSize.Width < 1f)
@@ -150,10 +120,6 @@ public static class SizeExtensions
 
     public static Size Rotate(this Size size, ImageRotation rotation)
     {
-        if (rotation == ImageRotation.Rotate270 || rotation == ImageRotation.Rotate90)
-        {
-            return new Size(size.Height, size.Width);
-        }
-        return size;
+        return rotation is ImageRotation.Rotate270 or ImageRotation.Rotate90 ? new Size(size.Height, size.Width) : size;
     }
 }

@@ -38,10 +38,7 @@ public class ImageItem : Block
 
     public string Source
     {
-        get
-        {
-            return source;
-        }
+        get => source;
         set
         {
             if (!(source == value))
@@ -55,10 +52,7 @@ public class ImageItem : Block
 
     public Size Padding
     {
-        get
-        {
-            return padding;
-        }
+        get => padding;
         set
         {
             if (!(padding == value))
@@ -72,10 +66,7 @@ public class ImageItem : Block
 
     public override VerticalAlignment VAlign
     {
-        get
-        {
-            return vAlign;
-        }
+        get => vAlign;
         set
         {
             if (vAlign != value)
@@ -88,10 +79,7 @@ public class ImageItem : Block
 
     public override HorizontalAlignment Align
     {
-        get
-        {
-            return align;
-        }
+        get => align;
         set
         {
             if (align != value)
@@ -122,7 +110,7 @@ public class ImageItem : Block
 
     protected override void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl)
     {
-        int num = ((!base.BlockWidth.IsAuto) ? base.BlockWidth.GetSize(maxWidth) : 0);
+        int num = (!base.BlockWidth.IsAuto) ? base.BlockWidth.GetSize(maxWidth) : 0;
         int blockHeight = base.BlockHeight;
         Size size = Size.Empty;
         if (Image != null)
@@ -151,18 +139,12 @@ public class ImageItem : Block
         size += inflate + inflate;
         base.MinimumWidth = num + inflate.Width * 2;
         base.Size = size;
-        switch (VAlign)
+        base.BaseLine = VAlign switch
         {
-            default:
-                base.BaseLine = size.Height;
-                break;
-            case VerticalAlignment.Top:
-                base.BaseLine = Font.Height;
-                break;
-            case VerticalAlignment.Middle:
-                base.BaseLine = (Font.Height + size.Height) / 2 - base.DescentHeight;
-                break;
-        }
+            VerticalAlignment.Top => Font.Height,
+            VerticalAlignment.Middle => (Font.Height + size.Height) / 2 - base.DescentHeight,
+            _ => size.Height,
+        };
     }
 
     public override void Draw(Graphics gr, Point location)

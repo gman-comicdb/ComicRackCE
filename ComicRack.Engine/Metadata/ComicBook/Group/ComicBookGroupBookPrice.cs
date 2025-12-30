@@ -8,7 +8,7 @@ public class ComicBookGroupBookPrice : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        int num = ((!(item.BookPrice < 0f)) ? ((item.BookPrice == 0f) ? 1 : ((item.BookPrice >= 0f && item.BookPrice < 10f) ? 2 : ((item.BookPrice >= 10f && item.BookPrice < 20f) ? 3 : ((item.BookPrice >= 20f && item.BookPrice < 30f) ? 4 : ((item.BookPrice >= 30f && item.BookPrice < 40f) ? 5 : ((item.BookPrice >= 40f && item.BookPrice < 50f) ? 6 : ((!(item.BookPrice >= 50f) || !(item.BookPrice < 100f)) ? 8 : 7))))))) : 0);
+        int num = (!(item.BookPrice < 0f)) ? ((item.BookPrice == 0f) ? 1 : ((item.BookPrice is >= 0f and < 10f) ? 2 : ((item.BookPrice is >= 10f and < 20f) ? 3 : ((item.BookPrice is >= 20f and < 30f) ? 4 : ((item.BookPrice is >= 30f and < 40f) ? 5 : ((item.BookPrice is >= 40f and < 50f) ? 6 : ((item.BookPrice is < 50f or >= 100f) ? 8 : 7))))))) : 0;
         return new GroupInfo(captions[num], num);
     }
 }

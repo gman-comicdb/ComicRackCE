@@ -11,123 +11,55 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 public class DisplayListConfig
 {
     [DefaultValue(null)]
-    public ItemViewConfig View
-    {
-        get;
-        set;
-    }
+    public ItemViewConfig View { get; set; }
 
     [DefaultValue(null)]
-    public ThumbnailConfig Thumbnail
-    {
-        get;
-        set;
-    }
+    public ThumbnailConfig Thumbnail { get; set; }
 
     [DefaultValue(null)]
-    public TileConfig Tile
-    {
-        get;
-        set;
-    }
+    public TileConfig Tile { get; set; }
 
     [DefaultValue(null)]
-    public StacksConfig StackConfig
-    {
-        get;
-        set;
-    }
+    public StacksConfig StackConfig { get; set; }
 
     [DefaultValue(null)]
-    public string BackgroundImageSource
-    {
-        get;
-        set;
-    }
+    public string BackgroundImageSource { get; set; }
 
     [DefaultValue(ComicBookAllPropertiesMatcher.ShowOptionType.All)]
-    public ComicBookAllPropertiesMatcher.ShowOptionType ShowOptionType
-    {
-        get;
-        set;
-    }
+    public ComicBookAllPropertiesMatcher.ShowOptionType ShowOptionType { get; set; }
 
     [DefaultValue(ComicBookAllPropertiesMatcher.ShowComicType.All)]
-    public ComicBookAllPropertiesMatcher.ShowComicType ShowComicType
-    {
-        get;
-        set;
-    }
+    public ComicBookAllPropertiesMatcher.ShowComicType ShowComicType { get; set; }
 
     [DefaultValue(false)]
-    public bool ShowOnlyDuplicates
-    {
-        get;
-        set;
-    }
+    public bool ShowOnlyDuplicates { get; set; }
 
     [DefaultValue(false)]
-    public bool ShowGroupHeaders
-    {
-        get;
-        set;
-    }
+    public bool ShowGroupHeaders { get; set; }
 
     [DefaultValue(0)]
-    public int ShowGroupHeadersWidth
-    {
-        get;
-        set;
-    }
+    public int ShowGroupHeadersWidth { get; set; }
 
     [DefaultValue(null)]
-    public string QuickSearch
-    {
-        get;
-        set;
-    }
+    public string QuickSearch { get; set; }
 
     [DefaultValue(ComicBookAllPropertiesMatcher.MatcherOption.All)]
-    public ComicBookAllPropertiesMatcher.MatcherOption QuickSearchType
-    {
-        get;
-        set;
-    }
+    public ComicBookAllPropertiesMatcher.MatcherOption QuickSearchType { get; set; }
 
     [XmlIgnore]
-    public Point ScrollPosition
-    {
-        get;
-        set;
-    }
+    public Point ScrollPosition { get; set; }
 
     [XmlIgnore]
-    public Guid FocusedComicId
-    {
-        get;
-        set;
-    }
+    public Guid FocusedComicId { get; set; }
 
     [XmlIgnore]
-    public Point StackScrollPosition
-    {
-        get;
-        set;
-    }
+    public Point StackScrollPosition { get; set; }
 
     [XmlIgnore]
-    public Guid StackFocusedComicId
-    {
-        get;
-        set;
-    }
+    public Guid StackFocusedComicId { get; set; }
 
     [XmlIgnore]
-    public Guid StackedComicId
-    {
-        get;
-        set;
-    }
+    public Guid StackedComicId { get; set; }
 
     public DisplayListConfig()
     {

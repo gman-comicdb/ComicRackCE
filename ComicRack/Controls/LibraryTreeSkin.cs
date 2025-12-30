@@ -19,22 +19,14 @@ public class LibraryTreeSkin : NiceTreeSkin
 {
     private static readonly Image deviceIcon = Resources.DeviceSync.Scale(8, 8);
 
-    public bool DisableDeviceIcon
-    {
-        get;
-        set;
-    }
+    public bool DisableDeviceIcon { get; set; }
 
-    public Func<TreeNode, ComicListItem> GetNodeItem
-    {
-        get;
-        set;
-    }
+    public Func<TreeNode, ComicListItem> GetNodeItem { get; set; }
 
     protected override void DrawNodeIcon(TreeViewSkinnerDrawInfo di, Image image, Rectangle bounds)
     {
         base.DrawNodeIcon(di, image, bounds);
-        ComicListItem cli = ((GetNodeItem == null) ? (di.Node.Tag as ComicListItem) : GetNodeItem(di.Node));
+        ComicListItem cli = (GetNodeItem == null) ? (di.Node.Tag as ComicListItem) : GetNodeItem(di.Node);
         if (!DisableDeviceIcon && cli != null && !Program.Settings.Devices.SelectMany((DeviceSyncSettings d) => d.Lists.Where((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id)).IsEmpty())
         {
             di.Graphics.DrawImage(deviceIcon, bounds.X, bounds.Y);
@@ -43,7 +35,7 @@ public class LibraryTreeSkin : NiceTreeSkin
 
     protected override void DrawNodeLabel(TreeViewSkinnerDrawInfo di)
     {
-        ComicListItem comicListItem = ((GetNodeItem == null) ? (di.Node.Tag as ComicListItem) : GetNodeItem(di.Node));
+        ComicListItem comicListItem = (GetNodeItem == null) ? (di.Node.Tag as ComicListItem) : GetNodeItem(di.Node);
         base.DrawNodeLabel(di);
         if (comicListItem == null || !comicListItem.CacheEnabled || !Program.Settings.DisplayLibraryGauges || (comicListItem.BookCount <= 0 && comicListItem.NewBookCount <= 0 && comicListItem.UnreadBookCount <= 0))
         {
@@ -51,8 +43,8 @@ public class LibraryTreeSkin : NiceTreeSkin
         }
         Graphics graphics = di.Graphics;
         Font font = FC.Get(di.Font, di.Font.Size * 0.75f);
-        Rectangle rc = new Rectangle(di.LabelBounds.Right + 4, di.ItemBounds.Top, di.ItemBounds.Right - di.LabelBounds.Right - 4, di.ItemBounds.Height);
-        int num = (Program.Settings.LibraryGaugesFormat.HasFlag(LibraryGauges.Numeric) ? DrawMarkers(graphics, rc, font, comicListItem, 0, onlyMeasure: true) : int.MaxValue);
+        Rectangle rc = new(di.LabelBounds.Right + 4, di.ItemBounds.Top, di.ItemBounds.Right - di.LabelBounds.Right - 4, di.ItemBounds.Height);
+        int num = Program.Settings.LibraryGaugesFormat.HasFlag(LibraryGauges.Numeric) ? DrawMarkers(graphics, rc, font, comicListItem, 0, onlyMeasure: true) : int.MaxValue;
         if (num < rc.Width)
         {
             DrawMarkers(graphics, rc, font, comicListItem);
@@ -103,12 +95,12 @@ public class LibraryTreeSkin : NiceTreeSkin
             return 0;
         }
         string text = n.ToString();
-        int num = ((fixedSize == 0) ? ((int)gr.MeasureString(text, font, 200).Width + 4) : fixedSize);
-        Rectangle rectangle = new Rectangle(bounds.Right - num, bounds.Y + 1, num, bounds.Height - 2);
+        int num = (fixedSize == 0) ? ((int)gr.MeasureString(text, font, 200).Width + 4) : fixedSize;
+        Rectangle rectangle = new(bounds.Right - num, bounds.Y + 1, num, bounds.Height - 2);
         if (!onlyMeasure)
         {
-            int num2 = (roundLeft ? 1 : 0);
-            int num3 = (roundRight ? 1 : 0);
+            int num2 = roundLeft ? 1 : 0;
+            int num3 = roundRight ? 1 : 0;
             using (Brush brush = new LinearGradientBrush(rectangle, backColor.Transparent(192), backColor.Transparent(128), 270f))
             {
                 using (GraphicsPath path = rectangle.ConvertToPath(num2, num2, num3, num3, num3 * 4, num3 * 4, num2, num2 * 2))
@@ -120,7 +112,7 @@ public class LibraryTreeSkin : NiceTreeSkin
             {
                 using (Brush brush2 = new SolidBrush(textColor))
                 {
-                    using (StringFormat format = new StringFormat
+                    using (StringFormat format = new()
                     {
                         Alignment = StringAlignment.Center,
                         LineAlignment = StringAlignment.Center

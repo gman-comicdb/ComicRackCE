@@ -29,7 +29,7 @@ internal class DrawDarkComboBox
         }
         using (Brush brush = new SolidBrush(e.ForeColor))
         {
-            using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap)
+            using (StringFormat format = new(StringFormatFlags.NoWrap)
             {
                 LineAlignment = StringAlignment.Center,
                 Alignment = StringAlignment.Near

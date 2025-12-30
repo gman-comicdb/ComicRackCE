@@ -16,7 +16,7 @@ public static class XmlUtility
 {
     private const int BufferSize = 131072;
 
-    private static readonly SimpleCache<Type, XmlSerializer> cachedSerialzers = new SimpleCache<Type, XmlSerializer>();
+    private static readonly SimpleCache<Type, XmlSerializer> cachedSerialzers = new();
 
     public static XmlSerializer GetSerializer(Type type)
     {
@@ -39,18 +39,18 @@ public static class XmlUtility
             MethodInfo method = type.GetMethod("GetExtraXmlSerializationTypes", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy | BindingFlags.InvokeMethod);
             if (method != null)
             {
-                array = method.Invoke(null, new object[0]) as Type[];
+                array = method.Invoke(null, []) as Type[];
             }
         }
         catch
         {
         }
-        return array ?? new Type[0];
+        return array ?? [];
     }
 
     public static byte[] Store(object data, bool compressed)
     {
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             memoryStream.WriteByte((byte)(compressed ? 1 : 0));
             Store(memoryStream, data, compressed);
@@ -60,9 +60,9 @@ public static class XmlUtility
 
     public static string ToString(object data)
     {
-        XmlSerializerNamespaces xmlSerializerNamespaces = new XmlSerializerNamespaces();
+        XmlSerializerNamespaces xmlSerializerNamespaces = new();
         xmlSerializerNamespaces.Add("", "");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         using (XmlWriter xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings
         {
             OmitXmlDeclaration = true
@@ -75,7 +75,7 @@ public static class XmlUtility
 
     public static T FromString<T>(string text)
     {
-        using (StringReader textReader = new StringReader(text))
+        using (StringReader textReader = new(text))
         {
             return (T)GetSerializer(typeof(T)).Deserialize(textReader);
         }
@@ -83,7 +83,7 @@ public static class XmlUtility
 
     public static object Load(Type dataType, byte[] bytes)
     {
-        using (MemoryStream memoryStream = new MemoryStream(bytes))
+        using (MemoryStream memoryStream = new(bytes))
         {
             bool compressed = memoryStream.ReadByte() != 0;
             return Load(memoryStream, dataType, compressed);
@@ -92,7 +92,7 @@ public static class XmlUtility
 
     public static object Load(Type dataType, string text)
     {
-        using (StringReader textReader = new StringReader(text))
+        using (StringReader textReader = new(text))
         {
             return GetSerializer(dataType).Deserialize(textReader);
         }
@@ -105,7 +105,7 @@ public static class XmlUtility
 
     public static void Store(Stream s, object data, bool compressed)
     {
-        using (BZip2OutputStream bZip2OutputStream = (compressed ? new BZip2OutputStream(s) : null))
+        using (BZip2OutputStream bZip2OutputStream = compressed ? new BZip2OutputStream(s) : null)
         {
             XmlSerializer serializer = GetSerializer(data.GetType());
             serializer.Serialize(compressed ? bZip2OutputStream : s, data);
@@ -114,7 +114,7 @@ public static class XmlUtility
 
     public static object Load(Stream s, Type dataType, bool compressed)
     {
-        using (BZip2InputStream bZip2InputStream = (compressed ? new BZip2InputStream(s) : null))
+        using (BZip2InputStream bZip2InputStream = compressed ? new BZip2InputStream(s) : null)
         {
             XmlSerializer serializer = GetSerializer(dataType);
             object obj = serializer.Deserialize(compressed ? bZip2InputStream : s);

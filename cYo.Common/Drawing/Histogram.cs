@@ -30,7 +30,7 @@ public class Histogram
 
     private const float range = 0.25f;
 
-    private static readonly Histogram empty = new Histogram(new int[1], new int[1], new int[1], new int[1], 1);
+    private static readonly Histogram empty = new(new int[1], new int[1], new int[1], new int[1], 1);
 
     public int Size => size;
 

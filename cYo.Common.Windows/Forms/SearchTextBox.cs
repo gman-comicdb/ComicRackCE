@@ -19,7 +19,7 @@ public class SearchTextBox : ToolStrip
         {
             SearchTextBox searchTextBox = container as SearchTextBox;
             Rectangle clientRectangle = searchTextBox.ClientRectangle;
-            Size size = new Size(clientRectangle.Height, clientRectangle.Height);
+            Size size = new(clientRectangle.Height, clientRectangle.Height);
             if (searchTextBox.Items.Count == 3)
             {
                 ToolStripItem searchButton = searchTextBox.searchButton;
@@ -27,7 +27,7 @@ public class SearchTextBox : ToolStrip
                 ToolStripItem textBox = searchTextBox.textBox;
                 searchTextBox.SetItemLocation(searchButton, clientRectangle.Location);
                 searchButton.Size = new Size((int)((double)size.Width * 1.5), size.Height);
-                int num = (searchButton.Visible ? searchButton.Width : 2);
+                int num = searchButton.Visible ? searchButton.Width : 2;
                 clearButton.Size = size;
                 searchTextBox.SetItemLocation(clearButton, new Point(clientRectangle.Width - clearButton.Width, clientRectangle.Y));
                 int num2 = clientRectangle.Width - num - 2;
@@ -64,11 +64,11 @@ public class SearchTextBox : ToolStrip
         }
     }
 
-    private readonly ToolStripDropDownButton searchButton = new ToolStripDropDownButton();
+    private readonly ToolStripDropDownButton searchButton = new();
 
-    private readonly ToolStripTextBox textBox = new ToolStripTextBox();
+    private readonly ToolStripTextBox textBox = new();
 
-    private readonly ToolStripButton clearButton = new ToolStripButton();
+    private readonly ToolStripButton clearButton = new();
 
     private readonly LayoutEngine myLayout = new MyLayout();
 
@@ -80,74 +80,41 @@ public class SearchTextBox : ToolStrip
 
     public override string Text
     {
-        get
-        {
-            return base.Text;
-        }
+        get => base.Text;
         set
         {
-            string text3 = (textBox.Text = (base.Text = value));
+            string text3 = textBox.Text = base.Text = value;
         }
     }
 
     public Image ClearButtonImage
     {
-        get
-        {
-            return clearButton.Image;
-        }
-        set
-        {
-            clearButton.Image = value;
-        }
+        get => clearButton.Image;
+        set => clearButton.Image = value;
     }
 
     public Image SearchButtonImage
     {
-        get
-        {
-            return searchButton.Image;
-        }
-        set
-        {
-            searchButton.Image = value;
-        }
+        get => searchButton.Image;
+        set => searchButton.Image = value;
     }
 
     public ToolStripDropDown SearchMenu
     {
-        get
-        {
-            return searchButton.DropDown;
-        }
-        set
-        {
-            searchButton.DropDown = value;
-        }
+        get => searchButton.DropDown;
+        set => searchButton.DropDown = value;
     }
 
     public bool SearchButtonVisible
     {
-        get
-        {
-            return searchButton.Visible;
-        }
-        set
-        {
-            searchButton.Visible = value;
-        }
+        get => searchButton.Visible;
+        set => searchButton.Visible = value;
     }
 
     public AutoCompleteStringCollection AutoCompleteList
     {
-        get
-        {
-            return textBox.AutoCompleteCustomSource;
-        }
-        set
-        {
-            textBox.AutoCompleteCustomSource = value;
-        }
+        get => textBox.AutoCompleteCustomSource;
+        set => textBox.AutoCompleteCustomSource = value;
     }
 
     public SearchTextBox()

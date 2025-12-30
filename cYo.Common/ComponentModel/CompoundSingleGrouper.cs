@@ -8,29 +8,13 @@ public class CompoundSingleGrouper<T> : IGrouper<T>
 {
     private class CompoundGroupInfo : ICompoundGroupInfo, IGroupInfo, IComparable<IGroupInfo>
     {
-        public IGroupInfo[] Infos
-        {
-            get;
-            private set;
-        }
+        public IGroupInfo[] Infos { get; private set; }
 
-        public object Key
-        {
-            get;
-            private set;
-        }
+        public object Key { get; private set; }
 
-        public string Caption
-        {
-            get;
-            private set;
-        }
+        public string Caption { get; private set; }
 
-        public int Index
-        {
-            get;
-            private set;
-        }
+        public int Index { get; private set; }
 
         public CompoundGroupInfo(IGroupInfo[] infos)
         {
@@ -53,8 +37,7 @@ public class CompoundSingleGrouper<T> : IGrouper<T>
 
         public int CompareTo(IGroupInfo other)
         {
-            CompoundGroupInfo compoundGroupInfo = other as CompoundGroupInfo;
-            if (compoundGroupInfo == null)
+            if (other is not CompoundGroupInfo compoundGroupInfo)
             {
                 return GroupInfo.Compare(this, other);
             }
@@ -74,11 +57,7 @@ public class CompoundSingleGrouper<T> : IGrouper<T>
         }
     }
 
-    public IGrouper<T>[] Groupers
-    {
-        get;
-        private set;
-    }
+    public IGrouper<T>[] Groupers { get; private set; }
 
     public bool IsMultiGroup => false;
 

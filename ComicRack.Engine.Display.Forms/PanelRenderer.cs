@@ -28,11 +28,11 @@ public static class PanelRenderer
         }
     }
 
-    private static readonly PanelInfo[] panels = new PanelInfo[2]
-    {
-        new PanelInfo(Resources.BlackGlassPanel, new Padding(5, 5, 10, 10), new RectangleF(5f, 5f, 215f, 125f), Color.White),
-        new PanelInfo(Resources.BlueGlassPanel, new Padding(5, 5, 10, 10), new RectangleF(5f, 5f, 215f, 125f), Color.White)
-    };
+    private static readonly PanelInfo[] panels =
+    [
+        new(Resources.BlackGlassPanel, new Padding(5, 5, 10, 10), new RectangleF(5f, 5f, 215f, 125f), Color.White),
+        new(Resources.BlueGlassPanel, new Padding(5, 5, 10, 10), new RectangleF(5f, 5f, 215f, 125f), Color.White)
+    ];
 
     public static RectangleF Draw(IBitmapRenderer gr, RectangleF dest, float opacity, PanelType pt = PanelType.BlackGlass)
     {

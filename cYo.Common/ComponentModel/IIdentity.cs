@@ -4,8 +4,5 @@ namespace cYo.Common.ComponentModel;
 
 public interface IIdentity
 {
-    Guid Id
-    {
-        get;
-    }
+    Guid Id { get; }
 }

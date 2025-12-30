@@ -6,9 +6,5 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IComicBookMatcher : IMatcher<ComicBook>, ICloneable
 {
-    bool Not
-    {
-        get;
-        set;
-    }
+    bool Not { get; set; }
 }

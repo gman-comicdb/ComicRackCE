@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -23,7 +21,7 @@ public partial class ServerEditControl : UserControlEx
         get
         {
             LibraryShareMode selectedIndex = (LibraryShareMode)cbShare.SelectedIndex;
-            ComicLibraryServerConfig comicLibraryServerConfig = new ComicLibraryServerConfig
+            ComicLibraryServerConfig comicLibraryServerConfig = new()
             {
                 Name = txSharedName.Text,
                 LibraryShareMode = selectedIndex,
@@ -82,7 +80,7 @@ public partial class ServerEditControl : UserControlEx
         FillListTree(tvSharedLists.Nodes, Program.Database.ComicLists);
         IdleProcess.Idle += IdleProcess_Idle;
         new LibraryTreeSkin().TreeView = tvSharedLists;
-        this.chkShareInternet.Enabled = false;
+        chkShareInternet.Enabled = false;
     }
 
     private void FillListTree(TreeNodeCollection tnc, IEnumerable<ComicListItem> clic)
@@ -91,7 +89,7 @@ public partial class ServerEditControl : UserControlEx
         {
             TreeNode treeNode = tnc.Add(item.Name);
             treeNode.Tag = item;
-            string text2 = (treeNode.ImageKey = (treeNode.SelectedImageKey = item.ImageKey));
+            string text2 = treeNode.ImageKey = treeNode.SelectedImageKey = item.ImageKey;
             if (item is ComicListItemFolder)
             {
                 FillListTree(treeNode.Nodes, ((ComicListItemFolder)item).Items);
@@ -109,10 +107,7 @@ public partial class ServerEditControl : UserControlEx
 
     private void txSharedName_TextChanged(object sender, EventArgs e)
     {
-        if (this.ShareNameChanged != null)
-        {
-            this.ShareNameChanged(this, e);
-        }
+        ShareNameChanged?.Invoke(this, e);
     }
 
     private void tbPageQuality_ValueChanged(object sender, EventArgs e)

@@ -11,26 +11,19 @@ namespace cYo.Common.Collections;
 
 public class PriorityQueue<T> : IProducerConsumerCollection<T>, IEnumerable<T>, IEnumerable, ICollection
 {
-    private readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    private readonly ReaderWriterLockSlim rwlock = new(LockRecursionPolicy.SupportsRecursion);
 
     private readonly IEqualityComparer<T> equality;
 
-    private readonly LinkedList<T> queue = new LinkedList<T>();
+    private readonly LinkedList<T> queue = new();
 
     private int capacity = 100;
 
-    public PriorityQueueAddMode AddMode
-    {
-        get;
-        set;
-    }
+    public PriorityQueueAddMode AddMode { get; set; }
 
     public int Capacity
     {
-        get
-        {
-            return capacity;
-        }
+        get => capacity;
         set
         {
             if (capacity != value)
@@ -182,7 +175,7 @@ public class PriorityQueue<T> : IProducerConsumerCollection<T>, IEnumerable<T>, 
 
     public bool TryTake(out T item)
     {
-        item = default(T);
+        item = default;
         using (rwlock.UpgradeableReadLock())
         {
             if (queue.First == null)

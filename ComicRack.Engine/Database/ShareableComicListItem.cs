@@ -15,10 +15,7 @@ public abstract class ShareableComicListItem : ComicListItem, ICloneable
     [DefaultValue(false)]
     public virtual bool QuickOpen
     {
-        get
-        {
-            return quickOpen;
-        }
+        get => quickOpen;
         set
         {
             if (quickOpen != value)

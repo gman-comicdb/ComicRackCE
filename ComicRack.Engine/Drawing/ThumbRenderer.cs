@@ -18,13 +18,13 @@ public class ThumbRenderer
 {
     public static float DefaultStateOverlap = 0.8f;
 
-    public static Bitmap DefaultRatingImage1 = new Bitmap(16, 16);
+    public static Bitmap DefaultRatingImage1 = new(16, 16);
 
-    public static Bitmap DefaultRatingImage2 = new Bitmap(16, 16);
+    public static Bitmap DefaultRatingImage2 = new(16, 16);
 
-    public static Bitmap DefaultTagRatingImage1 = new Bitmap(16, 16);
+    public static Bitmap DefaultTagRatingImage1 = new(16, 16);
 
-    public static Bitmap DefaultTagRatingImage2 = new Bitmap(16, 16);
+    public static Bitmap DefaultTagRatingImage2 = new(16, 16);
 
     public static Image DefaultPageCurlImage = Resources.PageCurl;
 
@@ -32,23 +32,23 @@ public class ThumbRenderer
 
     public static float DefaultThumbnailAspect = 2f / 3f;
 
-    public static Color[] DefaultBookmarkColors = new Color[4]
-    {
+    public static Color[] DefaultBookmarkColors =
+    [
         Color.Orange,
         Color.Green,
         Color.Red,
         Color.Blue
-    };
+    ];
 
-    public static Bitmap[] DefaultNewPagesImages = new Bitmap[6]
-    {
+    public static Bitmap[] DefaultNewPagesImages =
+    [
         Resources.NewPages1.ToOptimized(),
         Resources.NewPages2.ToOptimized(),
         Resources.NewPages3.ToOptimized(),
         Resources.NewPages4.ToOptimized(),
         Resources.NewPages5.ToOptimized(),
         Resources.NewPages5Plus.ToOptimized()
-    };
+    ];
 
     private Color selectionBackColor = ThemeColors.ThumbRenderer.SelectionBack;
 
@@ -74,144 +74,55 @@ public class ThumbRenderer
 
     public Color SelectionBackColor
     {
-        get
-        {
-            return selectionBackColor;
-        }
-        set
-        {
-            selectionBackColor = value;
-        }
+        get => selectionBackColor;
+        set => selectionBackColor = value;
     }
 
-    public ThumbnailDrawingOptions Options
-    {
-        get;
-        set;
-    }
+    public ThumbnailDrawingOptions Options { get; set; }
 
-    public Image Image
-    {
-        get;
-        set;
-    }
+    public Image Image { get; set; }
 
-    public Image BackImage
-    {
-        get;
-        set;
-    }
+    public Image BackImage { get; set; }
 
-    public Color MissingBackColor
-    {
-        get;
-        set;
-    }
+    public Color MissingBackColor { get; set; }
 
-    public float Rating1
-    {
-        get;
-        set;
-    }
+    public float Rating1 { get; set; }
 
-    public float Rating2
-    {
-        get;
-        set;
-    }
+    public float Rating2 { get; set; }
 
-    public ThumbnailRatingMode RatingMode
-    {
-        get;
-        set;
-    }
+    public ThumbnailRatingMode RatingMode { get; set; }
 
-    public int ComicCount
-    {
-        get;
-        set;
-    }
+    public int ComicCount { get; set; }
 
-    public int PageCount
-    {
-        get;
-        set;
-    }
+    public int PageCount { get; set; }
 
-    public bool BookmarkPercentMode
-    {
-        get;
-        set;
-    }
+    public bool BookmarkPercentMode { get; set; }
 
-    public int[] Bookmarks
-    {
-        get;
-        set;
-    }
+    public int[] Bookmarks { get; set; }
 
-    public Color[] BookmarkColors
-    {
-        get;
-        set;
-    }
+    public Color[] BookmarkColors { get; set; }
 
-    public Image RatingImage1
-    {
-        get;
-        set;
-    }
+    public Image RatingImage1 { get; set; }
 
-    public Image RatingImage2
-    {
-        get;
-        set;
-    }
+    public Image RatingImage2 { get; set; }
 
-    public Image TagRatingImage1
-    {
-        get;
-        set;
-    }
+    public Image TagRatingImage1 { get; set; }
 
-    public Image TagRatingImage2
-    {
-        get;
-        set;
-    }
+    public Image TagRatingImage2 { get; set; }
 
-    public int PageNumber
-    {
-        get;
-        set;
-    }
+    public int PageNumber { get; set; }
 
-    public ContentAlignment PageNumberAlignment
-    {
-        get;
-        set;
-    }
+    public ContentAlignment PageNumberAlignment { get; set; }
 
-    public float ImageOpacity
-    {
-        get;
-        set;
-    }
+    public float ImageOpacity { get; set; }
 
-    public float StateOverlap
-    {
-        get;
-        set;
-    }
+    public float StateOverlap { get; set; }
 
     public List<Image> StateImages
     {
         get
         {
-            if (stateImages == null)
-            {
-                stateImages = new List<Image>();
-            }
+            stateImages ??= new List<Image>();
             return stateImages;
         }
     }
@@ -232,40 +143,18 @@ public class ThumbRenderer
 
     public bool BorderEnabled => (Options & ThumbnailDrawingOptions.EnableBorder) != 0;
 
-    public bool BowShadowEnabled
-    {
-        get
-        {
-            if ((Options & ThumbnailDrawingOptions.EnableBowShadow) != 0)
-            {
-                return EngineConfiguration.Default.ThumbnailPageBow;
-            }
-            return false;
-        }
-    }
+    public bool BowShadowEnabled => (Options & ThumbnailDrawingOptions.EnableBowShadow) != 0 ? EngineConfiguration.Default.ThumbnailPageBow : false;
 
     public bool RatingEnabled
     {
-        get
-        {
-            return (Options & ThumbnailDrawingOptions.EnableRating) != 0;
-        }
-        set
-        {
-            Options = Options.SetMask(ThumbnailDrawingOptions.EnableRating, value);
-        }
+        get => (Options & ThumbnailDrawingOptions.EnableRating) != 0;
+        set => Options = Options.SetMask(ThumbnailDrawingOptions.EnableRating, value);
     }
 
     public bool StatesEnabled
     {
-        get
-        {
-            return (Options & ThumbnailDrawingOptions.EnableStates) != 0;
-        }
-        set
-        {
-            Options = Options.SetMask(ThumbnailDrawingOptions.EnableStates, value);
-        }
+        get => (Options & ThumbnailDrawingOptions.EnableStates) != 0;
+        set => Options = Options.SetMask(ThumbnailDrawingOptions.EnableStates, value);
     }
 
     public bool VerticalBookmarksEnabled => (Options & ThumbnailDrawingOptions.EnableVerticalBookmarks) != 0;
@@ -286,45 +175,15 @@ public class ThumbRenderer
 
     public bool Bookmarked
     {
-        get
-        {
-            return (Options & ThumbnailDrawingOptions.Bookmarked) != 0;
-        }
-        set
-        {
-            Options = (value ? (Options | ThumbnailDrawingOptions.Bookmarked) : (Options & ~ThumbnailDrawingOptions.Bookmarked));
-        }
+        get => (Options & ThumbnailDrawingOptions.Bookmarked) != 0;
+        set => Options = value ? (Options | ThumbnailDrawingOptions.Bookmarked) : (Options & ~ThumbnailDrawingOptions.Bookmarked);
     }
 
     public bool MissingThumbnailDisabled => (Options & ThumbnailDrawingOptions.DisableMissingThumbnail) != 0;
 
-    public bool HasStateOverlay
-    {
-        get
-        {
-            if (StatesEnabled && stateImages != null)
-            {
-                return stateImages.Count > 0;
-            }
-            return false;
-        }
-    }
+    public bool HasStateOverlay => StatesEnabled && stateImages != null ? stateImages.Count > 0 : false;
 
-    public bool HasTagRatingOverlay
-    {
-        get
-        {
-            if (RatingEnabled && RatingMode == ThumbnailRatingMode.Tags)
-            {
-                if (!(Rating1 > 0f))
-                {
-                    return Rating2 > 0f;
-                }
-                return true;
-            }
-            return false;
-        }
-    }
+    public bool HasTagRatingOverlay => RatingEnabled && RatingMode == ThumbnailRatingMode.Tags ? !(Rating1 > 0f) ? Rating2 > 0f : true : false;
 
     public ThumbRenderer()
     {
@@ -360,7 +219,7 @@ public class ThumbRenderer
         thumbnailBounds.Inflate(-2, -2);
         string text = PageNumber.ToString();
         Font font = FC.Get("Arial", 7f);
-        Rectangle rectangle = new Rectangle(Point.Empty, graphics.MeasureString(text, font).ToSize());
+        Rectangle rectangle = new(Point.Empty, graphics.MeasureString(text, font).ToSize());
         rectangle.Width = Math.Max(rectangle.Width, 20);
         rectangle.Inflate(2, 2);
         rectangle = rectangle.Align(thumbnailBounds, align);
@@ -368,13 +227,13 @@ public class ThumbRenderer
         {
             using (GraphicsPath path = rectangle.ConvertToPath(3, 3))
             {
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center
                 })
                 {
-                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(192, Color.Black)))
+                    using (SolidBrush brush = new(Color.FromArgb(192, Color.Black)))
                     {
                         graphics.FillPath(brush, path);
                     }
@@ -428,7 +287,7 @@ public class ThumbRenderer
             height = GetTagHeight(thumbnailBounds);
         }
         location.Offset(-height, -height);
-        Rectangle bounds = new Rectangle(location, new Size(height, height));
+        Rectangle bounds = new(location, new Size(height, height));
         new RatingRenderer(image, bounds).DrawRatingTag(graphics, rating);
         return bounds.Width;
     }
@@ -474,7 +333,7 @@ public class ThumbRenderer
 
     public void DrawBookmarks(Graphics graphics, Rectangle thumbnailBounds)
     {
-        int num = (BookmarkPercentMode ? 100 : PageCount);
+        int num = BookmarkPercentMode ? 100 : PageCount;
         if (Bookmarks == null || num == 0 || (!HorizontalBookmarksEnabled && !VerticalBookmarksEnabled))
         {
             return;
@@ -549,7 +408,7 @@ public class ThumbRenderer
         if (RatingEnabled && RatingMode == ThumbnailRatingMode.StarsBelow)
         {
             int overlaysHeight = GetOverlaysHeight(thumbnailBounds);
-            Rectangle bounds = new Rectangle(0, 0, thumbnailBounds.Width - 4, overlaysHeight - 4);
+            Rectangle bounds = new(0, 0, thumbnailBounds.Width - 4, overlaysHeight - 4);
             ratingRenderer = new RatingRenderer(RatingImage1, bounds)
             {
                 Fast = FastModeEnabled
@@ -559,8 +418,8 @@ public class ThumbRenderer
                 Fast = FastModeEnabled
             };
             overlaysHeight = (int)ratingRenderer.GetRenderSize().Height;
-            int num3 = (ratingRenderer.X = (ratingRenderer2.X = thumbnailBounds.Left + 2));
-            num3 = (ratingRenderer.Height = (ratingRenderer2.Height = overlaysHeight));
+            int num3 = ratingRenderer.X = ratingRenderer2.X = thumbnailBounds.Left + 2;
+            num3 = ratingRenderer.Height = ratingRenderer2.Height = overlaysHeight;
             thumbnailBounds = thumbnailBounds.Fit(thumbnailBounds.Pad(0, 0, 0, overlaysHeight + 4));
         }
         if (KeepAspect && Image != null)
@@ -672,15 +531,15 @@ public class ThumbRenderer
 
     private static GraphicsPath GetBookmark(Rectangle rect)
     {
-        GraphicsPath graphicsPath = new GraphicsPath();
-        graphicsPath.AddLines(new Point[5]
-        {
+        GraphicsPath graphicsPath = new();
+        graphicsPath.AddLines(
+        [
             rect.Location,
-            new Point(rect.Right, rect.Top),
-            new Point(rect.Right, rect.Bottom),
-            new Point(rect.Left, rect.Bottom),
-            new Point(rect.Left + rect.Height, rect.Top + rect.Height / 2)
-        });
+            new(rect.Right, rect.Top),
+            new(rect.Right, rect.Bottom),
+            new(rect.Left, rect.Bottom),
+            new(rect.Left + rect.Height, rect.Top + rect.Height / 2)
+        ]);
         graphicsPath.CloseFigure();
         return graphicsPath;
     }
@@ -691,7 +550,7 @@ public class ThumbRenderer
         int num2 = Math.Min(16, tr.Width - 2);
         int num3 = tr.Height - num;
         int y = tr.Top + (int)((float)num3 * percent);
-        Rectangle rect = new Rectangle(tr.Right - num2, y, num2, num);
+        Rectangle rect = new(tr.Right - num2, y, num2, num);
         using (gr.SaveState())
         {
             gr.SmoothingMode = SmoothingMode.AntiAlias;
@@ -737,11 +596,9 @@ public class ThumbRenderer
 
     public static Size GetSafeScaledImageSize(Size imageSize, Size canvasSize, float defaultAspect)
     {
-        if (!imageSize.IsEmpty)
-        {
-            return imageSize.ToRectangle(canvasSize, RectangleScaleMode.None).Size;
-        }
-        return new Size((int)((float)canvasSize.Height * defaultAspect), canvasSize.Height);
+        return !imageSize.IsEmpty
+            ? imageSize.ToRectangle(canvasSize, RectangleScaleMode.None).Size
+            : new Size((int)((float)canvasSize.Height * defaultAspect), canvasSize.Height);
     }
 
     public static Size GetSafeScaledImageSize(Size imageSize, Size canvasSize)
@@ -757,7 +614,7 @@ public class ThumbRenderer
         }
         Rectangle r = bounds;
         r.Inflate(-4, -4);
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center
@@ -769,17 +626,17 @@ public class ThumbRenderer
 
     public static Rectangle DrawThumbnail(Graphics graphics, Image image, Rectangle bounds, ThumbnailDrawingOptions flags, ComicBook comicBook, float opacity = 1f)
     {
-        ThumbRenderer thumbRenderer = new ThumbRenderer(image, flags);
+        ThumbRenderer thumbRenderer = new(image, flags);
         if (comicBook != null)
         {
             thumbRenderer.PageCount = comicBook.PageCount;
             thumbRenderer.Rating1 = comicBook.Rating;
             thumbRenderer.Rating2 = comicBook.CommunityRating;
-            thumbRenderer.Bookmarks = new int[2]
-            {
+            thumbRenderer.Bookmarks =
+            [
                 comicBook.CurrentPage,
                 comicBook.LastPageRead
-            };
+            ];
         }
         thumbRenderer.ImageOpacity = opacity;
         return thumbRenderer.DrawThumbnail(graphics, bounds);
@@ -792,7 +649,7 @@ public class ThumbRenderer
             return;
         }
         float num = (float)rc.Height / (float)uncoveredImage.Height;
-        RectangleF rect = new RectangleF(rc.Left, rc.Top, num * (float)uncoveredImage.Width, rc.Height);
+        RectangleF rect = new(rc.Left, rc.Top, num * (float)uncoveredImage.Width, rc.Height);
         int num2 = rc.Width;
         if (rc.Width > rc.Height)
         {
@@ -806,18 +663,18 @@ public class ThumbRenderer
         float num3 = (float)Math.Min(rc.Width, rc.Height) * width;
         float num4 = num3;
         rect.X = (float)rc.Right - rect.Width;
-        using (GraphicsPath graphicsPath = new GraphicsPath())
+        using (GraphicsPath graphicsPath = new())
         {
             graphicsPath.AddPolygon(new PointF[3]
             {
-                new PointF(rc.Right, (float)rc.Bottom - num4),
-                new PointF(rc.Right, rc.Bottom),
-                new PointF((float)rc.Right - num3, rc.Bottom)
+                new(rc.Right, (float)rc.Bottom - num4),
+                new(rc.Right, rc.Bottom),
+                new((float)rc.Right - num3, rc.Bottom)
             });
-            RectangleF rect2 = new RectangleF((float)rc.Right - num3, (float)rc.Bottom - num4, num3, num4);
+            RectangleF rect2 = new((float)rc.Right - num3, (float)rc.Bottom - num4, num3, num4);
             using (graphics.SaveState())
             {
-                using (Region region = new Region(graphicsPath))
+                using (Region region = new(graphicsPath))
                 {
                     graphics.IntersectClip(region);
                     graphics.DrawImage(uncoveredImage, rect);
@@ -825,7 +682,7 @@ public class ThumbRenderer
             }
             if (coloredPageCurl == null || cachedPageCurlColor != pageCurlColor || cachedPageCurl != pageCurl || cachedPageCurlShadow != pageCurlShadow)
             {
-                Bitmap bitmap = new Bitmap(pageCurl);
+                Bitmap bitmap = new(pageCurl);
                 if (!pageCurlColor.IsEmpty)
                 {
                     bitmap.ToGrayScale();
@@ -861,7 +718,7 @@ public class ThumbRenderer
         int num = enumerable.Max(s => s.Size.Height);
         int num2 = enumerable.Last().Size.Width + enumerable.Reverse().Skip(1).Sum(s => getWidth(s.Size.Width));
         float num3 = Math.Min(1f, (float)bounds.Width / (float)num2);
-        Rectangle rectangle = new Rectangle(0, 0, (int)(num3 * (float)num2), (int)(num3 * (float)num));
+        Rectangle rectangle = new(0, 0, (int)(num3 * (float)num2), (int)(num3 * (float)num));
         Rectangle rectangle2 = rectangle.Align(bounds, alignment);
         int num4 = rectangle2.Left;
         int top = rectangle2.Top;
@@ -877,10 +734,6 @@ public class ThumbRenderer
 
     public static Bitmap GetNewPageStatusImage(int newPages)
     {
-        if (newPages <= 0)
-        {
-            return null;
-        }
-        return DefaultNewPagesImages[(newPages - 1).Clamp(0, DefaultNewPagesImages.Length - 1)];
+        return newPages <= 0 ? null : DefaultNewPagesImages[(newPages - 1).Clamp(0, DefaultNewPagesImages.Length - 1)];
     }
 }

@@ -18,48 +18,30 @@ public class NewsStorage
 
         private string comment = string.Empty;
 
-        private readonly NewsChannelCollection channels = new NewsChannelCollection();
+        private readonly NewsChannelCollection channels = new();
 
         private DateTime lastTimeRead = DateTime.MinValue;
 
         [XmlAttribute]
         public string Url
         {
-            get
-            {
-                return url;
-            }
-            set
-            {
-                url = value;
-            }
+            get => url;
+            set => url = value;
         }
 
         [DefaultValue("")]
         public string Comment
         {
-            get
-            {
-                return comment;
-            }
-            set
-            {
-                comment = value;
-            }
+            get => comment;
+            set => comment = value;
         }
 
         public NewsChannelCollection Channels => channels;
 
         public DateTime LastUpdate
         {
-            get
-            {
-                return lastTimeRead;
-            }
-            set
-            {
-                lastTimeRead = value;
-            }
+            get => lastTimeRead;
+            set => lastTimeRead = value;
         }
 
         public Subscription()
@@ -82,19 +64,11 @@ public class NewsStorage
     public class NewsChannelItemInfo
     {
         [XmlAttribute]
-        public string Guid
-        {
-            get;
-            set;
-        }
+        public string Guid { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool IsRead
-        {
-            get;
-            set;
-        }
+        public bool IsRead { get; set; }
 
         public NewsChannelItemInfo()
         {
@@ -124,16 +98,16 @@ public class NewsStorage
                         }
                     }
                 }
-                NewsChannelItemInfo newsChannelItemInfo = new NewsChannelItemInfo(item);
+                NewsChannelItemInfo newsChannelItemInfo = new(item);
                 Add(newsChannelItemInfo);
                 return newsChannelItemInfo;
             }
         }
     }
 
-    private readonly SubscriptionCollection subscriptions = new SubscriptionCollection();
+    private readonly SubscriptionCollection subscriptions = new();
 
-    private readonly NewsChannelItemInfoCollection newsChannelItemInfos = new NewsChannelItemInfoCollection();
+    private readonly NewsChannelItemInfoCollection newsChannelItemInfos = new();
 
     public bool HasUnread => Items.Find((NewsChannelItem item) => !NewsChannelItemInfos[item].IsRead) != null;
 
@@ -146,7 +120,7 @@ public class NewsStorage
     {
         get
         {
-            NewsChannelCollection channels = new NewsChannelCollection();
+            NewsChannelCollection channels = new();
             subscriptions.ForEach(delegate (Subscription s)
             {
                 channels.AddRange(s.Channels);
@@ -160,7 +134,7 @@ public class NewsStorage
     {
         get
         {
-            NewsChannelItemCollection items = new NewsChannelItemCollection();
+            NewsChannelItemCollection items = new();
             Channels.ForEach(delegate (NewsChannel nc)
             {
                 items.AddRange(nc.Items);
@@ -180,7 +154,7 @@ public class NewsStorage
                 {
                     continue;
                 }
-                AtomNewsFeed rssNewsFeed = new AtomNewsFeed();
+                AtomNewsFeed rssNewsFeed = new();
                 try
                 {
                     rssNewsFeed.ReadFeed(NewsFeed.LoadFeed(subscription.Url));

@@ -5,17 +5,9 @@ namespace cYo.Common.Runtime;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class CommandLineSwitchAttribute : Attribute
 {
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public string ShortName
-    {
-        get;
-        set;
-    }
+    public string ShortName { get; set; }
 
     public CommandLineSwitchAttribute(string name, string shortName)
     {

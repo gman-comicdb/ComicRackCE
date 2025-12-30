@@ -12,33 +12,24 @@ public class ComicPageInfoConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
     {
-        if (sourceType == typeof(string))
-        {
-            return true;
-        }
-        return base.CanConvertFrom(context, sourceType);
+        return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
     }
 
     public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
-        if (destinationType == typeof(string))
-        {
-            return true;
-        }
-        return base.CanConvertTo(context, destinationType);
+        return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
     }
 
     public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
     {
-        string text = value as string;
-        if (text != null)
+        if (value is string text)
         {
             if (text == "Empty")
             {
                 return ComicPageInfo.Empty;
             }
             string[] array = text.Split(culture.TextInfo.ListSeparator, StringSplitOptions.None).TrimStrings().ToArray();
-            ComicPageInfo comicPageInfo = new ComicPageInfo(int.Parse(array[0]));
+            ComicPageInfo comicPageInfo = new(int.Parse(array[0]));
             comicPageInfo.ImageWidth = int.Parse(array[1]);
             comicPageInfo.ImageHeight = int.Parse(array[2]);
             comicPageInfo.ImageFileSize = int.Parse(array[3]);

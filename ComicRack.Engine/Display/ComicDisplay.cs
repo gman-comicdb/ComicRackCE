@@ -59,7 +59,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     private bool hideCursorFullScreen = true;
 
-    private KeyboardShortcuts keyboardMap = new KeyboardShortcuts();
+    private KeyboardShortcuts keyboardMap = new();
 
     private long pageWallTicks = 300L;
 
@@ -81,18 +81,11 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool TwoPageDisplay => PageLayout != PageLayoutMode.Single;
 
-    public bool SupressContextMenu
-    {
-        get;
-        set;
-    }
+    public bool SupressContextMenu { get; set; }
 
     public bool FullScreen
     {
-        get
-        {
-            return fullScreen;
-        }
+        get => fullScreen;
         set
         {
             if (control == null)
@@ -129,70 +122,37 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool HideCursorFullScreen
     {
-        get
-        {
-            return hideCursorFullScreen;
-        }
-        set
-        {
-            hideCursorFullScreen = value;
-        }
+        get => hideCursorFullScreen;
+        set => hideCursorFullScreen = value;
     }
 
     public KeyboardShortcuts KeyboardMap
     {
-        get
-        {
-            return keyboardMap;
-        }
-        set
-        {
-            keyboardMap = value;
-        }
+        get => keyboardMap;
+        set => keyboardMap = value;
     }
 
     public long PageWallTicks
     {
-        get
-        {
-            return pageWallTicks;
-        }
-        set
-        {
-            pageWallTicks = value;
-        }
+        get => pageWallTicks;
+        set => pageWallTicks = value;
     }
 
     public bool ScrollingDoesBrowse
     {
-        get
-        {
-            return scrollingDoesBrowse;
-        }
-        set
-        {
-            scrollingDoesBrowse = value;
-        }
+        get => scrollingDoesBrowse;
+        set => scrollingDoesBrowse = value;
     }
 
     public bool AutoScrolling
     {
-        get
-        {
-            return autoScrolling;
-        }
-        set
-        {
-            autoScrolling = value;
-        }
+        get => autoScrolling;
+        set => autoScrolling = value;
     }
 
     public ComicPageType PageFilter
     {
-        get
-        {
-            return pageFilter;
-        }
+        get => pageFilter;
         set
         {
             pageFilter = value;
@@ -205,76 +165,40 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool MouseClickEnabled
     {
-        get
-        {
-            return mouseClickEnabled;
-        }
-        set
-        {
-            mouseClickEnabled = value;
-        }
+        get => mouseClickEnabled;
+        set => mouseClickEnabled = value;
     }
 
     public bool ResetZoomOnPageChange
     {
-        get
-        {
-            return resetZoomOnPageChange;
-        }
-        set
-        {
-            resetZoomOnPageChange = value;
-        }
+        get => resetZoomOnPageChange;
+        set => resetZoomOnPageChange = value;
     }
 
     public bool ZoomInOutOnPageChange
     {
-        get
-        {
-            return zoomInOutOnPageChange;
-        }
-        set
-        {
-            zoomInOutOnPageChange = value;
-        }
+        get => zoomInOutOnPageChange;
+        set => zoomInOutOnPageChange = value;
     }
 
     public float MouseWheelSpeed
     {
-        get
-        {
-            return mouseWheelSpeed;
-        }
-        set
-        {
-            mouseWheelSpeed = value;
-        }
+        get => mouseWheelSpeed;
+        set => mouseWheelSpeed = value;
     }
 
     public InfoOverlays VisibleInfoOverlays
     {
-        get
-        {
-            return display.VisibleInfoOverlays;
-        }
-        set
-        {
-            display.VisibleInfoOverlays = value;
-        }
+        get => display.VisibleInfoOverlays;
+        set => display.VisibleInfoOverlays = value;
     }
 
     public int ImagePartCount => display.ImagePartCount;
 
     public bool NavigationOverlayVisible
     {
-        get
-        {
-            return display.NavigationOverlayVisible;
-        }
-        set
-        {
-            display.NavigationOverlayVisible = value;
-        }
+        get => display.NavigationOverlayVisible;
+        set => display.NavigationOverlayVisible = value;
     }
 
     public int CurrentPage => display.CurrentPage;
@@ -285,14 +209,8 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public ComicBookNavigator Book
     {
-        get
-        {
-            return display.Book;
-        }
-        set
-        {
-            display.Book = value;
-        }
+        get => display.Book;
+        set => display.Book = value;
     }
 
     public bool IsValid => display.IsValid;
@@ -305,92 +223,37 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public ImagePartInfo ImageVisiblePart
     {
-        get
-        {
-            return display.ImageVisiblePart;
-        }
-        set
-        {
-            display.ImageVisiblePart = value;
-        }
+        get => display.ImageVisiblePart;
+        set => display.ImageVisiblePart = value;
     }
 
     public IPagePool PagePool
     {
-        get
-        {
-            return display.PagePool;
-        }
-        set
-        {
-            display.PagePool = value;
-        }
+        get => display.PagePool;
+        set => display.PagePool = value;
     }
 
     public IThumbnailPool ThumbnailPool
     {
-        get
-        {
-            return display.ThumbnailPool;
-        }
-        set
-        {
-            display.ThumbnailPool = value;
-        }
+        get => display.ThumbnailPool;
+        set => display.ThumbnailPool = value;
     }
 
     public bool IsHardwareRenderer => display.IsHardwareRenderer;
 
     public float DoublePageOverlap
     {
-        get
-        {
-            return display.DoublePageOverlap;
-        }
-        set
-        {
-            display.DoublePageOverlap = value;
-        }
+        get => display.DoublePageOverlap;
+        set => display.DoublePageOverlap = value;
     }
 
-    public bool CanBookmark
-    {
-        get
-        {
-            if (Book != null && Book.Comic != null)
-            {
-                return Book.Comic.EditMode.CanEditPages();
-            }
-            return false;
-        }
-    }
+    public bool CanBookmark => Book != null && Book.Comic != null ? Book.Comic.EditMode.CanEditPages() : false;
 
-    public string BookmarkProposal
-    {
-        get
-        {
-            if (!CanBookmark)
-            {
-                return string.Empty;
-            }
-            if (!string.IsNullOrEmpty(Bookmark))
-            {
-                return Bookmark;
-            }
-            return Book.CurrentPageAsText;
-        }
-    }
+    public string BookmarkProposal => !CanBookmark ? string.Empty : !string.IsNullOrEmpty(Bookmark) ? Bookmark : Book.CurrentPageAsText;
 
     public string Bookmark
     {
-        get
-        {
-            if (!CanBookmark)
-            {
-                return null;
-            }
-            return Book.CurrentPageInfo.Bookmark;
-        }
+        get => !CanBookmark ? null : Book.CurrentPageInfo.Bookmark;
         set
         {
             if (CanBookmark)
@@ -402,82 +265,43 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public float MagnifierZoom
     {
-        get
-        {
-            return display.MagnifierZoom;
-        }
-        set
-        {
-            display.MagnifierZoom = value;
-        }
+        get => display.MagnifierZoom;
+        set => display.MagnifierZoom = value;
     }
 
     public float MagnifierOpacity
     {
-        get
-        {
-            return display.MagnifierOpacity;
-        }
-        set
-        {
-            display.MagnifierOpacity = value;
-        }
+        get => display.MagnifierOpacity;
+        set => display.MagnifierOpacity = value;
     }
 
     public Size MagnifierSize
     {
-        get
-        {
-            return display.MagnifierSize;
-        }
-        set
-        {
-            display.MagnifierSize = value;
-        }
+        get => display.MagnifierSize;
+        set => display.MagnifierSize = value;
     }
 
     public bool AutoHideMagnifier
     {
-        get
-        {
-            return display.AutoHideMagnifier;
-        }
-        set
-        {
-            display.AutoHideMagnifier = value;
-        }
+        get => display.AutoHideMagnifier;
+        set => display.AutoHideMagnifier = value;
     }
 
     public bool AutoMagnifier
     {
-        get
-        {
-            return display.AutoMagnifier;
-        }
-        set
-        {
-            display.AutoMagnifier = value;
-        }
+        get => display.AutoMagnifier;
+        set => display.AutoMagnifier = value;
     }
 
     public ImageDisplayOptions ImageDisplayOptions
     {
-        get
-        {
-            return display.ImageDisplayOptions;
-        }
-        set
-        {
-            display.ImageDisplayOptions = value;
-        }
+        get => display.ImageDisplayOptions;
+        set => display.ImageDisplayOptions = value;
     }
 
     public bool PageMargin
     {
-        get
-        {
-            return display.PageMargin;
-        }
+        get => display.PageMargin;
         set
         {
             if (display.PageMargin != value)
@@ -492,10 +316,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public float PageMarginPercentWidth
     {
-        get
-        {
-            return display.PageMarginPercentWidth;
-        }
+        get => display.PageMarginPercentWidth;
         set
         {
             if (display.PageMarginPercentWidth != value)
@@ -510,130 +331,67 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public Color BackColor
     {
-        get
-        {
-            return display.BackColor;
-        }
-        set
-        {
-            display.BackColor = value;
-        }
+        get => display.BackColor;
+        set => display.BackColor = value;
     }
 
     public string BackgroundTexture
     {
-        get
-        {
-            return display.BackgroundTexture;
-        }
-        set
-        {
-            display.BackgroundTexture = value;
-        }
+        get => display.BackgroundTexture;
+        set => display.BackgroundTexture = value;
     }
 
     public string PaperTexture
     {
-        get
-        {
-            return display.PaperTexture;
-        }
-        set
-        {
-            display.PaperTexture = value;
-        }
+        get => display.PaperTexture;
+        set => display.PaperTexture = value;
     }
 
     public float PaperTextureStrength
     {
-        get
-        {
-            return display.PaperTextureStrength;
-        }
-        set
-        {
-            display.PaperTextureStrength = value;
-        }
+        get => display.PaperTextureStrength;
+        set => display.PaperTextureStrength = value;
     }
 
     public ImageLayout PaperTextureLayout
     {
-        get
-        {
-            return display.PaperTextureLayout;
-        }
-        set
-        {
-            display.PaperTextureLayout = value;
-        }
+        get => display.PaperTextureLayout;
+        set => display.PaperTextureLayout = value;
     }
 
     public ImageLayout BackgroundImageLayout
     {
-        get
-        {
-            return display.BackgroundImageLayout;
-        }
-        set
-        {
-            display.BackgroundImageLayout = value;
-        }
+        get => display.BackgroundImageLayout;
+        set => display.BackgroundImageLayout = value;
     }
 
     public ImageBackgroundMode ImageBackgroundMode
     {
-        get
-        {
-            return display.ImageBackgroundMode;
-        }
-        set
-        {
-            display.ImageBackgroundMode = value;
-        }
+        get => display.ImageBackgroundMode;
+        set => display.ImageBackgroundMode = value;
     }
 
     public bool SmoothScrolling
     {
-        get
-        {
-            return display.SmoothScrolling;
-        }
-        set
-        {
-            display.SmoothScrolling = value;
-        }
+        get => display.SmoothScrolling;
+        set => display.SmoothScrolling = value;
     }
 
     public bool RealisticPages
     {
-        get
-        {
-            return display.RealisticPages;
-        }
-        set
-        {
-            display.RealisticPages = value;
-        }
+        get => display.RealisticPages;
+        set => display.RealisticPages = value;
     }
 
     public float InfoOverlayScaling
     {
-        get
-        {
-            return display.InfoOverlayScaling;
-        }
-        set
-        {
-            display.InfoOverlayScaling = value;
-        }
+        get => display.InfoOverlayScaling;
+        set => display.InfoOverlayScaling = value;
     }
 
     public RightToLeftReadingMode RightToLeftReadingMode
     {
-        get
-        {
-            return display.RightToLeftReadingMode;
-        }
+        get => display.RightToLeftReadingMode;
         set
         {
             if (display.RightToLeftReadingMode != value)
@@ -645,46 +403,25 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool LeftRightMovementReversed
     {
-        get
-        {
-            return display.LeftRightMovementReversed;
-        }
-        set
-        {
-            display.LeftRightMovementReversed = value;
-        }
+        get => display.LeftRightMovementReversed;
+        set => display.LeftRightMovementReversed = value;
     }
 
     public bool TwoPageNavigation
     {
-        get
-        {
-            return display.TwoPageNavigation;
-        }
-        set
-        {
-            display.TwoPageNavigation = value;
-        }
+        get => display.TwoPageNavigation;
+        set => display.TwoPageNavigation = value;
     }
 
     public bool AutoHideCursor
     {
-        get
-        {
-            return display.AutoHideCursor;
-        }
-        set
-        {
-            display.AutoHideCursor = value;
-        }
+        get => display.AutoHideCursor;
+        set => display.AutoHideCursor = value;
     }
 
     public bool RightToLeftReading
     {
-        get
-        {
-            return display.RightToLeftReading;
-        }
+        get => display.RightToLeftReading;
         set
         {
             if (display.RightToLeftReading == value)
@@ -711,34 +448,19 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool ImageAutoRotate
     {
-        get
-        {
-            return display.ImageAutoRotate;
-        }
-        set
-        {
-            display.ImageAutoRotate = value;
-        }
+        get => display.ImageAutoRotate;
+        set => display.ImageAutoRotate = value;
     }
 
     public ImageRotation ImageRotation
     {
-        get
-        {
-            return display.ImageRotation;
-        }
-        set
-        {
-            display.ImageRotation = value;
-        }
+        get => display.ImageRotation;
+        set => display.ImageRotation = value;
     }
 
     public PageLayoutMode PageLayout
     {
-        get
-        {
-            return display.PageLayout;
-        }
+        get => display.PageLayout;
         set
         {
             if (display.PageLayout == value)
@@ -797,10 +519,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool ImageFitOnlyIfOversized
     {
-        get
-        {
-            return display.ImageFitOnlyIfOversized;
-        }
+        get => display.ImageFitOnlyIfOversized;
         set
         {
             if (display.ImageFitOnlyIfOversized != value)
@@ -815,22 +534,13 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool MagnifierVisible
     {
-        get
-        {
-            return display.MagnifierVisible;
-        }
-        set
-        {
-            display.MagnifierVisible = value;
-        }
+        get => display.MagnifierVisible;
+        set => display.MagnifierVisible = value;
     }
 
     public float ImageZoom
     {
-        get
-        {
-            return display.ImageZoom;
-        }
+        get => display.ImageZoom;
         set
         {
             if (display.ImageZoom != value)
@@ -846,10 +556,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public ImageFitMode ImageFitMode
     {
-        get
-        {
-            return display.ImageFitMode;
-        }
+        get => display.ImageFitMode;
         set
         {
             if (display.ImageFitMode != value)
@@ -864,115 +571,57 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public PageTransitionEffect PageTransitionEffect
     {
-        get
-        {
-            return display.PageTransitionEffect;
-        }
-        set
-        {
-            display.PageTransitionEffect = value;
-        }
+        get => display.PageTransitionEffect;
+        set => display.PageTransitionEffect = value;
     }
 
     public bool DisplayChangeAnimation
     {
-        get
-        {
-            return display.DisplayChangeAnimation;
-        }
-        set
-        {
-            display.DisplayChangeAnimation = value;
-        }
+        get => display.DisplayChangeAnimation;
+        set => display.DisplayChangeAnimation = value;
     }
 
     public bool FlowingMouseScrolling
     {
-        get
-        {
-            return display.FlowingMouseScrolling;
-        }
-        set
-        {
-            display.FlowingMouseScrolling = value;
-        }
+        get => display.FlowingMouseScrolling;
+        set => display.FlowingMouseScrolling = value;
     }
 
     public bool SoftwareFiltering
     {
-        get
-        {
-            return display.SoftwareFiltering;
-        }
-        set
-        {
-            display.SoftwareFiltering = value;
-        }
+        get => display.SoftwareFiltering;
+        set => display.SoftwareFiltering = value;
     }
 
     public bool HardwareFiltering
     {
-        get
-        {
-            return display.HardwareFiltering;
-        }
-        set
-        {
-            display.HardwareFiltering = value;
-        }
+        get => display.HardwareFiltering;
+        set => display.HardwareFiltering = value;
     }
 
     public bool IsMovementFlipped => display.IsMovementFlipped;
 
     public bool BlendWhilePaging
     {
-        get
-        {
-            return display.BlendWhilePaging;
-        }
-        set
-        {
-            display.BlendWhilePaging = value;
-        }
+        get => display.BlendWhilePaging;
+        set => display.BlendWhilePaging = value;
     }
 
     public MagnifierStyle MagnifierStyle
     {
-        get
-        {
-            return display.MagnifierStyle;
-        }
-        set
-        {
-            display.MagnifierStyle = value;
-        }
+        get => display.MagnifierStyle;
+        set => display.MagnifierStyle = value;
     }
 
-    bool IEditPage.IsValid
-    {
-        get
-        {
-            if (IsValid)
-            {
-                return Book.Comic.EditMode.CanEditPages();
-            }
-            return false;
-        }
-    }
+    bool IEditPage.IsValid => IsValid ? Book.Comic.EditMode.CanEditPages() : false;
 
     ComicPageType IEditPage.PageType
     {
         get
         {
-            if (!IsValid)
-            {
-                return ComicPageType.Other;
-            }
-            if (CurrentMousePage != -1)
-            {
-                return Book.Comic.GetPage(CurrentMousePage).PageType;
-            }
-            return Book.Comic.GetPage(CurrentPage).PageType;
+            return !IsValid
+                ? ComicPageType.Other
+                : CurrentMousePage != -1 ? Book.Comic.GetPage(CurrentMousePage).PageType : Book.Comic.GetPage(CurrentPage).PageType;
         }
         set
         {
@@ -994,15 +643,9 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
     {
         get
         {
-            if (!IsValid)
-            {
-                return ImageRotation.None;
-            }
-            if (CurrentMousePage != -1)
-            {
-                return Book.Comic.GetPage(CurrentMousePage).Rotation;
-            }
-            return Book.Comic.GetPage(CurrentPage).Rotation;
+            return !IsValid
+                ? ImageRotation.None
+                : CurrentMousePage != -1 ? Book.Comic.GetPage(CurrentMousePage).Rotation : Book.Comic.GetPage(CurrentPage).Rotation;
         }
         set
         {
@@ -1028,98 +671,42 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public event EventHandler BookChanged
     {
-        add
-        {
-            display.BookChanged += value;
-        }
-        remove
-        {
-            display.BookChanged -= value;
-        }
+        add => display.BookChanged += value; remove => display.BookChanged -= value;
     }
 
     public event EventHandler<GestureEventArgs> Gesture
     {
-        add
-        {
-            display.Gesture += value;
-        }
-        remove
-        {
-            display.Gesture -= value;
-        }
+        add => display.Gesture += value; remove => display.Gesture -= value;
     }
 
     public event EventHandler VisibleInfoOverlaysChanged
     {
-        add
-        {
-            display.VisibleInfoOverlaysChanged += value;
-        }
-        remove
-        {
-            display.VisibleInfoOverlaysChanged -= value;
-        }
+        add => display.VisibleInfoOverlaysChanged += value; remove => display.VisibleInfoOverlaysChanged -= value;
     }
 
     public event EventHandler<GestureEventArgs> PreviewGesture
     {
-        add
-        {
-            display.PreviewGesture += value;
-        }
-        remove
-        {
-            display.PreviewGesture -= value;
-        }
+        add => display.PreviewGesture += value; remove => display.PreviewGesture -= value;
     }
 
     public event EventHandler<BookPageEventArgs> PageChange
     {
-        add
-        {
-            display.PageChange += value;
-        }
-        remove
-        {
-            display.PageChange -= value;
-        }
+        add => display.PageChange += value; remove => display.PageChange -= value;
     }
 
     public event EventHandler<BookPageEventArgs> PageChanged
     {
-        add
-        {
-            display.PageChanged += value;
-        }
-        remove
-        {
-            display.PageChanged -= value;
-        }
+        add => display.PageChanged += value; remove => display.PageChanged -= value;
     }
 
     public event EventHandler DrawnPageCountChanged
     {
-        add
-        {
-            display.DrawnPageCountChanged += value;
-        }
-        remove
-        {
-            display.DrawnPageCountChanged -= value;
-        }
+        add => display.DrawnPageCountChanged += value; remove => display.DrawnPageCountChanged -= value;
     }
 
     public event EventHandler<BrowseEventArgs> Browse
     {
-        add
-        {
-            display.Browse += value;
-        }
-        remove
-        {
-            display.Browse -= value;
-        }
+        add => display.Browse += value; remove => display.Browse -= value;
     }
 
     public ComicDisplay(IComicDisplay display)
@@ -1139,8 +726,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
             control.KeyUp += control_KeyUp;
             control.MouseWheel += display_MouseWheel;
         }
-        IMouseHWheel mouseHWheel = display as IMouseHWheel;
-        if (mouseHWheel != null)
+        if (display is IMouseHWheel mouseHWheel)
         {
             mouseHWheel.MouseHWheel += display_MouseHWheel;
         }
@@ -1167,8 +753,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
                 control.KeyUp -= control_KeyUp;
                 control.MouseWheel -= display_MouseWheel;
             }
-            IMouseHWheel mouseHWheel = display as IMouseHWheel;
-            if (mouseHWheel != null)
+            if (display is IMouseHWheel mouseHWheel)
             {
                 mouseHWheel.MouseHWheel -= display_MouseHWheel;
             }
@@ -1179,26 +764,17 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     protected virtual void OnFullScreenChanged()
     {
-        if (this.FullScreenChanged != null)
-        {
-            this.FullScreenChanged(this, EventArgs.Empty);
-        }
+        FullScreenChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnFirstPageReached()
     {
-        if (this.FirstPageReached != null)
-        {
-            this.FirstPageReached(this, EventArgs.Empty);
-        }
+        FirstPageReached?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnLastPageReached()
     {
-        if (this.LastPageReached != null)
-        {
-            this.LastPageReached(this, EventArgs.Empty);
-        }
+        LastPageReached?.Invoke(this, EventArgs.Empty);
     }
 
     public void DisplayNextPageOrPart(bool forceNewPage = false)
@@ -1225,7 +801,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         {
             return;
         }
-        int num = ((flag || !IsDoubleImage) ? 1 : 2);
+        int num = (flag || !IsDoubleImage) ? 1 : 2;
         if (num == 2)
         {
             int page = Book.SeekNewPage(1, PageSeekOrigin.Current);
@@ -1258,7 +834,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
             {
                 ComicPageInfo page2 = Book.Comic.GetPage(page);
                 ComicPageInfo page3 = Book.Comic.GetPage(num);
-                offset = ((page2.IsSinglePageType || page2.IsDoublePage || page3.IsSinglePageType || page3.IsDoublePage || (page2.PagePosition == ComicPagePosition.Near && page3.PagePosition != ComicPagePosition.Far)) ? (-1) : (-2));
+                offset = (page2.IsSinglePageType || page2.IsDoublePage || page3.IsSinglePageType || page3.IsDoublePage || (page2.PagePosition == ComicPagePosition.Near && page3.PagePosition != ComicPagePosition.Far)) ? (-1) : (-2);
             }
             if (!Book.Navigate(offset))
             {
@@ -1317,7 +893,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         {
             if (!AutoScrolling)
             {
-                MovePart(new Point((int)(lines * (float)(-GetLineSize().Width)), 0));
+                MovePart(new Point((int)(lines * (float)-GetLineSize().Width), 0));
             }
             else if (IsMovementFlipped)
             {
@@ -1536,7 +1112,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
             return false;
         }
         WallState wallState = this.wallState;
-        if (wallState == WallState.Initial || wallState != WallState.Pending)
+        if (wallState is WallState.Initial or not WallState.Pending)
         {
             transitionStart = ticks;
             this.wallState = WallState.Pending;
@@ -1558,11 +1134,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
             return false;
         }
         long ticks = Machine.Ticks;
-        if (ticks - lastPaging < pageWallTicks)
-        {
-            return true;
-        }
-        return false;
+        return ticks - lastPaging < pageWallTicks;
     }
 
     private bool ScrollUp(float lines, bool withPageChange)
@@ -1766,15 +1338,9 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     private char GetNumberFromKey(Keys key)
     {
-        if (key >= Keys.NumPad0 && key <= Keys.NumPad9)
-        {
-            return (char)(48 + (key - 96));
-        }
-        if (key >= Keys.D0 && key <= Keys.D9)
-        {
-            return (char)(48 + (key - 48));
-        }
-        return '\0';
+        return key is >= Keys.NumPad0 and <= Keys.NumPad9
+            ? (char)(48 + (key - 96))
+            : key is >= Keys.D0 and <= Keys.D9 ? (char)(48 + (key - 48)) : '\0';
     }
 
     private void display_MouseWheel(object sender, MouseEventArgs e)
@@ -1803,9 +1369,9 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         if (IsMovementFlipped && pageSeekOrigin != PageSeekOrigin.Absolute)
         {
             num = -num;
-            if (pageSeekOrigin == PageSeekOrigin.Beginning || pageSeekOrigin == PageSeekOrigin.End)
+            if (pageSeekOrigin is PageSeekOrigin.Beginning or PageSeekOrigin.End)
             {
-                pageSeekOrigin = ((pageSeekOrigin == PageSeekOrigin.Beginning) ? PageSeekOrigin.End : PageSeekOrigin.Beginning);
+                pageSeekOrigin = (pageSeekOrigin == PageSeekOrigin.Beginning) ? PageSeekOrigin.End : PageSeekOrigin.Beginning;
             }
         }
         switch (pageSeekOrigin)
@@ -1876,11 +1442,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool Focus()
     {
-        if (control != null)
-        {
-            return control.Focus();
-        }
-        return false;
+        return control != null ? control.Focus() : false;
     }
 
     public bool SetRenderer(bool hardware)
@@ -1925,10 +1487,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
                 display.PagePool.RefreshPage(Book.GetPageKey(Book.NextPage));
             }
         }
-        if (control != null)
-        {
-            control.Invalidate();
-        }
+        control?.Invalidate();
     }
 
     private IEnumerable<ComicBook> GetBookAsList()

@@ -14,31 +14,31 @@ public class ComicNameInfo
     {
         private const RegexOptions RxOptions = RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline;
 
-        private static readonly Regex rxDotReplace = new Regex("((?<!\\d)\\.|\\.(?!\\d)|_)", RxOptions);
+        private static readonly Regex rxDotReplace = new("((?<!\\d)\\.|\\.(?!\\d)|_)", RxOptions);
 
-        private static readonly Regex rxRemove = new Regex("\\b(ctc|c2c|\\d+p|\\d{1,2}\\-\\d{1,2}|\\d{1,2}\\-(?=\\d{4}))\\b", RxOptions);
+        private static readonly Regex rxRemove = new("\\b(ctc|c2c|\\d+p|\\d{1,2}\\-\\d{1,2}|\\d{1,2}\\-(?=\\d{4}))\\b", RxOptions);
 
-        private static readonly Regex rxBrackets = new Regex("\\(.*?\\)|\\[.*?\\]", RxOptions);
+        private static readonly Regex rxBrackets = new("\\(.*?\\)|\\[.*?\\]", RxOptions);
 
         private static Regex rxCount;
 
-        private static readonly Regex rxNumber = new Regex("(?<!part\\s+)(\\b|#|(c\\w*\\s*))\\d[\\d\\.]*\\b(?!\\s*(pa|cov))", RxOptions | RegexOptions.RightToLeft);
+        private static readonly Regex rxNumber = new("(?<!part\\s+)(\\b|#|(c\\w*\\s*))\\d[\\d\\.]*\\b(?!\\s*(pa|cov))", RxOptions | RegexOptions.RightToLeft);
 
-        private static readonly Regex rxVolume = new Regex("\\b(v|vol\\.?|volume)\\s*\\d+\\b", RxOptions);
+        private static readonly Regex rxVolume = new("\\b(v|vol\\.?|volume)\\s*\\d+\\b", RxOptions);
 
-        private static readonly Regex rxYear = new Regex("\\b(?<!#)(19|2[0-3])\\d\\d\\b(?!\\spa)", RxOptions | RegexOptions.RightToLeft);
+        private static readonly Regex rxYear = new("\\b(?<!#)(19|2[0-3])\\d\\d\\b(?!\\spa)", RxOptions | RegexOptions.RightToLeft);
 
-        private static readonly Regex rxYearWithMonth = new Regex("(19|2[0-3])\\d\\d[-/\\\\\\s]\\d{1,2}\\b", RxOptions | RegexOptions.RightToLeft);
+        private static readonly Regex rxYearWithMonth = new("(19|2[0-3])\\d\\d[-/\\\\\\s]\\d{1,2}\\b", RxOptions | RegexOptions.RightToLeft);
 
-        private static readonly Regex rxFormat = new Regex("\\b(annual|director's cut|preview|b(lack)?\\s*&\\s*w(hite)?|king\\s*size|giant\\s*size)|sketch\\b", RxOptions);
+        private static readonly Regex rxFormat = new("\\b(annual|director's cut|preview|b(lack)?\\s*&\\s*w(hite)?|king\\s*size|giant\\s*size)|sketch\\b", RxOptions);
 
-        private static readonly Regex rxCoverCount = new Regex("(?<covers>\\d+)\\s+cover", RxOptions);
+        private static readonly Regex rxCoverCount = new("(?<covers>\\d+)\\s+cover", RxOptions);
 
-        private static readonly Regex rxnum = new Regex("\\d+\\.?\\d*", RxOptions | RegexOptions.RightToLeft);
+        private static readonly Regex rxnum = new("\\d+\\.?\\d*", RxOptions | RegexOptions.RightToLeft);
 
         public static ComicNameInfo FromFilePath(string path)
         {
-            ComicNameInfo comicNameInfo = new ComicNameInfo();
+            ComicNameInfo comicNameInfo = new();
             try
             {
                 string text = Path.GetFileNameWithoutExtension(path);
@@ -134,11 +134,7 @@ public class ComicNameInfo
 
         private static string GetNumber(string text)
         {
-            if (!string.IsNullOrEmpty(text))
-            {
-                return rxnum.Match(text).Value;
-            }
-            return string.Empty;
+            return !string.IsNullOrEmpty(text) ? rxnum.Match(text).Value : string.Empty;
         }
     }
 
@@ -146,19 +142,19 @@ public class ComicNameInfo
     {
         private const RegexOptions RxOptions = RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline;
 
-        private static readonly Regex rxSeries = new Regex("^(\\d+)?(([&\\w\\s'-])(?!v\\d|(?<=[ #])(\\d(?!\\d*\\s[#\\d]))+(?=(\\W|$))(?!\\))))*", RxOptions);
+        private static readonly Regex rxSeries = new("^(\\d+)?(([&\\w\\s'-])(?!v\\d|(?<=[ #])(\\d(?!\\d*\\s[#\\d]))+(?=(\\W|$))(?!\\))))*", RxOptions);
 
-        private static readonly Regex rxVolume = new Regex("(?<=\\bv)\\d(?=\\b)", RxOptions);
+        private static readonly Regex rxVolume = new("(?<=\\bv)\\d(?=\\b)", RxOptions);
 
-        private static readonly Regex rxNumber = new Regex("(?<=[ #]|c|ch)(\\d(?!\\d*\\s[#\\d]))+(?=(\\W|$))(?!\\))", RxOptions);
+        private static readonly Regex rxNumber = new("(?<=[ #]|c|ch)(\\d(?!\\d*\\s[#\\d]))+(?=(\\W|$))(?!\\))", RxOptions);
 
-        private static readonly Regex rxCount = new Regex("(?<=[\\(\\[\\s]of\\s)\\d+", RxOptions);
+        private static readonly Regex rxCount = new("(?<=[\\(\\[\\s]of\\s)\\d+", RxOptions);
 
-        private static readonly Regex rxYear = new Regex("(?<=[\\(\\[])\\d{4}\\b", RxOptions);
+        private static readonly Regex rxYear = new("(?<=[\\(\\[])\\d{4}\\b", RxOptions);
 
         public static ComicNameInfo FromFilePath(string path)
         {
-            ComicNameInfo comicNameInfo = new ComicNameInfo();
+            ComicNameInfo comicNameInfo = new();
             try
             {
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
@@ -175,7 +171,7 @@ public class ComicNameInfo
                 }
                 comicNameInfo.Series = comicNameInfo.Series.Trim();
                 string value = rxNumber.Match(fileNameWithoutExtension).Value;
-                comicNameInfo.number = (value.TryParse(out float f, invariant: true) ? f.ToString() : value);
+                comicNameInfo.number = value.TryParse(out float f, invariant: true) ? f.ToString() : value;
                 if (!int.TryParse(rxCount.Match(fileNameWithoutExtension).Value, out comicNameInfo.count))
                 {
                     comicNameInfo.count = -1;
@@ -216,98 +212,50 @@ public class ComicNameInfo
 
     public string Series
     {
-        get
-        {
-            return series;
-        }
-        set
-        {
-            series = value;
-        }
+        get => series;
+        set => series = value;
     }
 
     public string Title
     {
-        get
-        {
-            return title;
-        }
-        set
-        {
-            title = value;
-        }
+        get => title;
+        set => title = value;
     }
 
     public string Number
     {
-        get
-        {
-            return number;
-        }
-        set
-        {
-            number = value;
-        }
+        get => number;
+        set => number = value;
     }
 
     public string Format
     {
-        get
-        {
-            return format;
-        }
-        set
-        {
-            format = value;
-        }
+        get => format;
+        set => format = value;
     }
 
     public int Volume
     {
-        get
-        {
-            return volume;
-        }
-        set
-        {
-            volume = value;
-        }
+        get => volume;
+        set => volume = value;
     }
 
     public int Count
     {
-        get
-        {
-            return count;
-        }
-        set
-        {
-            count = value;
-        }
+        get => count;
+        set => count = value;
     }
 
     public int Year
     {
-        get
-        {
-            return year;
-        }
-        set
-        {
-            year = value;
-        }
+        get => year;
+        set => year = value;
     }
 
     public int CoverCount
     {
-        get
-        {
-            return coverCount;
-        }
-        set
-        {
-            coverCount = value;
-        }
+        get => coverCount;
+        set => coverCount = value;
     }
 
     public ComicNameInfo(string series, string title, string number, int count, int volume, int year, string format)
@@ -333,25 +281,16 @@ public class ComicNameInfo
 
     public override bool Equals(object obj)
     {
-        ComicNameInfo comicNameInfo = obj as ComicNameInfo;
-        if (comicNameInfo == null)
-        {
-            return false;
-        }
-        if (comicNameInfo.Series == Series && comicNameInfo.Number == Number && comicNameInfo.Count == Count && comicNameInfo.Volume == Volume && comicNameInfo.Title == Title && comicNameInfo.Format == Format)
-        {
-            return comicNameInfo.Year == Year;
-        }
-        return false;
+        return obj is not ComicNameInfo comicNameInfo
+            ? false
+            : comicNameInfo.Series == Series && comicNameInfo.Number == Number && comicNameInfo.Count == Count && comicNameInfo.Volume == Volume && comicNameInfo.Title == Title && comicNameInfo.Format == Format
+            ? comicNameInfo.Year == Year
+            : false;
     }
 
     public static ComicNameInfo FromFilePath(string path, bool legacy)
     {
-        if (!legacy)
-        {
-            return NewParser.FromFilePath(path);
-        }
-        return LegacyParser.FromFilePath(path);
+        return !legacy ? NewParser.FromFilePath(path) : LegacyParser.FromFilePath(path);
     }
 
     public static ComicNameInfo FromFilePath(string path)

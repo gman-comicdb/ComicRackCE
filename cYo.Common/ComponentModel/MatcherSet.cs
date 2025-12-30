@@ -5,7 +5,7 @@ namespace cYo.Common.ComponentModel;
 
 public class MatcherSet<T> : IMatcher<T>
 {
-    private readonly List<MatcherSetItem<T>> matchers = new List<MatcherSetItem<T>>();
+    private readonly List<MatcherSetItem<T>> matchers = new();
 
     public List<MatcherSetItem<T>> Matchers => matchers;
 
@@ -99,13 +99,13 @@ public class MatcherSet<T> : IMatcher<T>
                     }
                 case MatcherMode.Or:
                     {
-                        IEnumerable<T> enumerable2 = ((enumerable == null) ? items : items.Except(enumerable));
+                        IEnumerable<T> enumerable2 = (enumerable == null) ? items : items.Except(enumerable);
                         IEnumerable<T> enumerable3 = matcher.Matcher.Match(enumerable2).ToArray();
                         if (matcher.Not)
                         {
                             enumerable3 = enumerable2.Except(enumerable3).ToArray();
                         }
-                        enumerable = ((enumerable == null) ? enumerable3 : enumerable.Concat(enumerable3));
+                        enumerable = (enumerable == null) ? enumerable3 : enumerable.Concat(enumerable3);
                         break;
                     }
             }

@@ -9,36 +9,20 @@ namespace cYo.Common.Drawing;
 
 public class ColorSchema : IXmlSerializable
 {
-    private readonly Dictionary<string, Color> table = new Dictionary<string, Color>();
+    private readonly Dictionary<string, Color> table = new();
 
     private string name;
 
     public string Name
     {
-        get
-        {
-            return name;
-        }
-        set
-        {
-            name = value;
-        }
+        get => name;
+        set => name = value;
     }
 
     public Color this[string name]
     {
-        get
-        {
-            if (!table.TryGetValue(name, out var value))
-            {
-                return Color.Empty;
-            }
-            return value;
-        }
-        set
-        {
-            table[name] = value;
-        }
+        get => !table.TryGetValue(name, out var value) ? Color.Empty : value;
+        set => table[name] = value;
     }
 
     public ColorSchema(string name)
@@ -58,7 +42,7 @@ public class ColorSchema : IXmlSerializable
 
     public void ReadXml(XmlReader reader)
     {
-        ColorConverter colorConverter = new ColorConverter();
+        ColorConverter colorConverter = new();
         name = reader.GetAttribute("name");
         reader.ReadStartElement();
         while (reader.IsStartElement())
@@ -79,7 +63,7 @@ public class ColorSchema : IXmlSerializable
 
     public void WriteXml(XmlWriter writer)
     {
-        ColorConverter colorConverter = new ColorConverter();
+        ColorConverter colorConverter = new();
         if (!string.IsNullOrEmpty(name))
         {
             writer.WriteAttributeString("name", name);

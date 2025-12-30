@@ -34,26 +34,14 @@ public static class FormUtility
 
     private class PanelState
     {
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public Point AutoScrollPosition
-        {
-            get;
-            set;
-        }
+        public Point AutoScrollPosition { get; set; }
 
-        public bool[] Collapsed
-        {
-            get;
-            set;
-        }
+        public bool[] Collapsed { get; set; }
     }
 
-    public static readonly Dictionary<object, object> ServiceTranslation = new Dictionary<object, object>();
+    public static readonly Dictionary<object, object> ServiceTranslation = new();
 
     private static Dictionary<string, Rectangle> formPositions;
 
@@ -69,10 +57,7 @@ public static class FormUtility
     {
         get
         {
-            if (formPositions == null)
-            {
-                formPositions = new Dictionary<string, Rectangle>();
-            }
+            formPositions ??= new Dictionary<string, Rectangle>();
             return formPositions;
         }
     }
@@ -92,7 +77,7 @@ public static class FormUtility
             else
             {
                 IntPtr dC = GetDC(IntPtr.Zero);
-                Size size = new Size(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
+                Size size = new(GetDeviceCaps(dC, LOGPIXELSX), GetDeviceCaps(dC, LOGPIXELSY));
                 dpiScale = new PointF((float)size.Width / 96f, (float)size.Height / 96f);
             }
             return dpiScale;
@@ -103,8 +88,7 @@ public static class FormUtility
     {
         if (service != null && root != null)
         {
-            ContainerControl containerControl = root as ContainerControl;
-            if (containerControl != null)
+            if (root is ContainerControl containerControl)
             {
                 Control activeControl = containerControl.ActiveControl;
                 if (activeControl != null && activeControl.Visible)
@@ -140,14 +124,10 @@ public static class FormUtility
         return (T)root.FindActiveService(typeof(T));
     }
 
-    public static K InvokeActiveService<T, K>(this Control root, Func<T, K> predicate, K defaultReturn = default(K)) where T : class
+    public static K InvokeActiveService<T, K>(this Control root, Func<T, K> predicate, K defaultReturn = default) where T : class
     {
         T val = root.FindActiveService<T>();
-        if (val != null)
-        {
-            return predicate(val);
-        }
-        return defaultReturn;
+        return val != null ? predicate(val) : defaultReturn;
     }
 
     public static void InvokeActiveService<T>(this Control root, Action<T> action) where T : class
@@ -161,8 +141,7 @@ public static class FormUtility
 
     public static IEnumerable<T> FindServices<T>(this Control root) where T : class
     {
-        T val = GetServiceObject(root) as T;
-        if (val != null)
+        if (GetServiceObject(root) is T val)
         {
             yield return val;
         }
@@ -192,8 +171,7 @@ public static class FormUtility
     {
         while ((c = c.Parent) != null)
         {
-            T val = c as T;
-            if (val != null)
+            if (c is T val)
             {
                 return val;
             }
@@ -299,7 +277,7 @@ public static class FormUtility
                 {
                     DescriptionAttribute attribute = propertyInfo.GetAttribute<DescriptionAttribute>();
                     CategoryAttribute attribute2 = propertyInfo.GetAttribute<CategoryAttribute>();
-                    string key = ((attribute2 == null || string.IsNullOrEmpty(attribute2.Category)) ? "Other" : attribute2.Category);
+                    string key = (attribute2 == null || string.IsNullOrEmpty(attribute2.Category)) ? "Other" : attribute2.Category;
                     if (attribute != null && !string.IsNullOrEmpty(attribute.Description))
                     {
                         ListViewItem listViewItem = lv.Items.Add(tr[propertyInfo.Name, attribute.Description]);
@@ -367,11 +345,8 @@ public static class FormUtility
 
     public static void SortGroups(this ListView listView, IComparer comparer = null)
     {
-        if (comparer == null)
-        {
-            comparer = new GroupHeaderComparer();
-        }
-        ArrayList arrayList = new ArrayList(listView.Groups);
+        comparer ??= new GroupHeaderComparer();
+        ArrayList arrayList = new(listView.Groups);
         arrayList.Sort(comparer);
         listView.Groups.Clear();
         foreach (ListViewGroup item in arrayList)
@@ -427,11 +402,7 @@ public static class FormUtility
 
     public static IEnumerable<T> GetControls<T>(this Control container, bool all = true) where T : Control
     {
-        if (!all)
-        {
-            return container.Controls.OfType<T>();
-        }
-        return container.Controls.Recurse<T>((object o) => ((Control)o).Controls);
+        return !all ? container.Controls.OfType<T>() : container.Controls.Recurse<T>((object o) => ((Control)o).Controls);
     }
 
     public static void ForEachControl<T>(this Control container, Action<T> action, bool all = true) where T : Control
@@ -484,8 +455,7 @@ public static class FormUtility
         foreach (ToolStripItem t in tic)
         {
             yield return t;
-            ToolStripDropDownItem toolStripDropDownItem = t as ToolStripDropDownItem;
-            if (toolStripDropDownItem == null)
+            if (t is not ToolStripDropDownItem toolStripDropDownItem)
             {
                 continue;
             }
@@ -498,8 +468,8 @@ public static class FormUtility
 
     public static void PrefixToolStrip(ToolStripItemCollection tsic)
     {
-        List<ToolStripMenuItem> list = new List<ToolStripMenuItem>();
-        List<string> list2 = new List<string>();
+        List<ToolStripMenuItem> list = new();
+        List<string> list2 = new();
         foreach (ToolStripMenuItem item in tsic.OfType<ToolStripMenuItem>())
         {
             list.Add(item);
@@ -517,8 +487,7 @@ public static class FormUtility
         PrefixToolStrip(ts.Items);
         foreach (ToolStripItem item in ts.Items)
         {
-            ToolStripDropDownItem toolStripDropDownItem = item as ToolStripDropDownItem;
-            if (toolStripDropDownItem != null)
+            if (item is ToolStripDropDownItem toolStripDropDownItem)
             {
                 PrefixToolStrip(toolStripDropDownItem.DropDownItems);
             }
@@ -572,11 +541,7 @@ public static class FormUtility
 
     public static Rectangle GetSafeBounds(this Form form)
     {
-        if (form.WindowState != 0)
-        {
-            return form.RestoreBounds;
-        }
-        return form.Bounds;
+        return form.WindowState != 0 ? form.RestoreBounds : form.Bounds;
     }
 
     public static void RestorePosition(this Form form, string key = null)
@@ -656,10 +621,7 @@ public static class FormUtility
         {
             return;
         }
-        if (panelStates == null)
-        {
-            panelStates = new Dictionary<string, IEnumerable<PanelState>>();
-        }
+        panelStates ??= new Dictionary<string, IEnumerable<PanelState>>();
         if (panelStates.TryGetValue(control.Name, out var psl))
         {
             control.Load += delegate
@@ -712,7 +674,7 @@ public static class FormUtility
             {
                 return false;
             }
-            TabControl tabControl2 = new TabControl();
+            TabControl tabControl2 = new();
             bool visible2 = control.IsVisibleSet();
             control.Visible = false;
             control.Tag = tabControl2;
@@ -725,7 +687,7 @@ public static class FormUtility
                 {
                     continue;
                 }
-                TabPage tabPage2 = new TabPage(item.Text);
+                TabPage tabPage2 = new(item.Text);
                 tabControl2.TabPages.Add(tabPage2);
                 tabPage2.Tag = item;
                 tabPage2.BackColor = Color.Transparent;
@@ -748,7 +710,7 @@ public static class FormUtility
                 }
             }
             tabControl2.SelectedIndex = 0;
-            tabControl2.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            tabControl2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ThemeExtensions.Theme(tabControl2);
             tabControl2.Visible = visible2;
         }
@@ -757,7 +719,7 @@ public static class FormUtility
 
     public static bool TogglePanelTab(Control control, Action<bool> setState = null)
     {
-        bool flag = PanelToTab(control, !(control.Tag is TabControl), setState);
+        bool flag = PanelToTab(control, control.Tag is not TabControl, setState);
         setState?.Invoke(flag);
         return flag;
     }
@@ -874,10 +836,6 @@ public static class FormUtility
 
     private static object GetServiceObject(object obj)
     {
-        if (!ServiceTranslation.TryGetValue(obj, out var value))
-        {
-            return obj;
-        }
-        return value;
+        return !ServiceTranslation.TryGetValue(obj, out var value) ? obj : value;
     }
 }

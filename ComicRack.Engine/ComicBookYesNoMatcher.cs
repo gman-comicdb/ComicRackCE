@@ -17,14 +17,11 @@ public abstract class ComicBookYesNoMatcher : ComicBookValueMatcher<YesNo>
 
     protected override bool MatchBook(ComicBook comicBook, YesNo yesNo)
     {
-        switch (MatchOperator)
+        return MatchOperator switch
         {
-            default:
-                return yesNo == YesNo.Yes;
-            case 1:
-                return yesNo == YesNo.No;
-            case 2:
-                return yesNo == YesNo.Unknown;
-        }
+            1 => yesNo == YesNo.No,
+            2 => yesNo == YesNo.Unknown,
+            _ => yesNo == YesNo.Yes,
+        };
     }
 }

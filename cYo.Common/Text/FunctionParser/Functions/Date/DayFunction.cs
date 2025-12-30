@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using cYo.Common.Text.FunctionParser.Functions.Boolean;
 
 namespace cYo.Common.Text.FunctionParser.Functions.Date;
 
@@ -16,12 +10,10 @@ public class DayFunction(string name) : FunctionBase<DayFunctionParameters, stri
 
     protected override Func<DayFunctionParameters, string> Function => param =>
     {
-        if (string.IsNullOrEmpty(param.dateInText))
-            return string.Empty;
-
-        if (DateTime.TryParse(param.dateInText, out DateTime result))
-            return result.Day.ToString("D4");
-
-        throw new ArgumentException("Can't parse date");
+        return string.IsNullOrEmpty(param.dateInText)
+            ? string.Empty
+            : DateTime.TryParse(param.dateInText, out DateTime result)
+            ? result.Day.ToString("D4")
+            : throw new ArgumentException("Can't parse date");
     };
 }

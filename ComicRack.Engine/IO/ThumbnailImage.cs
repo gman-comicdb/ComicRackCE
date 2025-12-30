@@ -25,18 +25,11 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
 
     public static int ThumbnailQuality = EngineConfiguration.Default.ThumbnailQuality;
 
-    public Size OriginalSize
-    {
-        get;
-        set;
-    }
+    public Size OriginalSize { get; set; }
 
     public override Bitmap Bitmap
     {
-        get
-        {
-            return GetThumbnail(MaxHeight);
-        }
+        get => GetThumbnail(MaxHeight);
         set
         {
             base.Bitmap = value;
@@ -76,10 +69,10 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
         }
         using (Bitmap bitmap2 = BitmapExtensions.BitmapFromBytes(base.Data))
         {
-            Size size = new Size(bitmap2.Width * num2 / bitmap2.Height, num2);
+            Size size = new(bitmap2.Width * num2 / bitmap2.Height, num2);
             bitmap = bitmap2.Scale(size, EngineConfiguration.Default.ThumbnailResampling).ToOptimized();
         }
-        lastRequestHeight = (currentHeight = num2);
+        lastRequestHeight = currentHeight = num2;
         return base.Bitmap = bitmap;
     }
 
@@ -95,7 +88,7 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
 
     public override void Save(Stream s)
     {
-        BinaryWriter binaryWriter = new BinaryWriter(s);
+        BinaryWriter binaryWriter = new(s);
         binaryWriter.Write(Bitmap.Size.Width);
         binaryWriter.Write(Bitmap.Size.Height);
         binaryWriter.Write(OriginalSize.Width);
@@ -106,7 +99,7 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
 
     public override byte[] ToBytes()
     {
-        using (MemoryStream memoryStream = new MemoryStream(base.Data.Length + 100))
+        using (MemoryStream memoryStream = new(base.Data.Length + 100))
         {
             Save(memoryStream);
             return memoryStream.ToArray();
@@ -123,7 +116,7 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
 
     public static ThumbnailImage CreateFrom(byte[] data)
     {
-        using (MemoryStream stream = new MemoryStream(data))
+        using (MemoryStream stream = new(data))
         {
             return CreateFrom(stream);
         }
@@ -131,11 +124,11 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
 
     public static ThumbnailImage CreateFrom(Stream stream)
     {
-        BinaryReader binaryReader = new BinaryReader(stream);
-        Size size = new Size(binaryReader.ReadInt32(), binaryReader.ReadInt32());
-        Size originalSize = new Size(binaryReader.ReadInt32(), binaryReader.ReadInt32());
+        BinaryReader binaryReader = new(stream);
+        Size size = new(binaryReader.ReadInt32(), binaryReader.ReadInt32());
+        Size originalSize = new(binaryReader.ReadInt32(), binaryReader.ReadInt32());
         int count = binaryReader.ReadInt32();
-        ThumbnailImage thumbnailImage = new ThumbnailImage(binaryReader.ReadBytes(count), size, originalSize);
+        ThumbnailImage thumbnailImage = new(binaryReader.ReadBytes(count), size, originalSize);
         if (lastRequestHeight != 0)
         {
             thumbnailImage.GetThumbnail(lastRequestHeight);
@@ -152,7 +145,7 @@ public class ThumbnailImage : MemoryOptimizedImage, IDataSize
         ThumbnailImage thumbnailImage;
         using (Image image2 = Scale(image, new Size(0, MaxHeight)))
         {
-            thumbnailImage = ((!supportTransparent) ? new ThumbnailImage(image2.ImageToJpegBytes(ThumbnailQuality), image2.Size, originalSize) : new ThumbnailImage(image2.ImageToBytes(ImageFormat.Png), image2.Size, originalSize));
+            thumbnailImage = (!supportTransparent) ? new ThumbnailImage(image2.ImageToJpegBytes(ThumbnailQuality), image2.Size, originalSize) : new ThumbnailImage(image2.ImageToBytes(ImageFormat.Png), image2.Size, originalSize);
         }
         if (lastRequestHeight != 0)
         {

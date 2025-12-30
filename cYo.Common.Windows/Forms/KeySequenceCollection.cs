@@ -9,7 +9,7 @@ public class KeySequenceCollection : List<KeySequence>
 {
     public KeySequence Add(string name, params Keys[] keys)
     {
-        KeySequence keySequence = new KeySequence(name, keys);
+        KeySequence keySequence = new(name, keys);
         Add(keySequence);
         return keySequence;
     }

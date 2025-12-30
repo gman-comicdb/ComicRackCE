@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Projects.ComicRack.Engine;
 
@@ -12,14 +10,8 @@ public partial class ComicBrowserView : SubView
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IComicBookListProvider BookList
     {
-        get
-        {
-            return comicBrowser.BookList;
-        }
-        set
-        {
-            comicBrowser.BookList = value;
-        }
+        get => comicBrowser.BookList;
+        set => comicBrowser.BookList = value;
     }
 
     public ComicBrowserView()

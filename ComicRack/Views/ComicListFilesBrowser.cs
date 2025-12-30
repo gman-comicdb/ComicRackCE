@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-
 using cYo.Common.Localize;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
@@ -9,18 +6,12 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListFilesBrowser : ComicListBrowser
 {
-    private readonly FolderComicListProvider folderBooks = new FolderComicListProvider();
+    private readonly FolderComicListProvider folderBooks = new();
 
     public bool IncludeSubFolders
     {
-        get
-        {
-            return folderBooks.IncludeSubFolders;
-        }
-        set
-        {
-            folderBooks.IncludeSubFolders = value;
-        }
+        get => folderBooks.IncludeSubFolders;
+        set => folderBooks.IncludeSubFolders = value;
     }
 
     public ComicListFilesBrowser()

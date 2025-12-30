@@ -20,40 +20,20 @@ public abstract class Command
 
     [XmlAttribute]
     [DefaultValue(null)]
-    public string Hook
-    {
-        get;
-        set;
-    }
+    public string Hook { get; set; }
 
     [XmlAttribute]
     [DefaultValue(0)]
-    public int PCount
-    {
-        get;
-        set;
-    }
+    public int PCount { get; set; }
 
     [XmlAttribute]
     [DefaultValue(null)]
-    public string Key
-    {
-        get;
-        set;
-    }
+    public string Key { get; set; }
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue(null)]
-    public string Description
-    {
-        get;
-        set;
-    }
+    public string Description { get; set; }
 
     [DefaultValue(null)]
     public string Image
@@ -64,64 +44,30 @@ public abstract class Command
     private string image = null;
 
     [XmlIgnore]
-    public Image CommandImage
-    {
-        get;
-        set;
-    }
+    public Image CommandImage { get; set; }
 
     [XmlIgnore]
-    public IPluginEnvironment Environment
-    {
-        get;
-        set;
-    }
+    public IPluginEnvironment Environment { get; set; }
 
     [XmlAttribute]
     [DefaultValue(true)]
     public bool Enabled
     {
-        get
-        {
-            return enabled;
-        }
-        set
-        {
-            enabled = value;
-        }
+        get => enabled;
+        set => enabled = value;
     }
 
     [XmlIgnore]
     public Keys ShortCutKeys
     {
-        get
-        {
-            return shortCutKeys;
-        }
-        set
-        {
-            shortCutKeys = value;
-        }
+        get => shortCutKeys;
+        set => shortCutKeys = value;
     }
 
     [XmlIgnore]
-    public Command Configure
-    {
-        get;
-        set;
-    }
+    public Command Configure { get; set; }
 
-    protected virtual bool IsValid
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(Hook))
-            {
-                return !string.IsNullOrEmpty(Name);
-            }
-            return false;
-        }
-    }
+    protected virtual bool IsValid => !string.IsNullOrEmpty(Hook) ? !string.IsNullOrEmpty(Name) : false;
 
     public bool Initialize(IPluginEnvironment env, string path)
     {
@@ -169,29 +115,17 @@ public abstract class Command
 
     public string GetLocalizedName()
     {
-        if (Environment != null)
-        {
-            return Environment.Localize(Key, "Name", Name);
-        }
-        return Name;
+        return Environment != null ? Environment.Localize(Key, "Name", Name) : Name;
     }
 
     public string GetLocalizedDescription()
     {
-        if (Environment != null)
-        {
-            return Environment.Localize(Key, "Description", Description);
-        }
-        return Name;
+        return Environment != null ? Environment.Localize(Key, "Description", Description) : Name;
     }
 
     protected static string GetFile(string basePath, string file)
     {
-        if (!File.Exists(file))
-        {
-            return Path.Combine(basePath, Path.GetFileName(file));
-        }
-        return file;
+        return !File.Exists(file) ? Path.Combine(basePath, Path.GetFileName(file)) : file;
     }
 
     protected virtual void Log(string text, params object[] o)

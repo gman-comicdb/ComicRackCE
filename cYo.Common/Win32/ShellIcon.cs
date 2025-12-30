@@ -72,9 +72,9 @@ public static class ShellIcon
         {
             enumFileInfoFlags |= Unsafe.EnumFileInfoFlags.OPENICON;
         }
-        enumFileInfoFlags = (((iconType & ShellIconType.Large) != 0) ? (enumFileInfoFlags | Unsafe.EnumFileInfoFlags.LARGEICON) : (enumFileInfoFlags | Unsafe.EnumFileInfoFlags.SMALLICON));
-        Unsafe.ShellFileInfo psfi = default(Unsafe.ShellFileInfo);
-        uint dwFileAttributes = (((iconType & ShellIconType.Directory) != 0) ? Unsafe.FILE_ATTRIBUTE_DIRECTORY : Unsafe.FILE_ATTRIBUTE_NORMAL);
+        enumFileInfoFlags = ((iconType & ShellIconType.Large) != 0) ? (enumFileInfoFlags | Unsafe.EnumFileInfoFlags.LARGEICON) : (enumFileInfoFlags | Unsafe.EnumFileInfoFlags.SMALLICON);
+        Unsafe.ShellFileInfo psfi = default;
+        uint dwFileAttributes = ((iconType & ShellIconType.Directory) != 0) ? Unsafe.FILE_ATTRIBUTE_DIRECTORY : Unsafe.FILE_ATTRIBUTE_NORMAL;
         Unsafe.SHGetFileInfo(path, dwFileAttributes, ref psfi, (uint)Marshal.SizeOf((object)psfi), (uint)enumFileInfoFlags);
         Icon result = Icon.FromHandle(psfi.hIcon).Clone() as Icon;
         Unsafe.DestroyIcon(psfi.hIcon);

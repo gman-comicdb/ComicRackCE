@@ -9,37 +9,18 @@ public class AutoScrollEventArgs : CancelEventArgs
 
     public Point Delta
     {
-        get
-        {
-            return delta;
-        }
-        set
-        {
-            delta = value;
-        }
+        get => delta;
+        set => delta = value;
     }
 
     public int X
     {
-        get
-        {
-            return delta.X;
-        }
-        set
-        {
-            delta.X = value;
-        }
+        get => delta.X;
+        set => delta.X = value;
     }
 
     public int Y
     {
-        get
-        {
-            return delta.Y;
-        }
-        set
-        {
-            delta.Y = value;
-        }
+        get => delta.Y; set => delta.Y = value;
     }
 }

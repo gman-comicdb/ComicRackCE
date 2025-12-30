@@ -6,7 +6,7 @@ namespace cYo.Common.Runtime;
 
 public sealed class VersionNeutralBinder : SerializationBinder
 {
-    private static readonly Regex rxVersion = new Regex(", Version=.*?PublicKeyToken=([a-f0-9]|null)*", RegexOptions.Compiled);
+    private static readonly Regex rxVersion = new(", Version=.*?PublicKeyToken=([a-f0-9]|null)*", RegexOptions.Compiled);
 
     public override Type BindToType(string assemblyName, string typeName)
     {

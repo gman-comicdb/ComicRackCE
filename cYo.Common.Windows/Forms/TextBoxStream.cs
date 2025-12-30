@@ -17,24 +17,12 @@ public class TextBoxStream : Stream
 
     public override bool CanWrite => true;
 
-    public override long Length
-    {
-        get
-        {
-            throw new NotSupportedException();
-        }
-    }
+    public override long Length => throw new NotSupportedException();
 
     public override long Position
     {
-        get
-        {
-            throw new NotSupportedException();
-        }
-        set
-        {
-            throw new NotSupportedException();
-        }
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
     }
 
     public TextBoxStream(TextBoxBase textBox)

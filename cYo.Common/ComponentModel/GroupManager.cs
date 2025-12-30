@@ -8,16 +8,13 @@ namespace cYo.Common.ComponentModel;
 
 public class GroupManager<T, G> where G : IGroupContainer<T>, new()
 {
-    private readonly Dictionary<object, G> groups = new Dictionary<object, G>();
+    private readonly Dictionary<object, G> groups = new();
 
     private IGrouper<T> grouper;
 
     public IGrouper<T> Grouper
     {
-        get
-        {
-            return grouper;
-        }
+        get => grouper;
         set
         {
             if (grouper != value)
@@ -47,7 +44,7 @@ public class GroupManager<T, G> where G : IGroupContainer<T>, new()
         {
             if (!groups.ContainsKey(gi.Key))
             {
-                G val = new G();
+                G val = new();
                 val.Info = gi;
                 G value = val;
                 groups[gi.Key] = value;
@@ -73,8 +70,7 @@ public class GroupManager<T, G> where G : IGroupContainer<T>, new()
 
     public void Add(T item)
     {
-        IGroupable groupable = item as IGroupable;
-        if (groupable != null)
+        if (item is IGroupable groupable)
         {
             if (groupable.IsMultiGroup)
             {

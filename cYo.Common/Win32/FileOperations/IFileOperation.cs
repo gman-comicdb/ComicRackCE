@@ -1,12 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-
-using Microsoft.VisualBasic.FileIO;
 
 namespace cYo.Common.Win32.FileOperations;
 
@@ -17,7 +14,7 @@ internal class IFileOperation : FileOperation
     private readonly FileOperationProgressSink _callbackSink;
     private readonly uint _sinkCookie;
 
-    private static readonly Guid CLSID_FileOperation = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
+    private static readonly Guid CLSID_FileOperation = new("3ad05575-8857-4850-9277-11b85bdb8e09");
     private static readonly Type _fileOperationType = Type.GetTypeFromCLSID(CLSID_FileOperation);
     private static Guid _shellItemGuid = typeof(Native.IShellItem).GUID;
 
@@ -257,7 +254,7 @@ internal class IFileOperation : FileOperation
             _obj = obj;
         }
 
-        public T Item { get { return _obj; } }
+        public T Item => _obj;
 
         public void Dispose()
         {
@@ -383,7 +380,7 @@ internal class IFileOperation : FileOperation
             string action, Native.IShellItem item, uint hresult)
         {
             TraceAction(action,
-                item != null ? item.GetDisplayName(Native.SIGDN.SIGDN_NORMALDISPLAY) : null,
+                item?.GetDisplayName(Native.SIGDN.SIGDN_NORMALDISPLAY),
                 hresult);
         }
     }

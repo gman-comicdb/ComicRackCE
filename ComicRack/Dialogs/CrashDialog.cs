@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -17,14 +15,8 @@ public partial class CrashDialog : FormEx
 
     public BarkType CrashType
     {
-        get
-        {
-            return crashType;
-        }
-        set
-        {
-            crashType = value;
-        }
+        get => crashType;
+        set => crashType = value;
     }
 
     public CrashDialog()
@@ -56,7 +48,7 @@ public partial class CrashDialog : FormEx
 
     public static void Show(string report, BarkType crashType, bool enableSend)
     {
-        using (CrashDialog crashDialog = new CrashDialog())
+        using (CrashDialog crashDialog = new())
         {
             crashDialog.tbLog.Text = report;
             crashDialog.CrashType = crashType;
@@ -100,7 +92,7 @@ public partial class CrashDialog : FormEx
         if (e.Exception != null)
         {
             bool enableSend = !e.Exception.ToString().Contains("Microsoft.Scripting") && !e.Exception.ToString().Contains("Python");
-            using (StringWriter stringWriter = new StringWriter())
+            using (StringWriter stringWriter = new())
             {
                 Diagnostic.WriteProgramInfo(stringWriter);
                 stringWriter.WriteLine(e.Bark.ToString().ToUpper());

@@ -10,17 +10,9 @@ namespace cYo.Projects.ComicRack.Engine;
 [AttributeUsage(AttributeTargets.Class)]
 public class ComicBookMatcherHintAttribute : Attribute
 {
-    public ISet<string> Properties
-    {
-        get;
-        private set;
-    }
+    public ISet<string> Properties { get; private set; }
 
-    public bool DisableOptimizedUpdate
-    {
-        get;
-        set;
-    }
+    public bool DisableOptimizedUpdate { get; set; }
 
     private ComicBookMatcherHintAttribute(IEnumerable<string> names)
     {

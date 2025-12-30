@@ -257,81 +257,35 @@ public class Popup : ToolStripDropDown
 
     public Control Content => content;
 
-    public PopupAnimations ShowingAnimation
-    {
-        get;
-        set;
-    }
+    public PopupAnimations ShowingAnimation { get; set; }
 
-    public PopupAnimations HidingAnimation
-    {
-        get;
-        set;
-    }
+    public PopupAnimations HidingAnimation { get; set; }
 
-    public int AnimationDuration
-    {
-        get;
-        set;
-    }
+    public int AnimationDuration { get; set; }
 
     public bool FocusOnOpen
     {
-        get
-        {
-            return focusOnOpen;
-        }
-        set
-        {
-            focusOnOpen = value;
-        }
+        get => focusOnOpen;
+        set => focusOnOpen = value;
     }
 
     public bool AcceptAlt
     {
-        get
-        {
-            return acceptAlt;
-        }
-        set
-        {
-            acceptAlt = value;
-        }
+        get => acceptAlt;
+        set => acceptAlt = value;
     }
 
     public bool Resizable
     {
-        get
-        {
-            if (resizable)
-            {
-                return _resizable;
-            }
-            return false;
-        }
-        set
-        {
-            resizable = value;
-        }
+        get => resizable ? _resizable : false;
+        set => resizable = value;
     }
 
-    public new Size MinimumSize
-    {
-        get;
-        set;
-    }
+    public new Size MinimumSize { get; set; }
 
-    public new Size MaximumSize
-    {
-        get;
-        set;
-    }
+    public new Size MaximumSize { get; set; }
 
-    public bool AutoDispose
-    {
-        get;
-        set;
-    }
+    public bool AutoDispose { get; set; }
 
     protected override CreateParams CreateParams
     {
@@ -363,7 +317,7 @@ public class Popup : ToolStripDropDown
         AutoSize = false;
         DoubleBuffered = true;
         base.ResizeRedraw = true;
-        base.Padding = (base.Margin = (host.Padding = (host.Margin = Padding.Empty)));
+        base.Padding = base.Margin = host.Padding = host.Margin = Padding.Empty;
         MinimumSize = content.MinimumSize;
         content.MinimumSize = content.Size;
         MaximumSize = content.MaximumSize;
@@ -404,11 +358,11 @@ public class Popup : ToolStripDropDown
         {
             return;
         }
-        NativeMethods.AnimationFlags animationFlags = ((!base.Visible) ? NativeMethods.AnimationFlags.Hide : NativeMethods.AnimationFlags.Roll);
-        PopupAnimations popupAnimations = (base.Visible ? ShowingAnimation : HidingAnimation);
+        NativeMethods.AnimationFlags animationFlags = (!base.Visible) ? NativeMethods.AnimationFlags.Hide : NativeMethods.AnimationFlags.Roll;
+        PopupAnimations popupAnimations = base.Visible ? ShowingAnimation : HidingAnimation;
         if (popupAnimations == PopupAnimations.SystemDefault)
         {
-            popupAnimations = (SystemInformation.IsMenuAnimationEnabled ? ((!SystemInformation.IsMenuFadeEnabled) ? (PopupAnimations.Slide | (base.Visible ? PopupAnimations.TopToBottom : PopupAnimations.BottomToTop)) : PopupAnimations.Blend) : PopupAnimations.None);
+            popupAnimations = SystemInformation.IsMenuAnimationEnabled ? ((!SystemInformation.IsMenuFadeEnabled) ? (PopupAnimations.Slide | (base.Visible ? PopupAnimations.TopToBottom : PopupAnimations.BottomToTop)) : PopupAnimations.Blend) : PopupAnimations.None;
         }
         if ((popupAnimations & (PopupAnimations.Center | PopupAnimations.Slide | PopupAnimations.Blend | PopupAnimations.Roll)) == 0)
         {
@@ -500,20 +454,14 @@ public class Popup : ToolStripDropDown
         {
             ((INotifyClose)content).PopupClosed();
         }
-        if (this.PopupClosed != null)
-        {
-            this.PopupClosed(this, EventArgs.Empty);
-        }
+        PopupClosed?.Invoke(this, EventArgs.Empty);
         this.BeginInvoke(Dispose);
     }
 
     protected void UpdateRegion()
     {
-        if (base.Region != null)
-        {
-            base.Region.Dispose();
-            base.Region = null;
-        }
+        base.Region?.Dispose();
+        base.Region = null;
         if (content.Region != null)
         {
             base.Region = content.Region.Clone();
@@ -524,8 +472,7 @@ public class Popup : ToolStripDropDown
     {
         if (control != null)
         {
-            Popup popup = control as Popup;
-            if (popup != null)
+            if (control is Popup popup)
             {
                 ownerPopup = popup;
                 ownerPopup.childPopup = this;
@@ -555,7 +502,7 @@ public class Popup : ToolStripDropDown
             throw new ArgumentNullException("control");
         }
         SetOwnerItem(control);
-        resizableTop = (resizableLeft = false);
+        resizableTop = resizableLeft = false;
         Point p = control.PointToScreen(new Point(area.Left, area.Top + area.Height));
         Rectangle workingArea = Screen.FromControl(control).WorkingArea;
         if (p.X + base.Size.Width > workingArea.Left + workingArea.Width)
@@ -594,19 +541,11 @@ public class Popup : ToolStripDropDown
         {
             childPopup.Hide();
         }
-        if (!Resizable)
-        {
-            return false;
-        }
-        if (m.Msg == NativeMethods.WM_NCHITTEST)
-        {
-            return OnNcHitTest(ref m, contentControl);
-        }
-        if (m.Msg == NativeMethods.WM_GETMINMAXINFO)
-        {
-            return OnGetMinMaxInfo(ref m);
-        }
-        return false;
+        return !Resizable
+            ? false
+            : m.Msg == NativeMethods.WM_NCHITTEST
+            ? OnNcHitTest(ref m, contentControl)
+            : m.Msg == NativeMethods.WM_GETMINMAXINFO ? OnGetMinMaxInfo(ref m) : false;
     }
 
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -624,23 +563,23 @@ public class Popup : ToolStripDropDown
         int x = NativeMethods.LOWORD(m.LParam);
         int y = NativeMethods.HIWORD(m.LParam);
         Point pt = PointToClient(new Point(x, y));
-        GripBounds gripBounds = new GripBounds(contentControl ? content.ClientRectangle : base.ClientRectangle);
-        IntPtr intPtr = new IntPtr(NativeMethods.HTTRANSPARENT);
+        GripBounds gripBounds = new(contentControl ? content.ClientRectangle : base.ClientRectangle);
+        IntPtr intPtr = new(NativeMethods.HTTRANSPARENT);
         if (resizableTop)
         {
             if (resizableLeft && gripBounds.TopLeft.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOPLEFT));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOPLEFT);
                 return true;
             }
             if (!resizableLeft && gripBounds.TopRight.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOPRIGHT));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOPRIGHT);
                 return true;
             }
             if (gripBounds.Top.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOP));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTTOP);
                 return true;
             }
         }
@@ -648,28 +587,28 @@ public class Popup : ToolStripDropDown
         {
             if (resizableLeft && gripBounds.BottomLeft.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOMLEFT));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOMLEFT);
                 return true;
             }
             if (!resizableLeft && gripBounds.BottomRight.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOMRIGHT));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOMRIGHT);
                 return true;
             }
             if (gripBounds.Bottom.Contains(pt))
             {
-                m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOM));
+                m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTBOTTOM);
                 return true;
             }
         }
         if (resizableLeft && gripBounds.Left.Contains(pt))
         {
-            m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTLEFT));
+            m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTLEFT);
             return true;
         }
         if (!resizableLeft && gripBounds.Right.Contains(pt))
         {
-            m.Result = (contentControl ? intPtr : ((IntPtr)NativeMethods.HTRIGHT));
+            m.Result = contentControl ? intPtr : ((IntPtr)NativeMethods.HTRIGHT);
             return true;
         }
         return false;
@@ -682,16 +621,13 @@ public class Popup : ToolStripDropDown
             return;
         }
         Size clientSize = content.ClientSize;
-        using (Bitmap image = new Bitmap(16, 16))
+        using (Bitmap image = new(16, 16))
         {
             using (Graphics graphics = Graphics.FromImage(image))
             {
                 if (Application.RenderWithVisualStyles)
                 {
-                    if (sizeGripRenderer == null)
-                    {
-                        sizeGripRenderer = new VisualStyleRenderer(VisualStyleElement.Status.Gripper.Normal);
-                    }
+                    sizeGripRenderer ??= new VisualStyleRenderer(VisualStyleElement.Status.Gripper.Normal);
                     sizeGripRenderer.DrawBackground(graphics, new Rectangle(0, 0, 16, 16));
                 }
                 else

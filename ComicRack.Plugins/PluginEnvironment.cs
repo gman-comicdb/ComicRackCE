@@ -20,47 +20,19 @@ public class PluginEnvironment : IPluginEnvironment, IPluginConfig, ICloneable
 
     private readonly IPluginConfig config;
 
-    public IWin32Window MainWindow
-    {
-        get;
-        private set;
-    }
+    public IWin32Window MainWindow { get; private set; }
 
-    public IApplication App
-    {
-        get;
-        private set;
-    }
+    public IApplication App { get; private set; }
 
-    public IBrowser Browser
-    {
-        get;
-        private set;
-    }
+    public IBrowser Browser { get; private set; }
 
-    public IOpenBooksManager OpenBooks
-    {
-        get;
-        set;
-    }
+    public IOpenBooksManager OpenBooks { get; set; }
 
-    public IComicDisplay ComicDisplay
-    {
-        get;
-        private set;
-    }
+    public IComicDisplay ComicDisplay { get; private set; }
 
-    public string CommandPath
-    {
-        get;
-        set;
-    }
+    public string CommandPath { get; set; }
 
-    public IThemePlugin Theme
-    {
-        get;
-        set;
-    }
+    public IThemePlugin Theme { get; set; }
 
     public IEnumerable<string> LibraryPaths => config.LibraryPaths;
 
@@ -86,13 +58,10 @@ public class PluginEnvironment : IPluginEnvironment, IPluginConfig, ICloneable
         {
             return text;
         }
-        if (localization == null)
-        {
-            localization = new TRDictionary
+        localization ??= new TRDictionary
             {
                 ResourceFolder = new PackedLocalize(new VirtualFileFolder(CommandPath))
             };
-        }
         TR tR = localization.Load(resourceKey);
         if (tR.IsEmpty)
         {

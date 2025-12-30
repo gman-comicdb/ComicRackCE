@@ -5,27 +5,15 @@ namespace cYo.Common.IO;
 
 public class FileKey
 {
-    private string File
-    {
-        get;
-        set;
-    }
+    private string File { get; set; }
 
-    private long Size
-    {
-        get;
-        set;
-    }
+    private long Size { get; set; }
 
-    private DateTime Modified
-    {
-        get;
-        set;
-    }
+    private DateTime Modified { get; set; }
 
     public FileKey(string file)
     {
-        FileInfo fileInfo = new FileInfo(file);
+        FileInfo fileInfo = new(file);
         File = file;
         Modified = fileInfo.LastWriteTimeUtc;
         Size = fileInfo.Length;
@@ -33,12 +21,7 @@ public class FileKey
 
     public override bool Equals(object obj)
     {
-        FileKey fileKey = obj as FileKey;
-        if (fileKey != null && File == fileKey.File && Size == fileKey.Size)
-        {
-            return Modified == fileKey.Modified;
-        }
-        return false;
+        return obj is FileKey fileKey && File == fileKey.File && Size == fileKey.Size ? Modified == fileKey.Modified : false;
     }
 
     public override int GetHashCode()

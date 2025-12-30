@@ -20,46 +20,26 @@ public class ItemViewColumnInfo
 
     [XmlAttribute]
     [DefaultValue(0)]
-    public int Id
-    {
-        get;
-        set;
-    }
+    public int Id { get; set; }
 
     [XmlAttribute]
     [DefaultValue(0)]
-    public int FormatId
-    {
-        get;
-        set;
-    }
+    public int FormatId { get; set; }
 
     [XmlAttribute]
     [DefaultValue(true)]
     public bool Visible
     {
-        get
-        {
-            return visible;
-        }
-        set
-        {
-            visible = value;
-        }
+        get => visible;
+        set => visible = value;
     }
 
     [XmlAttribute]
     [DefaultValue(80)]
     public int Width
     {
-        get
-        {
-            return width;
-        }
-        set
-        {
-            width = value;
-        }
+        get => width;
+        set => width = value;
     }
 
     public string Name => name;
@@ -69,14 +49,8 @@ public class ItemViewColumnInfo
     [DefaultValue(typeof(DateTime), "0001-01-01T00:00:00")]
     public DateTime LastTimeVisible
     {
-        get
-        {
-            return lastTimeVisible;
-        }
-        set
-        {
-            lastTimeVisible = value;
-        }
+        get => lastTimeVisible;
+        set => lastTimeVisible = value;
     }
 
     public ItemViewColumnInfo()
@@ -96,10 +70,6 @@ public class ItemViewColumnInfo
 
     public override string ToString()
     {
-        if (!string.IsNullOrEmpty(name))
-        {
-            return name;
-        }
-        return string.Empty;
+        return !string.IsNullOrEmpty(name) ? name : string.Empty;
     }
 }

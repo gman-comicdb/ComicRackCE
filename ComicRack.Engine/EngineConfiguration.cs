@@ -40,90 +40,43 @@ public class EngineConfiguration
     private static EngineConfiguration defaultConfig;
 
     [DefaultValue(true)]
-    public bool EnableParallelQueries
-    {
-        get;
-        set;
-    }
+    public bool EnableParallelQueries { get; set; }
 
     public bool IsEnableParallelQueriesDefault => EnableParallelQueries;
 
     [DefaultValue(null)]
-    public string IgnoredArticles
-    {
-        get;
-        set;
-    }
+    public string IgnoredArticles { get; set; }
 
     [DefaultValue(null)]
-    public string OfValues
-    {
-        get;
-        set;
-    }
+    public string OfValues { get; set; }
 
     [DefaultValue(false)]
-    public bool LegacyFilenameParser
-    {
-        get;
-        set;
-    }
+    public bool LegacyFilenameParser { get; set; }
 
     [DefaultValue(1000)]
-    public int PageScrollingDuration
-    {
-        get;
-        set;
-    }
+    public int PageScrollingDuration { get; set; }
 
     [DefaultValue(300)]
-    public int AnimationDuration
-    {
-        get;
-        set;
-    }
+    public int AnimationDuration { get; set; }
 
     [DefaultValue(250)]
-    public int BlendDuration
-    {
-        get;
-        set;
-    }
+    public int BlendDuration { get; set; }
 
     [DefaultValue(1000)]
-    public int SoftwareFilterDelay
-    {
-        get;
-        set;
-    }
+    public int SoftwareFilterDelay { get; set; }
 
     [DefaultValue(typeof(Size), "512, \u00b4512")]
-    public Size ListCoverSize
-    {
-        get;
-        set;
-    }
+    public Size ListCoverSize { get; set; }
 
     [DefaultValue(0.3f)]
-    public float ListCoverAlpha
-    {
-        get;
-        set;
-    }
+    public float ListCoverAlpha { get; set; }
 
     [DefaultValue(0.9f)]
-    public float NavigationPanelWidth
-    {
-        get;
-        set;
-    }
+    public float NavigationPanelWidth { get; set; }
 
     public string TempPath
     {
-        get
-        {
-            return tempPath;
-        }
+        get => tempPath;
         set
         {
             if (Directory.Exists(value))
@@ -135,461 +88,205 @@ public class EngineConfiguration
 
     [TypeConverter(typeof(ArrayConverter<Color>))]
     [DefaultValue(typeof(Color[]), "Orange, Green, Red, Blue")]
-    public Color[] BookmarkColors
-    {
-        get;
-        set;
-    }
+    public Color[] BookmarkColors { get; set; }
 
     [DefaultValue(false)]
-    public bool CacheThumbnailPages
-    {
-        get;
-        set;
-    }
+    public bool CacheThumbnailPages { get; set; }
 
     [DefaultValue(BitmapResampling.FastAndUgly)]
-    public BitmapResampling ThumbnailResampling
-    {
-        get;
-        set;
-    }
+    public BitmapResampling ThumbnailResampling { get; set; }
 
     [DefaultValue(60)]
-    public int ThumbnailQuality
-    {
-        get;
-        set;
-    }
+    public int ThumbnailQuality { get; set; }
 
     [DefaultValue(BitmapResampling.GdiPlusHQ)]
-    public BitmapResampling ExportResampling
-    {
-        get;
-        set;
-    }
+    public BitmapResampling ExportResampling { get; set; }
 
     [DefaultValue(BitmapResampling.GdiPlus)]
-    public BitmapResampling SyncResamping
-    {
-        get;
-        set;
-    }
+    public BitmapResampling SyncResamping { get; set; }
 
     [DefaultValue(BitmapResampling.GdiPlusHQ)]
-    public BitmapResampling SoftwareFilter
-    {
-        get;
-        set;
-    }
+    public BitmapResampling SoftwareFilter { get; set; }
 
     [DefaultValue(ComicBook.DefaultCaptionFormat)]
-    public string ComicCaptionFormat
-    {
-        get;
-        set;
-    }
+    public string ComicCaptionFormat { get; set; }
 
     [DefaultValue(ComicBook.DefaultComicExportFileNameFormat)]
-    public string ComicExportFileNameFormat
-    {
-        get;
-        set;
-    }
+    public string ComicExportFileNameFormat { get; set; }
 
     [DefaultValue(PdfEngine.Pdfium)]
-    public PdfEngine PdfEngineToUse
-    {
-        get;
-        set;
-    }
+    public PdfEngine PdfEngineToUse { get; set; }
 
     [DefaultValue(typeof(Size), "1920, 2540")]
-    public Size PdfiumImageSize
-    {
-        get;
-        set;
-    }
+    public Size PdfiumImageSize { get; set; }
 
     [DefaultValue(null)]
-    public string GhostscriptExecutable
-    {
-        get;
-        set;
-    }
+    public string GhostscriptExecutable { get; set; }
 
     [DefaultValue(null)]
-    public string DjVuLibreInstall
-    {
-        get;
-        set;
-    }
+    public string DjVuLibreInstall { get; set; }
 
     [DefaultValue(typeof(Size), "2000, 2000")]
-    public Size DjVuSizeLimit
-    {
-        get;
-        set;
-    }
+    public Size DjVuSizeLimit { get; set; }
 
     [DefaultValue(false)]
-    public bool MirroredPageTurnAnimation
-    {
-        get;
-        set;
-    }
+    public bool MirroredPageTurnAnimation { get; set; }
 
     [DefaultValue(0.07f)]
     public float PageBowWidth
     {
-        get
-        {
-            return pageBowWidth;
-        }
-        set
-        {
-            pageBowWidth = value.Clamp(0.01f, 0.5f);
-        }
+        get => pageBowWidth;
+        set => pageBowWidth = value.Clamp(0.01f, 0.5f);
     }
 
     [DefaultValue(92)]
     public int PageBowFromAlpha
     {
-        get
-        {
-            return pageBowFromAlpha;
-        }
-        set
-        {
-            pageBowFromAlpha = value.Clamp(0, 255);
-        }
+        get => pageBowFromAlpha;
+        set => pageBowFromAlpha = value.Clamp(0, 255);
     }
 
     [DefaultValue(0)]
     public int PageBowToAlpha
     {
-        get
-        {
-            return pageBowToAlpha;
-        }
-        set
-        {
-            pageBowToAlpha = value.Clamp(0, 255);
-        }
+        get => pageBowToAlpha;
+        set => pageBowToAlpha = value.Clamp(0, 255);
     }
 
     [DefaultValue(typeof(Color), "Black")]
-    public Color PageBowColor
-    {
-        get;
-        set;
-    }
+    public Color PageBowColor { get; set; }
 
     [DefaultValue(true)]
-    public bool PageBowCenter
-    {
-        get;
-        set;
-    }
+    public bool PageBowCenter { get; set; }
 
     [DefaultValue(true)]
-    public bool PageBowBorder
-    {
-        get;
-        set;
-    }
+    public bool PageBowBorder { get; set; }
 
     [DefaultValue(0.05f)]
-    public float SoftwareFilterMinScale
-    {
-        get;
-        set;
-    }
+    public float SoftwareFilterMinScale { get; set; }
 
     [DefaultValue(4)]
     public int MaximumQueueThreads
     {
-        get
-        {
-            return maximumQueueThreads;
-        }
-        set
-        {
-            maximumQueueThreads = value.Clamp(1, 32);
-        }
+        get => maximumQueueThreads;
+        set => maximumQueueThreads = value.Clamp(1, 32);
     }
 
     [DefaultValue(1)]
-    public float PageShadowWidthPercentage
-    {
-        get;
-        set;
-    }
+    public float PageShadowWidthPercentage { get; set; }
 
     [DefaultValue(0.6f)]
-    public float PageShadowOpacity
-    {
-        get;
-        set;
-    }
+    public float PageShadowOpacity { get; set; }
 
     [DefaultValue(14)]
-    public int IsRecentInDays
-    {
-        get;
-        set;
-    }
+    public int IsRecentInDays { get; set; }
 
     [DefaultValue(95)]
-    public int IsReadCompletionPercentage
-    {
-        get;
-        set;
-    }
+    public int IsReadCompletionPercentage { get; set; }
 
     [DefaultValue(10)]
-    public int IsNotReadCompletionPercentage
-    {
-        get;
-        set;
-    }
+    public int IsNotReadCompletionPercentage { get; set; }
 
     [DefaultValue(300)]
-    public int OperationTimeout
-    {
-        get;
-        set;
-    }
+    public int OperationTimeout { get; set; }
 
     [DefaultValue(100)]
-    public int ServerProviderCacheSize
-    {
-        get;
-        set;
-    }
+    public int ServerProviderCacheSize { get; set; }
 
     [DefaultValue(80)]
-    public int GestureAreaSize
-    {
-        get;
-        set;
-    }
+    public int GestureAreaSize { get; set; }
 
     [DefaultValue(true)]
-    public bool ShowGestureHint
-    {
-        get;
-        set;
-    }
+    public bool ShowGestureHint { get; set; }
 
     [DefaultValue(false)]
-    public bool HtmlInfoContextMenu
-    {
-        get;
-        set;
-    }
+    public bool HtmlInfoContextMenu { get; set; }
 
     [DefaultValue(false)]
-    public bool EnableHtmlScriptErrors
-    {
-        get;
-        set;
-    }
+    public bool EnableHtmlScriptErrors { get; set; }
 
     [DefaultValue(false)]
-    public bool HideVisiblePartOverlayClose
-    {
-        get;
-        set;
-    }
+    public bool HideVisiblePartOverlayClose { get; set; }
 
     [DefaultValue(true)]
-    public bool AeroFullScreenWorkaround
-    {
-        get;
-        set;
-    }
+    public bool AeroFullScreenWorkaround { get; set; }
 
     [DefaultValue(typeof(Color), "Empty")]
-    public Color ThumbnailPageCurlColor
-    {
-        get;
-        set;
-    }
+    public Color ThumbnailPageCurlColor { get; set; }
 
     [DefaultValue(true)]
-    public bool ThumbnailPageBow
-    {
-        get;
-        set;
-    }
+    public bool ThumbnailPageBow { get; set; }
 
     [DefaultValue(typeof(Color), "White")]
-    public Color BlankPageColor
-    {
-        get;
-        set;
-    }
+    public Color BlankPageColor { get; set; }
 
     [DefaultValue(false)]
-    public bool SearchBrowserCaseSensitive
-    {
-        get;
-        set;
-    }
+    public bool SearchBrowserCaseSensitive { get; set; }
 
     [DefaultValue(true)]
-    public bool RatingStarsBelowThumbnails
-    {
-        get;
-        set;
-    }
+    public bool RatingStarsBelowThumbnails { get; set; }
 
-    public int SyncOptimizeQuality
-    {
-        get;
-        set;
-    }
+    public int SyncOptimizeQuality { get; set; }
 
-    public int SyncOptimizeMaxHeight
-    {
-        get;
-        set;
-    }
+    public int SyncOptimizeMaxHeight { get; set; }
 
-    public bool SyncOptimizeSharpen
-    {
-        get;
-        set;
-    }
+    public bool SyncOptimizeSharpen { get; set; }
 
-    public bool SyncWebP
-    {
-        get;
-        set;
-    }
+    public bool SyncWebP { get; set; }
 
     [DefaultValue(true)]
-    public bool SyncOptimizeWebP
-    {
-        get;
-        set;
-    }
+    public bool SyncOptimizeWebP { get; set; }
 
     [DefaultValue(true)]
-    public bool SyncCreateThumbnails
-    {
-        get;
-        set;
-    }
+    public bool SyncCreateThumbnails { get; set; }
 
     [DefaultValue(null)]
-    public string ExtraWifiDeviceAddresses
-    {
-        get;
-        set;
-    }
+    public string ExtraWifiDeviceAddresses { get; set; }
 
     [DefaultValue(50)]
-    public int SyncQueueLength
-    {
-        get;
-        set;
-    }
+    public int SyncQueueLength { get; set; }
 
     [DefaultValue(1)]
-    public int SyncKeepReadComics
-    {
-        get;
-        set;
-    }
+    public int SyncKeepReadComics { get; set; }
 
     [DefaultValue(1000)]
-    public int PageCachingDelay
-    {
-        get;
-        set;
-    }
+    public int PageCachingDelay { get; set; }
 
     [DefaultValue(CbEngines.SevenZip)]
-    public CbEngines CbzUses
-    {
-        get;
-        set;
-    }
+    public CbEngines CbzUses { get; set; }
 
     [DefaultValue(CbEngines.SevenZip)]
-    public CbEngines CbrUses
-    {
-        get;
-        set;
-    }
+    public CbEngines CbrUses { get; set; }
 
     [DefaultValue(CbEngines.SevenZip)]
-    public CbEngines Cb7Uses
-    {
-        get;
-        set;
-    }
+    public CbEngines Cb7Uses { get; set; }
 
     [DefaultValue(CbEngines.SevenZip)]
-    public CbEngines CbtUses
-    {
-        get;
-        set;
-    }
+    public CbEngines CbtUses { get; set; }
 
     [DefaultValue(128)]
-    public int FreeDeviceMemoryMB
-    {
-        get;
-        set;
-    }
+    public int FreeDeviceMemoryMB { get; set; }
 
     [DefaultValue(4)]
-    public int ParallelConversions
-    {
-        get;
-        set;
-    }
+    public int ParallelConversions { get; set; }
 
     [DefaultValue(5000)]
-    public int WifiSyncReceiveTimeout
-    {
-        get;
-        set;
-    }
+    public int WifiSyncReceiveTimeout { get; set; }
 
     [DefaultValue(5000)]
-    public int WifiSyncSendTimeout
-    {
-        get;
-        set;
-    }
+    public int WifiSyncSendTimeout { get; set; }
 
     [DefaultValue(2500)]
-    public int WifiSyncConnectionTimeout
-    {
-        get;
-        set;
-    }
+    public int WifiSyncConnectionTimeout { get; set; }
 
     [DefaultValue(1)]
-    public int WifiSyncConnectionRetries
-    {
-        get;
-        set;
-    }
+    public int WifiSyncConnectionRetries { get; set; }
 
     [CommandLineSwitch(ShortName = "ntfs")]
     [DefaultValue(false)]
-    public bool DisableNTFS
-    {
-        get;
-        set;
-    }
+    public bool DisableNTFS { get; set; }
 
-    public static EngineConfiguration Default => defaultConfig ?? (defaultConfig = IniFile.Default.Register<EngineConfiguration>());
+    public static EngineConfiguration Default => defaultConfig ??= IniFile.Default.Register<EngineConfiguration>();
 
     public EngineConfiguration()
     {
@@ -600,13 +297,13 @@ public class EngineConfiguration
         ListCoverSize = new Size(512, 512);
         ListCoverAlpha = 0.3f;
         NavigationPanelWidth = 0.9f;
-        BookmarkColors = new Color[4]
-        {
+        BookmarkColors =
+        [
             Color.Orange,
             Color.Green,
             Color.Red,
             Color.Blue
-        };
+        ];
         ThumbnailResampling = BitmapResampling.FastAndUgly;
         ThumbnailQuality = 60;
         ThumbnailPageBow = true;
@@ -641,7 +338,7 @@ public class EngineConfiguration
         SyncOptimizeWebP = true;
         SyncKeepReadComics = 1;
         PageCachingDelay = 1000;
-        CbzUses = (CbrUses = (Cb7Uses = (CbtUses = CbEngines.SevenZip)));
+        CbzUses = CbrUses = Cb7Uses = CbtUses = CbEngines.SevenZip;
         FreeDeviceMemoryMB = 128;
         ParallelConversions = 32;
         WifiSyncReceiveTimeout = 5000;

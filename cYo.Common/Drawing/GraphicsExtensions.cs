@@ -54,7 +54,7 @@ public static class GraphicsExtensions
     public static IDisposable HighQuality(this Graphics graphics, bool enabled, float scale = 0f, bool forceHQ = false)
     {
         InterpolationMode oim = graphics.InterpolationMode;
-        InterpolationMode interpolationMode = ((forceHQ || (enabled && scale < 0.5f)) ? InterpolationMode.HighQualityBicubic : InterpolationMode.Default);
+        InterpolationMode interpolationMode = (forceHQ || (enabled && scale < 0.5f)) ? InterpolationMode.HighQualityBicubic : InterpolationMode.Default;
         if (oim == interpolationMode)
         {
             return null;
@@ -96,10 +96,10 @@ public static class GraphicsExtensions
 
     public static Point TransformPoint(this Graphics graphics, CoordinateSpace destSpace, CoordinateSpace srcSpace, Point pt)
     {
-        Point[] array = new Point[1]
-        {
+        Point[] array =
+        [
             pt
-        };
+        ];
         graphics.TransformPoints(destSpace, srcSpace, array);
         return array[0];
     }
@@ -111,7 +111,7 @@ public static class GraphicsExtensions
         return array.ToRectangle();
     }
 
-    public static void DrawImage(this Graphics graphics, Image image, Rectangle bounds, Rectangle src = default(Rectangle), float opacity = 1f)
+    public static void DrawImage(this Graphics graphics, Image image, Rectangle bounds, Rectangle src = default, float opacity = 1f)
     {
         if (opacity <= 0.05f)
         {
@@ -126,9 +126,9 @@ public static class GraphicsExtensions
             graphics.DrawImage(image, bounds, src, GraphicsUnit.Pixel);
             return;
         }
-        using (ImageAttributes imageAttributes = new ImageAttributes())
+        using (ImageAttributes imageAttributes = new())
         {
-            ColorMatrix colorMatrix = new ColorMatrix
+            ColorMatrix colorMatrix = new()
             {
                 Matrix33 = Math.Max(0.05f, opacity)
             };
@@ -166,7 +166,7 @@ public static class GraphicsExtensions
                 gr.DrawImage(bitmap, destination, x, y, width, height, GraphicsUnit.Pixel);
                 return;
             }
-            using (ImageAttributes imageAttributes = new ImageAttributes())
+            using (ImageAttributes imageAttributes = new())
             {
                 ColorMatrix colorMatrix = ImageProcessing.CreateColorMatrix(bp, wp, adjustment.Contrast, adjustment.Brightness, adjustment.Saturation, adjustment.WhitePointColor);
                 colorMatrix.Matrix33 = Math.Max(0.05f, opacity);
@@ -204,8 +204,8 @@ public static class GraphicsExtensions
         {
             throw new ArgumentNullException();
         }
-        Rectangle rect = new Rectangle(rectangle.Right, rectangle.Top + depth, depth, rectangle.Height);
-        Rectangle rect2 = new Rectangle(rectangle.Left + depth, rectangle.Bottom, rectangle.Width - depth, depth);
+        Rectangle rect = new(rectangle.Right, rectangle.Top + depth, depth, rectangle.Height);
+        Rectangle rect2 = new(rectangle.Left + depth, rectangle.Bottom, rectangle.Width - depth, depth);
         using (Brush brush = new SolidBrush(Color.FromArgb((int)(255f * opacity), color)))
         {
             graphics.FillRectangle(brush, rect);
@@ -219,7 +219,7 @@ public static class GraphicsExtensions
         {
             if ((parts & BlurShadowParts.Center) != 0)
             {
-                using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255f * opacity), color)))
+                using (SolidBrush brush = new(Color.FromArgb((int)(255f * opacity), color)))
                 {
                     graphics.FillRectangle(brush, rectangle.Left + depth, rectangle.Top + depth, rectangle.Width - 2 * depth, rectangle.Height - 2 * depth);
                 }
@@ -270,17 +270,17 @@ public static class GraphicsExtensions
             color2 = color3;
         }
         depth *= 2;
-        using (GraphicsPath graphicsPath = new GraphicsPath())
+        using (GraphicsPath graphicsPath = new())
         {
             graphicsPath.AddEllipse(0, 0, depth, depth);
-            using (PathGradientBrush pathGradientBrush = new PathGradientBrush(graphicsPath))
+            using (PathGradientBrush pathGradientBrush = new(graphicsPath))
             {
                 pathGradientBrush.CenterColor = color;
-                pathGradientBrush.SurroundColors = new Color[1]
-                {
+                pathGradientBrush.SurroundColors =
+                [
                     color2
-                };
-                Bitmap bitmap = new Bitmap(depth, depth);
+                ];
+                Bitmap bitmap = new(depth, depth);
                 using (Graphics graphics = Graphics.FromImage(bitmap))
                 {
                     graphics.Clear(color2);

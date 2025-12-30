@@ -86,11 +86,7 @@ public static class DjVuImage
         try
         {
             ExecuteProcess.Result result = ExecuteProcess.Execute(unpackExe, $"-format=tiff -size={SizeLimit.Width}x{SizeLimit.Height} -page={index + 1} \"{source}\" \"{tempFileName}\"", ExecuteProcess.Options.None);
-            if (result.ExitCode != 0)
-            {
-                throw new FileLoadException();
-            }
-            return BitmapExtensions.BitmapFromFile(tempFileName);
+            return result.ExitCode != 0 ? throw new FileLoadException() : BitmapExtensions.BitmapFromFile(tempFileName);
         }
         finally
         {

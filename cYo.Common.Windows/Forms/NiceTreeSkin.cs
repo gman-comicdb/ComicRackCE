@@ -46,12 +46,12 @@ public class NiceTreeSkin : TreeViewSkinner
     protected override void DrawNodeContent(TreeViewSkinnerDrawInfo di)
     {
         ImageList imageList = base.TreeView.ImageList;
-        Point point = new Point(di.LabelBounds.X, di.ItemBounds.Y);
+        Point point = new(di.LabelBounds.X, di.ItemBounds.Y);
         if (imageList != null)
         {
-            string text = (di.HasState(TreeNodeStates.Selected) ? di.Node.SelectedImageKey : di.Node.ImageKey);
-            int index = (di.HasState(TreeNodeStates.Selected) ? di.Node.SelectedImageIndex : di.Node.ImageIndex);
-            using (Image image = (string.IsNullOrEmpty(text) ? imageList.Images[index] : imageList.Images[text]))
+            string text = di.HasState(TreeNodeStates.Selected) ? di.Node.SelectedImageKey : di.Node.ImageKey;
+            int index = di.HasState(TreeNodeStates.Selected) ? di.Node.SelectedImageIndex : di.Node.ImageIndex;
+            using (Image image = string.IsNullOrEmpty(text) ? imageList.Images[index] : imageList.Images[text])
             {
                 if (image != null)
                 {
@@ -65,7 +65,7 @@ public class NiceTreeSkin : TreeViewSkinner
             int height = di.LabelBounds.Height;
             int num = height - FormUtility.ScaleDpiY(6);
             point.X -= num + 6;
-            Rectangle rectangle = new Rectangle(point.X, point.Y + (height - num) / 2, num, num);
+            Rectangle rectangle = new(point.X, point.Y + (height - num) / 2, num, num);
             ButtonState buttonState = ButtonState.Flat;
             if (di.HasState(TreeNodeStates.Checked))
             {
@@ -79,7 +79,7 @@ public class NiceTreeSkin : TreeViewSkinner
         }
         if (di.Node.Nodes.Count != 0 && base.TreeView.ShowPlusMinus)
         {
-            Image image2 = (di.Node.IsExpanded ? down : right);
+            Image image2 = di.Node.IsExpanded ? down : right;
             Size size = image2.Size.ScaleDpi();
             point.X -= size.Width - 1;
             di.Graphics.DrawImage(image2, point.X, point.Y + (di.ItemBounds.Height - size.Height) / 2, size.Width, size.Height);
@@ -93,7 +93,7 @@ public class NiceTreeSkin : TreeViewSkinner
 
     protected override void DrawNodeLabel(TreeViewSkinnerDrawInfo di)
     {
-        Color foreColor = (di.HasState(TreeNodeStates.Grayed) ? SystemColors.GrayText : SystemColors.WindowText);
+        Color foreColor = di.HasState(TreeNodeStates.Grayed) ? SystemColors.GrayText : SystemColors.WindowText;
         di.Graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
         TextRenderer.DrawText(di.Graphics, di.Node.Text, di.HasState(TreeNodeStates.Selected) ? FC.Get(di.Font, FontStyle.Bold) : di.Font, di.LabelBounds, foreColor, TextFormatFlags.NoClipping | TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine | TextFormatFlags.VerticalCenter | TextFormatFlags.PreserveGraphicsTranslateTransform);
         di.LabelBounds = new Rectangle(width: TextRenderer.MeasureText(di.Graphics, di.Node.Text, di.HasState(TreeNodeStates.Selected) ? FC.Get(di.Font, FontStyle.Bold) : di.Font, di.LabelBounds.Size, TextFormatFlags.NoClipping | TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine | TextFormatFlags.VerticalCenter | TextFormatFlags.PreserveGraphicsTranslateTransform).Width, x: di.LabelBounds.X, y: di.LabelBounds.Y, height: di.LabelBounds.Height);

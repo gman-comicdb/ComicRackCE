@@ -12,26 +12,13 @@ public static class XHtmlRenderer
 {
     private class BodyKey
     {
-        public Font Font
-        {
-            get;
-            set;
-        }
+        public Font Font { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public override bool Equals(object obj)
         {
-            BodyKey bodyKey = obj as BodyKey;
-            if (bodyKey != null && bodyKey.Font == Font)
-            {
-                return bodyKey.Text == Text;
-            }
-            return false;
+            return obj is BodyKey bodyKey && bodyKey.Font == Font ? bodyKey.Text == Text : false;
         }
 
         public override int GetHashCode()
@@ -40,7 +27,7 @@ public static class XHtmlRenderer
         }
     }
 
-    private static Cache<BodyKey, BodyBlock> bodyCache = new Cache<BodyKey, BodyBlock>(100);
+    private static Cache<BodyKey, BodyBlock> bodyCache = new(100);
 
     public static void DrawString(Graphics graphics, string s, Font font, Color foreColor, int x, int y)
     {
@@ -78,20 +65,15 @@ public static class XHtmlRenderer
             }
             item.Align = align.ToAlignment().ToHorizontalAlignment();
             VerticalAlignment verticalAlignment = align.ToLineAlignment().ToVerticalAlignment();
-            if (verticalAlignment != 0 || verticalAlignment != VerticalAlignment.Top)
+            if (verticalAlignment is not 0 or not VerticalAlignment.Top)
             {
                 item.Measure(graphics, layoutRectangle.Width);
-                switch (verticalAlignment)
+                layoutRectangle.Y += verticalAlignment switch
                 {
-                    case VerticalAlignment.Middle:
-                        layoutRectangle.Y += (layoutRectangle.Height - item.ActualSize.Height) / 2;
-                        break;
-                    case VerticalAlignment.Bottom:
-                        layoutRectangle.Y += layoutRectangle.Bottom - item.ActualSize.Height;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                    VerticalAlignment.Middle => (layoutRectangle.Height - item.ActualSize.Height) / 2,
+                    VerticalAlignment.Bottom => layoutRectangle.Bottom - item.ActualSize.Height,
+                    _ => throw new ArgumentOutOfRangeException(),
+                };
             }
             item.Bounds = new Rectangle(Point.Empty, layoutRectangle.Size);
             item.Draw(graphics, layoutRectangle.Location);
@@ -125,7 +107,7 @@ public static class XHtmlRenderer
             Font = font
         }, delegate (BodyKey bk)
         {
-            BodyBlock bodyBlock = new BodyBlock();
+            BodyBlock bodyBlock = new();
             bodyBlock.Inlines.AddRange(XHtmlParser.Parse(bk.Text).Inlines);
             bodyBlock.Font = font;
             return bodyBlock;
@@ -134,31 +116,23 @@ public static class XHtmlRenderer
 
     public static HorizontalAlignment ToHorizontalAlignment(this StringAlignment align)
     {
-        switch (align)
+        return align switch
         {
-            case StringAlignment.Near:
-                return HorizontalAlignment.Left;
-            case StringAlignment.Center:
-                return HorizontalAlignment.Center;
-            case StringAlignment.Far:
-                return HorizontalAlignment.Right;
-            default:
-                return HorizontalAlignment.None;
-        }
+            StringAlignment.Near => HorizontalAlignment.Left,
+            StringAlignment.Center => HorizontalAlignment.Center,
+            StringAlignment.Far => HorizontalAlignment.Right,
+            _ => HorizontalAlignment.None,
+        };
     }
 
     public static VerticalAlignment ToVerticalAlignment(this StringAlignment align)
     {
-        switch (align)
+        return align switch
         {
-            case StringAlignment.Near:
-                return VerticalAlignment.Top;
-            case StringAlignment.Center:
-                return VerticalAlignment.Middle;
-            case StringAlignment.Far:
-                return VerticalAlignment.Bottom;
-            default:
-                return VerticalAlignment.None;
-        }
+            StringAlignment.Near => VerticalAlignment.Top,
+            StringAlignment.Center => VerticalAlignment.Middle,
+            StringAlignment.Far => VerticalAlignment.Bottom,
+            _ => VerticalAlignment.None,
+        };
     }
 }

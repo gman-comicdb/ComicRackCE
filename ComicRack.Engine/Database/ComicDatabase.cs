@@ -28,9 +28,9 @@ public class ComicDatabase : ComicLibrary, IBlackList
     [NonSerialized]
     private ComicBookContainerUndo undo;
 
-    private WatchFolderCollection watchFolders = new WatchFolderCollection();
+    private WatchFolderCollection watchFolders = new();
 
-    private HashSet<string> blackList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> blackList = new(StringComparer.OrdinalIgnoreCase);
 
     public static int BackupCount = 10;
 
@@ -41,27 +41,15 @@ public class ComicDatabase : ComicLibrary, IBlackList
     [XmlIgnore]
     public ComicStorage ComicStorage
     {
-        get
-        {
-            return comicStorage;
-        }
-        set
-        {
-            comicStorage = value;
-        }
+        get => comicStorage;
+        set => comicStorage = value;
     }
 
     [XmlIgnore]
     public ComicBookContainerUndo Undo
     {
-        get
-        {
-            return undo;
-        }
-        set
-        {
-            undo = value;
-        }
+        get => undo;
+        set => undo = value;
     }
 
     public WatchFolderCollection WatchFolders => watchFolders;
@@ -96,10 +84,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
             {
                 wf.Dispose();
             });
-            if (ComicStorage != null)
-            {
-                ComicStorage.Dispose();
-            }
+            ComicStorage?.Dispose();
         }
         base.Dispose(disposing);
     }
@@ -139,7 +124,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
     {
         for (int i = 0; i < count; i++)
         {
-            ComicBook comicBook = new ComicBook
+            ComicBook comicBook = new()
             {
                 Number = (i + 1).ToString(),
                 Series = baseName + " Series",
@@ -253,7 +238,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
     {
         try
         {
-            HashSet<string> files = (Directory.Exists(customThumbnailsPath) ? new HashSet<string>(Directory.GetFiles(customThumbnailsPath), StringComparer.OrdinalIgnoreCase) : new HashSet<string>());
+            HashSet<string> files = Directory.Exists(customThumbnailsPath) ? new HashSet<string>(Directory.GetFiles(customThumbnailsPath), StringComparer.OrdinalIgnoreCase) : new HashSet<string>();
             Dictionary<string, IGrouping<string, ComicBook>> bookKeyGroups = base.Books.Where((ComicBook cb) => !string.IsNullOrEmpty(cb.CustomThumbnailKey)).GroupBy((ComicBook cb) => cb.CustomThumbnailKey, StringComparer.OrdinalIgnoreCase).ToDictionary((IGrouping<string, ComicBook> gr) => gr.Key, StringComparer.OrdinalIgnoreCase);
             Dictionary<string, IGrouping<string, StacksConfig.StackConfigItem>> stackKeyGroups = (from sc in (from cli in base.ComicLists.GetItems<ComicListItem>()
                                                                                                               select cli.Display.StackConfig into sc
@@ -302,7 +287,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
                 long len = fileStream.Length;
                 long total = 0L;
                 int percent = 0;
-                ProgressStream progressStream = new ProgressStream(fileStream, baseStreamOwned: false);
+                ProgressStream progressStream = new(fileStream, baseStreamOwned: false);
                 progressStream.DataRead += delegate (object sender, ProgressStreamReadEventArgs e)
                 {
                     total += e.Count;
@@ -329,7 +314,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
 
     public static ComicDatabase CreateNew()
     {
-        ComicDatabase comicDatabase = new ComicDatabase();
+        ComicDatabase comicDatabase = new();
         comicDatabase.InitializeDefaultLists();
         return comicDatabase;
     }
@@ -373,7 +358,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
 
     public static ComicDatabase Attach(ComicDatabase copy, bool withBooks)
     {
-        ComicDatabase comicDatabase = new ComicDatabase(enableWatchfolders: false)
+        ComicDatabase comicDatabase = new(enableWatchfolders: false)
         {
             Id = copy.Id,
             Name = copy.Name
@@ -406,7 +391,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
 
     public static void RestoreBackup(string backupFile, string databaseFile, string customThumbnailsFolder)
     {
-        using (ZipFile zipFile = new ZipFile(backupFile))
+        using (ZipFile zipFile = new(backupFile))
         {
             try
             {

@@ -14,17 +14,9 @@ public class ComicBookSeriesStatistics
 {
     public class Key : IEquatable<Key>
     {
-        public string Series
-        {
-            get;
-            private set;
-        }
+        public string Series { get; private set; }
 
-        public int Volume
-        {
-            get;
-            private set;
-        }
+        public int Volume { get; private set; }
 
         public Key(ComicBook book)
         {
@@ -39,21 +31,12 @@ public class ComicBookSeriesStatistics
 
         public override bool Equals(object obj)
         {
-            Key key = obj as Key;
-            if (key != null)
-            {
-                return Equals(key);
-            }
-            return false;
+            return obj is Key key ? Equals(key) : false;
         }
 
         public bool Equals(Key other)
         {
-            if (other != null && Series == other.Series)
-            {
-                return Volume == other.Volume;
-            }
-            return false;
+            return other != null && Series == other.Series ? Volume == other.Volume : false;
         }
     }
 
@@ -109,7 +92,7 @@ public class ComicBookSeriesStatistics
 
     private readonly Lazy<int> minCount;
 
-    private static readonly HashSet<string> statisticProperties = new HashSet<string>(new string[15]
+    private static readonly HashSet<string> statisticProperties = new(new string[15]
     {
         "Series",
         "Volume",
@@ -132,19 +115,12 @@ public class ComicBookSeriesStatistics
     {
         get
         {
-            if (tr == null)
-            {
-                tr = TR.Load("ComicBook");
-            }
+            tr ??= TR.Load("ComicBook");
             return tr;
         }
     }
 
-    public IEnumerable<ComicBook> Books
-    {
-        get;
-        private set;
-    }
+    public IEnumerable<ComicBook> Books { get; private set; }
 
     public int Count => count.Value;
 
@@ -208,41 +184,11 @@ public class ComicBookSeriesStatistics
 
     public string RunningTimeYearsAsText => ComicBook.FormatYear(RunningTimeYears);
 
-    public string GapCountAsText
-    {
-        get
-        {
-            if (GapCount > 0)
-            {
-                return GapCount.ToString();
-            }
-            return noneText;
-        }
-    }
+    public string GapCountAsText => GapCount > 0 ? GapCount.ToString() : noneText;
 
-    public string MinNumberAsText
-    {
-        get
-        {
-            if (!(FirstNumber < 0f))
-            {
-                return FirstNumber.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string MinNumberAsText => !(FirstNumber < 0f) ? FirstNumber.ToString() : string.Empty;
 
-    public string MaxNumberAsText
-    {
-        get
-        {
-            if (!(LastNumber < 0f))
-            {
-                return LastNumber.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string MaxNumberAsText => !(LastNumber < 0f) ? LastNumber.ToString() : string.Empty;
 
     public static ISet<string> StatisticProperties => statisticProperties;
 
@@ -295,7 +241,7 @@ public class ComicBookSeriesStatistics
         }
         catch (Exception)
         {
-            return default(T);
+            return default;
         }
     }
 
@@ -355,11 +301,7 @@ public class ComicBookSeriesStatistics
 
     private static float GetSafeNumber(ComicBook cb)
     {
-        if (!cb.CompareNumber.IsNumber)
-        {
-            return -1f;
-        }
-        return cb.CompareNumber.Number;
+        return !cb.CompareNumber.IsNumber ? -1f : cb.CompareNumber.Number;
     }
 
     private static IEnumerable<float> GetRangeNumber(ComicBook cb)

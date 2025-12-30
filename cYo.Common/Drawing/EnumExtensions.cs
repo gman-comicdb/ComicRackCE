@@ -31,51 +31,33 @@ public static class EnumExtensions
 
     public static int ToDegrees(this ImageRotation rotation)
     {
-        switch (rotation)
+        return rotation switch
         {
-            case ImageRotation.Rotate90:
-                return 90;
-            case ImageRotation.Rotate180:
-                return 180;
-            case ImageRotation.Rotate270:
-                return 270;
-            default:
-                return 0;
-        }
+            ImageRotation.Rotate90 => 90,
+            ImageRotation.Rotate180 => 180,
+            ImageRotation.Rotate270 => 270,
+            _ => 0,
+        };
     }
 
     public static StringAlignment ToAlignment(this ContentAlignment ca)
     {
-        switch (ca)
+        return ca switch
         {
-            case ContentAlignment.TopCenter:
-            case ContentAlignment.MiddleCenter:
-            case ContentAlignment.BottomCenter:
-                return StringAlignment.Center;
-            case ContentAlignment.TopRight:
-            case ContentAlignment.MiddleRight:
-            case ContentAlignment.BottomRight:
-                return StringAlignment.Far;
-            default:
-                return StringAlignment.Near;
-        }
+            ContentAlignment.TopCenter or ContentAlignment.MiddleCenter or ContentAlignment.BottomCenter => StringAlignment.Center,
+            ContentAlignment.TopRight or ContentAlignment.MiddleRight or ContentAlignment.BottomRight => StringAlignment.Far,
+            _ => StringAlignment.Near,
+        };
     }
 
     public static StringAlignment ToLineAlignment(this ContentAlignment ca)
     {
-        switch (ca)
+        return ca switch
         {
-            case ContentAlignment.BottomLeft:
-            case ContentAlignment.BottomCenter:
-            case ContentAlignment.BottomRight:
-                return StringAlignment.Far;
-            case ContentAlignment.MiddleLeft:
-            case ContentAlignment.MiddleCenter:
-            case ContentAlignment.MiddleRight:
-                return StringAlignment.Center;
-            default:
-                return StringAlignment.Near;
-        }
+            ContentAlignment.BottomLeft or ContentAlignment.BottomCenter or ContentAlignment.BottomRight => StringAlignment.Far,
+            ContentAlignment.MiddleLeft or ContentAlignment.MiddleCenter or ContentAlignment.MiddleRight => StringAlignment.Center,
+            _ => StringAlignment.Near,
+        };
     }
 
     public static ContentAlignment FromAlignments(StringAlignment alignment, StringAlignment lineAlignment)

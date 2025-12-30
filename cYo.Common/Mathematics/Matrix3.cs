@@ -28,20 +28,17 @@ public struct Matrix3
     {
         get
         {
-            Matrix3 result = default(Matrix3);
-            result.A1 = (result.B2 = (result.C3 = 1f));
+            Matrix3 result = default;
+            result.A1 = result.B2 = result.C3 = 1f;
             return result;
         }
     }
 
-    public static Matrix3 Zero => default(Matrix3);
+    public static Matrix3 Zero => default;
 
     public Vector3 Column1
     {
-        get
-        {
-            return new Vector3(A1, B1, C1);
-        }
+        get => new(A1, B1, C1);
         set
         {
             A1 = value.X;
@@ -52,10 +49,7 @@ public struct Matrix3
 
     public Vector3 Column2
     {
-        get
-        {
-            return new Vector3(A2, B2, C2);
-        }
+        get => new(A2, B2, C2);
         set
         {
             A2 = value.X;
@@ -66,10 +60,7 @@ public struct Matrix3
 
     public Vector3 Column3
     {
-        get
-        {
-            return new Vector3(A3, B3, C3);
-        }
+        get => new(A3, B3, C3);
         set
         {
             A3 = value.X;
@@ -80,10 +71,7 @@ public struct Matrix3
 
     public Vector3 LookAtVector
     {
-        get
-        {
-            return new Vector3(A3, B3, C3);
-        }
+        get => new(A3, B3, C3);
         set
         {
             A3 = value.X;
@@ -94,10 +82,7 @@ public struct Matrix3
 
     public Vector3 UpVector
     {
-        get
-        {
-            return new Vector3(A2, B2, C2);
-        }
+        get => new(A2, B2, C2);
         set
         {
             A2 = value.X;
@@ -108,10 +93,7 @@ public struct Matrix3
 
     public Vector3 RightVector
     {
-        get
-        {
-            return new Vector3(A1, B1, C1);
-        }
+        get => new(A1, B1, C1);
         set
         {
             A1 = value.X;
@@ -168,43 +150,27 @@ public struct Matrix3
 
     public float this[int column, int row]
     {
-        get
-        {
-            return this[column + row * 3];
-        }
-        set
-        {
-            this[column + row * 3] = value;
-        }
+        get => this[column + row * 3];
+        set => this[column + row * 3] = value;
     }
 
     public float this[int index]
     {
         get
         {
-            switch (index)
+            return index switch
             {
-                case 0:
-                    return A1;
-                case 1:
-                    return A2;
-                case 2:
-                    return A3;
-                case 3:
-                    return B1;
-                case 4:
-                    return B2;
-                case 5:
-                    return B3;
-                case 6:
-                    return C1;
-                case 7:
-                    return C2;
-                case 8:
-                    return C3;
-                default:
-                    throw new IndexOutOfRangeException("Invalid matrix index!");
-            }
+                0 => A1,
+                1 => A2,
+                2 => A3,
+                3 => B1,
+                4 => B2,
+                5 => B3,
+                6 => C1,
+                7 => C2,
+                8 => C3,
+                _ => throw new IndexOutOfRangeException("Invalid matrix index!"),
+            };
         }
         set
         {
@@ -300,7 +266,7 @@ public struct Matrix3
         float num6 = Numeric.Cos(gamma);
         float num7 = num3 * num;
         float num8 = num3 * num2;
-        Matrix3 result = default(Matrix3);
+        Matrix3 result = default;
         result.A1 = num6 * num4;
         result.A2 = num5 * num4;
         result.A3 = 0f - num3;
@@ -320,7 +286,7 @@ public struct Matrix3
 
     public static Matrix3 Scaling(Vector3 vec)
     {
-        Matrix3 result = default(Matrix3);
+        Matrix3 result = default;
         result.A1 = vec.X;
         result.B2 = vec.Y;
         result.C3 = vec.Z;
@@ -340,13 +306,13 @@ public struct Matrix3
         float num = Numeric.Cos(angle);
         float num2 = Numeric.Sin(angle);
         float num3 = 1f - num;
-        Matrix3 matrix = new Matrix3(num3 * vec.X * vec.X + num, num3 * vec.X * vec.Y - num2 * vec.Z, num3 * vec.X * vec.Z + num2 * vec.Y, num3 * vec.X * vec.Y + num2 * vec.Z, num3 * vec.Y * vec.Y + num, num3 * vec.Y * vec.Z - num2 * vec.X, num3 * vec.X * vec.Z - num2 * vec.Y, num3 * vec.Y * vec.Z + num2 * vec.X, num3 * vec.Z * vec.Z + num);
+        Matrix3 matrix = new(num3 * vec.X * vec.X + num, num3 * vec.X * vec.Y - num2 * vec.Z, num3 * vec.X * vec.Z + num2 * vec.Y, num3 * vec.X * vec.Y + num2 * vec.Z, num3 * vec.Y * vec.Y + num, num3 * vec.Y * vec.Z - num2 * vec.X, num3 * vec.X * vec.Z - num2 * vec.Y, num3 * vec.Y * vec.Z + num2 * vec.X, num3 * vec.Z * vec.Z + num);
         return Transpose(matrix);
     }
 
     public static Matrix3 Transpose(Matrix3 matrix)
     {
-        Matrix3 result = default(Matrix3);
+        Matrix3 result = default;
         result.A1 = matrix.A1;
         result.A2 = matrix.B1;
         result.A3 = matrix.C1;
@@ -409,11 +375,9 @@ public struct Matrix3
             return false;
         }
         Matrix3 matrix = (Matrix3)obj;
-        if (A1 == matrix.A1 && A2 == matrix.A2 && A3 == matrix.A3 && B1 == matrix.B1 && B2 == matrix.B2 && B3 == matrix.B3 && C1 == matrix.C1 && C2 == matrix.C2)
-        {
-            return C3 == matrix.C3;
-        }
-        return false;
+        return A1 == matrix.A1 && A2 == matrix.A2 && A3 == matrix.A3 && B1 == matrix.B1 && B2 == matrix.B2 && B3 == matrix.B3 && C1 == matrix.C1 && C2 == matrix.C2
+            ? C3 == matrix.C3
+            : false;
     }
 
     public override int GetHashCode()

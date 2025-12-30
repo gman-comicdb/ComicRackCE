@@ -34,11 +34,6 @@ public class PageKey : ImageKey
 
     public override bool Equals(object obj)
     {
-        PageKey pageKey = obj as PageKey;
-        if (base.Equals(obj) && pageKey != null)
-        {
-            return pageKey.adjustment == adjustment;
-        }
-        return false;
+        return base.Equals(obj) && obj is PageKey pageKey ? pageKey.adjustment == adjustment : false;
     }
 }

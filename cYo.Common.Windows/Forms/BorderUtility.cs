@@ -30,7 +30,7 @@ public static class BorderUtility
 
     public static Rectangle AdjustBorder(Rectangle bounds, ExtendedBorderStyle style, bool inwards)
     {
-        int num = ((!inwards) ? 1 : (-1));
+        int num = (!inwards) ? 1 : (-1);
         switch (style)
         {
             case ExtendedBorderStyle.Flat:

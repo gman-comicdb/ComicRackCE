@@ -7,7 +7,7 @@ public static class PathUtility
 {
     public static GraphicsPath GetArrowPath(Rectangle bounds, bool up)
     {
-        GraphicsPath graphicsPath = new GraphicsPath();
+        GraphicsPath graphicsPath = new();
         if (up)
         {
             graphicsPath.AddLine(bounds.Left, bounds.Bottom, bounds.Left + bounds.Width / 2, bounds.Top);
@@ -34,7 +34,7 @@ public static class PathUtility
 
     public static GraphicsPath CreatePath(int left, int top, int width, int height, int roundedWidthTopLeft, int roundedHeightTopLeft, int roundedWidthTopRight, int roundedHeightTopRight, int roundedWidthBottomRight, int roundedHeightBottomRight, int roundedWidthBottomLeft, int roundedHeightBottomLeft)
     {
-        GraphicsPath graphicsPath = new GraphicsPath();
+        GraphicsPath graphicsPath = new();
         int num = left + width;
         int num2 = top + height;
         if (roundedWidthTopLeft == 0 || roundedHeightTopLeft == 0)

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -21,11 +19,11 @@ public partial class AutomaticProgressDialog : FormEx
 
     private Exception catchedException;
 
-    private static readonly Dictionary<int, bool> stopLookup = new Dictionary<int, bool>();
+    private static readonly Dictionary<int, bool> stopLookup = new();
 
-    private static readonly Dictionary<int, int> valueLookup = new Dictionary<int, int>();
+    private static readonly Dictionary<int, int> valueLookup = new();
 
-    private readonly ManualResetEvent finishEvent = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent finishEvent = new(initialState: false);
 
     public static bool ShouldAbort
     {
@@ -102,7 +100,7 @@ public partial class AutomaticProgressDialog : FormEx
         {
             valueLookup.TryGetValue(thread.ManagedThreadId, out value);
         }
-        progressBar.Style = ((value < 0) ? ProgressBarStyle.Marquee : ProgressBarStyle.Blocks);
+        progressBar.Style = (value < 0) ? ProgressBarStyle.Marquee : ProgressBarStyle.Blocks;
         progressBar.Value = value.Clamp(progressBar.Minimum, progressBar.Maximum);
     }
 
@@ -128,11 +126,7 @@ public partial class AutomaticProgressDialog : FormEx
                 ShowDialog(parent);
             }
         }
-        if (catchedException != null)
-        {
-            throw catchedException;
-        }
-        return true;
+        return catchedException != null ? throw catchedException : true;
     }
 
     private void Execute()
@@ -147,7 +141,7 @@ public partial class AutomaticProgressDialog : FormEx
         }
         catch (Exception ex2)
         {
-            Exception ex3 = (catchedException = ex2);
+            Exception ex3 = catchedException = ex2;
         }
         finally
         {
@@ -168,7 +162,7 @@ public partial class AutomaticProgressDialog : FormEx
 
     public static bool Process(IWin32Window parent, string caption, string description, int timeToWait, Action exectuteMethod, AutomaticProgressDialogOptions options)
     {
-        using (AutomaticProgressDialog automaticProgressDialog = new AutomaticProgressDialog())
+        using (AutomaticProgressDialog automaticProgressDialog = new())
         {
             automaticProgressDialog.Text = caption;
             automaticProgressDialog.labelCaption.Text = description;

@@ -11,13 +11,6 @@ public class IdComponent : LiteComponent
     [XmlAttribute]
     public Guid Id
     {
-        get
-        {
-            return id;
-        }
-        set
-        {
-            id = value;
-        }
+        get => id; set => id = value;
     }
 }

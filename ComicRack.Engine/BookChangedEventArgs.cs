@@ -4,29 +4,13 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public class BookChangedEventArgs : PropertyChangedEventArgs
 {
-    public object OldValue
-    {
-        get;
-        private set;
-    }
+    public object OldValue { get; private set; }
 
-    public object NewValue
-    {
-        get;
-        private set;
-    }
+    public object NewValue { get; private set; }
 
-    public bool IsComicInfo
-    {
-        get;
-        private set;
-    }
+    public bool IsComicInfo { get; private set; }
 
-    public int Page
-    {
-        get;
-        private set;
-    }
+    public int Page { get; private set; }
 
     public BookChangedEventArgs(string propertyName, int page, bool isComicInfo)
         : base(propertyName)

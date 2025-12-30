@@ -41,31 +41,19 @@ public static class ReflectionExtension
     public static string Category(this MemberInfo member)
     {
         CategoryAttribute attribute = member.GetAttribute<CategoryAttribute>();
-        if (attribute != null && !string.IsNullOrEmpty(attribute.Category))
-        {
-            return attribute.Category;
-        }
-        return null;
+        return attribute != null && !string.IsNullOrEmpty(attribute.Category) ? attribute.Category : null;
     }
 
     public static string Description(this MemberInfo member)
     {
         DescriptionAttribute attribute = member.GetAttribute<DescriptionAttribute>();
-        if (attribute != null && !string.IsNullOrEmpty(attribute.Description))
-        {
-            return attribute.Description;
-        }
-        return null;
+        return attribute != null && !string.IsNullOrEmpty(attribute.Description) ? attribute.Description : null;
     }
 
-    public static T DefaultValue<T>(this MemberInfo member, T v = default(T))
+    public static T DefaultValue<T>(this MemberInfo member, T v = default)
     {
         DefaultValueAttribute attribute = member.GetAttribute<DefaultValueAttribute>();
-        if (attribute != null)
-        {
-            return (T)Convert.ChangeType(attribute.Value, typeof(T));
-        }
-        return v;
+        return attribute != null ? (T)Convert.ChangeType(attribute.Value, typeof(T)) : v;
     }
 
     public static object DefaultValue(this MemberInfo member)

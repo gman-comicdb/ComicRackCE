@@ -14,19 +14,11 @@ public class ItemViewColumnCollection<T> : SmartList<T> where T : IColumn
 
     public T FindBySorter(IComparer<IViewableItem> comp)
     {
-        if (comp != null)
-        {
-            return Find((T h) => h.ColumnSorter == comp);
-        }
-        return default(T);
+        return comp != null ? Find((T h) => h.ColumnSorter == comp) : default;
     }
 
     public T FindByGrouper(IGrouper<IViewableItem> comp)
     {
-        if (comp != null)
-        {
-            return Find((T h) => h.ColumnGrouper == comp);
-        }
-        return default(T);
+        return comp != null ? Find((T h) => h.ColumnGrouper == comp) : default;
     }
 }

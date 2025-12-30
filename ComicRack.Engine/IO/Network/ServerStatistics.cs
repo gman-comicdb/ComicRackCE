@@ -19,29 +19,13 @@ public class ServerStatistics
 
     public class StatisticItem
     {
-        public DateTime TimeStamp
-        {
-            get;
-            private set;
-        }
+        public DateTime TimeStamp { get; private set; }
 
-        public StatisticType Type
-        {
-            get;
-            set;
-        }
+        public StatisticType Type { get; set; }
 
-        public string Client
-        {
-            get;
-            set;
-        }
+        public string Client { get; set; }
 
-        public int Size
-        {
-            get;
-            set;
-        }
+        public int Size { get; set; }
 
         public StatisticItem(string client, StatisticType type, int size = 0)
         {
@@ -54,59 +38,23 @@ public class ServerStatistics
 
     public class StatisticResult
     {
-        public int ClientCount
-        {
-            get;
-            private set;
-        }
+        public int ClientCount { get; private set; }
 
-        public int InfoRequestCount
-        {
-            get;
-            private set;
-        }
+        public int InfoRequestCount { get; private set; }
 
-        public int LibraryRequestCount
-        {
-            get;
-            private set;
-        }
+        public int LibraryRequestCount { get; private set; }
 
-        public int PageRequestCount
-        {
-            get;
-            private set;
-        }
+        public int PageRequestCount { get; private set; }
 
-        public int ThumbnailRequestCount
-        {
-            get;
-            private set;
-        }
+        public int ThumbnailRequestCount { get; private set; }
 
-        public long PageRequestSize
-        {
-            get;
-            private set;
-        }
+        public long PageRequestSize { get; private set; }
 
-        public long ThumbnailRequestSize
-        {
-            get;
-            private set;
-        }
+        public long ThumbnailRequestSize { get; private set; }
 
-        public long LibraryRequestSize
-        {
-            get;
-            private set;
-        }
+        public long LibraryRequestSize { get; private set; }
 
-        public int FailedAuthenticationCount
-        {
-            get;
-            private set;
-        }
+        public int FailedAuthenticationCount { get; private set; }
 
         public long TotalRequestSize => PageRequestSize + ThumbnailRequestSize + LibraryRequestSize;
 
@@ -142,7 +90,7 @@ public class ServerStatistics
         }
     }
 
-    private SmartList<StatisticItem> items = new SmartList<StatisticItem>();
+    private SmartList<StatisticItem> items = new();
 
     public IEnumerable<StatisticItem> Items => items;
 

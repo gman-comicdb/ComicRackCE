@@ -24,8 +24,8 @@ public abstract class Inline : DisposableObject
 
     private const float normSize = 12f;
 
-    private static readonly float[] sizeFactors = new float[7]
-    {
+    private static readonly float[] sizeFactors =
+    [
         7f / normSize,
         19f / 24f,
         1f,
@@ -33,7 +33,7 @@ public abstract class Inline : DisposableObject
         1.5f,
         2f,
         3f
-    };
+    ];
 
     private Cursor mouseCursor;
 
@@ -74,10 +74,7 @@ public abstract class Inline : DisposableObject
 
     public virtual FontSize FontSize
     {
-        get
-        {
-            return fontSize;
-        }
+        get => fontSize;
         set
         {
             if (!(fontSize == value))
@@ -231,134 +228,65 @@ public abstract class Inline : DisposableObject
 
     public Inline ParentInline
     {
-        get
-        {
-            return parentInline;
-        }
-        set
-        {
-            parentInline = value;
-        }
+        get => parentInline;
+        set => parentInline = value;
     }
 
     public virtual bool IsNode => false;
 
     public Rectangle Bounds
     {
-        get
-        {
-            return bounds;
-        }
-        set
-        {
-            bounds = value;
-        }
+        get => bounds;
+        set => bounds = value;
     }
 
     public Point Location
     {
-        get
-        {
-            return bounds.Location;
-        }
-        set
-        {
-            bounds.Location = value;
-        }
+        get => bounds.Location;
+        set => bounds.Location = value;
     }
 
     public int X
     {
-        get
-        {
-            return bounds.X;
-        }
-        set
-        {
-            bounds.X = value;
-        }
+        get => bounds.X;
+        set => bounds.X = value;
     }
 
     public int Y
     {
-        get
-        {
-            return bounds.Y;
-        }
-        set
-        {
-            bounds.Y = value;
-        }
+        get => bounds.Y;
+        set => bounds.Y = value;
     }
 
     public Size Size
     {
-        get
-        {
-            return bounds.Size;
-        }
-        set
-        {
-            bounds.Size = value;
-        }
+        get => bounds.Size;
+        set => bounds.Size = value;
     }
 
     public int Width
     {
-        get
-        {
-            return bounds.Width;
-        }
-        set
-        {
-            bounds.Width = value;
-        }
+        get => bounds.Width;
+        set => bounds.Width = value;
     }
 
     public int Height
     {
-        get
-        {
-            return bounds.Height;
-        }
-        set
-        {
-            bounds.Height = value;
-        }
+        get => bounds.Height;
+        set => bounds.Height = value;
     }
 
-    public int BaseLine
-    {
-        get;
-        set;
-    }
+    public int BaseLine { get; set; }
 
     public BaseAlignment BaseAlign
     {
-        get
-        {
-            if (baseAlign == BaseAlignment.None && parentInline != null)
-            {
-                return parentInline.BaseAlign;
-            }
-            return baseAlign;
-        }
-        set
-        {
-            baseAlign = value;
-        }
+        get => baseAlign == BaseAlignment.None && parentInline != null ? parentInline.BaseAlign : baseAlign;
+        set => baseAlign = value;
     }
 
     public virtual HorizontalAlignment Align
     {
-        get
-        {
-            if (align == HorizontalAlignment.None && parentInline != null)
-            {
-                return parentInline.Align;
-            }
-            return align;
-        }
+        get => align == HorizontalAlignment.None && parentInline != null ? parentInline.Align : align;
         set
         {
             if (align != value)
@@ -377,10 +305,7 @@ public abstract class Inline : DisposableObject
 
     public LayoutType PendingLayout
     {
-        get
-        {
-            return pendingLayout;
-        }
+        get => pendingLayout;
         set
         {
             if (pendingLayout != value)
@@ -393,14 +318,8 @@ public abstract class Inline : DisposableObject
 
     public bool Visible
     {
-        get
-        {
-            return visible;
-        }
-        set
-        {
-            visible = value;
-        }
+        get => visible;
+        set => visible = value;
     }
 
     public int FontCellDescent => Font.FontFamily.GetCellDescent(Font.Style);
@@ -425,11 +344,7 @@ public abstract class Inline : DisposableObject
         }
         Rectangle rectangle = Bounds;
         rectangle.Offset(location);
-        if (!rectangle.Contains(hitPoint))
-        {
-            return null;
-        }
-        return this;
+        return !rectangle.Contains(hitPoint) ? null : this;
     }
 
     public void Layout(LayoutType type)
@@ -438,10 +353,7 @@ public abstract class Inline : DisposableObject
         {
             PendingLayout = type;
         }
-        if (ParentInline != null)
-        {
-            ParentInline.Layout(type);
-        }
+        ParentInline?.Layout(type);
     }
 
     public virtual int GetFontSize()
@@ -484,10 +396,7 @@ public abstract class Inline : DisposableObject
 
     protected virtual void OnPendingLayoutChanged()
     {
-        if (this.PendingLayoutChanged != null)
-        {
-            this.PendingLayoutChanged(this, EventArgs.Empty);
-        }
+        PendingLayoutChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void InvokeLayout(LayoutType type)
@@ -505,10 +414,7 @@ public abstract class Inline : DisposableObject
         {
             isHot = true;
             OnMouseEnter();
-            if (parentInline != null)
-            {
-                parentInline.MouseEnter();
-            }
+            parentInline?.MouseEnter();
         }
     }
 
@@ -518,10 +424,7 @@ public abstract class Inline : DisposableObject
         {
             isHot = false;
             OnMouseLeave();
-            if (parentInline != null)
-            {
-                parentInline.MouseLeave();
-            }
+            parentInline?.MouseLeave();
         }
     }
 
@@ -544,11 +447,7 @@ public abstract class Inline : DisposableObject
         {
             val = parentInline.GetService<T>(withException: false);
         }
-        if (val == null && withException)
-        {
-            throw new InvalidOperationException("Service not found");
-        }
-        return val;
+        return val == null && withException ? throw new InvalidOperationException("Service not found") : val;
     }
 
     private int DesignToPixel(int design)

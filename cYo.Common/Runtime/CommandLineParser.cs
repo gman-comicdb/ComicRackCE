@@ -22,7 +22,7 @@ public static class CommandLineParser
         catch (Exception)
         {
         }
-        List<string> list = new List<string>();
+        List<string> list = new();
         IEnumerator<string> enumerator = args.GetEnumerator();
         while (enumerator.MoveNext())
         {

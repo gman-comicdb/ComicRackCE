@@ -17,17 +17,7 @@ public abstract class ComicBookNumericMatcher : ComicBookValueMatcher<float>
 
     private static readonly string[] opList = ComicBookMatcher.TRMatcher.GetStrings("NumericOperators", "is|is greater|is smaller|is in the range", '|');
 
-    public override int ArgumentCount
-    {
-        get
-        {
-            if (MatchOperator != InRange)
-            {
-                return 1;
-            }
-            return 2;
-        }
-    }
+    public override int ArgumentCount => MatchOperator != InRange ? 1 : 2;
 
     public override string[] OperatorsListNeutral => opListNeutral;
 
@@ -56,11 +46,7 @@ public abstract class ComicBookNumericMatcher : ComicBookValueMatcher<float>
 
     protected override float ConvertMatchValue(string value)
     {
-        if (!float.TryParse(value, out var result))
-        {
-            return GetInvalidValue();
-        }
-        return result;
+        return !float.TryParse(value, out var result) ? GetInvalidValue() : result;
     }
 
     protected override float GetInvalidValue()

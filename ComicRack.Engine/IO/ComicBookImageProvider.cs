@@ -84,7 +84,7 @@ public class ComicBookImageProvider : DisposableObject, IImageProvider, IDisposa
     {
         if (provider == null && ownProvider == null)
         {
-            provider = (ownProvider = comic.OpenProvider(lastPageIndex));
+            provider = ownProvider = comic.OpenProvider(lastPageIndex);
         }
     }
 

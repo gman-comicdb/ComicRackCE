@@ -18,11 +18,7 @@ public class StorageSync
 {
     public class SyncErrorEventArgs : CancelEventArgs
     {
-        public string Message
-        {
-            get;
-            private set;
-        }
+        public string Message { get; private set; }
 
         public SyncErrorEventArgs(string message)
         {
@@ -65,15 +61,12 @@ public class StorageSync
 
     protected virtual void OnError(SyncErrorEventArgs e)
     {
-        if (Error != null)
-        {
-            Error(this, e);
-        }
+        Error?.Invoke(this, e);
     }
 
     protected bool InvokeError(string message)
     {
-        SyncErrorEventArgs syncErrorEventArgs = new SyncErrorEventArgs(message);
+        SyncErrorEventArgs syncErrorEventArgs = new(message);
         OnError(syncErrorEventArgs);
         return !syncErrorEventArgs.Cancel;
     }
@@ -164,10 +157,10 @@ public class StorageSync
                                   Setting = cli.Setting
                               };
                           }).ToList();
-                int count2 = ((provider.Device.BookSyncLimit > 0) ? provider.Device.BookSyncLimit : int.MaxValue);
-                Dictionary<Guid, ComicBook> dictionary = new Dictionary<Guid, ComicBook>((from id in source.SelectMany(bl => bl.List.BookIds).Distinct()
+                int count2 = (provider.Device.BookSyncLimit > 0) ? provider.Device.BookSyncLimit : int.MaxValue;
+                Dictionary<Guid, ComicBook> dictionary = new((from id in source.SelectMany(bl => bl.List.BookIds).Distinct()
                                                                                           select library.Books[id]).Take(count2).ToDictionary((ComicBook cb) => cb.Id));
-                HashSet<Guid> hashSet = new HashSet<Guid>(source.Where(bl => bl.Setting.OptimizePortable).SelectMany(bl => bl.List.BookIds).Distinct());
+                HashSet<Guid> hashSet = new(source.Where(bl => bl.Setting.OptimizePortable).SelectMany(bl => bl.List.BookIds).Distinct());
                 lists = source.Select(bl => bl.List);
                 i = 0;
                 percentStart += 10;
@@ -253,7 +246,7 @@ public class StorageSync
                 progress.Abort = true;
             }
             progress.ProgressPercentage = percent;
-            string text2 = (oldMessage = (progress.ProgressMessage = message ?? oldMessage));
+            string text2 = oldMessage = progress.ProgressMessage = message ?? oldMessage;
             if (!progress.ProgressAvailable)
             {
                 progress.ProgressAvailable = true;
@@ -305,12 +298,12 @@ public class StorageSync
                     break;
             }
         }
-        List<ComicBook>[] array = ((grouper != null) ? (from gc in new GroupManager<ComicBook>(grouper, list2).GetGroups()
+        List<ComicBook>[] array = (grouper != null) ? (from gc in new GroupManager<ComicBook>(grouper, list2).GetGroups()
                                                         orderby gc.Key
-                                                        select gc.Items).ToArray() : new List<ComicBook>[1]
-        {
-            new List<ComicBook>(list2)
-        });
+                                                        select gc.Items).ToArray() :
+        [
+            new(list2)
+        ];
         if (comparer != null)
         {
             List<ComicBook>[] array2 = array;
@@ -327,7 +320,7 @@ public class StorageSync
             }
         }
         list2.Clear();
-        int num = ((array.Length != 0) ? array.Max((List<ComicBook> gr) => gr.Count) : 0);
+        int num = (array.Length != 0) ? array.Max((List<ComicBook> gr) => gr.Count) : 0;
         int i;
         for (i = 0; i < num; i++)
         {
@@ -363,7 +356,7 @@ public class StorageSync
     {
         foreach (ComicBook book in books)
         {
-            long num = (book.IsDynamicSource ? (book.PageCount * 250000) : book.FileSize);
+            long num = book.IsDynamicSource ? (book.PageCount * 250000) : book.FileSize;
             if (optimized)
             {
                 num /= 2;
@@ -379,7 +372,7 @@ public class StorageSync
 
     private static List<ComicBook> GetUnreadBooks(IList<ComicBook> books, int prologSize = 0)
     {
-        List<ComicBook> list = new List<ComicBook>();
+        List<ComicBook> list = new();
         for (int i = 0; i < books.Count; i++)
         {
             if (books[i].HasBeenRead)

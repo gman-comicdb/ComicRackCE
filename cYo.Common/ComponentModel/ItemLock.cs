@@ -12,27 +12,13 @@ public class ItemLock<T> : DisposableObject, IItemLock<T>, IDisposable where T :
 
     public T Item
     {
-        get
-        {
-            return item;
-        }
-        set
-        {
-            item = value;
-        }
+        get => item;
+        set => item = value;
     }
 
-    public object LockObject
-    {
-        get;
-        set;
-    }
+    public object LockObject { get; set; }
 
-    public object Tag
-    {
-        get;
-        set;
-    }
+    public object Tag { get; set; }
 
     public ItemLock(T data, object lockObject)
     {

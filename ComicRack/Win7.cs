@@ -15,7 +15,7 @@ public static class Win7
 {
     private static TaskbarManager windowsTaskbar;
 
-    private static Dictionary<string, TabbedThumbnail> thumbnails = new Dictionary<string, TabbedThumbnail>(StringComparer.OrdinalIgnoreCase);
+    private static Dictionary<string, TabbedThumbnail> thumbnails = new(StringComparer.OrdinalIgnoreCase);
 
     private const uint BCM_SETSHIELD = 0x160Cu;
 
@@ -76,7 +76,7 @@ public static class Win7
     {
         if (TabbedThumbnailsEnabled && !thumbnails.ContainsKey(url))
         {
-            TabbedThumbnail tt = new TabbedThumbnail(parent.Handle, new Control());
+            TabbedThumbnail tt = new(parent.Handle, new Control());
             tt.TabbedThumbnailActivated += delegate
             {
                 activated();

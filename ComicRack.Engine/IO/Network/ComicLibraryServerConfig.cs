@@ -16,11 +16,9 @@ public class ComicLibraryServerConfig
     {
         public bool Equals(ComicLibraryServerConfig x, ComicLibraryServerConfig y)
         {
-            if (x.Name == y.Name && x.Password == y.Password && x.Options == y.Options && x.Description == y.Description && x.IsInternet == y.IsInternet && x.IsPrivate == y.IsPrivate && x.LibraryShareMode == y.LibraryShareMode && x.SharedItems.SequenceEqual(y.SharedItems) && x.ThumbnailQuality == y.ThumbnailQuality)
-            {
-                return x.PageQuality == y.PageQuality;
-            }
-            return false;
+            return x.Name == y.Name && x.Password == y.Password && x.Options == y.Options && x.Description == y.Description && x.IsInternet == y.IsInternet && x.IsPrivate == y.IsPrivate && x.LibraryShareMode == y.LibraryShareMode && x.SharedItems.SequenceEqual(y.SharedItems) && x.ThumbnailQuality == y.ThumbnailQuality
+                ? x.PageQuality == y.PageQuality
+                : false;
         }
 
         public int GetHashCode(ComicLibraryServerConfig obj)
@@ -35,42 +33,22 @@ public class ComicLibraryServerConfig
 
     public const string DefaultServiceName = "Share";
 
-    private SmartList<Guid> sharedItems = new SmartList<Guid>();
+    private SmartList<Guid> sharedItems = new();
 
     [DefaultValue(LibraryShareMode.All)]
-    public LibraryShareMode LibraryShareMode
-    {
-        get;
-        set;
-    }
+    public LibraryShareMode LibraryShareMode { get; set; }
 
     [DefaultValue("")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue("")]
-    public string Description
-    {
-        get;
-        set;
-    }
+    public string Description { get; set; }
 
     [DefaultValue("")]
-    public string Password
-    {
-        get;
-        set;
-    }
+    public string Password { get; set; }
 
     [DefaultValue(ServerOptions.None)]
-    public ServerOptions Options
-    {
-        get;
-        set;
-    }
+    public ServerOptions Options { get; set; }
 
     [DefaultValue(false)]
     public bool IsInternet
@@ -81,130 +59,60 @@ public class ComicLibraryServerConfig
     }
 
     [DefaultValue(false)]
-    public bool IsPrivate
-    {
-        get;
-        set;
-    }
+    public bool IsPrivate { get; set; }
 
     [DefaultValue(100)]
-    public int PageQuality
-    {
-        get;
-        set;
-    }
+    public int PageQuality { get; set; }
 
     [DefaultValue(100)]
-    public int ThumbnailQuality
-    {
-        get;
-        set;
-    }
+    public int ThumbnailQuality { get; set; }
 
     public SmartList<Guid> SharedItems => sharedItems;
 
     [XmlIgnore]
     [DefaultValue(ComicLibraryServerConfig.DefaultPrivateServicePort)]
-    public int ServicePort
-    {
-        get;
-        set;
-    }
+    public int ServicePort { get; set; }
 
     [XmlIgnore]
     [DefaultValue(ComicLibraryServerConfig.DefaultServiceName)]
-    public string ServiceName
-    {
-        get;
-        set;
-    }
+    public string ServiceName { get; set; }
 
     [XmlIgnore]
     [DefaultValue(false)]
-    public bool OnlyPrivateConnections
-    {
-        get;
-        set;
-    }
+    public bool OnlyPrivateConnections { get; set; }
 
     [XmlIgnore]
     [DefaultValue("")]
-    public string PrivateListPassword
-    {
-        get;
-        set;
-    }
+    public string PrivateListPassword { get; set; }
 
     public bool IsValidShare
     {
         get
         {
-            if (LibraryShareMode != 0 && !string.IsNullOrEmpty(Name))
-            {
-                if (string.IsNullOrEmpty(PrivateListPassword))
-                {
-                    if (IsInternet)
-                    {
-                        return !IsPrivate;
-                    }
-                    return true;
-                }
-                return true;
-            }
-            return false;
+            return LibraryShareMode != 0 && !string.IsNullOrEmpty(Name)
+                ? string.IsNullOrEmpty(PrivateListPassword) ? IsInternet ? !IsPrivate : true : true
+                : false;
         }
     }
 
-    public string ProtectionPassword
-    {
-        get
-        {
-            if (!IsProtected)
-            {
-                return string.Empty;
-            }
-            return Password;
-        }
-    }
+    public string ProtectionPassword => !IsProtected ? string.Empty : Password;
 
     public bool IsProtected
     {
-        get
-        {
-            if (Options.IsSet(ServerOptions.ShareNeedsPassword))
-            {
-                return !string.IsNullOrEmpty(Password);
-            }
-            return false;
-        }
-        set
-        {
-            Options = Options.SetMask(ServerOptions.ShareNeedsPassword, value);
-        }
+        get => Options.IsSet(ServerOptions.ShareNeedsPassword) ? !string.IsNullOrEmpty(Password) : false;
+        set => Options = Options.SetMask(ServerOptions.ShareNeedsPassword, value);
     }
 
     public bool IsEditable
     {
-        get
-        {
-            return Options.IsSet(ServerOptions.ShareIsEditable);
-        }
-        set
-        {
-            Options = Options.SetMask(ServerOptions.ShareIsEditable, value);
-        }
+        get => Options.IsSet(ServerOptions.ShareIsEditable);
+        set => Options = Options.SetMask(ServerOptions.ShareIsEditable, value);
     }
 
     public bool IsExportable
     {
-        get
-        {
-            return Options.IsSet(ServerOptions.ShareIsExportable);
-        }
-        set
-        {
-            Options = Options.SetMask(ServerOptions.ShareIsExportable, value);
-        }
+        get => Options.IsSet(ServerOptions.ShareIsExportable);
+        set => Options = Options.SetMask(ServerOptions.ShareIsExportable, value);
     }
 
     public ComicLibraryServerConfig()

@@ -25,16 +25,12 @@ public class ComicBookMangaMatcher : ComicBookValueMatcher<MangaYesNo>
 
     protected override bool MatchBook(ComicBook comicBook, MangaYesNo yesNo)
     {
-        switch (MatchOperator)
+        return MatchOperator switch
         {
-            default:
-                return yesNo == MangaYesNo.Yes;
-            case 1:
-                return yesNo == MangaYesNo.YesAndRightToLeft;
-            case 2:
-                return yesNo == MangaYesNo.No;
-            case 3:
-                return yesNo == MangaYesNo.Unknown;
-        }
+            1 => yesNo == MangaYesNo.YesAndRightToLeft,
+            2 => yesNo == MangaYesNo.No,
+            3 => yesNo == MangaYesNo.Unknown,
+            _ => yesNo == MangaYesNo.Yes,
+        };
     }
 }

@@ -18,10 +18,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     public virtual string Name
     {
-        get
-        {
-            return name;
-        }
+        get => name;
         set
         {
             if (!(name == value))
@@ -34,10 +31,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     public virtual string Text
     {
-        get
-        {
-            return text;
-        }
+        get => text;
         set
         {
             if (!(text == value))
@@ -50,10 +44,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     public string TooltipText
     {
-        get
-        {
-            return tooltipText;
-        }
+        get => tooltipText;
         set
         {
             if (!(tooltipText == value))
@@ -66,10 +57,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     public object Tag
     {
-        get
-        {
-            return tag;
-        }
+        get => tag;
         set
         {
             if (tag != value)
@@ -82,10 +70,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     public object Data
     {
-        get
-        {
-            return data;
-        }
+        get => data;
         set
         {
             if (data != value)
@@ -96,11 +81,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
         }
     }
 
-    public ItemView View
-    {
-        get;
-        set;
-    }
+    public ItemView View { get; set; }
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler PropertyChanged;
@@ -128,10 +109,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
 
     protected virtual void OnPropertyChanged(string name)
     {
-        if (this.PropertyChanged != null)
-        {
-            this.PropertyChanged(this, new PropertyChangedEventArgs(name));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
     public virtual int HitTest(Point pt)

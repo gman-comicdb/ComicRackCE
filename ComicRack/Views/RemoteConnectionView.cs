@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -33,30 +32,15 @@ public partial class RemoteConnectionView : SubView
 
     private string textCancel = TR.Default["Cancel", "Cancel"];
 
-    public MainView View
-    {
-        get;
-        private set;
-    }
+    public MainView View { get; private set; }
 
-    public ComicLibraryClient Client
-    {
-        get;
-        private set;
-    }
+    public ComicLibraryClient Client { get; private set; }
 
     private TabBar.TabBarItem Tab => base.Tag as TabBar.TabBarItem;
 
     private Image TabImage
     {
-        get
-        {
-            if (Tab == null)
-            {
-                return null;
-            }
-            return Tab.Image;
-        }
+        get => Tab?.Image;
         set
         {
             if (Tab != null)
@@ -114,16 +98,11 @@ public partial class RemoteConnectionView : SubView
                 {
                     this.Invoke(delegate
                     {
-                        using (PasswordDialog passwordDialog = new PasswordDialog())
+                        using (PasswordDialog passwordDialog = new())
                         {
-                            if (firstTime)
-                            {
-                                passwordDialog.Description = StringUtility.Format(TR.Messages["PasswordNeeded", "A password is needed for the remote Library '{0}':"], Client.ShareInformation.Name);
-                            }
-                            else
-                            {
-                                passwordDialog.Description = StringUtility.Format(TR.Messages["WrongPassword", "The specified password for the Library'{0}' is not correct. Please try again:"], Client.ShareInformation.Name);
-                            }
+                            passwordDialog.Description = firstTime
+                                ? StringUtility.Format(TR.Messages["PasswordNeeded", "A password is needed for the remote Library '{0}':"], Client.ShareInformation.Name)
+                                : StringUtility.Format(TR.Messages["WrongPassword", "The specified password for the Library'{0}' is not correct. Please try again:"], Client.ShareInformation.Name);
                             if (passwordDialog.ShowDialog(this) == DialogResult.Cancel)
                             {
                                 cancelConnection = true;
@@ -153,7 +132,7 @@ public partial class RemoteConnectionView : SubView
             }
             InvokeAction(delegate
             {
-                ComicListLibraryBrowser cllb = new ComicListLibraryBrowser(cl);
+                ComicListLibraryBrowser cllb = new(cl);
                 TabBar.TabBarItem tsb = base.Tag as TabBar.TabBarItem;
                 ComicExplorerView ev = View.AddExplorerView(cl, cllb, tsb, Program.Settings.GetRemoteExplorerViewSetting(cl.Id));
                 ev.Main = base.Main;

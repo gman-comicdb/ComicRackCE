@@ -5,13 +5,9 @@ namespace cYo.Common.ComponentModel;
 
 public class GroupContainer<T> : IGroupContainer<T>, IGroupInfo, IComparable<IGroupInfo>
 {
-    private readonly List<T> items = new List<T>();
+    private readonly List<T> items = new();
 
-    public IGroupInfo Info
-    {
-        get;
-        set;
-    }
+    public IGroupInfo Info { get; set; }
 
     public List<T> Items => items;
 

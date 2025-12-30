@@ -7,7 +7,7 @@ namespace cYo.Common.Windows.Forms;
 
 public class AutoHideManager : Component
 {
-    private readonly Timer timer = new Timer();
+    private readonly Timer timer = new();
 
     private bool enabled = true;
 
@@ -36,28 +36,19 @@ public class AutoHideManager : Component
     [DefaultValue(true)]
     public bool Enabled
     {
-        get
-        {
-            return enabled;
-        }
+        get => enabled;
         set
         {
             enabled = value;
             HitTest();
-            if (autoHideControl != null)
-            {
-                autoHideControl.Hide();
-            }
+            autoHideControl?.Hide();
         }
     }
 
     [DefaultValue(null)]
     public Control Control
     {
-        get
-        {
-            return control;
-        }
+        get => control;
         set
         {
             if (control != null)
@@ -77,10 +68,7 @@ public class AutoHideManager : Component
     [DefaultValue(null)]
     public Control AutoHideControl
     {
-        get
-        {
-            return autoHideControl;
-        }
+        get => autoHideControl;
         set
         {
             if (autoHideControl != null)
@@ -104,66 +92,36 @@ public class AutoHideManager : Component
     [DefaultValue(typeof(Rectangle), "0, 0, 0, 0")]
     public Rectangle HotBounds
     {
-        get
-        {
-            return hotBounds;
-        }
-        set
-        {
-            hotBounds = value;
-        }
+        get => hotBounds;
+        set => hotBounds = value;
     }
 
     [DefaultValue(AutoHideBounds.None)]
     public AutoHideBounds AutoBounds
     {
-        get
-        {
-            return autoBounds;
-        }
-        set
-        {
-            autoBounds = value;
-        }
+        get => autoBounds;
+        set => autoBounds = value;
     }
 
     [DefaultValue(20)]
     public int AutoWidth
     {
-        get
-        {
-            return autoWidth;
-        }
-        set
-        {
-            autoWidth = value;
-        }
+        get => autoWidth;
+        set => autoWidth = value;
     }
 
     [DefaultValue(typeof(TimeSpan), "00:00:02")]
     public TimeSpan ShowTime
     {
-        get
-        {
-            return showTime;
-        }
-        set
-        {
-            showTime = value;
-        }
+        get => showTime;
+        set => showTime = value;
     }
 
     [DefaultValue(typeof(TimeSpan), "00:00:02")]
     public TimeSpan HideTime
     {
-        get
-        {
-            return hideTime;
-        }
-        set
-        {
-            hideTime = value;
-        }
+        get => hideTime;
+        set => hideTime = value;
     }
 
     public AutoHideManager()
@@ -265,23 +223,16 @@ public class AutoHideManager : Component
 
     private Rectangle GetHotBounds()
     {
-        if (!enabled || control == null || !control.Focused)
-        {
-            return Rectangle.Empty;
-        }
-        switch (autoBounds)
-        {
-            default:
-                return hotBounds;
-            case AutoHideBounds.Top:
-                return new Rectangle(0, 0, control.Width, autoWidth);
-            case AutoHideBounds.Bottom:
-                return new Rectangle(0, control.Height - autoWidth, control.Width, autoWidth);
-            case AutoHideBounds.Left:
-                return new Rectangle(0, 0, autoWidth, control.Height);
-            case AutoHideBounds.Right:
-                return new Rectangle(control.Width - autoWidth, 0, autoWidth, control.Height);
-        }
+        return !enabled || control == null || !control.Focused
+            ? Rectangle.Empty
+            : autoBounds switch
+            {
+                AutoHideBounds.Top => new Rectangle(0, 0, control.Width, autoWidth),
+                AutoHideBounds.Bottom => new Rectangle(0, control.Height - autoWidth, control.Width, autoWidth),
+                AutoHideBounds.Left => new Rectangle(0, 0, autoWidth, control.Height),
+                AutoHideBounds.Right => new Rectangle(control.Width - autoWidth, 0, autoWidth, control.Height),
+                _ => hotBounds,
+            };
     }
 
     private bool TestRegion(Point pt)

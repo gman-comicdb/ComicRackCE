@@ -58,8 +58,8 @@ public class FolderTreeView : TreeViewEx
             try
             {
                 //TODO: Empty on new Windows 11 install if OneDrive installed, Top node shows OneDrive/Desktop
-                ShellFolder shellFolder = new ShellFolder(Environment.SpecialFolder.Desktop);
-                TreeNode treeNode = new TreeNode(shellFolder.Pidl.DisplayName, 0, 0)
+                ShellFolder shellFolder = new(Environment.SpecialFolder.Desktop);
+                TreeNode treeNode = new(shellFolder.Pidl.DisplayName, 0, 0)
                 {
                     Tag = shellFolder
                 };
@@ -96,12 +96,12 @@ public class FolderTreeView : TreeViewEx
                 List<ShellPidl> children = shellFolder.GetChildren(showHiddenObjects: false, showNonFolders: false, optimized: true);
                 try
                 {
-                    List<TreeNode> list = new List<TreeNode>();
+                    List<TreeNode> list = new();
                     foreach (ShellPidl item3 in children)
                     {
                         if (!item3.IsBrowsable && !item3.IsNetwork && !item3.IsControlPanel && !item3.IsRecycleBin && (!string.IsNullOrEmpty(item3.PhysicalPath) || item3.HasSubfolders))
                         {
-                            ShellFolder item = new ShellFolder(item3);
+                            ShellFolder item = new(item3);
                             TreeNode item2 = AddTreeNode(item, imageList, getIcons: true);
                             list.Add(item2);
                         }
@@ -138,10 +138,9 @@ public class FolderTreeView : TreeViewEx
             }
             try
             {
-                ShellFolder shellFolder = tn.Tag as ShellFolder;
-                if (shellFolder != null && shellFolder.Pidl.HasSubfolders)
+                if (tn.Tag is ShellFolder shellFolder && shellFolder.Pidl.HasSubfolders)
                 {
-                    TreeNode node = new TreeNode
+                    TreeNode node = new()
                     {
                         Tag = null
                     };
@@ -157,7 +156,7 @@ public class FolderTreeView : TreeViewEx
 
         private static TreeNode AddTreeNode(ShellFolder item, ImageList imageList, bool getIcons)
         {
-            TreeNode treeNode = new TreeNode
+            TreeNode treeNode = new()
             {
                 Text = item.Pidl.DisplayName,
                 Tag = item
@@ -192,11 +191,7 @@ public class FolderTreeView : TreeViewEx
     private readonly ImageList myImageList;
 
     [DefaultValue(true)]
-    public bool SortNetworkFolders
-    {
-        get;
-        set;
-    }
+    public bool SortNetworkFolders { get; set; }
 
     public FolderTreeView()
     {
@@ -271,11 +266,7 @@ public class FolderTreeView : TreeViewEx
 
     public string GetSelectedNodePath()
     {
-        if (base.SelectedNode != null)
-        {
-            return ShellOperations.GetFilePath(base.SelectedNode);
-        }
-        return string.Empty;
+        return base.SelectedNode != null ? ShellOperations.GetFilePath(base.SelectedNode) : string.Empty;
     }
 
     public bool DrillToFolder(string folderPath)

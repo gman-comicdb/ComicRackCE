@@ -8,7 +8,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class PageViewItemGrouper<T> : IGrouper<IViewableItem> where T : IGrouper<ComicPageInfo>, new()
 {
-    private readonly T grouper = new T();
+    private readonly T grouper = new();
 
     public bool IsMultiGroup
     {

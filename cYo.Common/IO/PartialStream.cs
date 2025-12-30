@@ -21,14 +21,8 @@ public class PartialStream : Stream
 
     public override long Position
     {
-        get
-        {
-            return baseStream.Position - start;
-        }
-        set
-        {
-            baseStream.Position = value + start;
-        }
+        get => baseStream.Position - start;
+        set => baseStream.Position = value + start;
     }
 
     public PartialStream(Stream baseStream, long start, long length)
@@ -62,10 +56,7 @@ public class PartialStream : Stream
 
     public override void Close()
     {
-        if (baseStream != null)
-        {
-            baseStream.Close();
-        }
+        baseStream?.Close();
         base.Close();
     }
 

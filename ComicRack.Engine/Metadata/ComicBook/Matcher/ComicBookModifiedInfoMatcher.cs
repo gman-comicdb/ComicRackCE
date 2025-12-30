@@ -10,10 +10,6 @@ public class ComicBookModifiedInfoMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (!comicBook.ComicInfoIsDirty)
-        {
-            return YesNo.No;
-        }
-        return YesNo.Yes;
+        return !comicBook.ComicInfoIsDirty ? YesNo.No : YesNo.Yes;
     }
 }

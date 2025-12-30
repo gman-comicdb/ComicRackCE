@@ -8,10 +8,6 @@ public class ComicBookGroupEnableProposed : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        if (!item.EnableProposed)
-        {
-            return new GroupInfo(captions[1], 1);
-        }
-        return new GroupInfo(captions[0], 0);
+        return !item.EnableProposed ? new GroupInfo(captions[1], 1) : new GroupInfo(captions[0], 0);
     }
 }

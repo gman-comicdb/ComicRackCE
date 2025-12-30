@@ -7,19 +7,15 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public class ComicBookTitleComparer : Comparer<ComicBook>
 {
-    private static readonly IComparer<ComicBook>[] list = new IComparer<ComicBook>[2]
-    {
+    private static readonly IComparer<ComicBook>[] list =
+    [
         new ComicBookVolumeComparer(),
         new ComicBookNumberComparer()
-    };
+    ];
 
     public override int Compare(ComicBook x, ComicBook y)
     {
         int num = ExtendedStringComparer.Compare(x.ShadowTitle, y.ShadowTitle, ExtendedStringComparison.IgnoreArticles | ExtendedStringComparison.IgnoreCase);
-        if (num != 0)
-        {
-            return num;
-        }
-        return list.Compare(x, y);
+        return num != 0 ? num : list.Compare(x, y);
     }
 }

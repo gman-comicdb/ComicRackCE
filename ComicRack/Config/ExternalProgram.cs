@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using cYo.Common.ComponentModel;
-
-using static IronPython.Modules._ast;
 
 namespace cYo.Projects.ComicRack.Viewer.Config;
 
@@ -15,34 +9,18 @@ namespace cYo.Projects.ComicRack.Viewer.Config;
 public class ExternalProgram : IComparable<ExternalProgram>, INamed, IPath, IOverride
 {
     [DefaultValue("")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DefaultValue("")]
-    public string Path
-    {
-        get;
-        set;
-    }
+    public string Path { get; set; }
 
     [DefaultValue("")]
-    public string Arguments
-    {
-        get;
-        set;
-    }
+    public string Arguments { get; set; }
 
     public string FullPath => $"{Path} {Arguments}";
 
     [DefaultValue(false)]
-    public bool Override
-    {
-        get;
-        set;
-    }
+    public bool Override { get; set; }
 
     public ExternalProgram()
         : this(string.Empty, string.Empty)

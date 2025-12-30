@@ -23,17 +23,9 @@ public class Cache<K, T> : DisposableObject where T : class
 
         public long LastAccess => lastAccess;
 
-        public T Data
-        {
-            get;
-            set;
-        }
+        public T Data { get; set; }
 
-        public LinkedListNode<K> AccessNode
-        {
-            get;
-            set;
-        }
+        public LinkedListNode<K> AccessNode { get; set; }
 
         public CacheItem(T data)
         {
@@ -42,7 +34,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
         public ItemLock<T> GetLock()
         {
-            ItemLock<T> itemLock = new ItemLock<T>(Data, this)
+            ItemLock<T> itemLock = new(Data, this)
             {
                 Item = Data,
                 LockObject = this
@@ -62,13 +54,13 @@ public class Cache<K, T> : DisposableObject where T : class
         }
     }
 
-    private readonly Dictionary<K, CacheItem> cache = new Dictionary<K, CacheItem>();
+    private readonly Dictionary<K, CacheItem> cache = new();
 
-    private readonly LinkedList<K> accessList = new LinkedList<K>();
+    private readonly LinkedList<K> accessList = new();
 
-    private readonly Dictionary<K, CacheItem> pending = new Dictionary<K, CacheItem>();
+    private readonly Dictionary<K, CacheItem> pending = new();
 
-    private readonly ReaderWriterLockSlim lockCache = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    private readonly ReaderWriterLockSlim lockCache = new(LockRecursionPolicy.SupportsRecursion);
 
     private volatile int itemCapacity;
 
@@ -78,10 +70,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
     public int ItemCapacity
     {
-        get
-        {
-            return itemCapacity;
-        }
+        get => itemCapacity;
         set
         {
             if (itemCapacity != value)
@@ -94,10 +83,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
     public long SizeCapacity
     {
-        get
-        {
-            return Interlocked.Read(ref sizeCapacity);
-        }
+        get => Interlocked.Read(ref sizeCapacity);
         set
         {
             if (SizeCapacity != value)
@@ -110,10 +96,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
     public int MinimalTimeInCache
     {
-        get
-        {
-            return minimalTimeInCache;
-        }
+        get => minimalTimeInCache;
         set
         {
             if (minimalTimeInCache != value)
@@ -197,7 +180,7 @@ public class Cache<K, T> : DisposableObject where T : class
                 if (val != null)
                 {
                     cacheItem = itemLock.LockObject as CacheItem;
-                    T val4 = (cacheItem.Data = (itemLock.Item = val));
+                    T val4 = cacheItem.Data = itemLock.Item = val;
                     cache[key] = cacheItem;
                     while (accessList.Contains(key))
                     {
@@ -328,28 +311,19 @@ public class Cache<K, T> : DisposableObject where T : class
 
     protected virtual void OnItemAdded(CacheItemEventArgs<K, T> cacheItemEventArgs)
     {
-        if (this.ItemAdded != null)
-        {
-            this.ItemAdded(this, cacheItemEventArgs);
-        }
+        ItemAdded?.Invoke(this, cacheItemEventArgs);
         OnSizeChanged();
     }
 
     protected virtual void OnItemRemoved(CacheItemEventArgs<K, T> cacheItemEventArgs)
     {
-        if (this.ItemRemoved != null)
-        {
-            this.ItemRemoved(this, cacheItemEventArgs);
-        }
+        ItemRemoved?.Invoke(this, cacheItemEventArgs);
         OnSizeChanged();
     }
 
     protected virtual void OnSizeChanged()
     {
-        if (this.SizeChanged != null)
-        {
-            this.SizeChanged(this, EventArgs.Empty);
-        }
+        SizeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void Dispose(bool disposing)
@@ -430,7 +404,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
     private void Trim(K keep)
     {
-        List<CacheItemEventArgs<K, T>> list = new List<CacheItemEventArgs<K, T>>();
+        List<CacheItemEventArgs<K, T>> list = new();
         long ticks = Machine.Ticks;
         using (UpgradeableReadLock())
         {
@@ -439,7 +413,7 @@ public class Cache<K, T> : DisposableObject where T : class
             while (linkedListNode != null && (accessList.Count > itemCapacity || num > sizeCapacity))
             {
                 LinkedListNode<K> next = linkedListNode.Next;
-                CacheItem cacheItem = (object.Equals(linkedListNode.Value, keep) ? null : RemoveItemInternal(linkedListNode.Value, evenWhenLocked: false, onlyExpired: true));
+                CacheItem cacheItem = object.Equals(linkedListNode.Value, keep) ? null : RemoveItemInternal(linkedListNode.Value, evenWhenLocked: false, onlyExpired: true);
                 if (cacheItem != null)
                 {
                     num -= GetDataSize(cacheItem.Data);
@@ -456,6 +430,6 @@ public class Cache<K, T> : DisposableObject where T : class
 
     public void Trim()
     {
-        Trim(default(K));
+        Trim(default);
     }
 }

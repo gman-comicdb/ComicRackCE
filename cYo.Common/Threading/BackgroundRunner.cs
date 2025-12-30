@@ -7,37 +7,26 @@ namespace cYo.Common.Threading;
 
 public class BackgroundRunner : Component
 {
-    private readonly ManualResetEvent exitEvent = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent exitEvent = new(initialState: false);
 
-    private readonly ManualResetEvent runEvent = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent runEvent = new(initialState: false);
 
-    private readonly ManualResetEvent intervalEvent = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent intervalEvent = new(initialState: false);
 
     private Thread thread;
 
     private volatile bool enabled;
 
     [DefaultValue(null)]
-    public ISynchronizeInvoke Synchronize
-    {
-        get;
-        set;
-    }
+    public ISynchronizeInvoke Synchronize { get; set; }
 
     [DefaultValue(0)]
-    public int Interval
-    {
-        get;
-        set;
-    }
+    public int Interval { get; set; }
 
     [DefaultValue(false)]
     public bool Enabled
     {
-        get
-        {
-            return enabled;
-        }
+        get => enabled;
         set
         {
             if (value == enabled)
@@ -47,10 +36,7 @@ public class BackgroundRunner : Component
             enabled = value;
             if (enabled)
             {
-                if (thread == null)
-                {
-                    thread = ThreadUtility.RunInBackground("BackgroundRunner Thread", BackgroundMethod);
-                }
+                thread ??= ThreadUtility.RunInBackground("BackgroundRunner Thread", BackgroundMethod);
                 runEvent.Set();
                 intervalEvent.Reset();
             }
@@ -85,10 +71,7 @@ public class BackgroundRunner : Component
 
     protected virtual void OnTick()
     {
-        if (this.Tick != null)
-        {
-            this.Tick(this, EventArgs.Empty);
-        }
+        Tick?.Invoke(this, EventArgs.Empty);
     }
 
     public void Start()
@@ -103,11 +86,11 @@ public class BackgroundRunner : Component
 
     private void BackgroundMethod()
     {
-        ManualResetEvent[] waitHandles = new ManualResetEvent[2]
-        {
+        ManualResetEvent[] waitHandles =
+        [
             exitEvent,
             runEvent
-        };
+        ];
         while (WaitHandle.WaitAny(waitHandles) != 0)
         {
             if (Synchronize == null)

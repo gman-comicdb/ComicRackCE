@@ -21,10 +21,7 @@ public static class ListExtensions
 
     public static List<T> SafeAdd<T>(this List<T> list, T item)
     {
-        if (list == null)
-        {
-            list = new List<T>();
-        }
+        list ??= new List<T>();
         list.Add(item);
         return list;
     }
@@ -48,7 +45,7 @@ public static class ListExtensions
 
     public static IList<T> Randomize<T>(this IList<T> list, int seed = 0)
     {
-        Random random = ((seed == 0) ? new Random() : new Random(seed));
+        Random random = (seed == 0) ? new Random() : new Random(seed);
         int count = list.Count;
         for (int i = 0; i < count; i++)
         {
@@ -139,8 +136,7 @@ public static class ListExtensions
     {
         foreach (object item2 in list)
         {
-            T val = item2 as T;
-            if (val != null && val.Equals(item))
+            if (item2 is T val && val.Equals(item))
             {
                 return level;
             }
@@ -190,7 +186,7 @@ public static class ListExtensions
 
     public static IEnumerable<T> Lock<T>(this IEnumerable<T> list, bool useSyncRoot = false)
     {
-        ICollection collection = (useSyncRoot ? (list as ICollection) : null);
+        ICollection collection = useSyncRoot ? (list as ICollection) : null;
         using (ItemMonitor.Lock((collection == null) ? list : collection.SyncRoot))
         {
             foreach (T item in list)
@@ -213,21 +209,13 @@ public static class ListExtensions
     public static IEnumerable<T> AddFirst<T>(this IEnumerable<T> list, T item)
     {
         IEnumerable<T> enumerable = AsEnumerable<T>(item);
-        if (list != null)
-        {
-            return enumerable.Concat(list);
-        }
-        return enumerable;
+        return list != null ? enumerable.Concat(list) : enumerable;
     }
 
     public static IEnumerable<T> AddLast<T>(this IEnumerable<T> list, T item)
     {
         IEnumerable<T> enumerable = AsEnumerable<T>(item);
-        if (list != null)
-        {
-            return list.Concat(enumerable);
-        }
-        return enumerable;
+        return list != null ? list.Concat(enumerable) : enumerable;
     }
 
     public static void ForFirst<T>(this IEnumerable<T> list, Action<T> action)
@@ -267,11 +255,7 @@ public static class ListExtensions
 
     public static bool IsEmpty<T>(this IEnumerable<T> list)
     {
-        if (list != null)
-        {
-            return !list.Any();
-        }
-        return true;
+        return list != null ? !list.Any() : true;
     }
 
     public static int FindIndex<T>(this IEnumerable<T> list, Predicate<T> predicate)
@@ -292,11 +276,7 @@ public static class ListExtensions
     {
         using (IEnumerator<T> enumerator = list.GetEnumerator())
         {
-            if (enumerator.MoveNext())
-            {
-                return enumerator.Current;
-            }
-            return value;
+            return enumerator.MoveNext() ? enumerator.Current : value;
         }
     }
 
@@ -316,11 +296,7 @@ public static class ListExtensions
 
     public static ParallelQuery<T> AsParallelSafe<T>(this IEnumerable<T> list)
     {
-        if (!(list is ParallelQuery<T>))
-        {
-            return list.AsParallel();
-        }
-        return (ParallelQuery<T>)list;
+        return list is not ParallelQuery<T> ? list.AsParallel() : (ParallelQuery<T>)list;
     }
 
     public static void ParallelForEach<T>(this IEnumerable<T> items, Action<T> action)
@@ -413,8 +389,7 @@ public static class ListExtensions
                 }
                 catch (Exception ex)
                 {
-                    if (action != null)
-                        action(ex);
+                    action?.Invoke(ex);
                     continue;
                 }
 

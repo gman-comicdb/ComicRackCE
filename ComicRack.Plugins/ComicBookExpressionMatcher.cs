@@ -21,7 +21,7 @@ public class ComicBookExpressionMatcher : ComicBookValueMatcher<bool>
 
     private static readonly string[] opList = ComicBookMatcher.TRMatcher.GetStrings("TrueFalseOperators", "is True|is False", '|');
 
-    private readonly HashSet<string> properties = new HashSet<string>();
+    private readonly HashSet<string> properties = new();
 
     private bool usesStatistics;
 
@@ -33,17 +33,7 @@ public class ComicBookExpressionMatcher : ComicBookValueMatcher<bool>
     [NonSerialized]
     private bool error;
 
-    public override bool IsOptimizedCacheUpdateDisabled
-    {
-        get
-        {
-            if (!base.IsOptimizedCacheUpdateDisabled)
-            {
-                return usesStatistics;
-            }
-            return true;
-        }
-    }
+    public override bool IsOptimizedCacheUpdateDisabled => !base.IsOptimizedCacheUpdateDisabled ? usesStatistics : true;
 
     public override string[] OperatorsListNeutral => opListNeutral;
 
@@ -54,11 +44,7 @@ public class ComicBookExpressionMatcher : ComicBookValueMatcher<bool>
     protected override bool MatchBook(ComicBook book, bool value)
     {
         int matchOperator = MatchOperator;
-        if (matchOperator == 0 || matchOperator != 1)
-        {
-            return value;
-        }
-        return !value;
+        return matchOperator is 0 or not 1 ? value : !value;
     }
 
     protected override void OnMatchValueChanged()
@@ -95,11 +81,7 @@ public class ComicBookExpressionMatcher : ComicBookValueMatcher<bool>
 
     public override bool UsesProperty(string propertyHint)
     {
-        if (!usesStatistics && !properties.Contains(propertyHint))
-        {
-            return base.UsesProperty(propertyHint);
-        }
-        return true;
+        return !usesStatistics && !properties.Contains(propertyHint) ? base.UsesProperty(propertyHint) : true;
     }
 
     protected override void OnInitializeMatch()
@@ -108,14 +90,11 @@ public class ComicBookExpressionMatcher : ComicBookValueMatcher<bool>
         error = false;
         try
         {
-            if (expression == null)
-            {
-                expression = PythonCommand.CompileExpression<Func<ComicBook, IComicBookStatsProvider, bool>>(parsedMatchValue, new string[2]
-                {
+            expression ??= PythonCommand.CompileExpression<Func<ComicBook, IComicBookStatsProvider, bool>>(parsedMatchValue,
+                [
                     BookVariableName,
                     BookStatsVariableName
-                });
-            }
+                ]);
         }
         catch (Exception)
         {

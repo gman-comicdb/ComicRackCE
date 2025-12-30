@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -13,24 +12,18 @@ public class PdfComicProvider : ComicProvider
 {
     private IComicAccessor pdfReader;
 
-    private List<ProviderImageInfo> infos = new List<ProviderImageInfo>();
+    private List<ProviderImageInfo> infos = new();
 
     public override ImageProviderCapabilities Capabilities => ImageProviderCapabilities.FastFormatCheck;
 
     public PdfComicProvider()
     {
-        PdfGhostScript pdfGhostScript = new PdfGhostScript();
-        if (pdfGhostScript.IsAvailable())
-        {
-            pdfReader = pdfGhostScript;
-        }
-        else
-        {
-            if (EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Native)
-                pdfReader = new PdfNative();
-            else
-                pdfReader = new PdfiumReaderEngine();
-        }
+        PdfGhostScript pdfGhostScript = new();
+        pdfReader = pdfGhostScript.IsAvailable()
+            ? pdfGhostScript
+            : EngineConfiguration.Default.PdfEngineToUse == EngineConfiguration.PdfEngine.Native
+                ? new PdfNative()
+                : new PdfiumReaderEngine();
     }
 
     protected override bool OnFastFormatCheck(string source)

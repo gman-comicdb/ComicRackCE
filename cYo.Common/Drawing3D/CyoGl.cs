@@ -10,65 +10,29 @@ namespace cYo.Common.Drawing3D;
 
 public class CyoGl
 {
-    private Stack<Matrix4> modelMatrixStack = new Stack<Matrix4>();
+    private Stack<Matrix4> modelMatrixStack = new();
 
-    private List<Light> lights = new List<Light>();
+    private List<Light> lights = new();
 
-    public RectangleF Viewport
-    {
-        get;
-        set;
-    }
+    public RectangleF Viewport { get; set; }
 
-    public IFrameBuffer FrameBuffer
-    {
-        get;
-        set;
-    }
+    public IFrameBuffer FrameBuffer { get; set; }
 
-    public Matrix4 Projection
-    {
-        get;
-        set;
-    }
+    public Matrix4 Projection { get; set; }
 
-    public Matrix4 ModelView
-    {
-        get;
-        set;
-    }
+    public Matrix4 ModelView { get; set; }
 
-    public ITexture Texture
-    {
-        get;
-        set;
-    }
+    public ITexture Texture { get; set; }
 
-    public bool BacksideCulling
-    {
-        get;
-        set;
-    }
+    public bool BacksideCulling { get; set; }
 
-    public ColorF AmbientLight
-    {
-        get;
-        set;
-    }
+    public ColorF AmbientLight { get; set; }
 
     public List<Light> Lights => lights;
 
-    public ShadingModel ShadingModel
-    {
-        get;
-        set;
-    }
+    public ShadingModel ShadingModel { get; set; }
 
-    public bool Wireless
-    {
-        get;
-        set;
-    }
+    public bool Wireless { get; set; }
 
     public CyoGl()
     {
@@ -98,7 +62,7 @@ public class CyoGl
 
     public Matrix4 GetShadowMatrix(Vector4 plane, Vector4 lightPosition)
     {
-        Matrix4 result = default(Matrix4);
+        Matrix4 result = default;
         float num = Vector4.Dot(plane, lightPosition);
         result[0, 0] = num - lightPosition[0] * plane[0];
         result[0, 1] = (0f - lightPosition[0]) * plane[1];
@@ -123,9 +87,9 @@ public class CyoGl
     {
         if (!BacksideCulling || !IsBackside(p1, p2, p3))
         {
-            Vertex vertex = new Vertex(p1);
-            Vertex vertex2 = new Vertex(p2);
-            Vertex vertex3 = new Vertex(p3);
+            Vertex vertex = new(p1);
+            Vertex vertex2 = new(p2);
+            Vertex vertex3 = new(p3);
             if (ShadingModel == ShadingModel.Gourard)
             {
                 Vector3 surfaceNormal = GetSurfaceNormal(vertex, vertex2, vertex3, ModelView);
@@ -151,10 +115,10 @@ public class CyoGl
     {
         if (!BacksideCulling || !IsBackside(p1, p2, p4))
         {
-            Vertex vertex = new Vertex(p1);
-            Vertex vertex2 = new Vertex(p2);
-            Vertex vertex3 = new Vertex(p3);
-            Vertex vertex4 = new Vertex(p4);
+            Vertex vertex = new(p1);
+            Vertex vertex2 = new(p2);
+            Vertex vertex3 = new(p3);
+            Vertex vertex4 = new(p4);
             if (ShadingModel == ShadingModel.Gourard)
             {
                 Vector3 surfaceNormal = GetSurfaceNormal(vertex, vertex2, vertex4, ModelView);
@@ -191,7 +155,7 @@ public class CyoGl
     private ColorF Light(Vertex p, Vector3 surfaceNormal)
     {
         ColorF ambientLight = AmbientLight;
-        Vector3 viewDirection = new Vector3(0f, 0f, 1f);
+        Vector3 viewDirection = new(0f, 0f, 1f);
         foreach (Light light in lights)
         {
             if (light.Enabled)
@@ -206,7 +170,7 @@ public class CyoGl
     public Vertex Project(Vertex p, bool toFramebuffer)
     {
         Vector3 vector = (Vector3)p * ModelView * Projection;
-        Vertex vertex = new Vertex(p);
+        Vertex vertex = new(p);
         vertex.X = vector.X / vector.Z;
         vertex.Y = (0f - vector.Y) / vector.Z;
         vertex.Z = vector.Z;
@@ -267,7 +231,7 @@ public class CyoGl
 
     public static Bitmap RotateBitmap(Bitmap bitmap, Size size, float distance, float rx, float ry, float rz, bool trim, bool filter)
     {
-        CyoGl cyoGl = new CyoGl();
+        CyoGl cyoGl = new();
         Size size2 = size;
         float num = (float)bitmap.Width / (float)bitmap.Height;
         float num2 = 1f;
@@ -281,29 +245,29 @@ public class CyoGl
         cyoGl.ModelView *= Matrix4.RotationX(Numeric.DegToRad(rx));
         cyoGl.ModelView *= Matrix4.RotationY(Numeric.DegToRad(ry));
         cyoGl.ModelView *= Matrix4.RotationZ(Numeric.DegToRad(rz));
-        Vertex[] array = new Vertex[4]
-        {
-            new Vertex(0f, num2, 0f, 0f, 0f),
-            new Vertex(num, num2, 0f, bitmap.Width - 1, 0f),
-            new Vertex(num, 0f, 0f, bitmap.Width - 1, bitmap.Height - 1),
-            new Vertex(0f, 0f, 0f, 0f, bitmap.Height - 1)
-        };
+        Vertex[] array =
+        [
+            new(0f, num2, 0f, 0f, 0f),
+            new(num, num2, 0f, bitmap.Width - 1, 0f),
+            new(num, 0f, 0f, bitmap.Width - 1, bitmap.Height - 1),
+            new(0f, 0f, 0f, 0f, bitmap.Height - 1)
+        ];
         RectangleF viewportExtent = cyoGl.GetViewportExtent(array, toFrameBuffer: false);
         float num3 = Math.Max(viewportExtent.Width, viewportExtent.Height);
         viewportExtent.X += (viewportExtent.Width - num3) / 2f;
         viewportExtent.Y += (viewportExtent.Height - num3) / 2f;
-        float num6 = (viewportExtent.Width = (viewportExtent.Height = num3));
+        float num6 = viewportExtent.Width = viewportExtent.Height = num3;
         cyoGl.Viewport = viewportExtent;
         if (filter)
         {
             size = size.Scale(1.5f);
         }
-        Bitmap bitmap2 = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
+        Bitmap bitmap2 = new(size.Width, size.Height, PixelFormat.Format32bppArgb);
         try
         {
-            using (BitmapFrameBuffer frameBuffer = new BitmapFrameBuffer(bitmap2))
+            using (BitmapFrameBuffer frameBuffer = new(bitmap2))
             {
-                using (BitmapFrameBuffer texture = new BitmapFrameBuffer(bitmap))
+                using (BitmapFrameBuffer texture = new(bitmap))
                 {
                     cyoGl.FrameBuffer = frameBuffer;
                     cyoGl.Texture = texture;
@@ -325,11 +289,7 @@ public class CyoGl
                 bitmap2 = null;
                 return result;
             }
-            if (rectangle.Width == 0 || rectangle.Height == 0)
-            {
-                return null;
-            }
-            return bitmap2.CreateCopy(rectangle);
+            return rectangle.Width == 0 || rectangle.Height == 0 ? null : bitmap2.CreateCopy(rectangle);
         }
         finally
         {

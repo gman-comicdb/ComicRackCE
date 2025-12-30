@@ -18,17 +18,9 @@ public class WirelessSyncProvider : SyncProviderBase
 {
     public class ClientSyncRequestArgs : EventArgs
     {
-        public bool IsPaired
-        {
-            get;
-            set;
-        }
+        public bool IsPaired { get; set; }
 
-        public string Key
-        {
-            get;
-            private set;
-        }
+        public string Key { get; private set; }
 
         public ClientSyncRequestArgs(string key)
         {
@@ -78,7 +70,7 @@ public class WirelessSyncProvider : SyncProviderBase
 
     private readonly IPAddress address;
 
-    private static readonly HashSet<IPAddress> foundDevices = new HashSet<IPAddress>();
+    private static readonly HashSet<IPAddress> foundDevices = new();
 
     private static UdpClient listener;
 
@@ -124,11 +116,11 @@ public class WirelessSyncProvider : SyncProviderBase
     {
         Communicate(delegate (Socket s)
         {
-            s.Send(new byte[2]
-            {
+            s.Send(
+            [
                 CommandProgressUpdate,
                 (byte)percent
-            });
+            ]);
         });
         bool abort = false;
         Communicate(delegate (Socket s)
@@ -230,7 +222,7 @@ public class WirelessSyncProvider : SyncProviderBase
         switch (base.Device.Edition)
         {
             case SyncAppEdition.AndroidFull:
-                flag &= key == AndroidDebugKey || key == AndroidKey;
+                flag &= key is AndroidDebugKey or AndroidKey;
                 flag = true;
                 break;
             default:
@@ -247,11 +239,11 @@ public class WirelessSyncProvider : SyncProviderBase
 
     public override IEnumerable<ComicBook> GetBooks()
     {
-        List<string> deleteFiles = new List<string>();
+        List<string> deleteFiles = new();
         string[] files = GetFileList().Where(SyncProviderBase.IsValidSyncFile).ToArray();
         Communicate(delegate (Socket socket)
         {
-            ComicBookCollection comicBookCollection = new ComicBookCollection();
+            ComicBookCollection comicBookCollection = new();
             SendByte(socket, CommandReadMultiFile);
             SendInteger(socket, files.Length);
             for (int i = 0; i < files.Length; i++)
@@ -383,10 +375,10 @@ public class WirelessSyncProvider : SyncProviderBase
 
     public static void SendByte(Socket socket, byte data)
     {
-        socket.Send(new byte[1]
-        {
+        socket.Send(
+        [
             data
-        });
+        ]);
     }
 
     public static bool ReadBool(Socket socket)
@@ -425,11 +417,7 @@ public class WirelessSyncProvider : SyncProviderBase
                 num2 += num3;
             }
         }
-        if (num2 != num)
-        {
-            throw new IOException();
-        }
-        return array;
+        return num2 != num ? throw new IOException() : array;
     }
 
     public static void ReadBlocking(Socket socket, byte[] data, int offset, int length)
@@ -481,7 +469,7 @@ public class WirelessSyncProvider : SyncProviderBase
         {
             try
             {
-                IPEndPoint localEP = new IPEndPoint(IPAddress.Any, controlPort);
+                IPEndPoint localEP = new(IPAddress.Any, controlPort);
                 controlSocket.Bind(localEP);
                 controlSocket.Listen(25);
                 controlSocket.BeginAccept(OnAcceptControl, null);
@@ -608,7 +596,7 @@ public class WirelessSyncProvider : SyncProviderBase
             }
             else
             {
-                ClientSyncRequestArgs clientSyncRequestArgs = new ClientSyncRequestArgs(key);
+                ClientSyncRequestArgs clientSyncRequestArgs = new(key);
                 WirelessSyncProvider.ClientSyncRequest(null, clientSyncRequestArgs);
                 if (clientSyncRequestArgs.IsPaired)
                 {

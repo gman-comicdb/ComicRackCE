@@ -10,10 +10,6 @@ public class ComicBookCheckedMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (!comicBook.Checked)
-        {
-            return YesNo.No;
-        }
-        return YesNo.Yes;
+        return !comicBook.Checked ? YesNo.No : YesNo.Yes;
     }
 }

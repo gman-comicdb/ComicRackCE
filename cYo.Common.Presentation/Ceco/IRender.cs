@@ -4,10 +4,7 @@ namespace cYo.Common.Presentation.Ceco;
 
 public interface IRender
 {
-    bool IsWhiteSpace
-    {
-        get;
-    }
+    bool IsWhiteSpace { get; }
 
     void Measure(Graphics gr, int maxWidth);
 

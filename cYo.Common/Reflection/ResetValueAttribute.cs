@@ -10,11 +10,7 @@ namespace cYo.Common.Reflection;
 [AttributeUsage(AttributeTargets.Property, Inherited = true)]
 public class ResetValueAttribute : Attribute
 {
-    public int Level
-    {
-        get;
-        private set;
-    }
+    public int Level { get; private set; }
 
     public ResetValueAttribute(int level = 0)
     {

@@ -40,84 +40,37 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     private StencilMode stencilMode;
 
-    public int ColorBits
-    {
-        get;
-        set;
-    }
+    public int ColorBits { get; set; }
 
-    public int AccumBits
-    {
-        get;
-        set;
-    }
+    public int AccumBits { get; set; }
 
-    public int DepthBits
-    {
-        get;
-        set;
-    }
+    public int DepthBits { get; set; }
 
-    public int StencilBits
-    {
-        get;
-        set;
-    }
+    public int StencilBits { get; set; }
 
-    public bool AutoMakeCurrent
-    {
-        get;
-        set;
-    }
+    public bool AutoMakeCurrent { get; set; }
 
-    public bool AutoSwapBuffers
-    {
-        get;
-        set;
-    }
+    public bool AutoSwapBuffers { get; set; }
 
-    public bool AutoFinish
-    {
-        get;
-        set;
-    }
+    public bool AutoFinish { get; set; }
 
-    public bool AutoReshape
-    {
-        get;
-        set;
-    }
+    public bool AutoReshape { get; set; }
 
     public int ErrorCode => errorCode;
 
     public Size Size => Control.ClientRectangle.Size;
 
-    public Control Control
-    {
-        get;
-        private set;
-    }
+    public Control Control { get; private set; }
 
-    public TextureManagerSettings Settings
-    {
-        get;
-        private set;
-    }
+    public TextureManagerSettings Settings { get; private set; }
 
     public bool IsLocked => sceneCounter > 0;
 
-    public bool HighQuality
-    {
-        get;
-        set;
-    }
+    public bool HighQuality { get; set; }
 
     public Matrix Transform
     {
-        get
-        {
-            return GetMatrix(modelView: true);
-        }
+        get => GetMatrix(modelView: true);
         set
         {
             float[] array = new float[16];
@@ -146,34 +99,19 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     public float Opacity
     {
-        get
-        {
-            return opacity;
-        }
-        set
-        {
-            opacity = value;
-        }
+        get => opacity;
+        set => opacity = value;
     }
 
     public CompositingMode CompositingMode
     {
-        get
-        {
-            return compositingMode;
-        }
-        set
-        {
-            compositingMode = value;
-        }
+        get => compositingMode;
+        set => compositingMode = value;
     }
 
     public RectangleF Clip
     {
-        get
-        {
-            return clip;
-        }
+        get => clip;
         set
         {
             clip = value;
@@ -188,18 +126,18 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
             {
                 using (Matrix matrix2 = GetMatrix(modelView: false))
                 {
-                    PointF[] array2 = new PointF[4]
-                    {
-                        new PointF(clip.X, clip.Y),
-                        new PointF(clip.Right, clip.Y),
-                        new PointF(clip.Right, clip.Bottom),
-                        new PointF(clip.X, clip.Bottom)
-                    };
+                    PointF[] array2 =
+                    [
+                        new(clip.X, clip.Y),
+                        new(clip.Right, clip.Y),
+                        new(clip.Right, clip.Bottom),
+                        new(clip.X, clip.Bottom)
+                    ];
                     matrix.TransformPoints(array2);
                     matrix2.TransformPoints(array2);
                     Gl.glGetIntegerv(2978, array);
-                    Point point = new Point((int)((float)array[0] + (1f + array2[3].X) * (float)array[2] / 2f), (int)((float)array[1] + (1f + array2[3].Y) * (float)array[3] / 2f));
-                    Point point2 = new Point((int)((float)array[0] + (1f + array2[1].X) * (float)array[2] / 2f), (int)((float)array[1] + (1f + array2[1].Y) * (float)array[3] / 2f));
+                    Point point = new((int)((float)array[0] + (1f + array2[3].X) * (float)array[2] / 2f), (int)((float)array[1] + (1f + array2[3].Y) * (float)array[3] / 2f));
+                    Point point2 = new((int)((float)array[0] + (1f + array2[1].X) * (float)array[2] / 2f), (int)((float)array[1] + (1f + array2[1].Y) * (float)array[3] / 2f));
                     Gl.glScissor(point.X, point.Y, point2.X - point.X, point2.Y - point.Y);
                 }
             }
@@ -210,10 +148,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     public StencilMode StencilMode
     {
-        get
-        {
-            return stencilMode;
-        }
+        get => stencilMode;
         set
         {
             switch (value)
@@ -248,33 +183,17 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     public bool OptimizedTextures
     {
-        get
-        {
-            return tm.IsOptimizedTexture;
-        }
-        set
-        {
-            tm.IsOptimizedTexture = value;
-        }
+        get => tm.IsOptimizedTexture;
+        set => tm.IsOptimizedTexture = value;
     }
 
     public bool EnableFilter
     {
-        get
-        {
-            return tm.EnableFilter;
-        }
-        set
-        {
-            tm.EnableFilter = value;
-        }
+        get => tm.EnableFilter;
+        set => tm.EnableFilter = value;
     }
 
-    public BlendingOperation BlendingOperation
-    {
-        get;
-        set;
-    }
+    public BlendingOperation BlendingOperation { get; set; }
 
     public event EventHandler Paint;
 
@@ -309,11 +228,9 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
             Control.Disposed -= window_Disposed;
             Control = null;
         }
-        if (tm != null)
-        {
-            tm.Dispose();
-            tm = null;
-        }
+
+        tm?.Dispose();
+        tm = null;
         DestroyContexts();
     }
 
@@ -357,7 +274,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
             throw new InvalidOperationException("Window not created");
         }
         windowHandle = window.Handle;
-        Gdi.PIXELFORMATDESCRIPTOR pixelFormatDescriptor = default(Gdi.PIXELFORMATDESCRIPTOR);
+        Gdi.PIXELFORMATDESCRIPTOR pixelFormatDescriptor = default;
         pixelFormatDescriptor.nSize = (short)Marshal.SizeOf((object)pixelFormatDescriptor);
         pixelFormatDescriptor.nVersion = 1;
         pixelFormatDescriptor.dwFlags = 37;
@@ -437,11 +354,11 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     private static void SetStyle(Control window, ControlStyles styles, bool enable)
     {
-        typeof(Control).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(window, new object[2]
-        {
+        typeof(Control).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(window,
+        [
             styles,
             enable
-        });
+        ]);
     }
 
     private void PaintFrame()
@@ -459,7 +376,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
         {
             Gl.glEnable(3042);
             BlendingOperation blendingOperation = BlendingOperation;
-            if (blendingOperation == BlendingOperation.Blend || blendingOperation != BlendingOperation.Multiply)
+            if (blendingOperation is BlendingOperation.Blend or not BlendingOperation.Multiply)
             {
                 Gl.glBlendFunc(770, 771);
             }
@@ -489,10 +406,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     protected virtual void OnPaint()
     {
-        if (this.Paint != null)
-        {
-            this.Paint(this, EventArgs.Empty);
-        }
+        Paint?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnInitOpenGl()
@@ -635,7 +549,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
 
     public unsafe Bitmap GetFramebuffer(Rectangle rc, bool flip)
     {
-        Bitmap bitmap = new Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
+        Bitmap bitmap = new(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
         BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
         try
         {

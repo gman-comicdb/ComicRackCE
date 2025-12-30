@@ -15,7 +15,7 @@ public class ImageManager : ImageManagerBase<PageImage>
     protected override PageImage CreateNewFromProvider(ImageKey key, IImageProvider provider)
     {
         byte[] byteImage = provider.GetByteImage(key.Index);
-        PageImage pageImage = ((byteImage != null) ? PageImage.CreateFrom(byteImage) : PageImage.Wrap(provider.GetImage(key.Index)));
+        PageImage pageImage = (byteImage != null) ? PageImage.CreateFrom(byteImage) : PageImage.Wrap(provider.GetImage(key.Index));
         if (key.Rotation != 0)
         {
             Bitmap newImage = pageImage.Bitmap.Rotate(key.Rotation);

@@ -41,29 +41,13 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     public class ImageInfo
     {
-        public int Width
-        {
-            get;
-            set;
-        }
+        public int Width { get; set; }
 
-        public int Height
-        {
-            get;
-            set;
-        }
+        public int Height { get; set; }
 
-        public int ImageCount
-        {
-            get;
-            set;
-        }
+        public int ImageCount { get; set; }
 
-        public bool IsForcedDoublePage
-        {
-            get;
-            set;
-        }
+        public bool IsForcedDoublePage { get; set; }
 
         public bool IsSingleImage => ImageCount == 1;
 
@@ -75,10 +59,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
         public Size Size
         {
-            get
-            {
-                return new Size(Width, Height);
-            }
+            get => new(Width, Height);
             set
             {
                 Width = value.Width;
@@ -93,38 +74,21 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     {
         private WeakReference<PageImage> wrf;
 
-        public float ScaleX
-        {
-            get;
-            set;
-        }
+        public float ScaleX { get; set; }
 
-        public float ScaleY
-        {
-            get;
-            set;
-        }
+        public float ScaleY { get; set; }
 
         public PageImage Bitmap
         {
-            get
-            {
-                return wrf.GetData();
-            }
-            set
-            {
-                wrf = new WeakReference<PageImage>(value);
-            }
+            get => wrf.GetData();
+            set => wrf = new WeakReference<PageImage>(value);
         }
 
         public override bool Equals(object obj)
         {
-            ScaledPageKey scaledPageKey = obj as ScaledPageKey;
-            if (scaledPageKey != null && scaledPageKey.ScaleX == ScaleX && scaledPageKey.ScaleY == ScaleY)
-            {
-                return scaledPageKey.Bitmap == Bitmap;
-            }
-            return false;
+            return obj is ScaledPageKey scaledPageKey && scaledPageKey.ScaleX == ScaleX && scaledPageKey.ScaleY == ScaleY
+                ? scaledPageKey.Bitmap == Bitmap
+                : false;
         }
 
         public override int GetHashCode()
@@ -135,11 +99,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private class ScaledPageItem : MemoryOptimizedImage
     {
-        public long Ticks
-        {
-            get;
-            set;
-        }
+        public long Ticks { get; set; }
 
         public ScaledPageItem()
             : base((Bitmap)null)
@@ -166,7 +126,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             }
             base.Span = time;
             base.AnimationValueGenerator = Animator.SinusRise;
-            Point dp = new Point(toPoint.X - fromPoint.X, toPoint.Y - fromPoint.Y);
+            Point dp = new(toPoint.X - fromPoint.X, toPoint.Y - fromPoint.Y);
             base.AnimationHandler = delegate (OverlayPanel p, float t, float d)
             {
                 p.X = fromPoint.X + (int)(t * (float)dp.X);
@@ -187,7 +147,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             base.AnimationValueGenerator = Animator.LinearRise;
             base.AnimationHandler = delegate (OverlayPanel p, float t, float d)
             {
-                p.Scale = (outTransition ? (1f - t) : t);
+                p.Scale = outTransition ? (1f - t) : t;
                 Rectangle bounds = p.Bounds;
                 Rectangle physicalBounds = p.PhysicalBounds;
                 p.X = toPoint.X + (physicalBounds.Width - bounds.Width) / 2;
@@ -212,7 +172,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private static readonly Size messageSize = new Size(300, 30).ScaleDpi();
 
-    public static readonly Cursor EmptyCursor = new Cursor(new MemoryStream(Resources.EmptyCursor));
+    public static readonly Cursor EmptyCursor = new(new MemoryStream(Resources.EmptyCursor));
 
     private readonly OverlayManager overlayManager;
 
@@ -300,9 +260,9 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private float innerBowRightOffsetInPercent;
 
-    private int[] displayedPages = new int[0];
+    private int[] displayedPages = [];
 
-    private Rectangle[] displayedPageAreas = new Rectangle[0];
+    private Rectangle[] displayedPageAreas = [];
 
     private RectangleF displayedPageBounds;
 
@@ -347,23 +307,14 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(true)]
     public bool PreCache
     {
-        get
-        {
-            return preCache;
-        }
-        set
-        {
-            preCache = value;
-        }
+        get => preCache;
+        set => preCache = value;
     }
 
     [DefaultValue(false)]
     public bool NavigationOverlayVisible
     {
-        get
-        {
-            return navigationOverlayVisible;
-        }
+        get => navigationOverlayVisible;
         set
         {
             if (navigationOverlayVisible != value)
@@ -378,10 +329,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IPagePool PagePool
     {
-        get
-        {
-            return pagePool;
-        }
+        get => pagePool;
         set
         {
             if (value == null)
@@ -404,23 +352,14 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IThumbnailPool ThumbnailPool
     {
-        get
-        {
-            return navigationOverlay.Pool;
-        }
-        set
-        {
-            navigationOverlay.Pool = value;
-        }
+        get => navigationOverlay.Pool;
+        set => navigationOverlay.Pool = value;
     }
 
     [DefaultValue(null)]
     public ComicBookNavigator Book
     {
-        get
-        {
-            return book;
-        }
+        get => book;
         set
         {
             ComicBookNavigator comicBookNavigator = Book;
@@ -441,7 +380,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                 comicBookNavigator.PagesChanged -= book_PageFilterOrPagesChanged;
                 comicBookNavigator.Comic.BookChanged -= Comic_BookChanged;
                 comicBookNavigator.PagePart = base.ImageVisiblePart;
-                comicBookNavigator.RightToLeftReading = (base.RightToLeftReading ? YesNo.Yes : YesNo.No);
+                comicBookNavigator.RightToLeftReading = base.RightToLeftReading ? YesNo.Yes : YesNo.No;
             }
             book = value;
             OnBookChanged();
@@ -474,10 +413,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(typeof(Color), "192, 0, 0, 0")]
     public Color BlindOutColor
     {
-        get
-        {
-            return blindOutColor;
-        }
+        get => blindOutColor;
         set
         {
             if (!(blindOutColor == value) && blindOut)
@@ -490,10 +426,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(false)]
     public bool BlindOut
     {
-        get
-        {
-            return blindOut;
-        }
+        get => blindOut;
         set
         {
             if (blindOut != value)
@@ -507,10 +440,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(false)]
     public bool ShowStatusMessage
     {
-        get
-        {
-            return showStatusMessage;
-        }
+        get => showStatusMessage;
         set
         {
             if (showStatusMessage != value)
@@ -524,10 +454,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(false)]
     public bool LeftRightMovementReversed
     {
-        get
-        {
-            return leftRightMovementReversed;
-        }
+        get => leftRightMovementReversed;
         set
         {
             if (leftRightMovementReversed != value)
@@ -541,10 +468,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(PageLayoutMode.Single)]
     public PageLayoutMode PageLayout
     {
-        get
-        {
-            return pageLayout;
-        }
+        get => pageLayout;
         set
         {
             if (pageLayout != value)
@@ -560,10 +484,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(0f)]
     public float DoublePageOverlap
     {
-        get
-        {
-            return doublePageOverlap;
-        }
+        get => doublePageOverlap;
         set
         {
             if (doublePageOverlap != value)
@@ -576,10 +497,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(2f)]
     public float MagnifierZoom
     {
-        get
-        {
-            return magnifierZoom;
-        }
+        get => magnifierZoom;
         set
         {
             if (magnifierZoom != value)
@@ -596,10 +514,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(false)]
     public bool MagnifierVisible
     {
-        get
-        {
-            return magnifierVisible;
-        }
+        get => magnifierVisible;
         set
         {
             if (magnifierVisible != value)
@@ -613,36 +528,21 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(1f)]
     public float MagnifierOpacity
     {
-        get
-        {
-            return magnifierOverlay.Opacity;
-        }
-        set
-        {
-            magnifierOverlay.Opacity = value;
-        }
+        get => magnifierOverlay.Opacity;
+        set => magnifierOverlay.Opacity = value;
     }
 
     [DefaultValue(typeof(Size), "200, 200")]
     public Size MagnifierSize
     {
-        get
-        {
-            return magnifierOverlay.Size;
-        }
-        set
-        {
-            magnifierOverlay.Size = value;
-        }
+        get => magnifierOverlay.Size;
+        set => magnifierOverlay.Size = value;
     }
 
     [DefaultValue(true)]
     public bool AutoHideMagnifier
     {
-        get
-        {
-            return autoHideMagnifier;
-        }
+        get => autoHideMagnifier;
         set
         {
             if (autoHideMagnifier != value)
@@ -656,10 +556,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(true)]
     public bool AutoMagnifier
     {
-        get
-        {
-            return autoMagnifier;
-        }
+        get => autoMagnifier;
         set
         {
             if (autoMagnifier != value)
@@ -673,10 +570,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(true)]
     public bool RealisticPages
     {
-        get
-        {
-            return realisticPages;
-        }
+        get => realisticPages;
         set
         {
             if (realisticPages != value)
@@ -690,10 +584,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(1f)]
     public float InfoOverlayScaling
     {
-        get
-        {
-            return infoOverlayScaling;
-        }
+        get => infoOverlayScaling;
         set
         {
             if (infoOverlayScaling != value)
@@ -702,9 +593,9 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                 TextOverlay textOverlay = currentPageOverlay;
                 OverlayPanel overlayPanel = visiblePartOverlay;
                 TextOverlay textOverlay2 = loadPageOverlay;
-                float num2 = (messageOverlay.Scale = infoOverlayScaling);
-                float num4 = (textOverlay2.Scale = num2);
-                float num7 = (textOverlay.Scale = (overlayPanel.Scale = num4));
+                float num2 = messageOverlay.Scale = infoOverlayScaling;
+                float num4 = textOverlay2.Scale = num2;
+                float num7 = textOverlay.Scale = overlayPanel.Scale = num4;
                 navigationOverlay.Size = CalcNavigationOverlaySize();
             }
         }
@@ -713,10 +604,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(InfoOverlays.None)]
     public InfoOverlays VisibleInfoOverlays
     {
-        get
-        {
-            return visibleInfoOverlays;
-        }
+        get => visibleInfoOverlays;
         set
         {
             if (visibleInfoOverlays != value)
@@ -731,92 +619,40 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(PageTransitionEffect.Fade)]
     public PageTransitionEffect PageTransitionEffect
     {
-        get
-        {
-            return pageTransitionEffect;
-        }
-        set
-        {
-            pageTransitionEffect = value;
-        }
+        get => pageTransitionEffect;
+        set => pageTransitionEffect = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public BlendAnimationHandler Blender
-    {
-        get;
-        set;
-    }
+    public BlendAnimationHandler Blender { get; set; }
 
     [DefaultValue(false)]
     public bool DisableBlending
     {
-        get
-        {
-            return disableBlending;
-        }
-        set
-        {
-            disableBlending = value;
-        }
+        get => disableBlending;
+        set => disableBlending = value;
     }
 
     [DefaultValue(true)]
     public bool SoftwareFiltering
     {
-        get
-        {
-            return softwareFiltering;
-        }
-        set
-        {
-            softwareFiltering = value;
-        }
+        get => softwareFiltering;
+        set => softwareFiltering = value;
     }
 
-    public bool IsFlipped
-    {
-        get
-        {
-            if (base.RightToLeftReading)
-            {
-                return base.RightToLeftReadingMode == RightToLeftReadingMode.FlipParts;
-            }
-            return false;
-        }
-    }
+    public bool IsFlipped => base.RightToLeftReading ? base.RightToLeftReadingMode == RightToLeftReadingMode.FlipParts : false;
 
-    public bool IsMovementFlipped
-    {
-        get
-        {
-            if (LeftRightMovementReversed)
-            {
-                return IsFlipped;
-            }
-            return false;
-        }
-    }
+    public bool IsMovementFlipped => LeftRightMovementReversed ? IsFlipped : false;
 
     [DefaultValue(false)]
-    public bool BlendWhilePaging
-    {
-        get;
-        set;
-    }
+    public bool BlendWhilePaging { get; set; }
 
     [DefaultValue(MagnifierStyle.Glass)]
     public MagnifierStyle MagnifierStyle
     {
-        get
-        {
-            return magnifierStyle;
-        }
-        set
-        {
-            magnifierStyle = value;
-        }
+        get => magnifierStyle;
+        set => magnifierStyle = value;
     }
 
     public Color BlankPageColor => EngineConfiguration.Default.BlankPageColor;
@@ -826,10 +662,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(null)]
     public Bitmap PaperTextureBitmap
     {
-        get
-        {
-            return paperTextureBitmap;
-        }
+        get => paperTextureBitmap;
         set
         {
             if (paperTextureBitmap != value)
@@ -846,10 +679,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(null)]
     public ImageLayout PaperTextureLayout
     {
-        get
-        {
-            return paperTextureLayout;
-        }
+        get => paperTextureLayout;
         set
         {
             if (paperTextureLayout != value)
@@ -865,10 +695,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(1f)]
     public float PaperTextureStrength
     {
-        get
-        {
-            return paperTextureStrength;
-        }
+        get => paperTextureStrength;
         set
         {
             if (value != paperTextureStrength)
@@ -885,10 +712,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     [DefaultValue(null)]
     public string PaperTexture
     {
-        get
-        {
-            return paperTexture;
-        }
+        get => paperTexture;
         set
         {
             if (!(paperTexture == value))
@@ -910,65 +734,24 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         }
     }
 
-    public override bool IsValid
-    {
-        get
-        {
-            if (Book != null)
-            {
-                return PagePool != null;
-            }
-            return false;
-        }
-    }
+    public override bool IsValid => Book != null ? PagePool != null : false;
 
     public int DisplayHash => displayHash;
 
     public int CurrentPage
     {
-        get
-        {
-            return currentPage;
-        }
-        protected set
-        {
-            currentPage = value;
-        }
+        get => currentPage; protected set => currentPage = value;
     }
 
     public int CurrentMousePage => currentMousePage;
 
-    protected int NextPage
-    {
-        get
-        {
-            if (!TwoPageDisplay)
-            {
-                return -1;
-            }
-            return SeekPage(CurrentPage, 1);
-        }
-    }
+    protected int NextPage => !TwoPageDisplay ? -1 : SeekPage(CurrentPage, 1);
 
     public bool TwoPageDisplay => PageLayout != PageLayoutMode.Single;
 
-    public bool ShouldPagingBlend
-    {
-        get;
-        private set;
-    }
+    public bool ShouldPagingBlend { get; private set; }
 
-    protected override bool MouseHandled
-    {
-        get
-        {
-            if (!overlayManager.MouseHandled)
-            {
-                return base.MouseActionHappened;
-            }
-            return true;
-        }
-    }
+    protected override bool MouseHandled => !overlayManager.MouseHandled ? base.MouseActionHappened : true;
 
     private int[] DisplayedPages => displayedPages;
 
@@ -990,14 +773,8 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     public override int PageScrollingTime
     {
-        get
-        {
-            return EngineConfiguration.Default.PageScrollingDuration;
-        }
-        set
-        {
-            base.PageScrollingTime = value;
-        }
+        get => EngineConfiguration.Default.PageScrollingDuration;
+        set => base.PageScrollingTime = value;
     }
 
     public override bool IsDoubleImage => GetImageInfo().IsDoubleImage;
@@ -1008,11 +785,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         {
             Rectangle clientRectangle = base.ClientRectangle;
             Rectangle bounds = navigationOverlay.Bounds;
-            if (!IsPageBrowsersOnTop)
-            {
-                return clientRectangle.Height - bounds.Height - base.Margin.Bottom;
-            }
-            return base.Margin.Top;
+            return !IsPageBrowsersOnTop ? clientRectangle.Height - bounds.Height - base.Margin.Bottom : Margin.Top;
         }
     }
 
@@ -1060,7 +833,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         visiblePartOverlay.RenderSurface += visiblePartOverlay_RenderSurface;
         if (!EngineConfiguration.Default.HideVisiblePartOverlayClose)
         {
-            SimpleButtonPanel simpleButtonPanel = new SimpleButtonPanel(new Size(16, 16).ScaleDpi())
+            SimpleButtonPanel simpleButtonPanel = new(new Size(16, 16).ScaleDpi())
             {
                 Margin = Padding.Empty,
                 Alignment = ContentAlignment.TopRight,
@@ -1132,52 +905,34 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     protected virtual void OnBookChanged()
     {
-        if (this.BookChanged != null)
-        {
-            this.BookChanged(this, EventArgs.Empty);
-        }
+        BookChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnDrawnPageCountChanged()
     {
         UpdateCurrentPageOverlay();
-        if (this.DrawnPageCountChanged != null)
-        {
-            this.DrawnPageCountChanged(this, EventArgs.Empty);
-        }
+        DrawnPageCountChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnBrowse(BrowseEventArgs e)
     {
-        if (this.Browse != null)
-        {
-            this.Browse(this, e);
-        }
+        Browse?.Invoke(this, e);
     }
 
     protected virtual void OnPageChange(BookPageEventArgs e)
     {
-        if (this.PageChange != null)
-        {
-            this.PageChange(this, e);
-        }
+        PageChange?.Invoke(this, e);
     }
 
     protected virtual void OnPageChanged(BookPageEventArgs e)
     {
         currentMousePage = -1;
-        if (this.PageChanged != null)
-        {
-            this.PageChanged(this, e);
-        }
+        PageChanged?.Invoke(this, e);
     }
 
     protected virtual void OnVisibleInfoOverlaysChanged()
     {
-        if (this.VisibleInfoOverlaysChanged != null)
-        {
-            this.VisibleInfoOverlaysChanged(this, EventArgs.Empty);
-        }
+        VisibleInfoOverlaysChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void CreateWorkingPaperTexture()
@@ -1286,10 +1041,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             if (num4 != 0)
             {
                 float maxOpacity = EngineConfiguration.Default.PageShadowOpacity.Clamp(0f, 1f);
-                if (shadowBitmap == null)
-                {
-                    shadowBitmap = GraphicsExtensions.CreateShadowBitmap(BlurShadowType.Outside, Color.Black, 64, maxOpacity);
-                }
+                shadowBitmap ??= GraphicsExtensions.CreateShadowBitmap(BlurShadowType.Outside, Color.Black, 64, maxOpacity);
                 gr.DrawShadow(rectangleF.Pad(-num4), shadowBitmap, num4, BlurShadowParts.Edges);
             }
         }
@@ -1298,7 +1050,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private ImageInfo GetImageInfo(int page, PageImage image1, PageImage image2)
     {
-        ImageInfo imageInfo = new ImageInfo();
+        ImageInfo imageInfo = new();
         if (!IsValid)
         {
             return imageInfo;
@@ -1377,11 +1129,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         }
         try
         {
-            if (page >= Book.Comic.PageCount)
-            {
-                return false;
-            }
-            return Book.Comic.GetPage(page).IsSinglePageType;
+            return page >= Book.Comic.PageCount ? false : Book.Comic.GetPage(page).IsSinglePageType;
         }
         catch
         {
@@ -1397,11 +1145,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         }
         try
         {
-            if (page >= Book.Comic.PageCount)
-            {
-                return false;
-            }
-            return Book.Comic.GetPage(page).IsSingleRightPageType;
+            return page >= Book.Comic.PageCount ? false : Book.Comic.GetPage(page).IsSingleRightPageType;
         }
         catch
         {
@@ -1498,11 +1242,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private int SeekPage(int page, int offset)
     {
-        if (Book == null)
-        {
-            return -1;
-        }
-        return Book.SeekNextPage(page, Math.Abs(offset), Math.Sign(offset));
+        return Book == null ? -1 : Book.SeekNextPage(page, Math.Abs(offset), Math.Sign(offset));
     }
 
     public IItemLock<PageImage> GetImage(int page, bool withCaching = false)
@@ -1662,7 +1402,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                 e.Item.Dispose();
             };
         }
-        ScaledPageKey key = new ScaledPageKey
+        ScaledPageKey key = new()
         {
             ScaleX = sx,
             ScaleY = sy,
@@ -1675,7 +1415,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         {
             if (itemLock.Item.Ticks != 0L && ticks - itemLock.Item.Ticks > num)
             {
-                Size size = new Size((int)Math.Round((float)bmp.Width * sx), (int)Math.Round((float)bmp.Height * sy));
+                Size size = new((int)Math.Round((float)bmp.Width * sx), (int)Math.Round((float)bmp.Height * sy));
                 itemLock.Item.Optimized = PageImage.MemoryOptimized;
                 itemLock.Item.Bitmap = bmp.Bitmap.Resize(size, EngineConfiguration.Default.SoftwareFilter);
             }
@@ -1719,8 +1459,8 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         int num = displayHash;
         int num2 = CurrentPage;
         int nextPage = NextPage;
-        int[] array = new int[0];
-        Rectangle[] array2 = new Rectangle[0];
+        int[] array = [];
+        Rectangle[] array2 = [];
         using (IItemLock<PageImage> itemLock = GetImage(num2, withCaching: true))
         {
             using (IItemLock<PageImage> itemLock2 = GetImage(nextPage, withCaching: true))
@@ -1747,24 +1487,24 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                         {
                             if (imageInfo.IsDoublePage)
                             {
-                                RectangleF rectangleF = new RectangleF(0f, 0f, (float)itemLock.Item.Width / 2f, itemLock.Item.Height);
+                                RectangleF rectangleF = new(0f, 0f, (float)itemLock.Item.Width / 2f, itemLock.Item.Height);
                                 displayedPageBounds = DrawPageOrnaments(gr, destination, source, rectangleF, rectangleF, leftOk: true, rightOk: true, fillLeft: false, fillRight: false);
                             }
                             else
                             {
-                                RectangleF rectangleF2 = new RectangleF(0f, 0f, itemLock.Item.Width, itemLock.Item.Height);
+                                RectangleF rectangleF2 = new(0f, 0f, itemLock.Item.Width, itemLock.Item.Height);
                                 displayedPageBounds = DrawPageOrnaments(gr, destination, source, rectangleF2, rectangleF2, leftOk: true, rightOk: false, fillLeft: false, fillRight: false);
                             }
                         }
                         displayHash = itemLock.Item.GetHashCode();
-                        array = new int[1]
-                        {
+                        array =
+                        [
                             num2
-                        };
-                        array2 = new Rectangle[1]
-                        {
+                        ];
+                        array2 =
+                        [
                             destination
-                        };
+                        ];
                     }
                     else
                     {
@@ -1805,14 +1545,14 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                         {
                             ri2.Width -= num7;
                         }
-                        RectangleF rect = new RectangleF(source.X, source.Y, Math.Min(ri.Right, source.Right) - (float)source.X, source.Height);
-                        RectangleF rect2 = new RectangleF(rect.Right - ri.Width, rect.Y, (float)source.Right - rect.Right, rect.Height);
+                        RectangleF rect = new(source.X, source.Y, Math.Min(ri.Right, source.Right) - (float)source.X, source.Height);
+                        RectangleF rect2 = new(rect.Right - ri.Width, rect.Y, (float)source.Right - rect.Right, rect.Height);
                         if (!flag3)
                         {
                             rect2.X += num7;
                         }
-                        RectangleF rect3 = new RectangleF((float)destination.X + rect.Left / (float)source.Width, destination.Y, (float)destination.Width * rect.Width / (float)source.Width, destination.Height);
-                        RectangleF rect4 = new RectangleF(rect3.Right, destination.Y, (float)destination.Right - rect3.Right, destination.Height);
+                        RectangleF rect3 = new((float)destination.X + rect.Left / (float)source.Width, destination.Y, (float)destination.Width * rect.Width / (float)source.Width, destination.Height);
+                        RectangleF rect4 = new(rect3.Right, destination.Y, (float)destination.Right - rect3.Right, destination.Height);
                         rect = rect.Scale(1f / num5);
                         rect2 = rect2.Scale(1f / num6);
                         using (gr.SaveState())
@@ -1841,8 +1581,8 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                         }
                         displayedPageBounds = DrawPageOrnaments(gr, destination, source, ri, ri2, a || flag4, b || flag5, flag4, flag5);
                         displayHash = a2.Item.GetHashCode() ^ (b2.Item.GetHashCode() << 1);
-                        List<int> list = new List<int>();
-                        List<Rectangle> list2 = new List<Rectangle>();
+                        List<int> list = new();
+                        List<Rectangle> list2 = new();
                         if (a)
                         {
                             list.Add(num2);
@@ -1870,7 +1610,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         ComicBookNavigator comicBookNavigator = Book;
         if (comicBookNavigator != null)
         {
-            int num8 = ((nextPage != -1) ? nextPage : num2);
+            int num8 = (nextPage != -1) ? nextPage : num2;
             if (num8 > comicBookNavigator.LastPageRead)
             {
                 comicBookNavigator.LastPageRead = num8;
@@ -1951,14 +1691,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             longClickTimer.Stop();
             mouseDown = Point.Empty;
         }
-        if (magnifierOverlay.Visible)
-        {
-            Cursor = (Cursor.Current = EmptyCursor);
-        }
-        else
-        {
-            Cursor = (Cursor.Current = Cursors.Default);
-        }
+        Cursor = magnifierOverlay.Visible ? (Cursor.Current = EmptyCursor) : (Cursor.Current = Cursors.Default);
         UpdateNavigationOverlay();
         PositionMagnifier(e.Location);
     }
@@ -2048,20 +1781,11 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     protected override bool IsInputKey(Keys keyData)
     {
-        switch (keyData)
+        return keyData switch
         {
-            case Keys.Tab:
-            case Keys.End:
-            case Keys.Home:
-            case Keys.Left:
-            case Keys.Up:
-            case Keys.Right:
-            case Keys.Down:
-            case Keys.Tab | Keys.Shift:
-                return true;
-            default:
-                return base.IsInputKey(keyData);
-        }
+            Keys.Tab or Keys.End or Keys.Home or Keys.Left or Keys.Up or Keys.Right or Keys.Down or Keys.Tab | Keys.Shift => true,
+            _ => base.IsInputKey(keyData),
+        };
     }
 
     protected override Color GetAutoBackgroundColor()
@@ -2074,24 +1798,19 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                 {
                     if (itemLock.Item.BackgrounColor.IsEmpty)
                     {
-                        Bitmap bitmap = ((itemLock.Item != null) ? itemLock.Item.Bitmap : null);
+                        Bitmap bitmap = itemLock.Item?.Bitmap;
                         if (bitmap != null)
                         {
-                            Color[] array = new Color[4]
-                            {
+                            Color[] array =
+                            [
                                 bitmap.GetAverageColor(2, 2, 4),
                                 bitmap.GetAverageColor(bitmap.Width - 2 - 4, 2, 4),
                                 bitmap.GetAverageColor(bitmap.Width - 2 - 4, bitmap.Height - 2 - 4, 4),
                                 bitmap.GetAverageColor(2, bitmap.Height - 2 - 4, 4)
-                            };
-                            if (array.GetAverage().GetBrightness() < 0.5f)
-                            {
-                                itemLock.Item.BackgrounColor = array.Max((Color a, Color b) => a.GetBrightness().CompareTo(b.GetBrightness()));
-                            }
-                            else
-                            {
-                                itemLock.Item.BackgrounColor = array.Max((Color a, Color b) => b.GetBrightness().CompareTo(a.GetBrightness()));
-                            }
+                            ];
+                            itemLock.Item.BackgrounColor = array.GetAverage().GetBrightness() < 0.5f
+                                ? array.Max((Color a, Color b) => a.GetBrightness().CompareTo(b.GetBrightness()))
+                                : array.Max((Color a, Color b) => b.GetBrightness().CompareTo(a.GetBrightness()));
                         }
                     }
                     return itemLock.Item.BackgrounColor;
@@ -2147,7 +1866,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         GestureArea gestureArea = GestureHitTest(pt);
         if (gestureArea != null)
         {
-            GestureEventArgs gestureEventArgs = new GestureEventArgs(GestureType.Touch)
+            GestureEventArgs gestureEventArgs = new(GestureType.Touch)
             {
                 Area = gestureArea.Alignment,
                 AreaBounds = gestureArea.Area,
@@ -2237,7 +1956,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             return;
         }
         currentPageOverlayHash = DisplayHash;
-        string number = ((array.Length == 1) ? (array[0] + 1).ToString() : $"{array[0] + 1}/{array[1] + 1}");
+        string number = (array.Length == 1) ? (array[0] + 1).ToString() : $"{array[0] + 1}/{array[1] + 1}";
         string text = ComicBook.FormatNumber(number, Book.IsIndexRetrievalCompleted ? Book.ProviderPageCount : (-1));
         if (CurrentPageShowsName)
         {
@@ -2360,7 +2079,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     {
         DisplayOutput displayOutput = base.LastRenderedDisplay ?? base.Display;
         Rectangle rectangle = mrc;
-        int num3 = (mrc.Width = (mrc.Height = Math.Max(mrc.Height, mrc.Width)));
+        int num3 = mrc.Width = mrc.Height = Math.Max(mrc.Height, mrc.Width);
         Rectangle source = mrc;
         source.Width = (int)((float)source.Width / displayOutput.Scale.Width / zoom);
         source.Height = (int)((float)source.Height / displayOutput.Scale.Height / zoom);
@@ -2377,7 +2096,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             }
             gr.TranslateTransform((float)mrc.Width / 2f - (float)(mrc.Width - rectangle.Width) / 2f, (float)mrc.Height / 2f - (float)(mrc.Height - rectangle.Height) / 2f);
             gr.RotateTransform(displayOutput.Config.Rotation.ToDegrees());
-            gr.TranslateTransform((float)(-mrc.Width) / 2f, (float)(-mrc.Height) / 2f);
+            gr.TranslateTransform((float)-mrc.Width / 2f, (float)-mrc.Height / 2f);
             DrawImage(gr, mrc, source, clipToDestination: true);
             RenderImageEffect(gr, null);
         }
@@ -2437,7 +2156,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             try
             {
                 smallBitmap = new Bitmap(r.Width, r.Height, PixelFormat.Format32bppArgb);
-                Bitmap bitmap = (((base.ImageDisplayOptions & ImageDisplayOptions.HighQuality) != 0) ? new Bitmap(smallBitmap.Width * 2, smallBitmap.Height * 2) : smallBitmap);
+                Bitmap bitmap = ((base.ImageDisplayOptions & ImageDisplayOptions.HighQuality) != 0) ? new Bitmap(smallBitmap.Width * 2, smallBitmap.Height * 2) : smallBitmap;
                 using (Graphics graphics = Graphics.FromImage(bitmap))
                 {
                     graphics.ScaleTransform((float)bitmap.Width / (float)imageSize.Width, (float)bitmap.Height / (float)imageSize.Height);
@@ -2501,55 +2220,24 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         {
             flag = !flag;
         }
-        switch (PageTransitionEffect)
+        Blender = PageTransitionEffect switch
         {
-            default:
-                Blender = null;
-                break;
-            case PageTransitionEffect.Fade:
-                Blender = FadeInBlending;
-                break;
-            case PageTransitionEffect.LeftRight:
-                if (flag)
-                {
-                    Blender = ScrollToLeftBlending;
-                }
-                else
-                {
-                    Blender = ScrollToRightBlending;
-                }
-                break;
-            case PageTransitionEffect.TopDown:
-                if (flag)
-                {
-                    Blender = ScrollToTopBlending;
-                }
-                else
-                {
-                    Blender = ScrollToBottomBlending;
-                }
-                break;
-            case PageTransitionEffect.Paging:
-                if (flag)
-                {
-                    Blender = PageForward;
-                }
-                else
-                {
-                    Blender = PageBackward;
-                }
-                break;
-        }
+            PageTransitionEffect.Fade => FadeInBlending,
+            PageTransitionEffect.LeftRight => flag ? ScrollToLeftBlending : ScrollToRightBlending,
+            PageTransitionEffect.TopDown => flag ? ScrollToTopBlending : ScrollToBottomBlending,
+            PageTransitionEffect.Paging => flag ? PageForward : PageBackward,
+            _ => null,
+        };
         ShouldPagingBlend = !base.InvokeRequired && (BlendWhilePaging || Machine.Ticks - lastBlend > 100);
         OnPageChange(e);
         int oldPage = CurrentPage;
         DisplayOutputConfig displayConfig = base.DisplayConfig;
         currentPage = Book.CurrentPage;
         int part = 0;
-        int num = ((!TwoPageDisplay) ? 1 : 2);
+        int num = (!TwoPageDisplay) ? 1 : 2;
         if (e.OldPage != -1 && Math.Abs(e.OldPage - e.Page) <= num)
         {
-            part = ((e.OldPage >= e.Page) ? (ImagePartCount - 1) : 0);
+            part = (e.OldPage >= e.Page) ? (ImagePartCount - 1) : 0;
         }
         base.ImageVisiblePart = new ImagePartInfo(part);
         if (ShouldPagingBlend)
@@ -2638,7 +2326,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         }
         Rectangle clientRectangle = base.ClientRectangle;
         Rectangle bounds = navigationOverlay.Bounds;
-        Size size = new Size(500, 50);
+        Size size = new(500, 50);
         if (IsPageBrowsersOnTop)
         {
             UpdateNavigationOverlay(pt, navigationOverlay, new Point((clientRectangle.Width - bounds.Width) / 2, -bounds.Height), new Point((clientRectangle.Width - bounds.Width) / 2, NavigationOverlayVisibleY), new Rectangle((clientRectangle.Width - size.Width) / 2, 0, size.Width, size.Height));
@@ -2694,7 +2382,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                 DisplayOutputConfig displayConfig = base.DisplayConfig;
                 displayConfig.Rotation = base.LastRenderedDisplay.Config.Rotation;
                 DisplayOutput display = DisplayOutput.Create(displayConfig, base.CurrentAnamorphicTolerance);
-                DisplayOutput oldOut = (oldConfig.IsEmpty ? display : DisplayOutput.Create(oldConfig, base.CurrentAnamorphicTolerance));
+                DisplayOutput oldOut = oldConfig.IsEmpty ? display : DisplayOutput.Create(oldConfig, base.CurrentAnamorphicTolerance);
                 switch (mode)
                 {
                     case BlendAnimationMode.CurrentAsNew:
@@ -2918,7 +2606,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     public void ScrollToLeftBlending(IBitmapRenderer hr, int oldPage, DisplayOutput oldOut, DisplayOutput display, float percent)
     {
         RenderImageBackground(hr, null);
-        hr.TranslateTransform((float)(-base.ClientRectangle.Width) * percent, 0f);
+        hr.TranslateTransform((float)-base.ClientRectangle.Width * percent, 0f);
         RenderImageSafe(hr, oldOut, oldPage, !base.IsConstantBackground);
         hr.TranslateTransform(base.ClientRectangle.Width, 0f);
         RenderImageSafe(renderer, display, !base.IsConstantBackground);
@@ -2945,7 +2633,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     public void ScrollToTopBlending(IBitmapRenderer hr, int oldPage, DisplayOutput oldOut, DisplayOutput display, float percent)
     {
         RenderImageBackground(hr, null);
-        hr.TranslateTransform(0f, (float)(-base.ClientRectangle.Height) * percent);
+        hr.TranslateTransform(0f, (float)-base.ClientRectangle.Height * percent);
         RenderImageSafe(hr, oldOut, oldPage, !base.IsConstantBackground);
         hr.TranslateTransform(0f, base.ClientRectangle.Height);
         RenderImageSafe(renderer, display, !base.IsConstantBackground);
@@ -2997,7 +2685,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
     static ComicDisplayControl()
     {
         Magnifier[] array = new Magnifier[2];
-        Magnifier magnifier = new Magnifier
+        Magnifier magnifier = new()
         {
             Bitmap = Resources.Magnifier,
             Inner = new Rectangle(20, 20, 573, 327),

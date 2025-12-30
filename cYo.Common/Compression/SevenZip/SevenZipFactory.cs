@@ -43,7 +43,7 @@ public class SevenZipFactory : DisposableObject
         public static extern IntPtr GetProcAddress(SafeLibraryHandle hModule, [MarshalAs(UnmanagedType.LPStr)] string procName);
     }
 
-    private static readonly Dictionary<KnownSevenZipFormat, Guid> knownFormats = new Dictionary<KnownSevenZipFormat, Guid>
+    private static readonly Dictionary<KnownSevenZipFormat, Guid> knownFormats = new()
     {
         {
             KnownSevenZipFormat.SevenZip,

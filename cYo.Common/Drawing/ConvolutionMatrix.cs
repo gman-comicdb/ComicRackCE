@@ -26,134 +26,68 @@ public struct ConvolutionMatrix
 
     public int TopLeft
     {
-        get
-        {
-            return topLeft;
-        }
-        set
-        {
-            topLeft = value;
-        }
+        get => topLeft;
+        set => topLeft = value;
     }
 
     public int TopMid
     {
-        get
-        {
-            return topMid;
-        }
-        set
-        {
-            topMid = value;
-        }
+        get => topMid;
+        set => topMid = value;
     }
 
     public int TopRight
     {
-        get
-        {
-            return topRight;
-        }
-        set
-        {
-            topRight = value;
-        }
+        get => topRight;
+        set => topRight = value;
     }
 
     public int MidLeft
     {
-        get
-        {
-            return midLeft;
-        }
-        set
-        {
-            midLeft = value;
-        }
+        get => midLeft;
+        set => midLeft = value;
     }
 
     public int Pixel
     {
-        get
-        {
-            return pixel;
-        }
-        set
-        {
-            pixel = value;
-        }
+        get => pixel;
+        set => pixel = value;
     }
 
     public int MidRight
     {
-        get
-        {
-            return midRight;
-        }
-        set
-        {
-            midRight = value;
-        }
+        get => midRight;
+        set => midRight = value;
     }
 
     public int BottomLeft
     {
-        get
-        {
-            return bottomLeft;
-        }
-        set
-        {
-            bottomLeft = value;
-        }
+        get => bottomLeft;
+        set => bottomLeft = value;
     }
 
     public int BottomMid
     {
-        get
-        {
-            return bottomMid;
-        }
-        set
-        {
-            bottomMid = value;
-        }
+        get => bottomMid;
+        set => bottomMid = value;
     }
 
     public int BottomRight
     {
-        get
-        {
-            return bottomRight;
-        }
-        set
-        {
-            bottomRight = value;
-        }
+        get => bottomRight;
+        set => bottomRight = value;
     }
 
     public int Divisor
     {
-        get
-        {
-            return divisor;
-        }
-        set
-        {
-            divisor = value;
-        }
+        get => divisor;
+        set => divisor = value;
     }
 
     public int Offset
     {
-        get
-        {
-            return offset;
-        }
-        set
-        {
-            offset = value;
-        }
+        get => offset;
+        set => offset = value;
     }
 
     public ConvolutionMatrix(int setToAll)
@@ -161,19 +95,19 @@ public struct ConvolutionMatrix
         divisor = 1;
         offset = 0;
         pixel = setToAll;
-        topLeft = (topMid = (topRight = (midLeft = (midRight = (bottomLeft = (bottomMid = (bottomRight = setToAll)))))));
+        topLeft = topMid = topRight = midLeft = midRight = bottomLeft = bottomMid = bottomRight = setToAll;
     }
 
     public void SetAll(int value)
     {
-        int num2 = (BottomRight = value);
-        int num4 = (BottomMid = num2);
-        int num6 = (BottomLeft = num4);
-        int num8 = (MidRight = num6);
-        int num10 = (Pixel = num8);
-        int num12 = (MidLeft = num10);
-        int num14 = (TopRight = num12);
-        int num17 = (TopLeft = (TopMid = num14));
+        int num2 = BottomRight = value;
+        int num4 = BottomMid = num2;
+        int num6 = BottomLeft = num4;
+        int num8 = MidRight = num6;
+        int num10 = Pixel = num8;
+        int num12 = MidLeft = num10;
+        int num14 = TopRight = num12;
+        int num17 = TopLeft = TopMid = num14;
     }
 
     public override bool Equals(object obj)
@@ -183,11 +117,9 @@ public struct ConvolutionMatrix
             return false;
         }
         ConvolutionMatrix convolutionMatrix = (ConvolutionMatrix)obj;
-        if (convolutionMatrix.topLeft == topLeft && convolutionMatrix.topMid == topMid && convolutionMatrix.topRight == topRight && convolutionMatrix.midLeft == midLeft && convolutionMatrix.midRight == midRight && convolutionMatrix.bottomLeft == bottomLeft && convolutionMatrix.bottomMid == bottomMid)
-        {
-            return convolutionMatrix.bottomRight == bottomRight;
-        }
-        return false;
+        return convolutionMatrix.topLeft == topLeft && convolutionMatrix.topMid == topMid && convolutionMatrix.topRight == topRight && convolutionMatrix.midLeft == midLeft && convolutionMatrix.midRight == midRight && convolutionMatrix.bottomLeft == bottomLeft && convolutionMatrix.bottomMid == bottomMid
+            ? convolutionMatrix.bottomRight == bottomRight
+            : false;
     }
 
     public override int GetHashCode()

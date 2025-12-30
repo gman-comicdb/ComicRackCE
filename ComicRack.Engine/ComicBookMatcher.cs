@@ -34,42 +34,29 @@ public abstract class ComicBookMatcher : IComicBookMatcher, IMatcher<ComicBook>,
 
     private bool isOptimizedCacheUpdateDisabled;
 
-    private readonly string[] wildCardProperty = new string[1]
-    {
+    private readonly string[] wildCardProperty =
+    [
         "*"
-    };
+    ];
 
     public static TR TRMatcher
     {
         get
         {
-            if (trMatcher == null)
-            {
-                trMatcher = TR.Load("Matchers");
-            }
+            trMatcher ??= TR.Load("Matchers");
             return trMatcher;
         }
     }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool Not
-    {
-        get;
-        set;
-    }
+    public bool Not { get; set; }
 
     [XmlIgnore]
     public IComicBookStatsProvider StatsProvider
     {
-        get
-        {
-            return statsProvider;
-        }
-        set
-        {
-            statsProvider = value;
-        }
+        get => statsProvider;
+        set => statsProvider = value;
     }
 
     public virtual bool IsOptimizedCacheUpdateDisabled
@@ -89,11 +76,7 @@ public abstract class ComicBookMatcher : IComicBookMatcher, IMatcher<ComicBook>,
 
     public virtual bool IsSame(ComicBookMatcher cbm)
     {
-        if (cbm != null && cbm.GetType() == GetType())
-        {
-            return cbm.Not == Not;
-        }
-        return false;
+        return cbm != null && cbm.GetType() == GetType() ? cbm.Not == Not : false;
     }
 
     private void InitializeFromProperty()
@@ -101,8 +84,7 @@ public abstract class ComicBookMatcher : IComicBookMatcher, IMatcher<ComicBook>,
         if (!propertyCheckInitialized)
         {
             propertyCheckInitialized = true;
-            ComicBookMatcherHintAttribute comicBookMatcherHintAttribute = Attribute.GetCustomAttribute(GetType(), typeof(ComicBookMatcherHintAttribute)) as ComicBookMatcherHintAttribute;
-            if (comicBookMatcherHintAttribute != null)
+            if (Attribute.GetCustomAttribute(GetType(), typeof(ComicBookMatcherHintAttribute)) is ComicBookMatcherHintAttribute comicBookMatcherHintAttribute)
             {
                 usedProperties = comicBookMatcherHintAttribute.Properties;
                 isOptimizedCacheUpdateDisabled = comicBookMatcherHintAttribute.DisableOptimizedUpdate;
@@ -113,21 +95,13 @@ public abstract class ComicBookMatcher : IComicBookMatcher, IMatcher<ComicBook>,
     public virtual IEnumerable<string> GetDependentProperties()
     {
         InitializeFromProperty();
-        if (usedProperties == null)
-        {
-            return wildCardProperty;
-        }
-        return usedProperties;
+        return usedProperties == null ? wildCardProperty : usedProperties;
     }
 
     public virtual bool UsesProperty(string propertyHint)
     {
         InitializeFromProperty();
-        if (usedProperties != null)
-        {
-            return usedProperties.Contains(propertyHint);
-        }
-        return true;
+        return usedProperties != null ? usedProperties.Contains(propertyHint) : true;
     }
 
     public override string ToString()

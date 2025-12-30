@@ -18,29 +18,15 @@ public class ComicStorage : DisposableObject
 
     private readonly Thread updateThread;
 
-    private readonly HashSet<ComicBook> deleteSet = new HashSet<ComicBook>();
+    private readonly HashSet<ComicBook> deleteSet = new();
 
-    private readonly HashSet<ComicBook> writeSet = new HashSet<ComicBook>();
+    private readonly HashSet<ComicBook> writeSet = new();
 
-    private readonly AutoResetEvent stop = new AutoResetEvent(initialState: false);
+    private readonly AutoResetEvent stop = new(initialState: false);
 
-    public bool IsConnected
-    {
-        get
-        {
-            if (storage != null)
-            {
-                return storage.IsConnected;
-            }
-            return false;
-        }
-    }
+    public bool IsConnected => storage != null ? storage.IsConnected : false;
 
-    public string LastConnectionError
-    {
-        get;
-        private set;
-    }
+    public string LastConnectionError { get; private set; }
 
     public event CancelEventHandler OnShouldRefresh;
 
@@ -129,10 +115,10 @@ public class ComicStorage : DisposableObject
                 }
             }
             bool flag = true;
-            if (this.OnShouldRefresh != null)
+            if (OnShouldRefresh != null)
             {
-                CancelEventArgs cancelEventArgs = new CancelEventArgs();
-                this.OnShouldRefresh(this, cancelEventArgs);
+                CancelEventArgs cancelEventArgs = new();
+                OnShouldRefresh(this, cancelEventArgs);
                 flag = !cancelEventArgs.Cancel;
             }
             if (flag)

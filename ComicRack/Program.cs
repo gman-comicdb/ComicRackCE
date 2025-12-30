@@ -1,6 +1,5 @@
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
 global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
-global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx;
 
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,6 @@ using cYo.Common.Drawing;
 using cYo.Common.IO;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
-using cYo.Common.Net;
 using cYo.Common.Presentation.Tao;
 using cYo.Common.Runtime;
 using cYo.Common.Text;
@@ -117,9 +115,9 @@ public static class Program
 
     private static ExtendedSettings extendedSettings;
 
-    public static readonly SystemPaths Paths = new SystemPaths(UseLocalSettings, ExtendedSettings.AlternateConfig, ExtendedSettings.DatabasePath, ExtendedSettings.CachePath);
+    public static readonly SystemPaths Paths = new(UseLocalSettings, ExtendedSettings.AlternateConfig, ExtendedSettings.DatabasePath, ExtendedSettings.CachePath);
 
-    public static readonly ContextHelp Help = new ContextHelp(Path.Combine(Application.StartupPath, "Help"));
+    public static readonly ContextHelp Help = new(Path.Combine(Application.StartupPath, "Help"));
 
     public static readonly string QuickHelpManualFile = Path.Combine(Application.StartupPath, "Help\\ComicRack Introduction.djvu");
 
@@ -135,17 +133,17 @@ public static class Program
 
     private const string DefaultIconPackagesPath = "Resources\\Icons";
 
-    public static readonly PackageManager ScriptPackages = new PackageManager(Paths.ScriptPathSecondary, Paths.PendingScriptsPath, commit: true);
+    public static readonly PackageManager ScriptPackages = new(Paths.ScriptPathSecondary, Paths.PendingScriptsPath, commit: true);
 
-    public static readonly DatabaseManager DatabaseManager = new DatabaseManager();
+    public static readonly DatabaseManager DatabaseManager = new();
 
-    private static readonly object installedLanguagesLock = new object();
+    private static readonly object installedLanguagesLock = new();
 
     private static List<TRInfo> installedLanguages;
 
     private static Splash splash;
 
-    private static readonly Regex dateRangeRegex = new Regex(@"\((?<startYear>\d{4})(?:_(?<startMonth>\d{2}))?-(?<endYear>\d{4})(?:_(?<endMonth>\d{2}))?\)", RegexOptions.Compiled);
+    private static readonly Regex dateRangeRegex = new(@"\((?<startYear>\d{4})(?:_(?<startMonth>\d{2}))?-(?<endYear>\d{4})(?:_(?<endMonth>\d{2}))?\)", RegexOptions.Compiled);
 
     public static ExtendedSettings ExtendedSettings
     {
@@ -165,76 +163,36 @@ public static class Program
                 {
                     extendedSettings.InstallPlugin = null;
                     extendedSettings.ImportList = null;
-                    extendedSettings.Files = Enumerable.Empty<string>();
+                    extendedSettings.Files = [];
                 }
             }
             return extendedSettings;
         }
     }
 
-    public static MainForm MainForm
-    {
-        get;
-        private set;
-    }
+    public static MainForm MainForm { get; private set; }
 
-    public static DefaultLists Lists
-    {
-        get;
-        private set;
-    }
+    public static DefaultLists Lists { get; private set; }
 
-    public static bool Restart
-    {
-        get;
-        set;
-    }
+    public static bool Restart { get; set; }
 
-    public static ScriptOutputForm ScriptConsole
-    {
-        get;
-        set;
-    }
+    public static ScriptOutputForm ScriptConsole { get; set; }
 
     public static bool UseLocalSettings => ExtendedSettings.UseLocalSettings || IniFile.Default.GetValue("UseLocalSettings", def: false);
 
-    public static Settings Settings
-    {
-        get;
-        private set;
-    }
+    public static Settings Settings { get; private set; }
 
-    public static NewsStorage News
-    {
-        get;
-        private set;
-    }
+    public static NewsStorage News { get; private set; }
 
-    public static CacheManager CacheManager
-    {
-        get;
-        private set;
-    }
+    public static CacheManager CacheManager { get; private set; }
 
     public static ImagePool ImagePool => CacheManager.ImagePool;
 
-    public static NetworkManager NetworkManager
-    {
-        get;
-        private set;
-    }
+    public static NetworkManager NetworkManager { get; private set; }
 
-    public static QueueManager QueueManager
-    {
-        get;
-        private set;
-    }
+    public static QueueManager QueueManager { get; private set; }
 
-    public static BackupManager BackupManager
-    {
-        get;
-        private set;
-    }
+    public static BackupManager BackupManager { get; private set; }
 
     public static ComicScanner Scanner => QueueManager.Scanner;
 
@@ -244,19 +202,15 @@ public static class Program
 
     public static FileCache InternetCache => CacheManager.InternetCache;
 
-    public static IEnumerable<string> CommandLineFiles => ExtendedSettings.Files ?? Enumerable.Empty<string>();
+    public static IEnumerable<string> CommandLineFiles => ExtendedSettings.Files ?? [];
 
-    public static ExportSettingCollection ExportComicRackPresets => new ExportSettingCollection
+    public static ExportSettingCollection ExportComicRackPresets => new()
     {
         ExportSetting.ConvertToCBZ,
         ExportSetting.ConvertToCB7
     };
 
-    public static IEnumerable<StringPair> DefaultKeyboardMapping
-    {
-        get;
-        set;
-    }
+    public static IEnumerable<StringPair> DefaultKeyboardMapping { get; set; }
 
     public static TRInfo[] InstalledLanguages
     {
@@ -277,7 +231,7 @@ public static class Program
                     }
                     foreach (TRInfo languageInfo in TR.GetLanguageInfos())
                     {
-                        TRDictionary tRDictionary2 = new TRDictionary(TR.ResourceFolder, languageInfo.CultureName);
+                        TRDictionary tRDictionary2 = new(TR.ResourceFolder, languageInfo.CultureName);
                         if (tRDictionary != null)
                         {
                             languageInfo.CompletionPercent = tRDictionary2.CompletionPercent(tRDictionary);
@@ -299,10 +253,7 @@ public static class Program
 
     public static string HelpSystem
     {
-        get
-        {
-            return Help.HelpName;
-        }
+        get => Help.HelpName;
         set
         {
             if (!(Help.HelpName == value))
@@ -323,10 +274,7 @@ public static class Program
 
     public static void RefreshAllWindows()
     {
-        ForAllForms((Form f) =>
-        {
-            f.Refresh();
-        });
+        ForAllForms((Form f) => f.Refresh());
     }
 
     public static void ForAllForms(Action<Form> action)
@@ -344,7 +292,7 @@ public static class Program
     public static string ShowComicOpenDialog(IWin32Window parent, string title, bool includeReadingLists)
     {
         string result = null;
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             IEnumerable<FileFormat> enumerable = from f in Providers.Readers.GetSourceFormats()
                                                  orderby f
@@ -400,7 +348,7 @@ public static class Program
     {
         try
         {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(document);
+            ProcessStartInfo processStartInfo = new(document);
             if (path != null && Directory.Exists(path))
             {
                 processStartInfo.WorkingDirectory = path;
@@ -430,7 +378,7 @@ public static class Program
 
     public static IEnumerable<ComicBookValueMatcher> GetUsedComicBookMatchers(int minUsage)
     {
-        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany((ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>((object o) => (!(o is ComicBookGroupMatcher)) ? null : ((ComicBookGroupMatcher)o).Matchers))
+        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany((ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>((object o) => (o is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)o).Matchers))
                select n.GetType() into n
                group n by n into g
                where g.Count() >= minUsage
@@ -442,7 +390,7 @@ public static class Program
 
     public static ContextMenuStrip CreateComicBookMatchersMenu(Action<ComicBookValueMatcher> action, int minUsage = 20)
     {
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        ContextMenuBuilder contextMenuBuilder = new();
         Type[] source = (from m in GetUsedComicBookMatchers(5)
                          select m.GetType()).ToArray();
         foreach (ComicBookValueMatcher availableComicBookMatcher in GetAvailableComicBookMatchers())
@@ -453,7 +401,7 @@ public static class Program
                 action(i);
             }, null, source.Contains(availableComicBookMatcher.GetType()) ? DateTime.MaxValue : DateTime.MinValue);
         }
-        ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+        ContextMenuStrip contextMenuStrip = new();
         contextMenuStrip.Items.AddRange(contextMenuBuilder.Create(20));
         return contextMenuStrip;
     }
@@ -496,7 +444,7 @@ public static class Program
         int num2 = Math.Min(maxImages, num);
         int num3 = size.Width / (num2 + 1);
         int height = size.Height - (num2 - 1) * 3;
-        Bitmap bitmap = new Bitmap(size.Width, size.Height);
+        Bitmap bitmap = new(size.Width, size.Height);
         using (Graphics graphics = Graphics.FromImage(bitmap))
         {
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -521,7 +469,7 @@ public static class Program
                 Color color = Color.FromArgb(192, SystemColors.Highlight);
                 Font iconTitleFont = SystemFonts.IconTitleFont;
                 string text = StringUtility.Format("{0} {1}", num, TR.Default["Books", "books"]);
-                Rectangle rectangle = new Rectangle(Point.Empty, graphics.MeasureString(text, iconTitleFont).ToSize());
+                Rectangle rectangle = new(Point.Empty, graphics.MeasureString(text, iconTitleFont).ToSize());
                 rectangle.Inflate(4, 4);
                 rectangle = rectangle.Align(new Rectangle(Point.Empty, size), ContentAlignment.MiddleCenter);
                 using (GraphicsPath path = rectangle.ConvertToPath(5, 5))
@@ -531,7 +479,7 @@ public static class Program
                         graphics.FillPath(brush, path);
                     }
                 }
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Center
@@ -606,7 +554,7 @@ public static class Program
         string result = null;
         if (string.IsNullOrEmpty(file))
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (OpenFileDialog openFileDialog = new())
             {
                 if (!string.IsNullOrEmpty(title))
                 {
@@ -630,7 +578,7 @@ public static class Program
                 {
                     using (Bitmap bitmap = BitmapExtensions.LoadIcon(file, Color.Transparent))
                     {
-                        file = (text = Path.GetTempFileName());
+                        file = text = Path.GetTempFileName();
                         bitmap.Save(text, ImageFormat.Png);
                     }
                 }
@@ -765,9 +713,8 @@ public static class Program
         {
             if (MainForm != null)
             {
-                IPAddress address = s as IPAddress;
                 e.IsPaired = QueueManager.Devices.Any((DeviceSyncSettings d) => d.DeviceKey == e.Key);
-                if (e.IsPaired && address != null)
+                if (e.IsPaired && s is IPAddress address)
                 {
                     MainForm.BeginInvoke(delegate
                     {
@@ -810,7 +757,7 @@ public static class Program
         }
         if (!ExtendedSettings.StartHidden && Settings.ShowSplash)
         {
-            ManualResetEvent mre = new ManualResetEvent(initialState: false);
+            ManualResetEvent mre = new(initialState: false);
             ThreadUtility.RunInBackground("Splash Thread", delegate
             {
                 splash = new Splash
@@ -861,7 +808,7 @@ public static class Program
                     // OSVersion 5 is Windows XP, Windows 2000 or Windows 2003
                     bool isWinXp = Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5;
                     // Should consider moving OptimizedProfessionalColorTable and OptimizedTanColorTable
-                    ProfessionalColorTable professionalColorTable = ((!(ExtendedSettings.ForceTanColorSchema || isWinXp)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable()));
+                    ProfessionalColorTable professionalColorTable = (!(ExtendedSettings.ForceTanColorSchema || isWinXp)) ? ((ProfessionalColorTable)new OptimizedProfessionalColorTable()) : ((ProfessionalColorTable)new OptimizedTanColorTable());
                     renderer = new ThemeToolStripProRenderer(professionalColorTable)
                     {
                         RoundedEdges = false
@@ -869,14 +816,9 @@ public static class Program
                 }
                 ToolStripManager.Renderer = renderer;
             }
-            if (ExtendedSettings.DisableHardware)
-            {
-                ImageDisplayControl.HardwareAcceleration = ImageDisplayControl.HardwareAccelerationType.Disabled;
-            }
-            else
-            {
-                ImageDisplayControl.HardwareAcceleration = ((!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced);
-            }
+            ImageDisplayControl.HardwareAcceleration = ExtendedSettings.DisableHardware
+                ? ImageDisplayControl.HardwareAccelerationType.Disabled
+                : (!ExtendedSettings.ForceHardware) ? ImageDisplayControl.HardwareAccelerationType.Enabled : ImageDisplayControl.HardwareAccelerationType.Forced;
             if (ExtendedSettings.DisableMipMapping)
             {
                 ImageDisplayControl.HardwareSettings.MipMapping = false;
@@ -937,10 +879,10 @@ public static class Program
             {
                 try
                 {
-                    if (!(bool)command.Invoke(new object[1]
-                    {
+                    if (!(bool)command.Invoke(
+                    [
                         flag2
-                    }) && flag2)
+                    ]) && flag2)
                     {
                         e.Cancel = true;
                         return;
@@ -955,10 +897,7 @@ public static class Program
         MainForm.Show();
         MainForm.Update();
         MainForm.Activate();
-        if (splash != null)
-        {
-            splash.Invoke(splash.Close);
-        }
+        splash?.Invoke(splash.Close);
         ThreadUtility.RunInBackground("Starting Network", NetworkManager.Start);
         ThreadUtility.RunInBackground("Generate Language Pack Info", delegate
         {
@@ -977,7 +916,7 @@ public static class Program
 
     public static Dictionary<string, ImagePackage> CreateGenericsIcons(IEnumerable<string> folders, string searchPattern, string trigger, Func<string, IEnumerable<string>> mapKeys = null)
     {
-        Dictionary<string, ImagePackage> dictionary = new Dictionary<string, ImagePackage>();
+        Dictionary<string, ImagePackage> dictionary = new();
         foreach (var generic in ZipFileFolder.CreateDictionaryFromFiles(folders, searchPattern, trigger))
         {
             var icons = new ImagePackage { EnableWidthCropping = true };
@@ -1033,10 +972,7 @@ public static class Program
 
     private static bool InitializeDatabase(int startPercent, string readDbMessage)
     {
-        return DatabaseManager.Open(Paths.DatabasePath, ExtendedSettings.DataSource, ExtendedSettings.DoNotLoadQueryCaches, string.IsNullOrEmpty(readDbMessage) ? null : ((Action<int>)((int percent) =>
-        {
-            StartupProgress(readDbMessage, startPercent + percent / 5);
-        })));
+        return DatabaseManager.Open(Paths.DatabasePath, ExtendedSettings.DataSource, ExtendedSettings.DoNotLoadQueryCaches, string.IsNullOrEmpty(readDbMessage) ? null : ((Action<int>)((int percent) => StartupProgress(readDbMessage, startPercent + percent / 5))));
     }
 
     private static void MainFormFormClosed(object sender, FormClosedEventArgs e)
@@ -1065,7 +1001,7 @@ public static class Program
 
     private static void StartLast(string[] args)
     {
-        ExtendedSettings sw = default(ExtendedSettings);
+        ExtendedSettings sw = default;
         MainForm.BeginInvoke(delegate
         {
             MainForm.RestoreToFront();
@@ -1083,10 +1019,7 @@ public static class Program
                 }
                 if (enumerable.Any())
                 {
-                    enumerable.ForEach((string file) =>
-                    {
-                        MainForm.OpenSupportedFile(file, newSlot: true, sw.Page, fromShell: true);
-                    });
+                    enumerable.ForEach((string file) => MainForm.OpenSupportedFile(file, newSlot: true, sw.Page, fromShell: true));
                 }
             }
             catch (Exception)
@@ -1139,17 +1072,13 @@ public static class Program
         }
         if (!string.IsNullOrEmpty(ExtendedSettings.RegisterFormats))
         {
-            if (!RegisterFormats(ExtendedSettings.RegisterFormats))
-            {
-                return 1;
-            }
-            return 0;
+            return !RegisterFormats(ExtendedSettings.RegisterFormats) ? 1 : 0;
         }
         TR.ResourceFolder = new PackedLocalize(TR.ResourceFolder);
         NativeLibraryHelper.RegisterDirectory(); //Add the resources directory to the search path for natives dll's
         Control.CheckForIllegalCrossThreadCalls = false;
         ItemMonitor.CatchThreadInterruptException = true;
-        SingleInstance singleInstance = new SingleInstance("ComicRackSingleInstance", StartNew, StartLast);
+        SingleInstance singleInstance = new("ComicRackSingleInstance", StartNew, StartLast);
         singleInstance.Run(args);
         if (Restart)
         {

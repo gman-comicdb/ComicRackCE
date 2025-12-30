@@ -16,25 +16,15 @@ public abstract class ComicStorageBaseSql : IComicStorage
 
     private DbConnection dbConnection;
 
-    private readonly Dictionary<Guid, long> updateMap = new Dictionary<Guid, long>();
+    private readonly Dictionary<Guid, long> updateMap = new();
 
     private long lastUpdate;
 
     private long lastDelete;
 
-    private readonly Stack<DbTransaction> transactionStack = new Stack<DbTransaction>();
+    private readonly Stack<DbTransaction> transactionStack = new();
 
-    public bool IsConnected
-    {
-        get
-        {
-            if (dbConnection != null && dbConnection.State != 0)
-            {
-                return dbConnection.State != ConnectionState.Broken;
-            }
-            return false;
-        }
-    }
+    public bool IsConnected => dbConnection != null && dbConnection.State != 0 ? dbConnection.State != ConnectionState.Broken : false;
 
     protected abstract DbConnection CreateConnection(string connection);
 
@@ -46,7 +36,7 @@ public abstract class ComicStorageBaseSql : IComicStorage
         {
             throw new InvalidOperationException();
         }
-        if (dbConnection.State == ConnectionState.Broken || dbConnection.State == ConnectionState.Closed)
+        if (dbConnection.State is ConnectionState.Broken or ConnectionState.Closed)
         {
             if (dbConnection.State == ConnectionState.Broken)
             {
@@ -68,7 +58,7 @@ public abstract class ComicStorageBaseSql : IComicStorage
         dbCommand.CommandText = string.Format(command, data);
         lock (transactionStack)
         {
-            DbTransaction dbTransaction = ((transactionStack.Count == 0) ? null : transactionStack.Peek());
+            DbTransaction dbTransaction = (transactionStack.Count == 0) ? null : transactionStack.Peek();
             if (dbTransaction != null)
             {
                 dbCommand.Transaction = dbTransaction;
@@ -225,7 +215,7 @@ public abstract class ComicStorageBaseSql : IComicStorage
                 {
                     while (dbDataReader.Read())
                     {
-                        Guid id = new Guid(dbDataReader[0].ToString());
+                        Guid id = new(dbDataReader[0].ToString());
                         long value = (long)dbDataReader[1];
                         string text = dbDataReader[2].ToString();
                         ComicBook comicBook = XmlUtility.FromString<ComicBook>(text);
@@ -252,7 +242,7 @@ public abstract class ComicStorageBaseSql : IComicStorage
             {
                 using (DbDataReader dbDataReader2 = dbCommand2.ExecuteReader())
                 {
-                    HashSet<Guid> ids = new HashSet<Guid>();
+                    HashSet<Guid> ids = new();
                     while (dbDataReader2.Read())
                     {
                         ids.Add(new Guid(dbDataReader2[0].ToString()));

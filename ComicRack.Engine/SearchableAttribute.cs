@@ -7,11 +7,7 @@ namespace cYo.Projects.ComicRack.Engine;
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 public class SearchableAttribute : Attribute
 {
-    public bool Searchable
-    {
-        get;
-        private set;
-    }
+    public bool Searchable { get; private set; }
 
     public SearchableAttribute(bool searchable)
     {

@@ -1,21 +1,17 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Common.Localize;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Display;
-using cYo.Projects.ComicRack.Engine.Display.Forms;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 {
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
     private readonly string noneSelectedText;
 
@@ -25,14 +21,8 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 
     public bool TwoPageDisplay
     {
-        get
-        {
-            return pageViewer.PageLayout != PageLayoutMode.Single;
-        }
-        set
-        {
-            pageViewer.PageLayout = (value ? PageLayoutMode.DoubleAdaptive : PageLayoutMode.Single);
-        }
+        get => pageViewer.PageLayout != PageLayoutMode.Single;
+        set => pageViewer.PageLayout = value ? PageLayoutMode.DoubleAdaptive : PageLayoutMode.Single;
     }
 
     public event EventHandler CloseClicked;
@@ -40,10 +30,7 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
     public SmallComicPreview()
     {
         InitializeComponent();
-        if (components == null)
-        {
-            components = new Container();
-        }
+        components ??= new Container();
         components.Add(commands);
         LocalizeUtility.Localize(this, components);
         noneSelectedText = TR.Load(base.Name)[pageViewer.Name, pageViewer.Text];
@@ -104,39 +91,23 @@ public partial class SmallComicPreview : CaptionControl, IRefreshDisplay
 
     protected virtual void OnCloseClicked()
     {
-        if (this.CloseClicked != null)
-        {
-            this.CloseClicked(this, EventArgs.Empty);
-        }
+        CloseClicked?.Invoke(this, EventArgs.Empty);
     }
 
     public void ShowPreview(ComicBook comicBook)
     {
         if (comicBook == null)
         {
-            if (pageViewer.Book != null)
-            {
-                pageViewer.Book.Dispose();
-            }
+            pageViewer.Book?.Dispose();
             pageViewer.Book = null;
         }
         else if (pageViewer.Book == null || comicBook.FilePath != pageViewer.Book.Comic.FilePath)
         {
-            if (pageViewer.Book != null)
-            {
-                pageViewer.Book.Dispose();
-                pageViewer.Book = null;
-            }
+            pageViewer.Book?.Dispose();
+            pageViewer.Book = null;
             pageViewer.Book = NavigatorManager.OpenComic(comicBook, 0, OpenComicOptions.DisableAll);
         }
-        if (pageViewer.Book != null)
-        {
-            pageViewer.Text = string.Empty;
-        }
-        else
-        {
-            pageViewer.Text = ((comicBook == null || comicBook.IsLinked) ? noneSelectedText : previewOnlyForComics);
-        }
+        pageViewer.Text = pageViewer.Book != null ? string.Empty : (comicBook == null || comicBook.IsLinked) ? noneSelectedText : previewOnlyForComics;
     }
 
     public void RefreshDisplay()

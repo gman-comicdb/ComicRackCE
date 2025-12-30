@@ -20,18 +20,10 @@ public class FileLengthFormat : IFormatProvider, ICustomFormatter
         {
             throw new ArgumentException($"The argument \"{arg}\" cannot be converted to an integer value.", innerException);
         }
-        if (num < 1024)
-        {
-            return $"{num} Bytes";
-        }
-        if (num < 1048576)
-        {
-            return $"{(float)num / 1024f:.00} kB";
-        }
-        if (num < 1073741824)
-        {
-            return $"{(float)num / 1024f / 1024f:.00} MB";
-        }
-        return $"{(float)num / 1024f / 1024f / 1024f:.00} GB";
+        return num < 1024
+            ? $"{num} Bytes"
+            : num < 1048576
+            ? $"{(float)num / 1024f:.00} kB"
+            : num < 1073741824 ? $"{(float)num / 1024f / 1024f:.00} MB" : $"{(float)num / 1024f / 1024f / 1024f:.00} GB";
     }
 }

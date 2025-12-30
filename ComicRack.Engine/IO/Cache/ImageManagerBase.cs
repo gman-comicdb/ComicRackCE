@@ -12,13 +12,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Cache;
 
 public abstract class ImageManagerBase<T> : DisposableObject where T : class, IDisposable
 {
-    private readonly Cache<ImageKey, T> memoryCache = new Cache<ImageKey, T>(256);
+    private readonly Cache<ImageKey, T> memoryCache = new(256);
 
-    public IDiskCache<ImageKey, T> DiskCache
-    {
-        get;
-        set;
-    }
+    public IDiskCache<ImageKey, T> DiskCache { get; set; }
 
     public Cache<ImageKey, T> MemoryCache => memoryCache;
 
@@ -47,10 +43,7 @@ public abstract class ImageManagerBase<T> : DisposableObject where T : class, ID
     public void RefreshImage(ImageKey key)
     {
         memoryCache.RemoveItem(key);
-        if (DiskCache != null)
-        {
-            DiskCache.RemoveItem(key);
-        }
+        DiskCache?.RemoveItem(key);
     }
 
     public void RefreshLastImage(string source)
@@ -115,19 +108,13 @@ public abstract class ImageManagerBase<T> : DisposableObject where T : class, ID
     public void UpdateKeys(Func<ImageKey, bool> select, Action<ImageKey> update)
     {
         MemoryCache.UpdateKeys(select, update);
-        if (DiskCache != null)
-        {
-            DiskCache.UpdateKeys(select, update);
-        }
+        DiskCache?.UpdateKeys(select, update);
     }
 
     public void RemoveKeys(Func<ImageKey, bool> select)
     {
         MemoryCache.RemoveKeys(select);
-        if (DiskCache != null)
-        {
-            DiskCache.RemoveKeys(select);
-        }
+        DiskCache?.RemoveKeys(select);
     }
 
     private void memoryCache_ItemRemoved(object sender, CacheItemEventArgs<ImageKey, T> e)

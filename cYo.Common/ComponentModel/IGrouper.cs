@@ -4,10 +4,7 @@ namespace cYo.Common.ComponentModel;
 
 public interface IGrouper<T>
 {
-    bool IsMultiGroup
-    {
-        get;
-    }
+    bool IsMultiGroup { get; }
 
     IGroupInfo GetGroup(T item);
 

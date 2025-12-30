@@ -11,13 +11,9 @@ namespace cYo.Common.Win32.PortableDevices;
 public class DeviceFolder : DeviceItem
 {
     public IEnumerable<DeviceItem> Items => base.Device.EnumerateItems(this).CatchExceptions(ex =>
-        Debug.WriteLine($"Error enumerating ItemPath: {this.ItemPath} - {ex.Message}"));
+        Debug.WriteLine($"Error enumerating ItemPath: {ItemPath} - {ex.Message}"));
 
-    public bool IsRoot
-    {
-        get;
-        private set;
-    }
+    public bool IsRoot { get; private set; }
 
     public long FreeSpace => base.Device.GetFreeSpace(this);
 
@@ -80,8 +76,8 @@ public class DeviceFolder : DeviceItem
 
     public DeviceItem Find(string regEx, int maxLevel = -1)
     {
-        Regex rx = new Regex(regEx, RegexOptions.IgnoreCase);
-        return Items.Recurse<DeviceItem>((object item) => (!(item is DeviceFolder)) ? null : ((DeviceFolder)item).Items, bottomUp: false, maxLevel).FirstOrDefault((DeviceItem item) => rx.IsMatch(item.Name));
+        Regex rx = new(regEx, RegexOptions.IgnoreCase);
+        return Items.Recurse<DeviceItem>((object item) => (item is not DeviceFolder) ? null : ((DeviceFolder)item).Items, bottomUp: false, maxLevel).FirstOrDefault((DeviceItem item) => rx.IsMatch(item.Name));
     }
 
     public static string CombinePath(string pathAbsolute, string pathRelative)

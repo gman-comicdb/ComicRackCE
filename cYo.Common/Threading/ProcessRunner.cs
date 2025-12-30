@@ -19,10 +19,7 @@ public class ProcessRunner : DisposableObject
 
     public ProcessPriorityClass Priority
     {
-        get
-        {
-            return priority;
-        }
+        get => priority;
         set
         {
             if (priority != value)
@@ -81,7 +78,7 @@ public class ProcessRunner : DisposableObject
     public void Run(string path, string arguments, bool waitForExit)
     {
         Stop();
-        ProcessStartInfo startInfo = new ProcessStartInfo(path, arguments)
+        ProcessStartInfo startInfo = new(path, arguments)
         {
             CreateNoWindow = true,
             RedirectStandardOutput = true,
@@ -143,7 +140,7 @@ public class ProcessRunner : DisposableObject
             if (num > 0)
             {
                 string @string = Encoding.UTF8.GetString(readBuffer, 0, num);
-                ProcessRunnerOutputEventArgs processRunnerOutputEventArgs = new ProcessRunnerOutputEventArgs(@string);
+                ProcessRunnerOutputEventArgs processRunnerOutputEventArgs = new(@string);
                 OnParseOutput(processRunnerOutputEventArgs);
                 if (processRunnerOutputEventArgs.Cancel)
                 {
@@ -164,23 +161,17 @@ public class ProcessRunner : DisposableObject
 
     protected virtual void OnStopped()
     {
-        if (this.Stopped != null)
-        {
-            this.Stopped(this, EventArgs.Empty);
-        }
+        Stopped?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnParseOutput(ProcessRunnerOutputEventArgs poea)
     {
-        if (this.ParseOutput != null)
-        {
-            this.ParseOutput(this, poea);
-        }
+        ParseOutput?.Invoke(this, poea);
     }
 
     public static int RunElevated(string file, string arguments)
     {
-        ProcessStartInfo processStartInfo = new ProcessStartInfo(file);
+        ProcessStartInfo processStartInfo = new(file);
         processStartInfo.Arguments = arguments;
         processStartInfo.UseShellExecute = true;
         processStartInfo.Verb = "runas";

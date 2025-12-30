@@ -20,9 +20,9 @@ public class IniFile : DisposableObject
 
     private FileSystemWatcher[] fsw;
 
-    private readonly Dictionary<string, string> values = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> values = new();
 
-    private static readonly Regex rxCommand = new Regex("[/-](?<switch>[a-z]+)[:=](?<value>.+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex rxCommand = new("[/-](?<switch>[a-z]+)[:=](?<value>.+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static List<string> extraDefaultLocation;
 
@@ -62,10 +62,7 @@ public class IniFile : DisposableObject
     {
         get
         {
-            if (defaultIni == null)
-            {
-                defaultIni = new IniFile(DefaultIniFile);
-            }
+            defaultIni ??= new IniFile(DefaultIniFile);
             return defaultIni;
         }
     }
@@ -96,13 +93,13 @@ public class IniFile : DisposableObject
         try
         {
             UpdateValues(ReadFile(file, section));
-            List<FileSystemWatcher> list = new List<FileSystemWatcher>();
+            List<FileSystemWatcher> list = new();
             try
             {
                 foreach (string file2 in GetFiles(file))
                 {
                     string watchFile = file2;
-                    FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(Path.GetDirectoryName(watchFile))
+                    FileSystemWatcher fileSystemWatcher = new(Path.GetDirectoryName(watchFile))
                     {
                         EnableRaisingEvents = true,
                         NotifyFilter = NotifyFilters.LastWrite
@@ -127,7 +124,7 @@ public class IniFile : DisposableObject
         }
     }
 
-    public T GetValue<T>(string name, T def = default(T))
+    public T GetValue<T>(string name, T def = default)
     {
         return GetValue(values, name, def);
     }
@@ -166,19 +163,13 @@ public class IniFile : DisposableObject
 
     protected virtual void OnValuesChanged()
     {
-        if (this.ValuesChanged != null)
-        {
-            this.ValuesChanged(this, EventArgs.Empty);
-        }
+        ValuesChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void CloseWatcher()
     {
-        if (fsw != null)
-        {
-            fsw.Dispose();
-            fsw = null;
-        }
+        fsw?.Dispose();
+        fsw = null;
     }
 
     private void UpdateValues(IDictionary<string, string> values)
@@ -249,11 +240,7 @@ public class IniFile : DisposableObject
     {
         try
         {
-            if (!FileExists(file))
-            {
-                return defaultValue;
-            }
-            return GetValue(ReadFile(file, section), name, defaultValue);
+            return !FileExists(file) ? defaultValue : GetValue(ReadFile(file, section), name, defaultValue);
         }
         catch (Exception)
         {
@@ -263,7 +250,7 @@ public class IniFile : DisposableObject
 
     public static Dictionary<string, string> GetValues(TextReader tr, string section = null)
     {
-        Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        Dictionary<string, string> dictionary = new();
         bool flag = !string.IsNullOrEmpty(section);
         bool flag2 = !flag;
         foreach (string item in from s in tr.ReadLines().TrimStrings().RemoveEmpty()
@@ -302,7 +289,7 @@ public class IniFile : DisposableObject
 
     public static Dictionary<string, string> ReadFile(string file, string section = null)
     {
-        Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        Dictionary<string, string> dictionary = new();
         try
         {
             foreach (string item in GetFiles(file).Where(File.Exists))
@@ -329,7 +316,7 @@ public class IniFile : DisposableObject
 
     public static IEnumerable<string> ReadSections(string file)
     {
-        List<string> list = new List<string>();
+        List<string> list = new();
         try
         {
             foreach (string item in GetFiles(file).Where(File.Exists))
@@ -355,7 +342,7 @@ public class IniFile : DisposableObject
 
     public static Dictionary<string, string> ReadCommandLine()
     {
-        Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        Dictionary<string, string> dictionary = new();
         string[] commandLineArgs = Environment.GetCommandLineArgs();
         foreach (string input in commandLineArgs)
         {
@@ -452,10 +439,7 @@ public class IniFile : DisposableObject
 
     public static void AddDefaultLocation(string path)
     {
-        if (extraDefaultLocation == null)
-        {
-            extraDefaultLocation = new List<string>();
-        }
+        extraDefaultLocation ??= new List<string>();
         extraDefaultLocation.Add(path);
         defaultIniFile = null;
         defaultIni = null;

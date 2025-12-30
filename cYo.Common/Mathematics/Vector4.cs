@@ -17,74 +17,45 @@ public struct Vector4
 
     public float X
     {
-        get
-        {
-            return x;
-        }
-        set
-        {
-            x = value;
-        }
+        get => x;
+        set => x = value;
     }
 
     public float Y
     {
-        get
-        {
-            return y;
-        }
-        set
-        {
-            y = value;
-        }
+        get => y;
+        set => y = value;
     }
 
     public float Z
     {
-        get
-        {
-            return z;
-        }
-        set
-        {
-            z = value;
-        }
+        get => z;
+        set => z = value;
     }
 
     public float W
     {
-        get
-        {
-            return w;
-        }
-        set
-        {
-            w = value;
-        }
+        get => w;
+        set => w = value;
     }
 
     [DebuggerHidden]
-    public static Vector4 Zero => default(Vector4);
+    public static Vector4 Zero => default;
 
-    public Vector3 Vector3 => new Vector3(x, y, z);
+    public Vector3 Vector3 => new(x, y, z);
 
     public float this[int index]
     {
         get
         {
-            switch (index)
+            return index switch
             {
-                case 0:
-                    return x;
-                case 1:
-                    return y;
-                case 2:
-                    return z;
-                case 3:
-                    return w;
-                default:
-                    throw new IndexOutOfRangeException("Invalid vector index!");
-            }
+                0 => x,
+                1 => y,
+                2 => z,
+                3 => w,
+                _ => throw new IndexOutOfRangeException("Invalid vector index!"),
+            };
         }
         set
         {
@@ -206,11 +177,7 @@ public struct Vector4
             return false;
         }
         Vector4 vector = (Vector4)obj;
-        if (vector.x == x && vector.y == y && vector.z == z)
-        {
-            return vector.w == w;
-        }
-        return false;
+        return vector.x == x && vector.y == y && vector.z == z ? vector.w == w : false;
     }
 
     public override int GetHashCode()

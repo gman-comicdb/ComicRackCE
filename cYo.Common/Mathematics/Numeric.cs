@@ -98,15 +98,7 @@ public static class Numeric
         {
             maxValue = max;
         }
-        if (value < min)
-        {
-            return minValue;
-        }
-        if (value > max)
-        {
-            return maxValue;
-        }
-        return value;
+        return value < min ? minValue : value > max ? maxValue : value;
     }
 
     public static int Clamp(this int value, int min, int max)
@@ -141,29 +133,17 @@ public static class Numeric
 
     public static bool CompareTo(this Size f, Size t, int limit)
     {
-        if (f.Width.CompareTo(t.Width, limit))
-        {
-            return f.Height.CompareTo(t.Height, limit);
-        }
-        return false;
+        return f.Width.CompareTo(t.Width, limit) ? f.Height.CompareTo(t.Height, limit) : false;
     }
 
     public static bool Equals(float a, float b)
     {
-        if (a > b - FloatEpsilon)
-        {
-            return a < b + FloatEpsilon;
-        }
-        return false;
+        return a > b - FloatEpsilon ? a < b + FloatEpsilon : false;
     }
 
     public static bool Equals(double a, double b)
     {
-        if (a > b - DoubleEpsilon)
-        {
-            return a < b + DoubleEpsilon;
-        }
-        return false;
+        return a > b - DoubleEpsilon ? a < b + DoubleEpsilon : false;
     }
 
     public static int Rollover(int n, int count, int add)
@@ -183,19 +163,11 @@ public static class Numeric
         int num = values.Length;
         if (n > values[num - 1])
         {
-            if (wrap)
-            {
-                return values[0];
-            }
-            return values[num - 1];
+            return wrap ? values[0] : values[num - 1];
         }
         if (n < values[0])
         {
-            if (wrap)
-            {
-                return values[num - 1];
-            }
-            return values[0];
+            return wrap ? values[num - 1] : values[0];
         }
         foreach (int num2 in values)
         {
@@ -212,19 +184,11 @@ public static class Numeric
         int num = values.Length;
         if (n > values[num - 1])
         {
-            if (wrap)
-            {
-                return values[0];
-            }
-            return values[num - 1];
+            return wrap ? values[0] : values[num - 1];
         }
         if (n < values[0])
         {
-            if (wrap)
-            {
-                return values[num - 1];
-            }
-            return values[0];
+            return wrap ? values[num - 1] : values[0];
         }
         foreach (float num2 in values)
         {
@@ -238,11 +202,7 @@ public static class Numeric
 
     public static bool InRange(int n, int min, int count)
     {
-        if (n >= min)
-        {
-            return n <= min + count;
-        }
-        return false;
+        return n >= min ? n <= min + count : false;
     }
 
     public static float Min(params float[] n)
@@ -261,7 +221,7 @@ public static class Numeric
         foreach (bool item in flags.Reverse())
         {
             num <<= 1;
-            num += (item ? 1 : 0);
+            num += item ? 1 : 0;
         }
         return num;
     }

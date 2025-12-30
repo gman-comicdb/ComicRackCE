@@ -27,33 +27,17 @@ public static class EditControlUtility
 
     public static int GetNumber(Control control)
     {
-        if (int.TryParse(control.Text, out var result))
-        {
-            if (result >= 0)
-            {
-                return result;
-            }
-            return -1;
-        }
-        return -1;
+        return int.TryParse(control.Text, out var result) ? result >= 0 ? result : -1 : -1;
     }
 
     public static float GetRealNumber(Control control)
     {
-        if (float.TryParse(control.Text, out var result))
-        {
-            if (!(result < 0f))
-            {
-                return result;
-            }
-            return -1f;
-        }
-        return -1f;
+        return float.TryParse(control.Text, out var result) ? !(result < 0f) ? result : -1f : -1f;
     }
 
     public static void SetLabel(Label label, string text, bool enabled)
     {
-        label.Text = (string.IsNullOrEmpty(text) ? "Unknown" : text);
+        label.Text = string.IsNullOrEmpty(text) ? "Unknown" : text;
         label.Enabled = !string.IsNullOrEmpty(text) && enabled;
     }
 
@@ -79,8 +63,7 @@ public static class EditControlUtility
     public static void SetText(TextBox textBox, string text, Func<AutoCompleteStringCollection> autoCompletePredicate)
     {
         SetText(textBox, text);
-        IDelayedAutoCompleteList delayedAutoCompleteList = textBox as IDelayedAutoCompleteList;
-        if (delayedAutoCompleteList != null)
+        if (textBox is IDelayedAutoCompleteList delayedAutoCompleteList)
         {
             if (autoCompletePredicate != null)
             {
@@ -105,7 +88,7 @@ public static class EditControlUtility
         {
             Func<IEnumerable<string>> allItems = delegate
             {
-                HashSet<string> hashSet = new HashSet<string>
+                HashSet<string> hashSet = new()
                 {
                     string.Empty
                 };
@@ -134,17 +117,17 @@ public static class EditControlUtility
 
     public static void SetText(Control control, int value)
     {
-        control.Text = ((value == -1) ? string.Empty : value.ToString());
+        control.Text = (value == -1) ? string.Empty : value.ToString();
     }
 
     public static void SetText(Control control, float value)
     {
-        control.Text = ((value == -1f) ? string.Empty : value.ToString());
+        control.Text = (value == -1f) ? string.Empty : value.ToString();
     }
 
     public static void SetText(Control c, bool value)
     {
-        c.Text = (value ? ComicInfo.YesText : ComicInfo.NoText);
+        c.Text = value ? ComicInfo.YesText : ComicInfo.NoText;
     }
 
     public static void SetText(Control c, YesNo yn)
@@ -159,32 +142,18 @@ public static class EditControlUtility
 
     public static YesNo GetYesNo(string text)
     {
-        if (string.Equals(text, ComicInfo.YesText, StringComparison.OrdinalIgnoreCase))
-        {
-            return YesNo.Yes;
-        }
-        if (!string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase))
-        {
-            return YesNo.Unknown;
-        }
-        return YesNo.No;
+        return string.Equals(text, ComicInfo.YesText, StringComparison.OrdinalIgnoreCase)
+            ? YesNo.Yes
+            : !string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase) ? YesNo.Unknown : YesNo.No;
     }
 
     public static MangaYesNo GetMangaYesNo(string text)
     {
-        if (string.Equals(text, ComicInfo.YesText, StringComparison.OrdinalIgnoreCase))
-        {
-            return MangaYesNo.Yes;
-        }
-        if (string.Equals(text, ComicInfo.YesRightToLeftText, StringComparison.OrdinalIgnoreCase))
-        {
-            return MangaYesNo.YesAndRightToLeft;
-        }
-        if (string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase))
-        {
-            return MangaYesNo.No;
-        }
-        return MangaYesNo.Unknown;
+        return string.Equals(text, ComicInfo.YesText, StringComparison.OrdinalIgnoreCase)
+            ? MangaYesNo.Yes
+            : string.Equals(text, ComicInfo.YesRightToLeftText, StringComparison.OrdinalIgnoreCase)
+            ? MangaYesNo.YesAndRightToLeft
+            : string.Equals(text, ComicInfo.NoText, StringComparison.OrdinalIgnoreCase) ? MangaYesNo.No : MangaYesNo.Unknown;
     }
 
     public static void InitializeYesNo(ComboBox cb, bool withEmpty = true)

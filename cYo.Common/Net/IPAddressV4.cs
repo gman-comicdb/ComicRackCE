@@ -6,53 +6,37 @@ namespace cYo.Common.Net;
 
 public struct IPAddressV4 : IComparable<IPAddressV4>
 {
-    public static readonly IPAddressV4 Empty = new IPAddressV4(0, 0, 0, 0);
+    public static readonly IPAddressV4 Empty = new(0, 0, 0, 0);
 
-    public static readonly IPAddressV4 Loopback = new IPAddressV4(127, 0, 0, 1);
+    public static readonly IPAddressV4 Loopback = new(127, 0, 0, 1);
 
-    public static readonly IPAddressV4 PrivateStartA = new IPAddressV4(10, 0, 0, 0);
+    public static readonly IPAddressV4 PrivateStartA = new(10, 0, 0, 0);
 
-    public static readonly IPAddressV4 PrivateEndA = new IPAddressV4(10, 255, 255, 255);
+    public static readonly IPAddressV4 PrivateEndA = new(10, 255, 255, 255);
 
-    public static readonly IPAddressV4 PrivateStartB = new IPAddressV4(172, 16, 0, 0);
+    public static readonly IPAddressV4 PrivateStartB = new(172, 16, 0, 0);
 
-    public static readonly IPAddressV4 PrivateEndB = new IPAddressV4(172, 31, 255, 255);
+    public static readonly IPAddressV4 PrivateEndB = new(172, 31, 255, 255);
 
-    public static readonly IPAddressV4 PrivateStartC = new IPAddressV4(192, 168, 0, 0);
+    public static readonly IPAddressV4 PrivateStartC = new(192, 168, 0, 0);
 
-    public static readonly IPAddressV4 PrivateEndC = new IPAddressV4(192, 168, 255, 255);
+    public static readonly IPAddressV4 PrivateEndC = new(192, 168, 255, 255);
 
-    public static readonly IPAddressV4 PrivateStartD = new IPAddressV4(169, 254, 0, 0);
+    public static readonly IPAddressV4 PrivateStartD = new(169, 254, 0, 0);
 
-    public static readonly IPAddressV4 PrivateEndD = new IPAddressV4(169, 254, 255, 255);
+    public static readonly IPAddressV4 PrivateEndD = new(169, 254, 255, 255);
 
-    public byte A
-    {
-        get;
-        private set;
-    }
+    public byte A { get; private set; }
 
-    public byte B
-    {
-        get;
-        private set;
-    }
+    public byte B { get; private set; }
 
-    public byte C
-    {
-        get;
-        private set;
-    }
+    public byte C { get; private set; }
 
-    public byte D
-    {
-        get;
-        private set;
-    }
+    public byte D { get; private set; }
 
     public IPAddressV4(int a, int b, int c, int d)
     {
-        this = default(IPAddressV4);
+        this = default;
         A = (byte)a;
         B = (byte)b;
         C = (byte)c;
@@ -66,7 +50,7 @@ public struct IPAddressV4 : IComparable<IPAddressV4>
 
     public IPAddressV4(string address)
     {
-        this = default(IPAddressV4);
+        this = default;
         if (!TryParse(address, out var address2))
         {
             throw new ArgumentException("no valid ip v4 address");
@@ -79,13 +63,13 @@ public struct IPAddressV4 : IComparable<IPAddressV4>
 
     public byte[] GetAddressBytes()
     {
-        return new byte[4]
-        {
+        return
+        [
             A,
             B,
             C,
             D
-        };
+        ];
     }
 
     public long GetLongAddress()
@@ -100,20 +84,14 @@ public struct IPAddressV4 : IComparable<IPAddressV4>
 
     public bool InRange(IPAddressV4 a, IPAddressV4 b)
     {
-        if (this >= a)
-        {
-            return this <= b;
-        }
-        return false;
+        return this >= a ? this <= b : false;
     }
 
     public bool IsPrivate()
     {
-        if (!InRange(PrivateStartA, PrivateEndA) && !InRange(PrivateStartB, PrivateEndB) && !InRange(PrivateStartC, PrivateEndC) && !InRange(PrivateStartD, PrivateEndD))
-        {
-            return this == Loopback;
-        }
-        return true;
+        return !InRange(PrivateStartA, PrivateEndA) && !InRange(PrivateStartB, PrivateEndB) && !InRange(PrivateStartC, PrivateEndC) && !InRange(PrivateStartD, PrivateEndD)
+            ? this == Loopback
+            : true;
     }
 
     public int CompareTo(IPAddressV4 other)
@@ -163,11 +141,9 @@ public struct IPAddressV4 : IComparable<IPAddressV4>
 
     public static explicit operator IPAddressV4(IPAddress address)
     {
-        if (address.AddressFamily != AddressFamily.InterNetwork)
-        {
-            throw new InvalidCastException("Can only cast ip v4 addresses");
-        }
-        return new IPAddressV4(address.GetAddressBytes());
+        return address.AddressFamily != AddressFamily.InterNetwork
+            ? throw new InvalidCastException("Can only cast ip v4 addresses")
+            : new IPAddressV4(address.GetAddressBytes());
     }
 
     public static implicit operator IPAddress(IPAddressV4 address)

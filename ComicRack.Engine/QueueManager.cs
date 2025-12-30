@@ -9,7 +9,6 @@ using System.Threading;
 
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Text;
@@ -26,25 +25,13 @@ public class QueueManager : DisposableObject
 {
     public interface IPendingTasks
     {
-        string TasksImageKey
-        {
-            get;
-        }
+        string TasksImageKey { get; }
 
-        string Group
-        {
-            get;
-        }
+        string Group { get; }
 
-        string AbortCommandText
-        {
-            get;
-        }
+        string AbortCommandText { get; }
 
-        Action Abort
-        {
-            get;
-        }
+        Action Abort { get; }
 
         IList GetPendingItems();
     }
@@ -53,29 +40,13 @@ public class QueueManager : DisposableObject
     {
         private readonly Func<IList> handler;
 
-        public string TasksImageKey
-        {
-            get;
-            private set;
-        }
+        public string TasksImageKey { get; private set; }
 
-        public string AbortCommandText
-        {
-            get;
-            private set;
-        }
+        public string AbortCommandText { get; private set; }
 
-        public Action Abort
-        {
-            get;
-            private set;
-        }
+        public Action Abort { get; private set; }
 
-        public string Group
-        {
-            get;
-            private set;
-        }
+        public string Group { get; private set; }
 
         public PendingTasksInfo(string imageKey, string group, Func<IList> infoHandler, string abortCommandText, Action abort)
         {
@@ -104,35 +75,15 @@ public class QueueManager : DisposableObject
     {
         private readonly string text;
 
-        public ProgressState State
-        {
-            get;
-            set;
-        }
+        public ProgressState State { get; set; }
 
-        public int ProgressPercentage
-        {
-            get;
-            set;
-        }
+        public int ProgressPercentage { get; set; }
 
-        public string ProgressMessage
-        {
-            get;
-            set;
-        }
+        public string ProgressMessage { get; set; }
 
-        public bool ProgressAvailable
-        {
-            get;
-            set;
-        }
+        public bool ProgressAvailable { get; set; }
 
-        public bool Abort
-        {
-            get;
-            set;
-        }
+        public bool Abort { get; set; }
 
         public TaskInfo(IProgressState ps, string text)
         {
@@ -156,9 +107,9 @@ public class QueueManager : DisposableObject
 
     private ComicScanner scanner;
 
-    private readonly SmartList<ComicExporter> exportErrors = new SmartList<ComicExporter>();
+    private readonly SmartList<ComicExporter> exportErrors = new();
 
-    private readonly SmartList<DeviceSyncError> deviceSyncErrors = new SmartList<DeviceSyncError>();
+    private readonly SmartList<DeviceSyncError> deviceSyncErrors = new();
 
     private static string refreshInfoQueueMessage;
 
@@ -206,29 +157,13 @@ public class QueueManager : DisposableObject
 
     private static string taskGroupDeviceSync;
 
-    public DatabaseManager DatabaseManager
-    {
-        get;
-        private set;
-    }
+    public DatabaseManager DatabaseManager { get; private set; }
 
-    public CacheManager CacheManager
-    {
-        get;
-        private set;
-    }
+    public CacheManager CacheManager { get; private set; }
 
-    public IComicUpdateSettings Settings
-    {
-        get;
-        private set;
-    }
+    public IComicUpdateSettings Settings { get; private set; }
 
-    public IEnumerable<DeviceSyncSettings> Devices
-    {
-        get;
-        private set;
-    }
+    public IEnumerable<DeviceSyncSettings> Devices { get; private set; }
 
     public ComicScanner Scanner
     {
@@ -239,45 +174,22 @@ public class QueueManager : DisposableObject
                 scanner = new ComicScanner(DatabaseManager.BookFactory);
                 scanner.ScanNotify += delegate (object s, ComicScanNotifyEventArgs e)
                 {
-                    if (this.ComicScanned != null)
-                    {
-                        this.ComicScanned(s, e);
-                    }
+                    ComicScanned?.Invoke(s, e);
                 };
             }
             return scanner;
         }
     }
 
-    public ProcessingQueue<ComicBook> UpdateComicBookDynamicQueue
-    {
-        get;
-        private set;
-    }
+    public ProcessingQueue<ComicBook> UpdateComicBookDynamicQueue { get; private set; }
 
-    public ProcessingQueue<ComicBook> ExportComicsQueue
-    {
-        get;
-        private set;
-    }
+    public ProcessingQueue<ComicBook> ExportComicsQueue { get; private set; }
 
-    public ProcessingQueue<ComicBook> ReadComicBookInfoFileQueue
-    {
-        get;
-        private set;
-    }
+    public ProcessingQueue<ComicBook> ReadComicBookInfoFileQueue { get; private set; }
 
-    public ProcessingQueue<ComicBook> WriteComicBookInfoFileQueue
-    {
-        get;
-        private set;
-    }
+    public ProcessingQueue<ComicBook> WriteComicBookInfoFileQueue { get; private set; }
 
-    public ProcessingQueue<DeviceSyncSettings> DeviceSyncQueue
-    {
-        get;
-        private set;
-    }
+    public ProcessingQueue<DeviceSyncSettings> DeviceSyncQueue { get; private set; }
 
     public SmartList<ComicExporter> ExportErrors => exportErrors;
 
@@ -287,17 +199,7 @@ public class QueueManager : DisposableObject
 
     public bool IsInComicConversion => ExportComicsQueue.IsActive;
 
-    public bool IsInComicFileRefresh
-    {
-        get
-        {
-            if (!ReadComicBookInfoFileQueue.IsActive)
-            {
-                return UpdateComicBookDynamicQueue.IsActive;
-            }
-            return true;
-        }
-    }
+    public bool IsInComicFileRefresh => !ReadComicBookInfoFileQueue.IsActive ? UpdateComicBookDynamicQueue.IsActive : true;
 
     public bool IsInComicFileUpdate => WriteComicBookInfoFileQueue.IsActive;
 
@@ -305,17 +207,7 @@ public class QueueManager : DisposableObject
 
     public bool IsInDeviceSync => DeviceSyncQueue.IsActive;
 
-    public bool IsActive
-    {
-        get
-        {
-            if (!IsInComicFileUpdate && !IsInComicConversion)
-            {
-                return IsInDeviceSync;
-            }
-            return true;
-        }
-    }
+    public bool IsActive => !IsInComicFileUpdate && !IsInComicConversion ? IsInDeviceSync : true;
 
     public event EventHandler<ComicScanNotifyEventArgs> ComicScanned;
 
@@ -399,15 +291,15 @@ public class QueueManager : DisposableObject
         {
             return;
         }
-        IProgressState ps = default(IProgressState);
-        string outPath = default(string);
+        IProgressState ps = default;
+        string outPath = default;
         ExportComicsQueue.AddItem(kcb, (IAsyncResult ar) =>
         {
             foreach (ComicBook cb in cbs)
             {
                 cb.RefreshInfoFromFile();
             }
-            ComicExporter comicExporter = new ComicExporter(cbs, setting, sequence);
+            ComicExporter comicExporter = new(cbs, setting, sequence);
             try
             {
                 bool isLocal = kcb.EditMode.IsLocalComic();
@@ -450,7 +342,7 @@ public class QueueManager : DisposableObject
                         kcb.CurrentPage = kcb.CurrentPage.Clamp(0, kcb.PageCount - 1);
                         if (setting.ImageProcessingSource == ExportImageProcessingSource.FromComic)
                         {
-                            kcb.ColorAdjustment = default(BitmapAdjustment);
+                            kcb.ColorAdjustment = default;
                         }
                         foreach (string item in source)
                         {
@@ -580,8 +472,8 @@ public class QueueManager : DisposableObject
         {
             return;
         }
-        DeviceSyncSettings ssc = new DeviceSyncSettings(dss);
-        ComicBookContainer library = new ComicBookContainer();
+        DeviceSyncSettings ssc = new(dss);
+        ComicBookContainer library = new();
         library.Books.AddRange(DatabaseManager.Database.Books);
         DeviceSyncQueue.AddItem(ssc, delegate (IAsyncResult ar)
         {
@@ -600,7 +492,7 @@ public class QueueManager : DisposableObject
                 ISyncProvider syncProvider3 = syncProvider;
                 if (syncProvider3 != null)
                 {
-                    StorageSync storageSync = new StorageSync(syncProvider3);
+                    StorageSync storageSync = new(syncProvider3);
                     storageSync.Error = (EventHandler<StorageSync.SyncErrorEventArgs>)Delegate.Combine(storageSync.Error, (EventHandler<StorageSync.SyncErrorEventArgs>)delegate (object s, StorageSync.SyncErrorEventArgs e)
                     {
                         DeviceSyncErrors.Add(new DeviceSyncError(ssc.DeviceName, e.Message));
@@ -616,7 +508,7 @@ public class QueueManager : DisposableObject
 
     public IEnumerable<IPendingTasks> GetQueues()
     {
-        List<IPendingTasks> list = new List<IPendingTasks>();
+        List<IPendingTasks> list = new();
         if (exportQueueMessage == null)
         {
             exportQueueMessage = TR.Messages["ExportQueueMessage", "Export Book '{0}'"];
@@ -656,7 +548,7 @@ public class QueueManager : DisposableObject
         list.Add(new PendingTasksInfo("ScanAnimation", taskGroupScanning, () => Scanner.IsScanning ? new string[1]
         {
             StringUtility.Format(scanComicQueueMessage, Scanner.CurrentLocation)
-        } : new string[0], scanComicAbortText, delegate
+        } : [], scanComicAbortText, delegate
         {
             Scanner.Stop(clearQueue: true);
         }));

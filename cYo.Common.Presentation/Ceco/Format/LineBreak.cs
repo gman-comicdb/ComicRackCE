@@ -6,21 +6,11 @@ public class LineBreak : Span
 
     public float LineScale
     {
-        get
-        {
-            return lineScale;
-        }
-        set
-        {
-            lineScale = value;
-        }
+        get => lineScale;
+        set => lineScale = value;
     }
 
-    public bool Clear
-    {
-        get;
-        set;
-    }
+    public bool Clear { get; set; }
 
     public override int FlowBreakOffset => (int)((float)Font.Height * lineScale);
 

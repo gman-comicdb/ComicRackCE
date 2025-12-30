@@ -9,26 +9,14 @@ public class Tokenizer
 {
     public class TextPosition
     {
-        public int Line
-        {
-            get;
-            set;
-        }
+        public int Line { get; set; }
 
-        public int Column
-        {
-            get;
-            set;
-        }
+        public int Column { get; set; }
     }
 
     public class ParseException : Exception
     {
-        public Token Token
-        {
-            get;
-            private set;
-        }
+        public Token Token { get; private set; }
 
         public ParseException(string message, Token token)
             : base(message)
@@ -39,29 +27,13 @@ public class Tokenizer
 
     public class Token
     {
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
-        public string Source
-        {
-            get;
-            set;
-        }
+        public string Source { get; set; }
 
-        public int Index
-        {
-            get;
-            set;
-        }
+        public int Index { get; set; }
 
-        public int Length
-        {
-            get;
-            set;
-        }
+        public int Length { get; set; }
 
         public TextPosition Position
         {
@@ -106,53 +78,13 @@ public class Tokenizer
 
     public int Count => matches.Count;
 
-    public string Text
-    {
-        get
-        {
-            if (Current == null)
-            {
-                return null;
-            }
-            return Current.Text;
-        }
-    }
+    public string Text => Current?.Text;
 
-    public Token Current
-    {
-        get
-        {
-            if (position >= matches.Count)
-            {
-                return null;
-            }
-            return Get(position);
-        }
-    }
+    public Token Current => position >= matches.Count ? null : Get(position);
 
-    public Token Last
-    {
-        get
-        {
-            if (position - 1 >= matches.Count)
-            {
-                return null;
-            }
-            return Get(position - 1);
-        }
-    }
+    public Token Last => position - 1 >= matches.Count ? null : Get(position - 1);
 
-    public Token Next
-    {
-        get
-        {
-            if (position + 1 >= matches.Count)
-            {
-                return null;
-            }
-            return Get(position + 1);
-        }
-    }
+    public Token Next => position + 1 >= matches.Count ? null : Get(position + 1);
 
     public bool EndReached => Current == null;
 
@@ -169,7 +101,7 @@ public class Tokenizer
         while (true)
         {
             Token token;
-            Token t = (token = Take());
+            Token t = token = Take();
             if (token != null)
             {
                 yield return t;
@@ -200,7 +132,7 @@ public class Tokenizer
     {
         Token current = Current;
         position++;
-        string text = ((current == null) ? string.Empty : current.Text);
+        string text = (current == null) ? string.Empty : current.Text;
         if (!string.IsNullOrEmpty(startsWith))
         {
             if (current == null)
@@ -283,7 +215,7 @@ public class Tokenizer
 
     private void ThrowExpectedException(Token token, params string[] expected)
     {
-        string arg = ((expected.Length == 1) ? expected[0] : string.Format("one of ({0})", expected.ToListString(", ")));
+        string arg = (expected.Length == 1) ? expected[0] : string.Format("one of ({0})", expected.ToListString(", "));
         if (token == null)
         {
             throw new Exception("Unexpected end reached");

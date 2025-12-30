@@ -10,10 +10,6 @@ public class SmartListSeriesAverageCommunityRatingMatcher : ComicBookNumericMatc
 {
     protected override float GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).AverageCommunityRating;
-        }
-        return 0f;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).AverageCommunityRating : 0f;
     }
 }

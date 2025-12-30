@@ -21,20 +21,13 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     private bool includeSubFolders;
 
-    private volatile List<ComicBook> currentBooks = new List<ComicBook>();
+    private volatile List<ComicBook> currentBooks = new();
 
-    public IWin32Window Window
-    {
-        get;
-        set;
-    }
+    public IWin32Window Window { get; set; }
 
     public string Path
     {
-        get
-        {
-            return path;
-        }
+        get => path;
         set
         {
             if (!(path == value))
@@ -48,10 +41,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
 
     public bool IncludeSubFolders
     {
-        get
-        {
-            return includeSubFolders;
-        }
+        get => includeSubFolders;
         set
         {
             if (includeSubFolders != value)
@@ -62,11 +52,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
         }
     }
 
-    public int BookCount
-    {
-        get;
-        set;
-    }
+    public int BookCount { get; set; }
 
     public event EventHandler BookListChanged;
 
@@ -88,15 +74,12 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
     public void Refresh()
     {
         currentBooks = GetFolderBookList(Path);
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected List<ComicBook> GetFolderBookList(string folder)
     {
-        List<ComicBook> list = new List<ComicBook>();
+        List<ComicBook> list = new();
         try
         {
             IEnumerable<string> fileExtensions = Providers.Readers.GetFileExtensions();
@@ -169,10 +152,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
         }
         if (!flag)
         {
-            if (this.BookListChanged != null)
-            {
-                this.BookListChanged(this, EventArgs.Empty);
-            }
+            BookListChanged?.Invoke(this, EventArgs.Empty);
         }
         else
         {

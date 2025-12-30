@@ -17,7 +17,7 @@ public static class XHtmlParser
 
     public static FlowBlock Parse(TextReader reader)
     {
-        XmlReaderSettings settings = new XmlReaderSettings
+        XmlReaderSettings settings = new()
         {
             IgnoreComments = true,
             IgnoreWhitespace = true
@@ -28,7 +28,7 @@ public static class XHtmlParser
 
     public static FlowBlock Parse(XmlReader reader)
     {
-        FlowBlock flowBlock = new FlowBlock();
+        FlowBlock flowBlock = new();
         Parse(flowBlock, reader);
         return flowBlock;
     }
@@ -86,10 +86,7 @@ public static class XHtmlParser
                         {
                             while (reader.MoveToNextAttribute())
                             {
-                                if (dictionary == null)
-                                {
-                                    dictionary = new Dictionary<string, string>();
-                                }
+                                dictionary ??= new Dictionary<string, string>();
                                 dictionary[reader.Name.ToLower()] = reader.Value;
                             }
                             reader.MoveToElement();
@@ -142,7 +139,7 @@ public static class XHtmlParser
                                 break;
                             case "pre":
                                 {
-                                    TextFont textFont2 = new TextFont
+                                    TextFont textFont2 = new()
                                     {
                                         FontFamily = "Courier New"
                                     };
@@ -190,7 +187,7 @@ public static class XHtmlParser
                                 break;
                             case "hr":
                                 {
-                                    HorizontalRule horizontalRule = new HorizontalRule();
+                                    HorizontalRule horizontalRule = new();
                                     span2 = horizontalRule;
                                     if (dictionary != null)
                                     {
@@ -214,7 +211,7 @@ public static class XHtmlParser
                             case "font":
                                 if (dictionary != null)
                                 {
-                                    TextFont textFont = new TextFont();
+                                    TextFont textFont = new();
                                     span2 = textFont;
                                     if (dictionary.ContainsKey("size"))
                                     {
@@ -233,7 +230,7 @@ public static class XHtmlParser
                                     {
                                         break;
                                     }
-                                    ImageItem imageItem = new ImageItem();
+                                    ImageItem imageItem = new();
                                     span.Inlines.Add(imageItem);
                                     if (dictionary.ContainsKey("src"))
                                     {

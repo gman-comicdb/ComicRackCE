@@ -4,8 +4,5 @@ namespace cYo.Projects.ComicRack.Plugins;
 
 public interface IPluginConfig
 {
-    IEnumerable<string> LibraryPaths
-    {
-        get;
-    }
+    IEnumerable<string> LibraryPaths { get; }
 }

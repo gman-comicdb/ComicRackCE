@@ -24,9 +24,9 @@ public static class Flags
         flagDict = new Dictionary<string, Image>();
         try
         {
-            using (MemoryStream stream = new MemoryStream(Resources.Flags))
+            using (MemoryStream stream = new(Resources.Flags))
             {
-                using (ZipFile zipFile = new ZipFile(stream))
+                using (ZipFile zipFile = new(stream))
                 {
                     foreach (ZipEntry item in zipFile)
                     {
@@ -49,11 +49,9 @@ public static class Flags
 
     public static Image GetFlagFromCountry(string countryCode)
     {
-        if (!available || countryCode == null || !flagDict.TryGetValue(countryCode.ToLower(), out var value))
-        {
-            return null;
-        }
-        return value.Clone() as Image;
+        return !available || countryCode == null || !flagDict.TryGetValue(countryCode.ToLower(), out var value)
+            ? null
+            : value.Clone() as Image;
     }
 
     public static Image GetFlagFromCulture(string cultureCode)
@@ -62,19 +60,14 @@ public static class Flags
         {
             return null;
         }
-        if (cultureCode == null)
-        {
-            cultureCode = CultureInfo.CurrentUICulture.Name;
-        }
+        cultureCode ??= CultureInfo.CurrentUICulture.Name;
         string[] array = cultureCode.Split('-');
         Image flagFromCountry = GetFlagFromCountry(array[array.Length - 1]);
-        if (flagFromCountry != null || array.Length == 2)
-        {
-            return flagFromCountry;
-        }
-        return (from ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-                where ci.Name.StartsWith(cultureCode)
-                select GetFlagFromCulture(ci.Name)).FirstOrDefault((Image ci) => ci != null);
+        return flagFromCountry != null || array.Length == 2
+            ? flagFromCountry
+            : (from ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+               where ci.Name.StartsWith(cultureCode)
+               select GetFlagFromCulture(ci.Name)).FirstOrDefault((Image ci) => ci != null);
     }
 
     public static Image GetFlag(CultureInfo ci)

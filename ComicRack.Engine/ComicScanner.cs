@@ -18,7 +18,7 @@ public class ComicScanner : DisposableObject
 
     private bool scanCompleted;
 
-    private readonly SmartList<ScanItem> scanQueue = new SmartList<ScanItem>();
+    private readonly SmartList<ScanItem> scanQueue = new();
 
     private volatile ComicScanOptions scanOptions;
 
@@ -26,30 +26,14 @@ public class ComicScanner : DisposableObject
 
     private volatile bool abortScanning;
 
-    public bool IsScanning
-    {
-        get
-        {
-            if (scanningThread != null && scanningThread.IsAlive)
-            {
-                return !scanCompleted;
-            }
-            return false;
-        }
-    }
+    public bool IsScanning => scanningThread != null && scanningThread.IsAlive ? !scanCompleted : false;
 
     public SmartList<ScanItem> ScanQueue => scanQueue;
 
     public ComicScanOptions ScanOptions
     {
-        get
-        {
-            return scanOptions;
-        }
-        set
-        {
-            scanOptions = value;
-        }
+        get => scanOptions;
+        set => scanOptions = value;
     }
 
     public string CurrentLocation => currentLocation;
@@ -126,7 +110,7 @@ public class ComicScanner : DisposableObject
                             currentLocation = Path.GetFullPath(scanFile);
                             if (File.Exists(scanFile))
                             {
-                                ComicScanNotifyEventArgs comicScanNotifyEventArgs = new ComicScanNotifyEventArgs(scanFile);
+                                ComicScanNotifyEventArgs comicScanNotifyEventArgs = new(scanFile);
                                 OnScanNotify(comicScanNotifyEventArgs);
                                 if (comicScanNotifyEventArgs.Cancel || abortScanning)
                                 {
@@ -153,7 +137,7 @@ public class ComicScanner : DisposableObject
             {
                 return;
             }
-            DriveChecker driveChecker = new DriveChecker();
+            DriveChecker driveChecker = new();
             List<ComicBook> list = null;
             ComicBook[] array = factory.Storage.ToArray();
             foreach (ComicBook comicBook in array)
@@ -165,13 +149,10 @@ public class ComicScanner : DisposableObject
                 string filePath = comicBook.FilePath;
                 if (driveChecker.IsConnected(filePath) && !File.Exists(filePath))
                 {
-                    if (list == null)
-                    {
-                        list = new List<ComicBook>();
-                    }
+                    list ??= new List<ComicBook>();
                     list.Add(comicBook);
                 }
-                ComicScanNotifyEventArgs comicScanNotifyEventArgs2 = new ComicScanNotifyEventArgs(filePath);
+                ComicScanNotifyEventArgs comicScanNotifyEventArgs2 = new(filePath);
                 OnScanNotify(comicScanNotifyEventArgs2);
                 if (comicScanNotifyEventArgs2.Cancel || abortScanning)
                 {
@@ -200,10 +181,7 @@ public class ComicScanner : DisposableObject
 
     protected virtual void OnScanNotify(ComicScanNotifyEventArgs e)
     {
-        if (this.ScanNotify != null)
-        {
-            this.ScanNotify(this, e);
-        }
+        ScanNotify?.Invoke(this, e);
     }
 
     protected virtual void OnProcessScannedFile(string file, ComicScanOptions scanOptions, bool forceRefreshInfo = false)

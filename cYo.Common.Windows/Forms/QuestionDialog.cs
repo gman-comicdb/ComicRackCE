@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,53 +6,21 @@ namespace cYo.Common.Windows.Forms;
 
 public partial class QuestionDialog : FormEx
 {
-    public string Question
-    {
-        get;
-        set;
-    }
+    public string Question { get; set; }
 
-    public string OkButtonText
-    {
-        get;
-        set;
-    }
+    public string OkButtonText { get; set; }
 
-    public string CancelButtonText
-    {
-        get;
-        set;
-    }
+    public string CancelButtonText { get; set; }
 
-    public string OptionText
-    {
-        get;
-        set;
-    }
+    public string OptionText { get; set; }
 
-    public string Option2Text
-    {
-        get;
-        set;
-    }
+    public string Option2Text { get; set; }
 
-    public bool Option2Independent
-    {
-        get;
-        set;
-    }
+    public bool Option2Independent { get; set; }
 
-    public Image Image
-    {
-        get;
-        set;
-    }
+    public Image Image { get; set; }
 
-    public bool ShowCancel
-    {
-        get;
-        set;
-    }
+    public bool ShowCancel { get; set; }
 
     public QuestionDialog()
     {
@@ -139,7 +106,7 @@ public partial class QuestionDialog : FormEx
 
     public static QuestionResult AskQuestion(IWin32Window owner, string question, string okButtonText = null, Action<QuestionDialog> setParameters = null)
     {
-        using (QuestionDialog questionDialog = new QuestionDialog())
+        using (QuestionDialog questionDialog = new())
         {
             questionDialog.Question = question;
             questionDialog.OkButtonText = okButtonText;

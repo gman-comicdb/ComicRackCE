@@ -31,7 +31,7 @@ public class ListBoxSkinner : Component
         string itemText = listBox.GetItemText(listBox.Items[e.Index]);
         e.DrawBackground();
         e.Graphics.DrawStyledRectangle(e.Bounds, StyledRenderer.GetAlphaStyle(e.State.HasFlag(DrawItemState.Selected), e.State.HasFlag(DrawItemState.HotLight), e.State.HasFlag(DrawItemState.Focus)), StyledRenderer.GetSelectionColor(listBox.Focused));
-        using (SolidBrush brush = new SolidBrush(e.ForeColor))
+        using (SolidBrush brush = new(e.ForeColor))
         {
             e.Graphics.DrawString(itemText, e.Font, brush, e.Bounds);
         }

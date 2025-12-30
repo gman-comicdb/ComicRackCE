@@ -13,10 +13,7 @@ public class NamedIdComponent : IdComponent
     [XmlAttribute]
     public string Name
     {
-        get
-        {
-            return name;
-        }
+        get => name;
         set
         {
             if (!(name == value))
@@ -32,9 +29,6 @@ public class NamedIdComponent : IdComponent
 
     protected virtual void OnNameChanged()
     {
-        if (this.NameChanged != null)
-        {
-            this.NameChanged(this, EventArgs.Empty);
-        }
+        NameChanged?.Invoke(this, EventArgs.Empty);
     }
 }

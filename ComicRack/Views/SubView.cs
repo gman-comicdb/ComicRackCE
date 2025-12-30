@@ -17,10 +17,7 @@ public partial class SubView : CaptionControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IMain Main
     {
-        get
-        {
-            return mainForm;
-        }
+        get => mainForm;
         set
         {
             if (mainForm != value)
@@ -63,8 +60,7 @@ public partial class SubView : CaptionControl
     {
         foreach (Control item in cc)
         {
-            SubView subView = item as SubView;
-            if (subView != null)
+            if (item is SubView subView)
             {
                 subView.Main = main;
             }

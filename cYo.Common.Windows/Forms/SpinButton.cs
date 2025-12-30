@@ -19,7 +19,7 @@ public class SpinButton : Control
         Down
     }
 
-    private Timer repeatTimer = new Timer();
+    private Timer repeatTimer = new();
 
     private bool upEnabled = true;
 
@@ -32,19 +32,12 @@ public class SpinButton : Control
     private SpinButtonType hot;
 
     [DefaultValue(250)]
-    public int RepeatInterval
-    {
-        get;
-        set;
-    }
+    public int RepeatInterval { get; set; }
 
     [DefaultValue(true)]
     public bool UpEnabled
     {
-        get
-        {
-            return upEnabled;
-        }
+        get => upEnabled;
         set
         {
             if (value != upEnabled)
@@ -58,10 +51,7 @@ public class SpinButton : Control
     [DefaultValue(true)]
     public bool DownEnabled
     {
-        get
-        {
-            return downEnabled;
-        }
+        get => downEnabled;
         set
         {
             if (value != downEnabled)
@@ -75,10 +65,7 @@ public class SpinButton : Control
     [DefaultValue(true)]
     public bool Flat
     {
-        get
-        {
-            return flat;
-        }
+        get => flat;
         set
         {
             if (value != flat)
@@ -170,11 +157,7 @@ public class SpinButton : Control
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (keyData == Keys.Up || keyData == Keys.Down)
-        {
-            return true;
-        }
-        return base.IsInputKey(keyData);
+        return keyData is Keys.Up or Keys.Down ? true : base.IsInputKey(keyData);
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -204,18 +187,12 @@ public class SpinButton : Control
 
     protected virtual void OnButtonUp()
     {
-        if (this.ButtonUp != null)
-        {
-            this.ButtonUp(this, EventArgs.Empty);
-        }
+        ButtonUp?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnButtonDown()
     {
-        if (this.ButtonDown != null)
-        {
-            this.ButtonDown(this, EventArgs.Empty);
-        }
+        ButtonDown?.Invoke(this, EventArgs.Empty);
     }
 
     private void repeatTimer_Tick(object sender, EventArgs e)
@@ -225,30 +202,20 @@ public class SpinButton : Control
 
     private bool IsUpKey(Keys keyCode)
     {
-        switch (keyCode)
+        return keyCode switch
         {
-            case Keys.Prior:
-            case Keys.Up:
-            case Keys.Add:
-            case Keys.Oemplus:
-                return true;
-            default:
-                return false;
-        }
+            Keys.Prior or Keys.Up or Keys.Add or Keys.Oemplus => true,
+            _ => false,
+        };
     }
 
     private bool IsDownKey(Keys keyCode)
     {
-        switch (keyCode)
+        return keyCode switch
         {
-            case Keys.Next:
-            case Keys.Down:
-            case Keys.Subtract:
-            case Keys.OemMinus:
-                return true;
-            default:
-                return false;
-        }
+            Keys.Next or Keys.Down or Keys.Subtract or Keys.OemMinus => true,
+            _ => false,
+        };
     }
 
     private bool HandleKey(Keys keyCode)
@@ -288,15 +255,9 @@ public class SpinButton : Control
 
     public static SpinButtonType HitTest(Rectangle rc, Point location, bool upEnabled = true, bool downEnabled = true)
     {
-        if (GetButtonBounds(rc, SpinButtonType.Up).Contains(location) && upEnabled)
-        {
-            return SpinButtonType.Up;
-        }
-        if (GetButtonBounds(rc, SpinButtonType.Down).Contains(location) && downEnabled)
-        {
-            return SpinButtonType.Down;
-        }
-        return SpinButtonType.None;
+        return GetButtonBounds(rc, SpinButtonType.Up).Contains(location) && upEnabled
+            ? SpinButtonType.Up
+            : GetButtonBounds(rc, SpinButtonType.Down).Contains(location) && downEnabled ? SpinButtonType.Down : SpinButtonType.None;
     }
 
     public static void Draw(Graphics gr, Rectangle rc, bool styleMode = true, SpinButtonType hit = SpinButtonType.None, SpinButtonType hot = SpinButtonType.None, bool flat = true, bool upEnabled = true, bool downEnabled = true)
@@ -305,7 +266,7 @@ public class SpinButton : Control
         Rectangle buttonBounds2 = GetButtonBounds(rc, SpinButtonType.Down);
         if (styleMode && Application.RenderWithVisualStyles)
         {
-            VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer((!upEnabled) ? VisualStyleElement.Spin.Up.Disabled : ((hit == SpinButtonType.Up) ? VisualStyleElement.Spin.Up.Pressed : ((hot == SpinButtonType.Up) ? VisualStyleElement.Spin.Up.Hot : VisualStyleElement.Spin.Up.Normal)));
+            VisualStyleRenderer visualStyleRenderer = new((!upEnabled) ? VisualStyleElement.Spin.Up.Disabled : ((hit == SpinButtonType.Up) ? VisualStyleElement.Spin.Up.Pressed : ((hot == SpinButtonType.Up) ? VisualStyleElement.Spin.Up.Hot : VisualStyleElement.Spin.Up.Normal)));
             visualStyleRenderer.DrawBackground(gr, buttonBounds);
             visualStyleRenderer = new VisualStyleRenderer((!downEnabled) ? VisualStyleElement.Spin.Down.Disabled : ((hit == SpinButtonType.Down) ? VisualStyleElement.Spin.Down.Pressed : ((hot == SpinButtonType.Down) ? VisualStyleElement.Spin.Down.Hot : VisualStyleElement.Spin.Down.Normal)));
             visualStyleRenderer.DrawBackground(gr, buttonBounds2);
@@ -319,7 +280,7 @@ public class SpinButton : Control
 
     public static void AddUpDown(TextBoxBase textBox, int start = 1, int min = int.MinValue, int max = int.MaxValue, int increment = 1, bool registerKeys = false, bool hidden = false, bool visuallyLinkToParent = false, AnchorStyles anchorStyles = AnchorStyles.Top | AnchorStyles.Left)
     {
-        SpinButton sb = new SpinButton
+        SpinButton sb = new()
         {
             Width = FormUtility.ScaleDpiX(11),
             Enabled = textBox.Enabled,

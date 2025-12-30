@@ -18,11 +18,7 @@ public abstract class CachedSearch : INetSearch
         public override bool Equals(object obj)
         {
             CacheKey cacheKey = (CacheKey)obj;
-            if (Hint == cacheKey.Hint && Limit == cacheKey.Limit)
-            {
-                return Text == cacheKey.Text;
-            }
-            return false;
+            return Hint == cacheKey.Hint && Limit == cacheKey.Limit ? Text == cacheKey.Text : false;
         }
 
         public override int GetHashCode()
@@ -31,21 +27,15 @@ public abstract class CachedSearch : INetSearch
         }
     }
 
-    private Dictionary<CacheKey, SearchResult[]> cache = new Dictionary<CacheKey, SearchResult[]>();
+    private Dictionary<CacheKey, SearchResult[]> cache = new();
 
-    public abstract string Name
-    {
-        get;
-    }
+    public abstract string Name { get; }
 
-    public abstract Image Image
-    {
-        get;
-    }
+    public abstract Image Image { get; }
 
     public IEnumerable<SearchResult> Search(string hint, string text, int limit)
     {
-        CacheKey cacheKey = default(CacheKey);
+        CacheKey cacheKey = default;
         cacheKey.Hint = hint;
         cacheKey.Text = text;
         cacheKey.Limit = limit;
@@ -61,7 +51,7 @@ public abstract class CachedSearch : INetSearch
         }
         catch (Exception)
         {
-            value = new SearchResult[0];
+            value = [];
         }
         cache[key] = value;
         return value;

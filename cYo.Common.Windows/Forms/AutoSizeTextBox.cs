@@ -13,35 +13,19 @@ public class AutoSizeTextBox : TextBox
     [DefaultValue(16)]
     public int AutoSizePadding
     {
-        get
-        {
-            return autoSizePadding;
-        }
-        set
-        {
-            autoSizePadding = value;
-        }
+        get => autoSizePadding;
+        set => autoSizePadding = value;
     }
 
     [DefaultValue(true)]
     public bool AutoSizeEnabled
     {
-        get
-        {
-            return autoSizeEnabled;
-        }
-        set
-        {
-            autoSizeEnabled = value;
-        }
+        get => autoSizeEnabled;
+        set => autoSizeEnabled = value;
     }
 
     [DefaultValue(false)]
-    public bool HandleTab
-    {
-        get;
-        set;
-    }
+    public bool HandleTab { get; set; }
 
     protected override void OnTextChanged(EventArgs e)
     {
@@ -56,7 +40,7 @@ public class AutoSizeTextBox : TextBox
     {
         if (HandleTab && (keyData & Keys.KeyCode) == Keys.Tab)
         {
-            KeyEventArgs keyEventArgs = new KeyEventArgs(keyData);
+            KeyEventArgs keyEventArgs = new(keyData);
             OnKeyDown(keyEventArgs);
             if (keyEventArgs.Handled)
             {

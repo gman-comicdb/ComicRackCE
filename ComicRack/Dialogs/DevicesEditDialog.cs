@@ -11,7 +11,6 @@ using cYo.Common.Mathematics;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine.Sync;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -41,11 +40,7 @@ public partial class DevicesEditDialog : FormEx
         get
         {
             TabPage tabPage = tabDevices.SelectedTab;
-            if (tabPage != null)
-            {
-                return tabPage.Tag as DeviceEditControl;
-            }
-            return null;
+            return tabPage != null ? tabPage.Tag as DeviceEditControl : null;
         }
     }
 
@@ -85,18 +80,12 @@ public partial class DevicesEditDialog : FormEx
 
     private void miDeviceCopy_Click(object sender, EventArgs e)
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDevice.CopyShareSettings();
-        }
+        CurrentDevice?.CopyShareSettings();
     }
 
     private void miDevicePaste_Click(object sender, EventArgs e)
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDevice.PasteSharedSettings();
-        }
+        CurrentDevice?.PasteSharedSettings();
     }
 
     private void miDeviceCopyToAll_Click(object sender, EventArgs e)
@@ -141,12 +130,12 @@ public partial class DevicesEditDialog : FormEx
 
     private TabPage AddTab(DeviceSyncSettings pd)
     {
-        TabPage tb = new TabPage(pd.DeviceName)
+        TabPage tb = new(pd.DeviceName)
         {
             Padding = new Padding(10),
             UseVisualStyleBackColor = true
         };
-        DeviceEditControl se = new DeviceEditControl
+        DeviceEditControl se = new()
         {
             Settings = pd,
             Dock = DockStyle.Fill
@@ -177,7 +166,7 @@ public partial class DevicesEditDialog : FormEx
 
     public static bool Show(IWin32Window parent, IList<DeviceSyncSettings> portableDevices, DeviceSyncSettings device = null, Guid? listId = null)
     {
-        using (DevicesEditDialog devicesEditDialog = new DevicesEditDialog())
+        using (DevicesEditDialog devicesEditDialog = new())
         {
             devicesEditDialog.Devices = portableDevices;
             if (device != null)

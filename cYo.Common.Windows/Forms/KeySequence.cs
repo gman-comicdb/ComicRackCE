@@ -16,23 +16,18 @@ public class KeySequence
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(InstanceDescriptor))
-            {
-                return true;
-            }
-            return base.CanConvertTo(context, destinationType);
+            return destinationType == typeof(InstanceDescriptor) ? true : base.CanConvertTo(context, destinationType);
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            KeySequence keySequence = value as KeySequence;
-            if (keySequence != null && destinationType == typeof(InstanceDescriptor))
+            if (value is KeySequence keySequence && destinationType == typeof(InstanceDescriptor))
             {
-                ConstructorInfo constructor = typeof(KeySequence).GetConstructor(new Type[2]
-                {
+                ConstructorInfo constructor = typeof(KeySequence).GetConstructor(
+                [
                     typeof(string),
                     typeof(IEnumerable<Keys>)
-                });
+                ]);
                 if (constructor != null)
                 {
                     return new InstanceDescriptor(constructor, new object[2]
@@ -46,13 +41,9 @@ public class KeySequence
         }
     }
 
-    private readonly List<Keys> sequence = new List<Keys>();
+    private readonly List<Keys> sequence = new();
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public List<Keys> Sequence => sequence;

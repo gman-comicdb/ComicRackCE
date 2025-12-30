@@ -41,9 +41,6 @@ public class ExtractToStreamCallback : IProgress, IArchiveExtractCallback
 
     public void SetOperationResult(OperationResult resultEOperationResult)
     {
-        if (fileStream != null)
-        {
-            fileStream.Dispose();
-        }
+        fileStream?.Dispose();
     }
 }

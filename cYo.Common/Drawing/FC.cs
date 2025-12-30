@@ -32,11 +32,7 @@ public static class FC
         public override bool Equals(object obj)
         {
             FontKey fontKey = (FontKey)obj;
-            if (FontFamily == fontKey.FontFamily && FontStyle == fontKey.FontStyle)
-            {
-                return FontSize == fontKey.FontSize;
-            }
-            return false;
+            return FontFamily == fontKey.FontFamily && FontStyle == fontKey.FontStyle ? FontSize == fontKey.FontSize : false;
         }
 
         public override int GetHashCode()
@@ -66,13 +62,13 @@ public static class FC
 
     private const int MaxSize = 100;
 
-    private static readonly Dictionary<FontKey, FontItem> fontCache = new Dictionary<FontKey, FontItem>();
+    private static readonly Dictionary<FontKey, FontItem> fontCache = new();
 
-    private static readonly LinkedList<FontKey> fontKeyList = new LinkedList<FontKey>();
+    private static readonly LinkedList<FontKey> fontKeyList = new();
 
     public static Font Get(string fontFamily, float fontSize, FontStyle fontStyle)
     {
-        FontKey fontKey = new FontKey(fontFamily, fontSize, fontStyle);
+        FontKey fontKey = new(fontFamily, fontSize, fontStyle);
         if (fontCache.TryGetValue(fontKey, out var value))
         {
             if (value.Node != fontKeyList.First)

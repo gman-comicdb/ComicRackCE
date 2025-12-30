@@ -59,34 +59,19 @@ public static class BitmapCursor
 
         public bool BitmapOwned
         {
-            get
-            {
-                return bitmapOwned;
-            }
-            set
-            {
-                bitmapOwned = value;
-            }
+            get => bitmapOwned;
+            set => bitmapOwned = value;
         }
 
         public Bitmap Bitmap
         {
-            get
-            {
-                return bitmap;
-            }
-            set
-            {
-                SetBitmap(value);
-            }
+            get => bitmap;
+            set => SetBitmap(value);
         }
 
         public Cursor OverlayCursor
         {
-            get
-            {
-                return overlayCursor;
-            }
+            get => overlayCursor;
             set
             {
                 if (!(overlayCursor == value))
@@ -99,10 +84,7 @@ public static class BitmapCursor
 
         public BitmapCursorOverlayEffect OverlayEffect
         {
-            get
-            {
-                return overlayEffect;
-            }
+            get => overlayEffect;
             set
             {
                 if (overlayEffect != value)
@@ -115,10 +97,7 @@ public static class BitmapCursor
 
         public Point HotSpot
         {
-            get
-            {
-                return hotSpot;
-            }
+            get => hotSpot;
             set
             {
                 if (!(hotSpot == value))
@@ -178,7 +157,7 @@ public static class BitmapCursor
 
         private void SetBitmap(Bitmap value)
         {
-            if (this.bitmap != value)
+            if (bitmap != value)
             {
                 Bitmap bitmap = this.bitmap;
                 this.bitmap = value;
@@ -208,17 +187,17 @@ public static class BitmapCursor
             {
                 Point point = overlayCursor.HotSpot;
                 Size size = overlayCursor.Size;
-                Point p = new Point(Math.Min(0, hotSpot.X - point.X), Math.Min(0, hotSpot.Y - point.Y));
-                Size size2 = new Size(Math.Max(bitmap.Width, hotSpot.X - point.X + size.Width), Math.Max(bitmap.Height, hotSpot.Y - point.Y + size.Height));
+                Point p = new(Math.Min(0, hotSpot.X - point.X), Math.Min(0, hotSpot.Y - point.Y));
+                Size size2 = new(Math.Max(bitmap.Width, hotSpot.X - point.X + size.Width), Math.Max(bitmap.Height, hotSpot.Y - point.Y + size.Height));
                 point.Offset(p);
-                using (Bitmap bitmap2 = new Bitmap(size2.Width - p.X, size2.Height - p.Y))
+                using (Bitmap bitmap2 = new(size2.Width - p.X, size2.Height - p.Y))
                 {
                     hotSpot.Offset(-point.X, -point.Y);
                     using (Graphics graphics = Graphics.FromImage(bitmap2))
                     {
-                        Rectangle targetRect = new Rectangle(hotSpot, size);
+                        Rectangle targetRect = new(hotSpot, size);
                         graphics.DrawImage(bitmap, -p.X, -p.Y);
-                        if (effect != 0 && effect == BitmapCursorOverlayEffect.Plus)
+                        if (effect is not 0 and BitmapCursorOverlayEffect.Plus)
                         {
                             using (Bitmap bitmap3 = Resources.PlusOverlay)
                             {
@@ -232,7 +211,7 @@ public static class BitmapCursor
             }
             try
             {
-                Native.ICONINFO iconinfo = default(Native.ICONINFO);
+                Native.ICONINFO iconinfo = default;
                 iconinfo.fIcon = false;
                 iconinfo.xHotspot = (uint)hotSpot.X;
                 iconinfo.yHotspot = (uint)hotSpot.Y;

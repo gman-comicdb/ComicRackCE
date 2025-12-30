@@ -4,10 +4,7 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IComicBookList
 {
-    string Name
-    {
-        get;
-    }
+    string Name { get; }
 
     IEnumerable<ComicBook> GetBooks();
 }

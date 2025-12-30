@@ -39,11 +39,7 @@ public struct SizeValue
 
     public int GetSize(int size)
     {
-        if (Value > 0)
-        {
-            return Math.Min(IsPercent ? (size * Value / 100) : Value, size);
-        }
-        return size;
+        return Value > 0 ? Math.Min(IsPercent ? (size * Value / 100) : Value, size) : size;
     }
 
     public override bool Equals(object obj)

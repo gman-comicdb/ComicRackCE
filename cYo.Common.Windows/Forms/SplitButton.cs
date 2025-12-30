@@ -42,10 +42,7 @@ public class SplitButton : Button
 
     private PushButtonState State
     {
-        get
-        {
-            return state;
-        }
+        get => state;
         set
         {
             if (state != value)
@@ -74,20 +71,14 @@ public class SplitButton : Button
             return base.Size;
         }
         Size preferredSize = base.GetPreferredSize(proposedSize);
-        if (showSplit && !string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + FormUtility.ScaleDpiX(PushButtonWidth) > preferredSize.Width)
-        {
-            return preferredSize + new Size(FormUtility.ScaleDpiX(PushButtonWidth) + BorderSize * 2, 0);
-        }
-        return preferredSize;
+        return showSplit && !string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + FormUtility.ScaleDpiX(PushButtonWidth) > preferredSize.Width
+            ? preferredSize + new Size(FormUtility.ScaleDpiX(PushButtonWidth) + BorderSize * 2, 0)
+            : preferredSize;
     }
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (keyData == Keys.Down && showSplit)
-        {
-            return true;
-        }
-        return base.IsInputKey(keyData);
+        return keyData == Keys.Down && showSplit ? true : base.IsInputKey(keyData);
     }
 
     protected override void OnGotFocus(EventArgs e)
@@ -96,7 +87,7 @@ public class SplitButton : Button
         {
             base.OnGotFocus(e);
         }
-        else if (State != PushButtonState.Pressed && State != PushButtonState.Disabled)
+        else if (State is not PushButtonState.Pressed and not PushButtonState.Disabled)
         {
             State = PushButtonState.Default;
         }
@@ -133,7 +124,7 @@ public class SplitButton : Button
         {
             base.OnLostFocus(e);
         }
-        else if (State != PushButtonState.Pressed && State != PushButtonState.Disabled)
+        else if (State is not PushButtonState.Pressed and not PushButtonState.Disabled)
         {
             State = PushButtonState.Normal;
         }
@@ -161,7 +152,7 @@ public class SplitButton : Button
         {
             base.OnMouseEnter(e);
         }
-        else if (State != PushButtonState.Pressed && State != PushButtonState.Disabled)
+        else if (State is not PushButtonState.Pressed and not PushButtonState.Disabled)
         {
             State = PushButtonState.Hot;
         }
@@ -173,9 +164,9 @@ public class SplitButton : Button
         {
             base.OnMouseLeave(e);
         }
-        else if (State != PushButtonState.Pressed && State != PushButtonState.Disabled)
+        else if (State is not PushButtonState.Pressed and not PushButtonState.Disabled)
         {
-            State = ((!Focused) ? PushButtonState.Normal : PushButtonState.Default);
+            State = (!Focused) ? PushButtonState.Normal : PushButtonState.Default;
         }
     }
 
@@ -233,8 +224,8 @@ public class SplitButton : Button
 
         if (Application.RenderWithVisualStyles)
         {
-            VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(base.Enabled ? VisualStyleElement.Button.PushButton.Default : VisualStyleElement.Button.PushButton.Disabled);
-            using (FontDC dc = new FontDC(graphics, Font))
+            VisualStyleRenderer visualStyleRenderer = new(base.Enabled ? VisualStyleElement.Button.PushButton.Default : VisualStyleElement.Button.PushButton.Disabled);
+            using (FontDC dc = new(graphics, Font))
             {
                 visualStyleRenderer.DrawThemeText(dc, rectangle, Text, drawDisabled: true, textFormatFlags);
             }
@@ -275,7 +266,7 @@ public class SplitButton : Button
         DrawButtonBase(graphics, clientRectangle);
         dropDownRectangle = new Rectangle(clientRectangle.Right - FormUtility.ScaleDpiX(PushButtonWidth) - 1, BorderSize, FormUtility.ScaleDpiX(PushButtonWidth), clientRectangle.Height - BorderSize * 2);
         int borderSize = BorderSize;
-        Rectangle rectangle = new Rectangle(borderSize, borderSize, clientRectangle.Width - dropDownRectangle.Width - borderSize, clientRectangle.Height - borderSize * 2);
+        Rectangle rectangle = new(borderSize, borderSize, clientRectangle.Width - dropDownRectangle.Width - borderSize, clientRectangle.Height - borderSize * 2);
         bool shouldDrawLineline = State == PushButtonState.Hot || State == PushButtonState.Pressed || !Application.RenderWithVisualStyles;
         if (RightToLeft == RightToLeft.Yes)
         {
@@ -308,10 +299,7 @@ public class SplitButton : Button
 
     protected virtual void OnShowContextMenu()
     {
-        if (this.ShowContextMenu != null)
-        {
-            this.ShowContextMenu(this, EventArgs.Empty);
-        }
+        ShowContextMenu?.Invoke(this, EventArgs.Empty);
     }
 
     private void RemoveContextEvents()
@@ -325,18 +313,18 @@ public class SplitButton : Button
 
     private static void PaintArrow(Graphics g, Rectangle dropDownRect)
     {
-        Point point = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2), Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
+        Point point = new(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2), Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
         point.X += dropDownRect.Width % 2;
         int num = FormUtility.ScaleDpiX(2);
         int num2 = FormUtility.ScaleDpiX(3);
         int num3 = FormUtility.ScaleDpiY(1);
         int num4 = FormUtility.ScaleDpiY(2);
-        Point[] points = new Point[3]
-        {
-            new Point(point.X - num, point.Y - num3),
-            new Point(point.X + num2, point.Y - num3),
-            new Point(point.X, point.Y + num4)
-        };
+        Point[] points =
+        [
+            new(point.X - num, point.Y - num3),
+            new(point.X + num2, point.Y - num3),
+            new(point.X, point.Y + num4)
+        ];
         g.FillPolygon(SystemBrushes.ControlText, points);
     }
 
@@ -367,13 +355,8 @@ public class SplitButton : Button
 
     private void SetButtonDrawState()
     {
-        if (base.Bounds.Contains(base.Parent.PointToClient(Cursor.Position)))
-        {
-            State = PushButtonState.Hot;
-        }
-        else
-        {
-            State = ((!Focused) ? PushButtonState.Normal : PushButtonState.Default);
-        }
+        State = base.Bounds.Contains(base.Parent.PointToClient(Cursor.Position))
+            ? PushButtonState.Hot
+            : (!Focused) ? PushButtonState.Normal : PushButtonState.Default;
     }
 }

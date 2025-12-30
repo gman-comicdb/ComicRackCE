@@ -313,7 +313,7 @@ public sealed class ShellFolder : DisposableObject
             int SetNameOf(IntPtr hwnd, IntPtr pidl, [MarshalAs(UnmanagedType.LPWStr)] string pszName, uint uFlags, out IntPtr ppidlOut);
         }
 
-        public static Guid IID_IShellFolder = new Guid("{000214E6-0000-0000-C000-000000000046}");
+        public static Guid IID_IShellFolder = new("{000214E6-0000-0000-C000-000000000046}");
 
         [DllImport("shell32.dll")]
         public static extern int SHGetDesktopFolder(out IShellFolder ppshf);
@@ -386,10 +386,7 @@ public sealed class ShellFolder : DisposableObject
 
     public void Close()
     {
-        if (m_pidl != null)
-        {
-            m_pidl.Dispose();
-        }
+        m_pidl?.Dispose();
         m_pidl = null;
         if (m_folder != null)
         {
@@ -401,7 +398,7 @@ public sealed class ShellFolder : DisposableObject
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
     public List<ShellPidl> GetChildren(bool showHiddenObjects, bool showNonFolders, bool optimized)
     {
-        List<ShellPidl> list = new List<ShellPidl>();
+        List<ShellPidl> list = new();
         NativeMethods.IEnumIDList ppenumIDList = null;
         try
         {
@@ -424,13 +421,13 @@ public sealed class ShellFolder : DisposableObject
                     if (optimized)
                     {
                         attr = NativeMethods.SFGAO.SFGAO_FOLDER | NativeMethods.SFGAO.SFGAO_FILESYSTEM | NativeMethods.SFGAO.SFGAO_BROWSABLE;
-                        m_folder.GetAttributesOf(1u, new IntPtr[1]
-                        {
+                        m_folder.GetAttributesOf(1u,
+                        [
                             rgelt
-                        }, ref attr);
+                        ], ref attr);
                         attr |= NativeMethods.SFGAO.SFGAO_HASSUBFOLDER;
                     }
-                    ShellPidl item = new ShellPidl(m_pidl.Pidl, rgelt, (int)attr);
+                    ShellPidl item = new(m_pidl.Pidl, rgelt, (int)attr);
                     list.Add(item);
                     Marshal.FreeCoTaskMem(rgelt);
                     continue;

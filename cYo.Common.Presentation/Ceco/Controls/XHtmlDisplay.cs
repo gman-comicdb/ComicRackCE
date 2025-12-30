@@ -14,27 +14,15 @@ public class XHtmlDisplay : ScrollableControl
     [Browsable(true)]
     public override string Text
     {
-        get
-        {
-            return base.Text;
-        }
-        set
-        {
-            base.Text = value;
-        }
+        get => base.Text;
+        set => base.Text = value;
     }
 
     [Browsable(true)]
     public Size DisplayMargin
     {
-        get
-        {
-            return renderer.Body.Margin;
-        }
-        set
-        {
-            renderer.Body.Margin = value;
-        }
+        get => renderer.Body.Margin;
+        set => renderer.Body.Margin = value;
     }
 
     public XHtmlDisplay()

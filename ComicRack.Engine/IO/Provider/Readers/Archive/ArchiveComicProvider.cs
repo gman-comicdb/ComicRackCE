@@ -11,7 +11,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers.Archive;
 
 public abstract class ArchiveComicProvider : ComicProvider
 {
-    private List<ProviderImageInfo> foundImageList = new List<ProviderImageInfo>();
+    private List<ProviderImageInfo> foundImageList = new();
 
     private IComicAccessor imageArchive;
 
@@ -53,7 +53,7 @@ public abstract class ArchiveComicProvider : ComicProvider
     {
         using (IItemLock<List<ProviderImageInfo>> itemLock = GetCachedFileList())
         {
-            List<ProviderImageInfo> list = new List<ProviderImageInfo>(itemLock.Item.Where((ProviderImageInfo ii) => IsSupportedImage(ii)));
+            List<ProviderImageInfo> list = new(itemLock.Item.Where((ProviderImageInfo ii) => IsSupportedImage(ii)));
             list.Sort((a, b) => cYo.Common.Text.ExtendedStringComparer.Compare(a.Name, b.Name, ExtendedStringComparison.IgnoreCase));
             foundImageList = list;
         }
@@ -75,10 +75,7 @@ public abstract class ArchiveComicProvider : ComicProvider
     {
         using (ItemMonitor.Lock(typeof(ArchiveComicProvider)))
         {
-            if (imageInfoCache == null)
-            {
-                imageInfoCache = new Cache<FileKey, List<ProviderImageInfo>>(100);
-            }
+            imageInfoCache ??= new Cache<FileKey, List<ProviderImageInfo>>(100);
         }
         return imageInfoCache.LockItem(new FileKey(base.Source), (FileKey fi) => GetFileList().ToList());
     }

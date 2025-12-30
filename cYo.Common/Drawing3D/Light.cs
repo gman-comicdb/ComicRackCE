@@ -8,65 +8,25 @@ namespace cYo.Common.Drawing3D;
 
 public class Light
 {
-    public LightType LightType
-    {
-        get;
-        set;
-    }
+    public LightType LightType { get; set; }
 
-    public Vector3 Position
-    {
-        get;
-        set;
-    }
+    public Vector3 Position { get; set; }
 
-    public Vector3 Direction
-    {
-        get;
-        set;
-    }
+    public Vector3 Direction { get; set; }
 
-    public bool DistanceFallOff
-    {
-        get;
-        set;
-    }
+    public bool DistanceFallOff { get; set; }
 
-    public ColorF DiffuseColor
-    {
-        get;
-        set;
-    }
+    public ColorF DiffuseColor { get; set; }
 
-    public float DiffusePower
-    {
-        get;
-        set;
-    }
+    public float DiffusePower { get; set; }
 
-    public ColorF SpecularColor
-    {
-        get;
-        set;
-    }
+    public ColorF SpecularColor { get; set; }
 
-    public float SpecularPower
-    {
-        get;
-        set;
-    }
+    public float SpecularPower { get; set; }
 
-    public float SpecularHardness
-    {
-        get;
-        set;
-    }
+    public float SpecularHardness { get; set; }
 
-    public bool Enabled
-    {
-        get;
-        set;
-    }
+    public bool Enabled { get; set; }
 
     public Light()
     {
@@ -80,13 +40,11 @@ public class Light
 
     public ColorF Calculate(Vector3 position, Vector3 viewDirection, Vector3 surfaceNormal)
     {
-        switch (LightType)
+        return LightType switch
         {
-            case LightType.Point:
-                return CalclatePointLight(this, position, viewDirection, surfaceNormal).Diffuse;
-            default:
-                return CalculateDirectionalLight(this, -Direction, 1f, viewDirection, surfaceNormal).Diffuse;
-        }
+            LightType.Point => CalclatePointLight(this, position, viewDirection, surfaceNormal).Diffuse,
+            _ => CalculateDirectionalLight(this, -Direction, 1f, viewDirection, surfaceNormal).Diffuse,
+        };
     }
 
     public static LightingResult CalclatePointLight(Light light, Vector3 position, Vector3 viewDirection, Vector3 surfaceNormal)
@@ -98,14 +56,14 @@ public class Light
 
     public static LightingResult CalculateDirectionalLight(Light light, Vector3 lightDirection, float lightDistance, Vector3 viewDirection, Vector3 surfaceNormal)
     {
-        LightingResult result = default(LightingResult);
+        LightingResult result = default;
         if (light.DiffusePower <= 0f)
         {
             return result;
         }
         lightDirection.Normalize();
         surfaceNormal.Normalize();
-        lightDistance = ((!light.DistanceFallOff) ? 1f : (lightDistance * lightDistance));
+        lightDistance = (!light.DistanceFallOff) ? 1f : (lightDistance * lightDistance);
         float num = Vector3.Dot(lightDirection, surfaceNormal).Clamp(0f, 1f);
         result.Diffuse = light.DiffuseColor * (num * light.DiffusePower / lightDistance);
         Vector3 a = 2f * Vector3.Dot(lightDirection, surfaceNormal) * surfaceNormal - lightDirection;

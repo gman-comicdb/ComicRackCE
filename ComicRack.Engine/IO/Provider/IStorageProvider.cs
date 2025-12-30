@@ -4,20 +4,11 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider;
 
 public interface IStorageProvider
 {
-    string DefaultExtension
-    {
-        get;
-    }
+    string DefaultExtension { get; }
 
-    FileFormat DefaultFileFormat
-    {
-        get;
-    }
+    FileFormat DefaultFileFormat { get; }
 
-    int FormatId
-    {
-        get;
-    }
+    int FormatId { get; }
 
     event EventHandler<StorageProgressEventArgs> Progress;
 

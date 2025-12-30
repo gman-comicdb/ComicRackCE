@@ -24,7 +24,7 @@ internal class BackupArchiveCreator
 
     public BackupArchiveCreator()
     {
-        this.appName = GetApplicationName();
+        appName = GetApplicationName();
     }
 
     public void CreateBackup(string backupLocation, IEnumerable<BackupFileEntry> files, IEnumerable<BackupOptions> backupTypes)

@@ -22,38 +22,19 @@ public class KeyboardCommand
     [NonSerialized]
     private Action<CommandKey> methodWithKey;
 
-    public string Group
-    {
-        get;
-        private set;
-    }
+    public string Group { get; private set; }
 
-    public Image Image
-    {
-        get;
-        private set;
-    }
+    public Image Image { get; private set; }
 
-    public string Id
-    {
-        get;
-        private set;
-    }
+    public string Id { get; private set; }
 
-    public string Text
-    {
-        get;
-        private set;
-    }
+    public string Text { get; private set; }
 
     public CommandKey[] Keyboard => keyboard;
 
     public string KeyList
     {
-        get
-        {
-            return Keyboard.ToListString("|");
-        }
+        get => Keyboard.ToListString("|");
         set
         {
             if (value == null)
@@ -81,7 +62,7 @@ public class KeyboardCommand
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             CommandKey[] array = Keyboard;
             foreach (CommandKey commandKey in array)
             {
@@ -144,14 +125,8 @@ public class KeyboardCommand
 
     public void Invoke(CommandKey key)
     {
-        if (method != null)
-        {
-            method();
-        }
-        if (methodWithKey != null)
-        {
-            methodWithKey(key);
-        }
+        method?.Invoke();
+        methodWithKey?.Invoke(key);
     }
 
     public bool Handles(CommandKey key)
@@ -161,38 +136,27 @@ public class KeyboardCommand
 
     private static string GetEnglishName(CommandKey key)
     {
-        switch (key)
+        return key switch
         {
-            case CommandKey.D0:
-                return "0";
-            case CommandKey.D1:
-                return "1";
-            case CommandKey.D2:
-                return "2";
-            case CommandKey.D3:
-                return "3";
-            case CommandKey.D4:
-                return "4";
-            case CommandKey.D5:
-                return "5";
-            case CommandKey.D6:
-                return "6";
-            case CommandKey.D7:
-                return "7";
-            case CommandKey.D8:
-                return "8";
-            case CommandKey.D9:
-                return "9";
-            default:
-                return key.ToString().PascalToSpaced();
-        }
+            CommandKey.D0 => "0",
+            CommandKey.D1 => "1",
+            CommandKey.D2 => "2",
+            CommandKey.D3 => "3",
+            CommandKey.D4 => "4",
+            CommandKey.D5 => "5",
+            CommandKey.D6 => "6",
+            CommandKey.D7 => "7",
+            CommandKey.D8 => "8",
+            CommandKey.D9 => "9",
+            _ => key.ToString().PascalToSpaced(),
+        };
     }
 
     public static string GetKeyName(CommandKey key)
     {
         CommandKey commandKey = key & (CommandKey)65535;
         TR tR = TR.Load("CommandKeys");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         if (commandKey != 0)
         {
             if ((key & CommandKey.Ctrl) != 0)

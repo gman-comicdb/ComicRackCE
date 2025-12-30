@@ -15,24 +15,18 @@ using cYo.Common.Text;
 using cYo.Common.Xml;
 using cYo.Projects.ComicRack.Engine.IO.Cache;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers;
 
 [FileFormat("eComic (WebComic)", KnownFileFormats.CBW, ".cbw", EnableUpdate = true, Dynamic = true)]
 public class WebComicProvider : ComicProvider, IDynamicImages
 {
-    private readonly List<WebComic.WebComicImage> images = new List<WebComic.WebComicImage>();
+    private readonly List<WebComic.WebComicImage> images = new();
 
     public override bool IsSlow => true;
 
     public override ImageProviderCapabilities Capabilities => ImageProviderCapabilities.FastFormatCheck;
 
-    public bool RefreshMode
-    {
-        get;
-        set;
-    }
+    public bool RefreshMode { get; set; }
 
     public WebComicProvider()
     {
@@ -47,10 +41,7 @@ public class WebComicProvider : ComicProvider, IDynamicImages
 
     protected override bool OnFastFormatCheck(string source)
     {
-        if (!source.EndsWith(".cbw", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return Load(source) != null;
+        return !source.EndsWith(".cbw", StringComparison.OrdinalIgnoreCase) ? false : Load(source) != null;
     }
 
     public override string CreateHash()
@@ -140,7 +131,7 @@ public class WebComicProvider : ComicProvider, IDynamicImages
                     var array2 = array;
                     foreach (var anon in array2)
                     {
-                        int x = (compositing.RightToLeft ? (num - anon.Bitmap.Width - num8) : num8);
+                        int x = compositing.RightToLeft ? (num - anon.Bitmap.Width - num8) : num8;
                         graphics.DrawImage(anon.Bitmap, x, num9, anon.Bitmap.Width, anon.Bitmap.Height);
                         num8 += anon.Bitmap.Width;
                         num3 = Math.Max(num3, anon.Bitmap.Height);
@@ -160,7 +151,7 @@ public class WebComicProvider : ComicProvider, IDynamicImages
                 int pageHeight = compositing.PageHeight;
                 int num10 = (int)(Math.Sqrt(pageHeight * pageHeight + pageWidth * pageWidth) * (double)compositing.BorderWidth / 100.0);
                 bitmap = new Bitmap(pageWidth + num10 * 2, pageHeight + num10 * 2);
-                Rectangle rectangle = array.Select(bmp => new Rectangle(bmp.Uri.Left, bmp.Uri.Top, bmp.Bitmap.Width, bmp.Bitmap.Height)).Aggregate(default(Rectangle), (Rectangle current, Rectangle rb) => (!current.IsEmpty) ? Rectangle.Union(current, rb) : rb);
+                Rectangle rectangle = array.Select(bmp => new Rectangle(bmp.Uri.Left, bmp.Uri.Top, bmp.Bitmap.Width, bmp.Bitmap.Height)).Aggregate(default, (Rectangle current, Rectangle rb) => (!current.IsEmpty) ? Rectangle.Union(current, rb) : rb);
                 int num11 = (bitmap.Width - rectangle.Width) / 2;
                 int num12 = (bitmap.Height - rectangle.Height) / 2;
                 using (Graphics graphics2 = Graphics.FromImage(bitmap))
@@ -169,7 +160,7 @@ public class WebComicProvider : ComicProvider, IDynamicImages
                     var array3 = array;
                     foreach (var anon2 in array3)
                     {
-                        int x2 = (compositing.RightToLeft ? (pageWidth - num11 - anon2.Uri.Left - anon2.Bitmap.Width) : (num11 + anon2.Uri.Left));
+                        int x2 = compositing.RightToLeft ? (pageWidth - num11 - anon2.Uri.Left - anon2.Bitmap.Width) : (num11 + anon2.Uri.Left);
                         int y = num12 + anon2.Uri.Top;
                         graphics2.DrawImage(anon2.Bitmap, x2, y, anon2.Bitmap.Width, anon2.Bitmap.Height);
                     }

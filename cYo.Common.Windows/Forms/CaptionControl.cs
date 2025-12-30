@@ -11,7 +11,7 @@ namespace cYo.Common.Windows.Forms;
 
 public partial class CaptionControl : UserControlEx
 {
-    private Padding captionMargin = new Padding(2);
+    private Padding captionMargin = new(2);
 
     private bool closeButton;
 
@@ -21,24 +21,15 @@ public partial class CaptionControl : UserControlEx
     [DefaultValue(null)]
     public string Caption
     {
-        get
-        {
-            return base.Text;
-        }
-        set
-        {
-            base.Text = value;
-        }
+        get => base.Text;
+        set => base.Text = value;
     }
 
     [Category("Display")]
     [DefaultValue(typeof(Padding), "2")]
     public Padding CaptionMargin
     {
-        get
-        {
-            return captionMargin;
-        }
+        get => captionMargin;
         set
         {
             if (!(captionMargin == value))
@@ -53,10 +44,7 @@ public partial class CaptionControl : UserControlEx
     [DefaultValue(false)]
     public bool CloseButton
     {
-        get
-        {
-            return closeButton;
-        }
+        get => closeButton;
         set
         {
             if (closeButton != value)

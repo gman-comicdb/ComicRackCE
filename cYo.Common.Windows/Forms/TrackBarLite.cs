@@ -33,7 +33,7 @@ public class TrackBarLite : Control
 
     private int barMargin = 4;
 
-    private Size thumbSize = new Size(12, 24);
+    private Size thumbSize = new(12, 24);
 
     private TickStyle tickStyle;
 
@@ -57,10 +57,7 @@ public class TrackBarLite : Control
     [DefaultValue(true)]
     public bool EnableVisualStyles
     {
-        get
-        {
-            return enableVisualStyles;
-        }
+        get => enableVisualStyles;
         set
         {
             if (enableVisualStyles != value)
@@ -76,10 +73,7 @@ public class TrackBarLite : Control
     [DefaultValue(true)]
     public bool EnableFocusIndicator
     {
-        get
-        {
-            return enableFocusIndicator;
-        }
+        get => enableFocusIndicator;
         set
         {
             if (enableFocusIndicator != value)
@@ -94,10 +88,7 @@ public class TrackBarLite : Control
     [DefaultValue(0)]
     public int Minimum
     {
-        get
-        {
-            return minimum;
-        }
+        get => minimum;
         set
         {
             if (minimum != value)
@@ -113,10 +104,7 @@ public class TrackBarLite : Control
     [DefaultValue(100)]
     public int Maximum
     {
-        get
-        {
-            return maximum;
-        }
+        get => maximum;
         set
         {
             if (maximum != value)
@@ -132,10 +120,7 @@ public class TrackBarLite : Control
     [DefaultValue(0)]
     public int Value
     {
-        get
-        {
-            return value;
-        }
+        get => value;
         set
         {
             value = Clamp(value);
@@ -159,38 +144,23 @@ public class TrackBarLite : Control
     [DefaultValue(10)]
     public int LargeChange
     {
-        get
-        {
-            return largeChange;
-        }
-        set
-        {
-            largeChange = value;
-        }
+        get => largeChange;
+        set => largeChange = value;
     }
 
     [Category("Behavior")]
     [DefaultValue(1)]
     public int SmallChange
     {
-        get
-        {
-            return smallChange;
-        }
-        set
-        {
-            smallChange = value;
-        }
+        get => smallChange;
+        set => smallChange = value;
     }
 
     [Category("Appearance")]
     [DefaultValue(4)]
     public int BarThickness
     {
-        get
-        {
-            return barThickness;
-        }
+        get => barThickness;
         set
         {
             if (barThickness != value)
@@ -205,10 +175,7 @@ public class TrackBarLite : Control
     [DefaultValue(4)]
     public int BarMargin
     {
-        get
-        {
-            return barMargin;
-        }
+        get => barMargin;
         set
         {
             if (barMargin != value)
@@ -223,10 +190,7 @@ public class TrackBarLite : Control
     [DefaultValue(typeof(Size), "12, 24")]
     public Size ThumbSize
     {
-        get
-        {
-            return thumbSize;
-        }
+        get => thumbSize;
         set
         {
             if (!(thumbSize == value))
@@ -242,10 +206,7 @@ public class TrackBarLite : Control
     [DefaultValue(TickStyle.None)]
     public TickStyle TickStyle
     {
-        get
-        {
-            return tickStyle;
-        }
+        get => tickStyle;
         set
         {
             if (tickStyle != value)
@@ -260,10 +221,7 @@ public class TrackBarLite : Control
     [DefaultValue(4)]
     public int TickThickness
     {
-        get
-        {
-            return tickThickness;
-        }
+        get => tickThickness;
         set
         {
             if (tickThickness != value)
@@ -278,10 +236,7 @@ public class TrackBarLite : Control
     [DefaultValue(10)]
     public int TickFrequency
     {
-        get
-        {
-            return tickFrequency;
-        }
+        get => tickFrequency;
         set
         {
             if (tickFrequency != value)
@@ -294,10 +249,7 @@ public class TrackBarLite : Control
 
     protected TrackBarThumbState TrackBarThumbState
     {
-        get
-        {
-            return trackBarThumbState;
-        }
+        get => trackBarThumbState;
         set
         {
             if (trackBarThumbState != value)
@@ -346,18 +298,12 @@ public class TrackBarLite : Control
 
     protected virtual void OnScroll()
     {
-        if (this.Scroll != null)
-        {
-            this.Scroll(this, EventArgs.Empty);
-        }
+        Scroll?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnValueChanged()
     {
-        if (this.ValueChanged != null)
-        {
-            this.ValueChanged(this, EventArgs.Empty);
-        }
+        ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public Rectangle GetBarRectangle(Rectangle rc)
@@ -422,7 +368,7 @@ public class TrackBarLite : Control
         Size size = ThumbSize.ScaleDpi();
         int num = maximum - minimum;
         int num2 = barRectangle.Width - size.Width / 2;
-        int num3 = ((num != 0) ? (barRectangle.Width / num) : 0);
+        int num3 = (num != 0) ? (barRectangle.Width / num) : 0;
         return minimum + ((num2 != 0) ? ((pt.X - barRectangle.Left + num3 / 2) * num / num2) : 0);
     }
 
@@ -519,19 +465,12 @@ public class TrackBarLite : Control
     private void DrawThumbPlain(Graphics gr, Rectangle rc)
     {
         Size sz = ThumbSize.ScaleDpi();
-        ButtonState state;
-        switch (TrackBarThumbState)
+        var state = TrackBarThumbState switch
         {
-            case TrackBarThumbState.Disabled:
-                state = ButtonState.Inactive;
-                break;
-            case TrackBarThumbState.Pressed:
-                state = ButtonState.Pushed;
-                break;
-            default:
-                state = ButtonState.Normal;
-                break;
-        }
+            TrackBarThumbState.Disabled => ButtonState.Inactive,
+            TrackBarThumbState.Pressed => ButtonState.Pushed,
+            _ => ButtonState.Normal,
+        };
         Rectangle thumbRectangle = GetThumbRectangle(rc, sz);
         if (thumbRectangle.Width >= 2 && thumbRectangle.Height >= 2)
         {
@@ -562,7 +501,7 @@ public class TrackBarLite : Control
             return;
         }
         Rectangle ticksRectangle = GetTicksRectangle();
-        using (Pen pen = new Pen(ForeColor))
+        using (Pen pen = new(ForeColor))
         {
             for (int i = 0; i <= TicksCount; i++)
             {
@@ -575,7 +514,7 @@ public class TrackBarLite : Control
     protected override void OnEnabledChanged(EventArgs e)
     {
         base.OnEnabledChanged(e);
-        TrackBarThumbState = (base.Enabled ? TrackBarThumbState.Normal : TrackBarThumbState.Disabled);
+        TrackBarThumbState = base.Enabled ? TrackBarThumbState.Normal : TrackBarThumbState.Disabled;
     }
 
     protected override void OnGotFocus(EventArgs e)
@@ -624,13 +563,9 @@ public class TrackBarLite : Control
         {
             HandleScroll(e.Location);
         }
-        else if (GetThumbRectangle().Contains(e.Location) || Focused)
-        {
-            TrackBarThumbState = TrackBarThumbState.Hot;
-        }
         else
         {
-            TrackBarThumbState = TrackBarThumbState.Normal;
+            TrackBarThumbState = GetThumbRectangle().Contains(e.Location) || Focused ? TrackBarThumbState.Hot : TrackBarThumbState.Normal;
         }
     }
 
@@ -653,11 +588,7 @@ public class TrackBarLite : Control
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (keyData == Keys.Left || keyData == Keys.Right)
-        {
-            return true;
-        }
-        return base.IsInputKey(keyData);
+        return keyData is Keys.Left or Keys.Right ? true : base.IsInputKey(keyData);
     }
 
     protected override void OnKeyDown(KeyEventArgs e)

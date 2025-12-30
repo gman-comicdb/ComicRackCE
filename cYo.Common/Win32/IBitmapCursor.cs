@@ -6,38 +6,15 @@ namespace cYo.Common.Win32;
 
 public interface IBitmapCursor : IDisposable
 {
-    Bitmap Bitmap
-    {
-        get;
-        set;
-    }
+    Bitmap Bitmap { get; set; }
 
-    bool BitmapOwned
-    {
-        get;
-        set;
-    }
+    bool BitmapOwned { get; set; }
 
-    Cursor Cursor
-    {
-        get;
-    }
+    Cursor Cursor { get; }
 
-    Point HotSpot
-    {
-        get;
-        set;
-    }
+    Point HotSpot { get; set; }
 
-    Cursor OverlayCursor
-    {
-        get;
-        set;
-    }
+    Cursor OverlayCursor { get; set; }
 
-    BitmapCursorOverlayEffect OverlayEffect
-    {
-        get;
-        set;
-    }
+    BitmapCursorOverlayEffect OverlayEffect { get; set; }
 }

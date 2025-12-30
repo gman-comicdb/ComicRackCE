@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading;
 
 using cYo.Common.Collections;
-using cYo.Common.Localize;
-using cYo.Common.Presentation.Ceco;
 using cYo.Common.Reflection;
 using cYo.Common.Threading;
 
@@ -32,8 +27,7 @@ public class XmlInfoProviderFactory : ProviderFactoryBase<XmlInfoProvider>
 
     public override void RegisterProvider(Type pt, bool withLocking = true)
     {
-        IValidateProvider validateProvider = Activator.CreateInstance(pt) as IValidateProvider;
-        if (validateProvider == null || validateProvider.IsValid)
+        if (Activator.CreateInstance(pt) is not IValidateProvider validateProvider || validateProvider.IsValid)
         {
             IEnumerable<XmlInfoFile> xmlInfos = pt.GetAttributes<XmlInfoFileAttribute>().Select(ffa => new XmlInfoFile(ffa.XmlInfoFile, ffa.Order));
             RegisterProvider(pt, xmlInfos, withLocking);

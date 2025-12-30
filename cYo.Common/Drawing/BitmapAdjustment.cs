@@ -11,42 +11,22 @@ namespace cYo.Common.Drawing;
 [TypeConverter(typeof(BitmapAdjustmentConverter))]
 public struct BitmapAdjustment
 {
-    public static readonly BitmapAdjustment Empty = new BitmapAdjustment(0f);
+    public static readonly BitmapAdjustment Empty = new(0f);
 
     [DefaultValue(0f)]
-    public float Saturation
-    {
-        get;
-        set;
-    }
+    public float Saturation { get; set; }
 
     [DefaultValue(0f)]
-    public float Contrast
-    {
-        get;
-        set;
-    }
+    public float Contrast { get; set; }
 
     [DefaultValue(0f)]
-    public float Brightness
-    {
-        get;
-        set;
-    }
+    public float Brightness { get; set; }
 
     [DefaultValue(0f)]
-    public float Gamma
-    {
-        get;
-        set;
-    }
+    public float Gamma { get; set; }
 
     [XmlIgnore]
-    public Color WhitePointColor
-    {
-        get;
-        set;
-    }
+    public Color WhitePointColor { get; set; }
 
     [DefaultValue(0)]
     public int WhitePointArgb
@@ -54,43 +34,19 @@ public struct BitmapAdjustment
         get
         {
             int num = WhitePointColor.ToArgb();
-            if (num != 0 && num != -1)
-            {
-                return num;
-            }
-            return 0;
+            return num is not 0 and not (-1) ? num : 0;
         }
-        set
-        {
-            WhitePointColor = Color.FromArgb(value);
-        }
+
+        set => WhitePointColor = Color.FromArgb(value);
     }
 
     [DefaultValue(BitmapAdjustmentOptions.None)]
-    public BitmapAdjustmentOptions Options
-    {
-        get;
-        set;
-    }
+    public BitmapAdjustmentOptions Options { get; set; }
 
     [DefaultValue(0)]
-    public int Sharpen
-    {
-        get;
-        set;
-    }
+    public int Sharpen { get; set; }
 
-    public bool HasColorTransformations
-    {
-        get
-        {
-            if (EpsTest(Contrast, 0f) && EpsTest(Saturation, 0f) && EpsTest(Brightness, 0f))
-            {
-                return !WhitePointColor.IsBlackOrWhite();
-            }
-            return true;
-        }
-    }
+    public bool HasColorTransformations => EpsTest(Contrast, 0f) && EpsTest(Saturation, 0f) && EpsTest(Brightness, 0f) ? !WhitePointColor.IsBlackOrWhite() : true;
 
     public bool HasAutoContrast => (Options & BitmapAdjustmentOptions.AutoContrast) != 0;
 
@@ -98,21 +54,11 @@ public struct BitmapAdjustment
 
     public bool HasGamma => !EpsTest(Gamma, 0f);
 
-    public bool IsEmpty
-    {
-        get
-        {
-            if (!HasColorTransformations && Options == BitmapAdjustmentOptions.None)
-            {
-                return Sharpen == 0;
-            }
-            return false;
-        }
-    }
+    public bool IsEmpty => !HasColorTransformations && Options == BitmapAdjustmentOptions.None ? Sharpen == 0 : false;
 
     public BitmapAdjustment(float saturation, float brightness, float contrast, float gamma, Color whitePoint, BitmapAdjustmentOptions options = BitmapAdjustmentOptions.None, int sharpen = 0)
     {
-        this = default(BitmapAdjustment);
+        this = default;
         Brightness = brightness;
         Contrast = contrast;
         Saturation = saturation;
@@ -181,16 +127,14 @@ public struct BitmapAdjustment
 
     public override bool Equals(object compare)
     {
-        if (!(compare is BitmapAdjustment))
+        if (compare is not BitmapAdjustment)
         {
             return false;
         }
         BitmapAdjustment bitmapAdjustment = (BitmapAdjustment)compare;
-        if (Saturation == bitmapAdjustment.Saturation && Brightness == bitmapAdjustment.Brightness && Contrast == bitmapAdjustment.Contrast && Gamma == bitmapAdjustment.Gamma && WhitePointArgb == bitmapAdjustment.WhitePointArgb && Options == bitmapAdjustment.Options)
-        {
-            return Sharpen == bitmapAdjustment.Sharpen;
-        }
-        return false;
+        return Saturation == bitmapAdjustment.Saturation && Brightness == bitmapAdjustment.Brightness && Contrast == bitmapAdjustment.Contrast && Gamma == bitmapAdjustment.Gamma && WhitePointArgb == bitmapAdjustment.WhitePointArgb && Options == bitmapAdjustment.Options
+            ? Sharpen == bitmapAdjustment.Sharpen
+            : false;
     }
 
     public override int GetHashCode()
@@ -221,7 +165,7 @@ public struct BitmapAdjustment
 
     public static BitmapAdjustment Add(BitmapAdjustment c1, BitmapAdjustment c2)
     {
-        Color whitePoint = (c1.WhitePointColor.IsBlackOrWhite() ? c2.WhitePointColor : c1.WhitePointColor);
+        Color whitePoint = c1.WhitePointColor.IsBlackOrWhite() ? c2.WhitePointColor : c1.WhitePointColor;
         return new BitmapAdjustment(c1.Saturation + c2.Saturation, c1.Brightness + c2.Brightness, c1.Contrast + c2.Contrast, c1.Gamma + c2.Gamma, whitePoint, c1.Options | c2.Options, Math.Max(c1.Sharpen, c2.Sharpen));
     }
 

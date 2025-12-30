@@ -8,56 +8,28 @@ public class ComicReadingListItem
 {
     [XmlAttribute]
     [DefaultValue("")]
-    public string Series
-    {
-        get;
-        set;
-    }
+    public string Series { get; set; }
 
     [XmlAttribute]
     [DefaultValue("")]
-    public string Number
-    {
-        get;
-        set;
-    }
+    public string Number { get; set; }
 
     [XmlAttribute]
     [DefaultValue(-1)]
-    public int Volume
-    {
-        get;
-        set;
-    }
+    public int Volume { get; set; }
 
     [XmlAttribute]
     [DefaultValue(-1)]
-    public int Year
-    {
-        get;
-        set;
-    }
+    public int Year { get; set; }
 
     [XmlAttribute]
     [DefaultValue("")]
-    public string Format
-    {
-        get;
-        set;
-    }
+    public string Format { get; set; }
 
-    public Guid Id
-    {
-        get;
-        set;
-    }
+    public Guid Id { get; set; }
 
     [DefaultValue("")]
-    public string FileName
-    {
-        get;
-        set;
-    }
+    public string FileName { get; set; }
 
     public ComicReadingListItem()
     {
@@ -78,16 +50,14 @@ public class ComicReadingListItem
         Year = cb.ShadowYear;
         Format = cb.ShadowFormat;
         Id = cb.Id;
-        FileName = (withFilename ? cb.FileName : string.Empty);
+        FileName = withFilename ? cb.FileName : string.Empty;
     }
 
     public override string ToString()
     {
-        if (!string.IsNullOrEmpty(Series))
-        {
-            return ComicBook.FormatTitle(ComicBook.DefaultCaptionFormat, Series, null, ComicBook.FormatVolume(Volume), Number, ComicBook.FormatYear(Year), null, null, Format, FileName);
-        }
-        return FileName;
+        return !string.IsNullOrEmpty(Series)
+            ? ComicBook.FormatTitle(ComicBook.DefaultCaptionFormat, Series, null, ComicBook.FormatVolume(Volume), Number, ComicBook.FormatYear(Year), null, null, Format, FileName)
+            : FileName;
     }
 
     public void SetInfo(ComicNameInfo cni, bool onlyEmpty = false)

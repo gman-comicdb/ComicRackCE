@@ -15,70 +15,29 @@ public class ItemViewItem : BaseViewItem, IViewableItem, IBaseViewItem, INotifyP
 
     protected ItemViewStates State
     {
-        get
-        {
-            if (base.View != null)
-            {
-                return base.View.GetItemState(this);
-            }
-            return ItemViewStates.None;
-        }
-        set
-        {
-            if (base.View != null)
-            {
-                base.View.SetItemState(this, value);
-            }
-        }
+        get => base.View != null ? base.View.GetItemState(this) : ItemViewStates.None;
+        set => base.View?.SetItemState(this, value);
     }
 
     public bool Focused
     {
-        get
-        {
-            return (State & ItemViewStates.Focused) != 0;
-        }
-        set
-        {
-            State |= ItemViewStates.Focused;
-        }
+        get => (State & ItemViewStates.Focused) != 0;
+        set => State |= ItemViewStates.Focused;
     }
 
     public bool Selected
     {
-        get
-        {
-            return (State & ItemViewStates.Selected) != 0;
-        }
-        set
-        {
-            State = (value ? (State | ItemViewStates.Selected) : (State & ~ItemViewStates.Selected));
-        }
+        get => (State & ItemViewStates.Selected) != 0;
+        set => State = value ? (State | ItemViewStates.Selected) : (State & ~ItemViewStates.Selected);
     }
 
     public bool Hot
     {
-        get
-        {
-            return (State & ItemViewStates.Hot) != 0;
-        }
-        set
-        {
-            State = (value ? (State | ItemViewStates.Hot) : (State & ~ItemViewStates.Hot));
-        }
+        get => (State & ItemViewStates.Hot) != 0;
+        set => State = value ? (State | ItemViewStates.Hot) : (State & ~ItemViewStates.Hot);
     }
 
-    public int Index
-    {
-        get
-        {
-            if (base.View != null)
-            {
-                return base.View.Items.IndexOf(this);
-            }
-            return -1;
-        }
-    }
+    public int Index => base.View != null ? base.View.Items.IndexOf(this) : -1;
 
     [field: NonSerialized]
     public event PropertyChangedEventHandler BookChanged;
@@ -94,10 +53,7 @@ public class ItemViewItem : BaseViewItem, IViewableItem, IBaseViewItem, INotifyP
 
     public void EnsureVisible()
     {
-        if (base.View != null)
-        {
-            base.View.EnsureItemVisible(this);
-        }
+        base.View?.EnsureItemVisible(this);
     }
 
     public void Update()
@@ -111,10 +67,7 @@ public class ItemViewItem : BaseViewItem, IViewableItem, IBaseViewItem, INotifyP
         {
             ForceRecalcSize();
         }
-        if (base.View != null)
-        {
-            base.View.UpdateItem(this, sizeChanged);
-        }
+        base.View?.UpdateItem(this, sizeChanged);
     }
 
     protected override void OnPropertyChanged(string name)
@@ -125,10 +78,7 @@ public class ItemViewItem : BaseViewItem, IViewableItem, IBaseViewItem, INotifyP
 
     protected virtual void OnBookChanged(PropertyChangedEventArgs e)
     {
-        if (this.BookChanged != null)
-        {
-            this.BookChanged(this, e);
-        }
+        BookChanged?.Invoke(this, e);
     }
 
     private void ForceRecalcSize()
@@ -145,14 +95,9 @@ public class ItemViewItem : BaseViewItem, IViewableItem, IBaseViewItem, INotifyP
     {
         try
         {
-            if (sizeInfo.SubItem == -1)
-            {
-                sizeInfo.Size = Measure(sizeInfo.Graphics, sizeInfo.Bounds.Size, sizeInfo.DisplayType);
-            }
-            else
-            {
-                sizeInfo.Size = MeasureColumn(sizeInfo.Graphics, sizeInfo.Header, sizeInfo.Bounds.Size);
-            }
+            sizeInfo.Size = sizeInfo.SubItem == -1
+                ? Measure(sizeInfo.Graphics, sizeInfo.Bounds.Size, sizeInfo.DisplayType)
+                : MeasureColumn(sizeInfo.Graphics, sizeInfo.Header, sizeInfo.Bounds.Size);
         }
         catch (Exception)
         {

@@ -8,11 +8,7 @@ public class LockFile : DisposableObject
 {
     private readonly string file;
 
-    public bool WasLocked
-    {
-        get;
-        private set;
-    }
+    public bool WasLocked { get; private set; }
 
     public LockFile(string file)
     {

@@ -100,7 +100,7 @@ public static class RichTextBoxExtensions
     {
         rtb.RegisterColorize(new ValuePair<Color, string>[1]
         {
-            new ValuePair<Color, string>(color, expression)
+            new(color, expression)
         });
     }
 
@@ -108,7 +108,7 @@ public static class RichTextBoxExtensions
     {
         rtb.RegisterColorize(new ValuePair<Color, Regex>[1]
         {
-            new ValuePair<Color, Regex>(color, expression)
+            new(color, expression)
         });
     }
 

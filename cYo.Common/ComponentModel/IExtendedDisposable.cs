@@ -4,10 +4,7 @@ namespace cYo.Common.ComponentModel;
 
 public interface IExtendedDisposable : IDisposable
 {
-    bool IsDisposed
-    {
-        get;
-    }
+    bool IsDisposed { get; }
 
     event EventHandler Disposing;
 

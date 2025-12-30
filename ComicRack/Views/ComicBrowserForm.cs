@@ -1,7 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Common.Localize;
 using cYo.Common.Win32;
@@ -17,37 +15,21 @@ public partial class ComicBrowserForm : FormEx
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IComicBookListProvider BookList
     {
-        get
-        {
-            return comicBrowser.BookList;
-        }
-        set
-        {
-            comicBrowser.BookList = value;
-        }
+        get => comicBrowser.BookList;
+        set => comicBrowser.BookList = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IMain Main
     {
-        get
-        {
-            return comicBrowser.Main;
-        }
-        set
-        {
-            comicBrowser.Main = value;
-        }
+        get => comicBrowser.Main;
+        set => comicBrowser.Main = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public bool BookListOwned
-    {
-        get;
-        set;
-    }
+    public bool BookListOwned { get; set; }
 
     public ComicBrowserForm()
     {

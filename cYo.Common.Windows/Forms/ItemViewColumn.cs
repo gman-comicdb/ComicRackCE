@@ -22,14 +22,11 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     private DateTime lastTimeVisible = DateTime.MinValue;
 
-    private readonly string[] formatTexts = new string[0];
+    private readonly string[] formatTexts = [];
 
     public int Id
     {
-        get
-        {
-            return id;
-        }
+        get => id;
         set
         {
             if (id != value)
@@ -42,10 +39,7 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     public int FormatId
     {
-        get
-        {
-            return formatId;
-        }
+        get => formatId;
         set
         {
             if (formatId != value)
@@ -56,24 +50,13 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
         }
     }
 
-    public IComparer<IViewableItem> ColumnSorter
-    {
-        get;
-        set;
-    }
+    public IComparer<IViewableItem> ColumnSorter { get; set; }
 
-    public IGrouper<IViewableItem> ColumnGrouper
-    {
-        get;
-        set;
-    }
+    public IGrouper<IViewableItem> ColumnGrouper { get; set; }
 
     public bool Visible
     {
-        get
-        {
-            return visible;
-        }
+        get => visible;
         set
         {
             if (visible != value)
@@ -90,10 +73,7 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     public int Width
     {
-        get
-        {
-            return width;
-        }
+        get => width;
         set
         {
             if (value >= 0 && width != value)
@@ -106,10 +86,7 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     public StringAlignment Alignment
     {
-        get
-        {
-            return alignment;
-        }
+        get => alignment;
         set
         {
             if (alignment != value)
@@ -122,14 +99,8 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     public DateTime LastTimeVisible
     {
-        get
-        {
-            return lastTimeVisible;
-        }
-        set
-        {
-            lastTimeVisible = value;
-        }
+        get => lastTimeVisible;
+        set => lastTimeVisible = value;
     }
 
     public string[] FormatTexts => formatTexts;
@@ -155,10 +126,10 @@ public class ItemViewColumn : BaseViewItem, IColumn, IBaseViewItem, INotifyPrope
 
     public void DrawHeader(Graphics gr, Rectangle rc, HeaderState state)
     {
-        HeaderAdornments headerAdornments = ((FormatTexts.Length != 0 && (state == HeaderState.Hot || state == HeaderState.Pressed)) ? HeaderAdornments.DropDown : HeaderAdornments.None);
+        HeaderAdornments headerAdornments = (FormatTexts.Length != 0 && (state == HeaderState.Hot || state == HeaderState.Pressed)) ? HeaderAdornments.DropDown : HeaderAdornments.None;
         if (base.View.ItemSorter != null && base.View.ItemSorter == ColumnSorter && base.View.ItemSortOrder != 0)
         {
-            headerAdornments |= ((base.View.ItemSortOrder != SortOrder.Ascending) ? HeaderAdornments.SortUp : HeaderAdornments.SortDown);
+            headerAdornments |= (base.View.ItemSortOrder != SortOrder.Ascending) ? HeaderAdornments.SortUp : HeaderAdornments.SortDown;
         }
         HeaderControl.Draw(gr, rc, base.View.Font, Alignment, Text, state, headerAdornments);
     }

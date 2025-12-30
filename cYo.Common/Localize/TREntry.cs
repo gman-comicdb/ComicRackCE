@@ -6,25 +6,13 @@ namespace cYo.Common.Localize;
 public class TREntry : IComparable<TREntry>
 {
     [XmlAttribute]
-    public virtual string Key
-    {
-        get;
-        set;
-    }
+    public virtual string Key { get; set; }
 
     [XmlAttribute]
-    public virtual string Text
-    {
-        get;
-        set;
-    }
+    public virtual string Text { get; set; }
 
     [XmlAttribute]
-    public virtual string Comment
-    {
-        get;
-        set;
-    }
+    public virtual string Comment { get; set; }
 
     [XmlIgnore]
     public virtual TR Resource
@@ -33,17 +21,7 @@ public class TREntry : IComparable<TREntry>
         internal set;
     }
 
-    public virtual string ResourceName
-    {
-        get
-        {
-            if (Resource != null)
-            {
-                return Resource.Name;
-            }
-            return string.Empty;
-        }
-    }
+    public virtual string ResourceName => Resource != null ? Resource.Name : string.Empty;
 
     public TREntry()
     {

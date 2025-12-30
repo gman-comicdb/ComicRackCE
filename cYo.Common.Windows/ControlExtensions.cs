@@ -8,11 +8,7 @@ public static class ControlExtensions
 {
     private static bool IsValid(Control c)
     {
-        if (c != null)
-        {
-            return !c.IsDisposed;
-        }
-        return false;
+        return c != null ? !c.IsDisposed : false;
     }
 
     public static void Invoke(this Control control, Action action)

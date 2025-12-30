@@ -5,7 +5,7 @@ namespace cYo.Common.Windows.Forms;
 
 public class DropDownHost<T> : ToolStripDropDown where T : Control, new()
 {
-    private readonly T control = new T();
+    private readonly T control = new();
 
     public T Control => control;
 

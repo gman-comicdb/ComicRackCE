@@ -29,7 +29,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 {
     private volatile bool listDirty;
 
-    private readonly CommandMapper command = new CommandMapper();
+    private readonly CommandMapper command = new();
 
     private EnumMenuUtility pageMenu;
 
@@ -51,10 +51,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewConfig ViewConfig
     {
-        get
-        {
-            return itemView.ViewConfig;
-        }
+        get => itemView.ViewConfig;
         set
         {
             int itemRowHeight = itemView.ItemRowHeight;
@@ -66,24 +63,15 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DefaultValue(true)]
     public bool CreateBackdrop
     {
-        get
-        {
-            return createBackdrop;
-        }
-        set
-        {
-            createBackdrop = value;
-        }
+        get => createBackdrop;
+        set => createBackdrop = value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicBookNavigator Book
     {
-        get
-        {
-            return book;
-        }
+        get => book;
         set
         {
             if (book == value)
@@ -124,10 +112,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicPageType PageFilter
     {
-        get
-        {
-            return pageFilter;
-        }
+        get => pageFilter;
         set
         {
             if (pageFilter != value)
@@ -138,44 +123,23 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         }
     }
 
-    public bool CanBookmark
-    {
-        get
-        {
-            if (Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages())
-            {
-                return itemView.SelectedCount == 1;
-            }
-            return false;
-        }
-    }
+    public bool CanBookmark => Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount == 1 : false;
 
     public string BookmarkProposal
     {
         get
         {
-            if (!CanBookmark)
-            {
-                return null;
-            }
-            if (!string.IsNullOrEmpty(Bookmark))
-            {
-                return Bookmark;
-            }
-            return string.Format("{0} {1}", TR.Default["Page", "Page"], itemView.SelectedItems.First().Text);
+            return !CanBookmark
+                ? null
+                : !string.IsNullOrEmpty(Bookmark)
+                ? Bookmark
+                : string.Format("{0} {1}", TR.Default["Page", "Page"], itemView.SelectedItems.First().Text);
         }
     }
 
     public string Bookmark
     {
-        get
-        {
-            if (!CanBookmark)
-            {
-                return null;
-            }
-            return GetSelectedPages().First().Bookmark;
-        }
+        get => !CanBookmark ? null : GetSelectedPages().First().Bookmark;
         set
         {
             if (CanBookmark)
@@ -186,17 +150,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         }
     }
 
-    private bool HasValidPages
-    {
-        get
-        {
-            if (Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages())
-            {
-                return itemView.SelectedCount > 0;
-            }
-            return false;
-        }
-    }
+    private bool HasValidPages => Book != null && Book.Comic != null && Book.Comic.EditMode.CanEditPages() ? itemView.SelectedCount > 0 : false;
 
     bool IEditPage.IsValid => HasValidPages;
 
@@ -204,12 +158,10 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (!HasValidPages)
-            {
-                return ComicPageType.Other;
-            }
-            return (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
-                    select pvi.PageInfo).FirstOrDefault().PageType;
+            return !HasValidPages
+                ? ComicPageType.Other
+                : (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
+                   select pvi.PageInfo).FirstOrDefault().PageType;
         }
         set
         {
@@ -227,12 +179,10 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         get
         {
-            if (!HasValidPages)
-            {
-                return ImageRotation.None;
-            }
-            return (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
-                    select pvi.PageInfo).FirstOrDefault().Rotation;
+            return !HasValidPages
+                ? ImageRotation.None
+                : (from pvi in itemView.SelectedItems.OfType<PageViewItem>()
+                   select pvi.PageInfo).FirstOrDefault().Rotation;
         }
         set
         {
@@ -262,7 +212,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         itemView.Columns.Add(new ItemViewColumn(7, "Bookmark", 150, new ComicListField("Bookmark", "Bookmark Description"), new PageViewItemComparer<ComicPageBookmarkComparer>(), new PageViewBookmarkGrouper()));
         itemView.Columns.Add(new ItemViewColumn(8, "Rotation", 60, new ComicListField("RotationAsText", "Permanent rotation of this page"), new PageViewItemComparer<ComicPageRotationComparer>(), null, visible: true, StringAlignment.Far));
         itemView.Columns.Add(new ItemViewColumn(9, "Position", 60, new ComicListField("PagePositionAsText", "Layout Position of this page"), new PageViewItemComparer<ComicPagePositionComparer>()));
-        foreach (ItemViewColumn column in itemView.Columns)
+        foreach (ItemViewColumn column in itemView.Columns.Cast<ItemViewColumn>())
         {
             column.Width = FormUtility.ScaleDpiX(column.Width);
         }
@@ -313,7 +263,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             }, () => itemView.SelectedCount > 0, miPagePositionFar);
             pageMenu = new EnumMenuUtility(miPageType, typeof(ComicPageType), flagsMode: false, null, Keys.A | Keys.Shift | Keys.Alt);
             pageMenu.ValueChanged += PageMenuValueChanged;
-            Dictionary<int, Image> dictionary = new Dictionary<int, Image>();
+            Dictionary<int, Image> dictionary = new();
             dictionary.Add(0, Resources.Rotate0Permanent);
             dictionary.Add(1, Resources.Rotate90Permanent);
             dictionary.Add(2, Resources.Rotate180Permanent);
@@ -329,7 +279,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         {
             return;
         }
-        foreach (PageViewItem selectedItem in itemView.SelectedItems)
+        foreach (PageViewItem selectedItem in itemView.SelectedItems.Cast<PageViewItem>())
         {
             selectedItem.SetPageType((ComicPageType)pageMenu.Value);
         }
@@ -341,7 +291,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         {
             return;
         }
-        foreach (PageViewItem selectedItem in itemView.SelectedItems)
+        foreach (PageViewItem selectedItem in itemView.SelectedItems.Cast<PageViewItem>())
         {
             selectedItem.SetPageRotation((ImageRotation)rotateMenu.Value);
         }
@@ -457,13 +407,13 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             itemView.Items.Clear();
             try
             {
-                int num = (nav.IsIndexRetrievalCompleted ? Math.Max(nav.Count, nav.Comic.PageCount) : nav.Count);
+                int num = nav.IsIndexRetrievalCompleted ? Math.Max(nav.Count, nav.Comic.PageCount) : nav.Count;
                 for (int i = 0; i < num; i++)
                 {
                     ComicPageInfo cpi = nav.Comic.GetPage(i);
                     if (cpi.IsTypeOf(PageFilter))
                     {
-                        PageViewItem pageViewItem = new PageViewItem(nav, cpi.ImageIndex);
+                        PageViewItem pageViewItem = new(nav, cpi.ImageIndex);
                         itemView.Items.Add(pageViewItem);
                         if (selectedPages != null && selectedPages.FindIndex((ComicPageInfo c) => c.ImageIndex == cpi.ImageIndex) != -1)
                         {
@@ -647,7 +597,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             itemView.BackgroundImage = null;
             backgroundImage?.Dispose();
             ComicBookNavigator newNav = book;
-            Bitmap bmp = default(Bitmap);
+            Bitmap bmp = default;
             ThreadUtility.RunInBackground("Create pages backdrop", delegate
             {
                 try
@@ -679,11 +629,9 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private bool IsPageSorted()
     {
-        if (itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending)
-        {
-            return itemView.GroupColumn == null;
-        }
-        return false;
+        return itemView.SortColumn != null && itemView.SortColumn.Id == 0 && itemView.ItemSortOrder == SortOrder.Ascending
+            ? itemView.GroupColumn == null
+            : false;
     }
 
     private void itemView_ItemDrag(object sender, ItemDragEventArgs e)
@@ -703,10 +651,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         finally
         {
             itemView.AllowDrop = false;
-            if (dragCursor != null)
-            {
-                dragCursor.Dispose();
-            }
+            dragCursor?.Dispose();
             dragCursor = null;
             dragPages = null;
         }
@@ -714,7 +659,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private DataObjectEx CreateDataObjectFromPages(IEnumerable<ComicPageInfo> dragPages)
     {
-        DataObjectEx dataObjectEx = new DataObjectEx();
+        DataObjectEx dataObjectEx = new();
         ComicBook comic = Book.Comic;
         foreach (ComicPageInfo dragPage in dragPages)
         {
@@ -765,7 +710,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
 
     private void itemView_DragEnter(object sender, DragEventArgs e)
     {
-        e.Effect = ((dragPages != null && IsPageSorted()) ? DragDropEffects.Move : DragDropEffects.None);
+        e.Effect = (dragPages != null && IsPageSorted()) ? DragDropEffects.Move : DragDropEffects.None;
     }
 
     private void itemView_DragLeave(object sender, EventArgs e)
@@ -785,8 +730,8 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         if (dragCursor != null && !(dragCursor.Cursor == null))
         {
             e.UseDefaultCursors = false;
-            dragCursor.OverlayCursor = ((e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default);
-            dragCursor.OverlayEffect = ((e.Effect == DragDropEffects.Copy) ? BitmapCursorOverlayEffect.Plus : BitmapCursorOverlayEffect.None);
+            dragCursor.OverlayCursor = (e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default;
+            dragCursor.OverlayEffect = (e.Effect == DragDropEffects.Copy) ? BitmapCursorOverlayEffect.Plus : BitmapCursorOverlayEffect.None;
             Cursor.Current = dragCursor.Cursor;
         }
     }
@@ -799,11 +744,11 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
             return;
 
         //Check the reading direction to determine the first and second page.
-        bool reversed = this.Book.RightToLeftReading == YesNo.Yes || this.Book.Comic.Manga == MangaYesNo.YesAndRightToLeft;
+        bool reversed = Book.RightToLeftReading == YesNo.Yes || Book.Comic.Manga == MangaYesNo.YesAndRightToLeft;
         //If the sort order is descending the pages will be reversed already, so no need to reverse the order
         reversed = reversed && itemView.ItemSorter != null && itemView.ItemSortOrder == SortOrder.Descending ? false : reversed;
-        PageViewItem firstPage = (reversed ? selectedPages[^1] : selectedPages[0]);
-        PageViewItem secondPage = (reversed ? selectedPages[0] : selectedPages[^1]);
+        PageViewItem firstPage = reversed ? selectedPages[^1] : selectedPages[0];
+        PageViewItem secondPage = reversed ? selectedPages[0] : selectedPages[^1];
 
         //Get the bitmaps and merge them
         int firstImageIndex = firstPage.ImageIndex;

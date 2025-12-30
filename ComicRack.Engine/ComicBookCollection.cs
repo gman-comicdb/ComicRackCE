@@ -15,10 +15,10 @@ public class ComicBookCollection : SmartList<ComicBook>, IDeserializationCallbac
     private readonly bool updateDictionaries;
 
     [NonSerialized]
-    private readonly Dictionary<string, ComicBook> fileDictionary = new Dictionary<string, ComicBook>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, ComicBook> fileDictionary = new(StringComparer.OrdinalIgnoreCase);
 
     [NonSerialized]
-    private readonly Dictionary<Guid, ComicBook> guidDictionary = new Dictionary<Guid, ComicBook>();
+    private readonly Dictionary<Guid, ComicBook> guidDictionary = new();
 
     public ComicBook this[string file] => FindItemByFile(file);
 
@@ -93,7 +93,7 @@ public class ComicBookCollection : SmartList<ComicBook>, IDeserializationCallbac
 
     public ComicBook FindItemByFileNameSize(string file)
     {
-        FileInfo fi = new FileInfo(file);
+        FileInfo fi = new(file);
         string name = Path.GetFileNameWithoutExtension(file);
         return Find((ComicBook cb) => string.Equals(cb.FileName, name, StringComparison.OrdinalIgnoreCase) && cb.FileSize == fi.Length);
     }

@@ -18,7 +18,7 @@ public partial class ComicExplorerView : SubView, ISidebar
 {
     private ComicListBrowser comicListBrowser;
 
-    private ComicBook[] comicInfoBooks = new ComicBook[0];
+    private ComicBook[] comicInfoBooks = [];
 
     private Size infoBrowserSize;
 
@@ -26,14 +26,11 @@ public partial class ComicExplorerView : SubView, ISidebar
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool Horizontal
     {
-        get
-        {
-            return sidePanel.Dock == DockStyle.Left;
-        }
+        get => sidePanel.Dock == DockStyle.Left;
         set
         {
-            sidePanel.Dock = ((!value) ? DockStyle.Top : DockStyle.Left);
-            previewPane.Dock = (value ? DockStyle.Bottom : DockStyle.Right);
+            sidePanel.Dock = (!value) ? DockStyle.Top : DockStyle.Left;
+            previewPane.Dock = value ? DockStyle.Bottom : DockStyle.Right;
         }
     }
 
@@ -41,10 +38,7 @@ public partial class ComicExplorerView : SubView, ISidebar
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ComicListBrowser ComicListBrowser
     {
-        get
-        {
-            return comicListBrowser;
-        }
+        get => comicListBrowser;
         set
         {
             if (comicListBrowser != value)
@@ -71,14 +65,8 @@ public partial class ComicExplorerView : SubView, ISidebar
 
     public int SplitterDistance
     {
-        get
-        {
-            return sidePanel.ExpandedWidth;
-        }
-        set
-        {
-            sidePanel.ExpandedWidth = value;
-        }
+        get => sidePanel.ExpandedWidth;
+        set => sidePanel.ExpandedWidth = value;
     }
 
     [Browsable(false)]
@@ -87,7 +75,7 @@ public partial class ComicExplorerView : SubView, ISidebar
     {
         get
         {
-            ComicExplorerViewSettings comicExplorerViewSettings = new ComicExplorerViewSettings();
+            ComicExplorerViewSettings comicExplorerViewSettings = new();
             try
             {
                 comicExplorerViewSettings.BrowserSplit = SplitterDistance;
@@ -157,75 +145,42 @@ public partial class ComicExplorerView : SubView, ISidebar
 
     bool ISidebar.Visible
     {
-        get
-        {
-            return sidePanel.Expanded;
-        }
-        set
-        {
-            sidePanel.Expanded = value;
-        }
+        get => sidePanel.Expanded;
+        set => sidePanel.Expanded = value;
     }
 
     bool ISidebar.Preview
     {
-        get
-        {
-            return previewPane.Expanded;
-        }
-        set
-        {
-            previewPane.Expanded = value;
-        }
+        get => previewPane.Expanded;
+        set => previewPane.Expanded = value;
     }
 
     bool ISidebar.TopBrowser
     {
-        get
-        {
-            return comicListBrowser.TopBrowserVisible;
-        }
-        set
-        {
-            comicListBrowser.TopBrowserVisible = value;
-        }
+        get => comicListBrowser.TopBrowserVisible;
+        set => comicListBrowser.TopBrowserVisible = value;
     }
 
     int ISidebar.TopBrowserSplit
     {
-        get
-        {
-            return comicListBrowser.TopBrowserSplit;
-        }
-        set
-        {
-            comicListBrowser.TopBrowserSplit = value;
-        }
+        get => comicListBrowser.TopBrowserSplit;
+        set => comicListBrowser.TopBrowserSplit = value;
     }
 
     bool ISidebar.Info
     {
-        get
-        {
-            return pluginContainer.Expanded;
-        }
-        set
-        {
-            pluginContainer.Expanded = value;
-        }
+        get => pluginContainer.Expanded;
+        set => pluginContainer.Expanded = value;
     }
 
     bool ISidebar.HasInfoPanels => comicInfo.Pages.Count() > 0;
 
     bool ISidebar.InfoBrowserRight
     {
-        get
-        {
-            return pluginContainer.Dock == DockStyle.Right;
-        }
+        get => pluginContainer.Dock == DockStyle.Right;
         set
         {
-            DockStyle dockStyle = (value ? DockStyle.Right : DockStyle.Bottom);
+            DockStyle dockStyle = value ? DockStyle.Right : DockStyle.Bottom;
             if (pluginContainer.Dock != dockStyle)
             {
                 pluginContainer.Dock = dockStyle;
@@ -242,23 +197,14 @@ public partial class ComicExplorerView : SubView, ISidebar
     {
         get
         {
-            if (pluginContainer.Dock == DockStyle.Right)
-            {
-                return new Size(pluginContainer.ExpandedWidth, infoBrowserSize.Height);
-            }
-            return new Size(infoBrowserSize.Width, pluginContainer.ExpandedWidth);
+            return pluginContainer.Dock == DockStyle.Right
+                ? new Size(pluginContainer.ExpandedWidth, infoBrowserSize.Height)
+                : new Size(infoBrowserSize.Width, pluginContainer.ExpandedWidth);
         }
         set
         {
             infoBrowserSize = value;
-            if (pluginContainer.Dock == DockStyle.Right)
-            {
-                pluginContainer.ExpandedWidth = value.Width;
-            }
-            else
-            {
-                pluginContainer.ExpandedWidth = value.Height;
-            }
+            pluginContainer.ExpandedWidth = pluginContainer.Dock == DockStyle.Right ? value.Width : value.Height;
         }
     }
 
@@ -325,7 +271,7 @@ public partial class ComicExplorerView : SubView, ISidebar
         {
             cb.BookChanged -= previewBookChanged;
         });
-        comicInfoBooks = new ComicBook[0];
+        comicInfoBooks = [];
         if (!flag && !info)
         {
             return;

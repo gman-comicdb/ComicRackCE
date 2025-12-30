@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -42,29 +40,13 @@ public class ItemView : ScrollControl
 
     private class ItemInformation : DisplayItem
     {
-        public IViewableItem Item
-        {
-            get;
-            private set;
-        }
+        public IViewableItem Item { get; private set; }
 
-        public int Column
-        {
-            get;
-            private set;
-        }
+        public int Column { get; private set; }
 
-        public int Row
-        {
-            get;
-            private set;
-        }
+        public int Row { get; private set; }
 
-        public GroupHeaderInformation Group
-        {
-            get;
-            private set;
-        }
+        public GroupHeaderInformation Group { get; private set; }
 
         public ItemInformation(IViewableItem item, Rectangle bounds, int column, int row, GroupHeaderInformation group)
             : base(bounds)
@@ -78,23 +60,11 @@ public class ItemView : ScrollControl
 
     private class StateChangedEventArgs : EventArgs
     {
-        public IViewableItem Item
-        {
-            get;
-            private set;
-        }
+        public IViewableItem Item { get; private set; }
 
-        public ItemViewStates OldState
-        {
-            get;
-            private set;
-        }
+        public ItemViewStates OldState { get; private set; }
 
-        public ItemViewStates NewState
-        {
-            get;
-            private set;
-        }
+        public ItemViewStates NewState { get; private set; }
 
         public StateChangedEventArgs(IViewableItem item, ItemViewStates oldState, ItemViewStates newState)
         {
@@ -106,7 +76,7 @@ public class ItemView : ScrollControl
 
     private class StateInfo
     {
-        private readonly Dictionary<IViewableItem, ItemViewStates> stateDict = new Dictionary<IViewableItem, ItemViewStates>();
+        private readonly Dictionary<IViewableItem, ItemViewStates> stateDict = new();
 
         public ItemViewStates this[IViewableItem item]
         {
@@ -144,10 +114,7 @@ public class ItemView : ScrollControl
                         stateDict[item] = value;
                     }
                 }
-                if (this.StateChanged != null)
-                {
-                    this.StateChanged(this, new StateChangedEventArgs(item, itemViewStates, value));
-                }
+                StateChanged?.Invoke(this, new StateChangedEventArgs(item, itemViewStates, value));
             }
         }
 
@@ -168,7 +135,7 @@ public class ItemView : ScrollControl
         public void Set(IViewableItem item, ItemViewStates mask, bool on)
         {
             ItemViewStates itemViewStates = this[item];
-            itemViewStates = (this[item] = ((!on) ? (itemViewStates & ~mask) : (itemViewStates | mask)));
+            itemViewStates = this[item] = (!on) ? (itemViewStates & ~mask) : (itemViewStates | mask);
         }
 
         public void Flip(IViewableItem item, ItemViewStates mask)
@@ -178,10 +145,7 @@ public class ItemView : ScrollControl
 
         public void Clear(ItemViewStates mask)
         {
-            GetItems().ForEach((IViewableItem vi) =>
-            {
-                Set(vi, mask, on: false);
-            });
+            GetItems().ForEach((IViewableItem vi) => Set(vi, mask, on: false));
         }
 
         public void Focus(IViewableItem item)
@@ -266,7 +230,7 @@ public class ItemView : ScrollControl
     {
         private readonly IGrouper<IViewableItem> grouper;
 
-        private readonly Dictionary<object, IGroupInfo> groupDict = new Dictionary<object, IGroupInfo>();
+        private readonly Dictionary<object, IGroupInfo> groupDict = new();
 
         public bool IsMultiGroup => false;
 
@@ -308,13 +272,13 @@ public class ItemView : ScrollControl
 
     private volatile bool itemsResort;
 
-    private readonly StateInfo itemStates = new StateInfo();
+    private readonly StateInfo itemStates = new();
 
-    private Dictionary<IViewableItem, ItemInformation> itemInfos = new Dictionary<IViewableItem, ItemInformation>();
+    private Dictionary<IViewableItem, ItemInformation> itemInfos = new();
 
-    private Dictionary<IViewableItem, StackInfo> stackInfo = new Dictionary<IViewableItem, StackInfo>();
+    private Dictionary<IViewableItem, StackInfo> stackInfo = new();
 
-    private List<GroupHeaderInformation> displayedGroups = new List<GroupHeaderInformation>();
+    private List<GroupHeaderInformation> displayedGroups = new();
 
     private volatile bool multiselect = true;
 
@@ -348,11 +312,11 @@ public class ItemView : ScrollControl
 
     private volatile int expandedDetailColumnMinimumHeight = -160;
 
-    private Size itemPadding = new Size(1, 1);
+    private Size itemPadding = new(1, 1);
 
-    private Size itemThumbSize = new Size(128, 128);
+    private Size itemThumbSize = new(128, 128);
 
-    private Size itemTileSize = new Size(192, 96);
+    private Size itemTileSize = new(192, 96);
 
     private volatile int itemRowHeight = 16;
 
@@ -366,11 +330,11 @@ public class ItemView : ScrollControl
 
     private volatile bool groupHeaderTrueCount;
 
-    private readonly ViewableItemCollection<IViewableItem> items = new ViewableItemCollection<IViewableItem>();
+    private readonly ViewableItemCollection<IViewableItem> items = new();
 
-    private readonly ItemViewColumnCollection<IColumn> columns = new ItemViewColumnCollection<IColumn>();
+    private readonly ItemViewColumnCollection<IColumn> columns = new();
 
-    private readonly List<IComparer<IViewableItem>> itemSorters = new List<IComparer<IViewableItem>>(new IComparer<IViewableItem>[1]);
+    private readonly List<IComparer<IViewableItem>> itemSorters = new(new IComparer<IViewableItem>[1]);
 
     private volatile IGrouper<IViewableItem> itemGrouper;
 
@@ -378,13 +342,13 @@ public class ItemView : ScrollControl
 
     private volatile IComparer<IViewableItem> itemStackSorter;
 
-    private ItemViewGroupsStatus groupsStatus = new ItemViewGroupsStatus(null);
+    private ItemViewGroupsStatus groupsStatus = new(null);
 
-    private List<IViewableItem> displayedItems = new List<IViewableItem>();
+    private List<IViewableItem> displayedItems = new();
 
-    private readonly List<IViewableItem> selectedItems = new List<IViewableItem>();
+    private readonly List<IViewableItem> selectedItems = new();
 
-    private readonly List<IViewableItem> visibleItems = new List<IViewableItem>();
+    private readonly List<IViewableItem> visibleItems = new();
 
     private int currentFontHeight;
 
@@ -472,76 +436,41 @@ public class ItemView : ScrollControl
     #region Properties
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool LabelEdit
-    {
-        get;
-        set;
-    }
+    public bool LabelEdit { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool HeaderToolTips
-    {
-        get;
-        set;
-    }
+    public bool HeaderToolTips { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool AutomaticHeaderMenu
-    {
-        get;
-        set;
-    }
+    public bool AutomaticHeaderMenu { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(null)]
-    public ContextMenuStrip HeaderContextMenuStrip
-    {
-        get;
-        set;
-    }
+    public ContextMenuStrip HeaderContextMenuStrip { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool AutomaticViewMenu
-    {
-        get;
-        set;
-    }
+    public bool AutomaticViewMenu { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(null)]
-    public ContextMenuStrip ViewContextMenuStrip
-    {
-        get;
-        set;
-    }
+    public ContextMenuStrip ViewContextMenuStrip { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(null)]
-    public ContextMenuStrip ItemContextMenuStrip
-    {
-        get;
-        set;
-    }
+    public ContextMenuStrip ItemContextMenuStrip { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool ItemsOwned
-    {
-        get;
-        set;
-    }
+    public bool ItemsOwned { get; set; }
 
     [Category("Behavior")]
     [DefaultValue(true)]
     public bool Multiselect
     {
-        get
-        {
-            return multiselect;
-        }
+        get => multiselect;
         set
         {
             if (multiselect != value)
@@ -556,10 +485,7 @@ public class ItemView : ScrollControl
     [DefaultValue(true)]
     public bool HideSelection
     {
-        get
-        {
-            return hideSelection;
-        }
+        get => hideSelection;
         set
         {
             if (hideSelection != value)
@@ -574,10 +500,7 @@ public class ItemView : ScrollControl
     [DefaultValue(SortOrder.Ascending)]
     public SortOrder ItemSortOrder
     {
-        get
-        {
-            return itemSortOrder;
-        }
+        get => itemSortOrder;
         set
         {
             if (value != itemSortOrder)
@@ -595,10 +518,7 @@ public class ItemView : ScrollControl
     [DefaultValue(false)]
     public bool GroupDisplayEnabled
     {
-        get
-        {
-            return groupDisplayEnabled;
-        }
+        get => groupDisplayEnabled;
         set
         {
             if (value != groupDisplayEnabled)
@@ -614,10 +534,7 @@ public class ItemView : ScrollControl
     [DefaultValue(SortOrder.Ascending)]
     public SortOrder GroupSortingOrder
     {
-        get
-        {
-            return groupSortingOrder;
-        }
+        get => groupSortingOrder;
         set
         {
             if (value != groupSortingOrder)
@@ -636,10 +553,7 @@ public class ItemView : ScrollControl
     [DefaultValue(false)]
     public bool StackDisplayEnabled
     {
-        get
-        {
-            return stackDisplayEnabled;
-        }
+        get => stackDisplayEnabled;
         set
         {
             if (value != stackDisplayEnabled)
@@ -652,20 +566,13 @@ public class ItemView : ScrollControl
 
     [Category("Behavior")]
     [DefaultValue(SelectionMode.MultiSimple)]
-    public SelectionMode SelectionMode
-    {
-        get;
-        set;
-    }
+    public SelectionMode SelectionMode { get; set; }
 
     [Category("Appearance")]
     [DefaultValue(HorizontalAlignment.Left)]
     public HorizontalAlignment HorizontalItemAlignment
     {
-        get
-        {
-            return horizontalItemAlignment;
-        }
+        get => horizontalItemAlignment;
         set
         {
             if (horizontalItemAlignment != value)
@@ -680,10 +587,7 @@ public class ItemView : ScrollControl
     [DefaultValue(null)]
     public Bitmap GroupExpandedImage
     {
-        get
-        {
-            return groupExpandedImage;
-        }
+        get => groupExpandedImage;
         set
         {
             if (groupExpandedImage != value)
@@ -698,10 +602,7 @@ public class ItemView : ScrollControl
     [DefaultValue(null)]
     public Bitmap GroupCollapsedImage
     {
-        get
-        {
-            return groupCollapsedImage;
-        }
+        get => groupCollapsedImage;
         set
         {
             if (groupCollapsedImage != value)
@@ -716,10 +617,7 @@ public class ItemView : ScrollControl
     [DefaultValue(true)]
     public bool ShowHeader
     {
-        get
-        {
-            return showHeader;
-        }
+        get => showHeader;
         set
         {
             if (showHeader != value)
@@ -737,10 +635,7 @@ public class ItemView : ScrollControl
     [DefaultValue(20)]
     public int ColumnHeaderHeight
     {
-        get
-        {
-            return columnHeaderHeight;
-        }
+        get => columnHeaderHeight;
         set
         {
             if (columnHeaderHeight != value)
@@ -758,10 +653,7 @@ public class ItemView : ScrollControl
     [DefaultValue(ContentAlignment.TopLeft)]
     public ContentAlignment BackgroundImageAlignment
     {
-        get
-        {
-            return backgroundImageAlignment;
-        }
+        get => backgroundImageAlignment;
         set
         {
             if (backgroundImageAlignment != value)
@@ -779,10 +671,7 @@ public class ItemView : ScrollControl
     [DefaultValue(ItemViewLayout.Top)]
     public ItemViewLayout ItemViewLayout
     {
-        get
-        {
-            return itemViewLayout;
-        }
+        get => itemViewLayout;
         set
         {
             if (value != itemViewLayout)
@@ -797,10 +686,7 @@ public class ItemView : ScrollControl
     [DefaultValue(ItemViewMode.Thumbnail)]
     public ItemViewMode ItemViewMode
     {
-        get
-        {
-            return itemViewMode;
-        }
+        get => itemViewMode;
         set
         {
             if (value != itemViewMode)
@@ -821,10 +707,7 @@ public class ItemView : ScrollControl
     [DefaultValue(null)]
     public string ExpandedDetailColumnName
     {
-        get
-        {
-            return expandedDetailColumnName;
-        }
+        get => expandedDetailColumnName;
         set
         {
             if (!(value == expandedDetailColumnName))
@@ -842,10 +725,7 @@ public class ItemView : ScrollControl
     [DefaultValue(-160)]
     public int ExpandedDetailColumnMinimumHeight
     {
-        get
-        {
-            return expandedDetailColumnMinimumHeight;
-        }
+        get => expandedDetailColumnMinimumHeight;
         set
         {
             if (value != expandedDetailColumnMinimumHeight)
@@ -944,10 +824,7 @@ public class ItemView : ScrollControl
     [DefaultValue(16)]
     public int ItemRowHeight
     {
-        get
-        {
-            return itemRowHeight;
-        }
+        get => itemRowHeight;
         set
         {
             if (itemRowHeight != value)
@@ -965,10 +842,7 @@ public class ItemView : ScrollControl
     [DefaultValue(40)]
     public int GroupHeaderHeight
     {
-        get
-        {
-            return groupHeaderHeight;
-        }
+        get => groupHeaderHeight;
         set
         {
             if (groupHeaderHeight != value)
@@ -986,10 +860,7 @@ public class ItemView : ScrollControl
     [DefaultValue(true)]
     public bool ShowGroupCount
     {
-        get
-        {
-            return showGroupCount;
-        }
+        get => showGroupCount;
         set
         {
             if (showGroupCount != value)
@@ -1006,10 +877,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IViewableItem MarkerItem
     {
-        get
-        {
-            return markerItem;
-        }
+        get => markerItem;
         set
         {
             if (markerItem != value)
@@ -1025,10 +893,7 @@ public class ItemView : ScrollControl
     [DefaultValue(false)]
     public bool MarkerVisible
     {
-        get
-        {
-            return markerVisible;
-        }
+        get => markerVisible;
         set
         {
             if (markerVisible != value)
@@ -1044,10 +909,7 @@ public class ItemView : ScrollControl
     [DefaultValue(false)]
     public bool GroupHeaderTrueCount
     {
-        get
-        {
-            return groupHeaderTrueCount;
-        }
+        get => groupHeaderTrueCount;
         set
         {
             if (groupHeaderTrueCount != value)
@@ -1100,10 +962,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IGrouper<IViewableItem> ItemGrouper
     {
-        get
-        {
-            return itemGrouper;
-        }
+        get => itemGrouper;
         set
         {
             if (itemGrouper != value)
@@ -1119,10 +978,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IGrouper<IViewableItem> ItemStacker
     {
-        get
-        {
-            return itemStacker;
-        }
+        get => itemStacker;
         set
         {
             if (itemStacker != value)
@@ -1142,10 +998,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IComparer<IViewableItem> ItemStackSorter
     {
-        get
-        {
-            return itemStackSorter;
-        }
+        get => itemStackSorter;
         set
         {
             if (itemStackSorter != value)
@@ -1162,10 +1015,7 @@ public class ItemView : ScrollControl
     [Browsable(false)]
     public ItemViewGroupsStatus GroupsStatus
     {
-        get
-        {
-            return groupsStatus;
-        }
+        get => groupsStatus;
         set
         {
             if (groupsStatus != value)
@@ -1180,56 +1030,16 @@ public class ItemView : ScrollControl
     }
 
     [Browsable(false)]
-    public bool IsHeaderVisible
-    {
-        get
-        {
-            if (showHeader && ItemViewMode == ItemViewMode.Detail)
-            {
-                return IsTopLayout;
-            }
-            return false;
-        }
-    }
+    public bool IsHeaderVisible => showHeader && ItemViewMode == ItemViewMode.Detail ? IsTopLayout : false;
 
     [Browsable(false)]
-    public bool AreGroupsVisible
-    {
-        get
-        {
-            if (IsTopLayout && GroupDisplayEnabled)
-            {
-                return ItemGrouper != null;
-            }
-            return false;
-        }
-    }
+    public bool AreGroupsVisible => IsTopLayout && GroupDisplayEnabled ? ItemGrouper != null : false;
 
     [Browsable(false)]
-    public bool IsStacked
-    {
-        get
-        {
-            if (ItemViewMode != ItemViewMode.Detail && ItemStacker != null)
-            {
-                return StackDisplayEnabled;
-            }
-            return false;
-        }
-    }
+    public bool IsStacked => ItemViewMode != ItemViewMode.Detail && ItemStacker != null ? StackDisplayEnabled : false;
 
     [Browsable(false)]
-    public bool IsTopLayout
-    {
-        get
-        {
-            if (ItemViewLayout != 0)
-            {
-                return ItemViewMode == ItemViewMode.Detail;
-            }
-            return true;
-        }
-    }
+    public bool IsTopLayout => ItemViewLayout != 0 ? ItemViewMode == ItemViewMode.Detail : true;
 
     [Browsable(false)]
     public IEnumerable<IViewableItem> DisplayedItems
@@ -1310,10 +1120,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IViewableItem FocusedItem
     {
-        get
-        {
-            return itemStates.FindFirst(ItemViewStates.Focused);
-        }
+        get => itemStates.FindFirst(ItemViewStates.Focused);
         set
         {
             if (value != FocusedItem)
@@ -1331,10 +1138,7 @@ public class ItemView : ScrollControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int FocusedItemIndex
     {
-        get
-        {
-            return items.IndexOf(FocusedItem);
-        }
+        get => items.IndexOf(FocusedItem);
         set
         {
             try
@@ -1368,18 +1172,8 @@ public class ItemView : ScrollControl
 
     public IColumn SortColumn
     {
-        get
-        {
-            if (ItemSorter == null)
-            {
-                return null;
-            }
-            return Columns.FindBySorter(ItemSorter);
-        }
-        set
-        {
-            ItemSorter = value?.ColumnSorter;
-        }
+        get => ItemSorter == null ? null : Columns.FindBySorter(ItemSorter);
+        set => ItemSorter = value?.ColumnSorter;
     }
 
     public IColumn[] SortColumns
@@ -1404,14 +1198,8 @@ public class ItemView : ScrollControl
 
     public string SortColumnsKey
     {
-        get
-        {
-            return CovnertColumnsToKey(SortColumns);
-        }
-        set
-        {
-            SortColumns = ConvertKeyToColumns(value).ToArray();
-        }
+        get => CovnertColumnsToKey(SortColumns);
+        set => SortColumns = ConvertKeyToColumns(value).ToArray();
     }
 
     public IColumn[] GroupColumns
@@ -1439,26 +1227,16 @@ public class ItemView : ScrollControl
 
     public string GroupColumnsKey
     {
-        get
-        {
-            return CovnertColumnsToKey(GroupColumns);
-        }
-        set
-        {
-            GroupColumns = ConvertKeyToColumns(value).ToArray();
-        }
+        get => CovnertColumnsToKey(GroupColumns);
+        set => GroupColumns = ConvertKeyToColumns(value).ToArray();
     }
 
     public IColumn GroupColumn
     {
         get
         {
-            IGrouper<IViewableItem> grouper = ((ItemGrouper is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemGrouper).Groupers.FirstOrDefault() : ItemGrouper);
-            if (grouper != null)
-            {
-                return Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == grouper);
-            }
-            return null;
+            IGrouper<IViewableItem> grouper = (ItemGrouper is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemGrouper).Groupers.FirstOrDefault() : ItemGrouper;
+            return grouper != null ? Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == grouper) : null;
         }
     }
 
@@ -1466,12 +1244,8 @@ public class ItemView : ScrollControl
     {
         get
         {
-            IGrouper<IViewableItem> stacker = ((ItemStacker is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemStacker).Groupers.FirstOrDefault() : ItemStacker);
-            if (ItemStacker != null)
-            {
-                return Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == stacker);
-            }
-            return null;
+            IGrouper<IViewableItem> stacker = (ItemStacker is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemStacker).Groupers.FirstOrDefault() : ItemStacker;
+            return ItemStacker != null ? Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == stacker) : null;
         }
     }
 
@@ -1500,36 +1274,17 @@ public class ItemView : ScrollControl
 
     public string StackColumnsKey
     {
-        get
-        {
-            return CovnertColumnsToKey(StackColumns);
-        }
-        set
-        {
-            StackColumns = ConvertKeyToColumns(value).ToArray();
-        }
+        get => CovnertColumnsToKey(StackColumns);
+        set => StackColumns = ConvertKeyToColumns(value).ToArray();
     }
 
-    public IColumn StackSorterColum
-    {
-        get
-        {
-            if (ItemStackSorter != null)
-            {
-                return Columns.Find((IColumn h) => h.ColumnSorter == ItemStackSorter);
-            }
-            return null;
-        }
-    }
+    public IColumn StackSorterColum => ItemStackSorter != null ? Columns.Find((IColumn h) => h.ColumnSorter == ItemStackSorter) : null;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [Browsable(false)]
     private IEnumerable<ItemViewColumnInfo> ColumnHeaderConfiguration
     {
-        get
-        {
-            return Columns.Select((IColumn ivch) => new ItemViewColumnInfo(ivch));
-        }
+        get => Columns.Select((IColumn ivch) => new ItemViewColumnInfo(ivch));
         set
         {
             int num = 0;
@@ -1541,7 +1296,7 @@ public class ItemView : ScrollControl
                     column.FormatId = item.FormatId;
                     column.Visible = item.Visible;
                     column.Width = item.Width;
-                    column.LastTimeVisible = (column.Visible ? DateTime.UtcNow : item.LastTimeVisible);
+                    column.LastTimeVisible = column.Visible ? DateTime.UtcNow : item.LastTimeVisible;
                     columns.Remove(column);
                     columns.Insert(num, column);
                     num++;
@@ -1582,8 +1337,8 @@ public class ItemView : ScrollControl
                 GroupSortingOrder = value.GroupSortOrder;
                 SortColumnsKey = value.SortKey;
                 GroupColumnsKey = value.GrouperId;
-                StackColumnsKey = (StackDisplayEnabled ? value.StackerId : null);
-                ItemStackSorter = ((StackColumn == null) ? null : StackColumn.ColumnSorter);
+                StackColumnsKey = StackDisplayEnabled ? value.StackerId : null;
+                ItemStackSorter = (StackColumn?.ColumnSorter);
                 ItemViewMode = value.ItemViewMode;
                 GroupsStatus = value.GroupsStatus ?? new ItemViewGroupsStatus();
                 if (value.ThumbnailSize.Height >= 16 && value.ThumbnailSize.Width >= 16)
@@ -1702,10 +1457,7 @@ public class ItemView : ScrollControl
             catch (Exception)
             {
             }
-            if (components != null)
-            {
-                components.Dispose();
-            }
+            components?.Dispose();
         }
         base.Dispose(disposing);
     }
@@ -1721,7 +1473,7 @@ public class ItemView : ScrollControl
         {
             return null;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         foreach (IColumn col in cols)
         {
             if (stringBuilder.Length != 0)
@@ -1760,11 +1512,7 @@ public class ItemView : ScrollControl
 
     public ItemViewStates GetItemState(IViewableItem item)
     {
-        if (item == null)
-        {
-            return ItemViewStates.None;
-        }
-        return itemStates[item];
+        return item == null ? ItemViewStates.None : itemStates[item];
     }
 
     public bool IsItemSelected(IViewableItem item)
@@ -1781,7 +1529,7 @@ public class ItemView : ScrollControl
     {
         if (item != null)
         {
-            StateInfo stateInfo = new StateInfo(itemStates);
+            StateInfo stateInfo = new(itemStates);
             if ((state & ItemViewStates.Selected) != 0 && !multiSelect)
             {
                 stateInfo.Clear(ItemViewStates.Selected);
@@ -1806,7 +1554,7 @@ public class ItemView : ScrollControl
         {
             return;
         }
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         foreach (IViewableItem item in displayedItems.Lock())
         {
             stateInfo.Set(item, ItemViewStates.Selected, selectionState);
@@ -1826,7 +1574,7 @@ public class ItemView : ScrollControl
 
     public void Select(IViewableItem item, bool selectionState)
     {
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         stateInfo.Set(item, ItemViewStates.Selected, selectionState);
         itemStates.Update(stateInfo);
     }
@@ -1842,7 +1590,7 @@ public class ItemView : ScrollControl
         {
             return;
         }
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         foreach (IViewableItem item in displayedItems.Lock())
         {
             stateInfo.Flip(item, ItemViewStates.Selected);
@@ -1890,7 +1638,7 @@ public class ItemView : ScrollControl
 
     private void UpdateHotItemState(MouseButtons button, int x, int y)
     {
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         stateInfo.Clear(ItemViewStates.Hot);
         IViewableItem viewableItem = ItemHitTest(x, y);
         if (viewableItem != null && button == MouseButtons.None)
@@ -1936,7 +1684,7 @@ public class ItemView : ScrollControl
         }
     }
 
-    private void SafeInvalidate(ItemViewInvalidateOptions options = ItemViewInvalidateOptions.Position, Rectangle bounds = default(Rectangle))
+    private void SafeInvalidate(ItemViewInvalidateOptions options = ItemViewInvalidateOptions.Position, Rectangle bounds = default)
     {
         itemsResort |= options == ItemViewInvalidateOptions.Full;
         positionsInvalidated |= options != ItemViewInvalidateOptions.None;
@@ -2036,8 +1784,8 @@ public class ItemView : ScrollControl
     {
         int num = 0;
         int num2 = 0;
-        ItemSizeInformation itemSizeInformation = new ItemSizeInformation();
-        Graphics graphics2 = (itemSizeInformation.Graphics = CreateGraphics());
+        ItemSizeInformation itemSizeInformation = new();
+        Graphics graphics2 = itemSizeInformation.Graphics = CreateGraphics();
         using (graphics2)
         {
             itemSizeInformation.Header = header;
@@ -2096,7 +1844,7 @@ public class ItemView : ScrollControl
         try
         {
             Size size = base.ClientRectangle.Size;
-            Bitmap bitmap = new Bitmap(size.Width, size.Height);
+            Bitmap bitmap = new(size.Width, size.Height);
             using (Graphics gr = Graphics.FromImage(bitmap))
             {
                 DrawItems(gr, flags);
@@ -2120,10 +1868,7 @@ public class ItemView : ScrollControl
         else
         {
             bitmapCursor.BitmapOwned = true;
-            if (bitmapCursor.Bitmap != null)
-            {
-                bitmapCursor.Bitmap.ChangeAlpha(alpha);
-            }
+            bitmapCursor.Bitmap?.ChangeAlpha(alpha);
         }
         return bitmapCursor;
     }
@@ -2162,61 +1907,43 @@ public class ItemView : ScrollControl
 
     protected virtual void OnItemDrag(ItemDragEventArgs itemDragEventArgs)
     {
-        if (this.ItemDrag != null)
-        {
-            this.ItemDrag(this, itemDragEventArgs);
-        }
+        ItemDrag?.Invoke(this, itemDragEventArgs);
     }
 
     protected virtual void OnItemActivate()
     {
-        if (this.ItemActivate != null)
-        {
-            this.ItemActivate(this, EventArgs.Empty);
-        }
+        ItemActivate?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnSelectedIndexChanged()
     {
-        if (this.SelectedIndexChanged != null)
-        {
-            this.SelectedIndexChanged(this, EventArgs.Empty);
-        }
+        SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnItemDisplayChanged()
     {
-        if (this.ItemDisplayChanged != null)
-        {
-            this.ItemDisplayChanged(this, EventArgs.Empty);
-        }
+        ItemDisplayChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnGroupDisplayChanged()
     {
-        if (this.GroupDisplayChanged != null)
-        {
-            this.GroupDisplayChanged(this, EventArgs.Empty);
-        }
+        GroupDisplayChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnHeaderClick(IColumn header)
     {
-        if (this.HeaderClick != null)
-        {
-            this.HeaderClick(this, new ItemViewColumnHeaderClickEventArgs(header));
-        }
+        HeaderClick?.Invoke(this, new ItemViewColumnHeaderClickEventArgs(header));
         if (header.FormatTexts.Length != 0)
         {
             Rectangle dropDownBounds = HeaderControl.GetDropDownBounds(GetColumnHeaderRectangle(header));
             dropDownBounds.Offset(-base.ScrollPositionX, 0);
             if (dropDownBounds.Contains(pressedHeaderPoint))
             {
-                ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+                ContextMenuStrip contextMenuStrip = new();
                 for (int j = 0; j < header.FormatTexts.Length; j++)
                 {
                     int i = j;
-                    ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(header.FormatTexts[j], null, delegate
+                    ToolStripMenuItem toolStripMenuItem = new(header.FormatTexts[j], null, delegate
                     {
                         if (header.FormatId != i)
                         {
@@ -2245,10 +1972,7 @@ public class ItemView : ScrollControl
 
     protected virtual void OnProcessStack(StackInfo lsi)
     {
-        if (this.ProcessStack != null)
-        {
-            this.ProcessStack(this, new StackEventArgs(lsi));
-        }
+        ProcessStack?.Invoke(this, new StackEventArgs(lsi));
     }
 
     protected override void OnFontChanged(EventArgs e)
@@ -2342,20 +2066,12 @@ public class ItemView : ScrollControl
             return column;
         }
         IColumn column2 = columns.LastOrDefault((IColumn ch) => ch.Visible);
-        if (column2 != null && column2.Name == ExpandedDetailColumnName)
-        {
-            return column2;
-        }
-        return null;
+        return column2 != null && column2.Name == ExpandedDetailColumnName ? column2 : null;
     }
 
     public int GetExpandedColumnMinimumHeight(int width)
     {
-        if (expandedDetailColumnMinimumHeight < 0)
-        {
-            return width * -ExpandedDetailColumnMinimumHeight / 100;
-        }
-        return ExpandedDetailColumnMinimumHeight;
+        return expandedDetailColumnMinimumHeight < 0 ? width * -ExpandedDetailColumnMinimumHeight / 100 : ExpandedDetailColumnMinimumHeight;
     }
 
     private Rectangle GetColumnHeaderRectangle(IColumn header)
@@ -2446,24 +2162,17 @@ public class ItemView : ScrollControl
 
     private Size GetItemBorderSize()
     {
-        if (ItemViewMode == ItemViewMode.Detail)
-        {
-            return Size.Empty;
-        }
-        return ItemPadding;
+        return ItemViewMode == ItemViewMode.Detail ? Size.Empty : ItemPadding;
     }
 
     private Size GetDefaultItemSize(int clientWidth)
     {
-        switch (ItemViewMode)
+        return ItemViewMode switch
         {
-            case ItemViewMode.Thumbnail:
-                return itemThumbSize;
-            case ItemViewMode.Tile:
-                return itemTileSize;
-            default:
-                return new Size(clientWidth, itemRowHeight);
-        }
+            ItemViewMode.Thumbnail => itemThumbSize,
+            ItemViewMode.Tile => itemTileSize,
+            _ => new Size(clientWidth, itemRowHeight),
+        };
     }
 
     public IViewableItem GetFirstGroupItem(string group)
@@ -2496,9 +2205,9 @@ public class ItemView : ScrollControl
                 return value;
             }
         }
-        using (ItemMonitor.Lock(this.stackInfo))
+        using (ItemMonitor.Lock(stackInfo))
         {
-            foreach (IViewableItem key in this.stackInfo.Keys)
+            foreach (IViewableItem key in stackInfo.Keys)
             {
                 StackInfo stackInfo = this.stackInfo[key];
                 if (stackInfo.Items.Contains(item))
@@ -2549,11 +2258,7 @@ public class ItemView : ScrollControl
         }
         using (ItemMonitor.Lock(stackInfo))
         {
-            if (!stackInfo.TryGetValue(item, out var value))
-            {
-                return null;
-            }
-            return value.GroupInfo;
+            return !stackInfo.TryGetValue(item, out var value) ? null : value.GroupInfo;
         }
     }
 
@@ -2592,10 +2297,10 @@ public class ItemView : ScrollControl
         using (ItemMonitor.Lock(stackInfo))
         {
             StackInfo value;
-            return stackInfo.TryGetValue(item, out value) ? value.Items.ToArray() : new IViewableItem[1]
-            {
+            return stackInfo.TryGetValue(item, out value) ? value.Items.ToArray() :
+            [
                 item
-            };
+            ];
         }
     }
 
@@ -2625,7 +2330,7 @@ public class ItemView : ScrollControl
         if (withSort || isDisplayedItemsEmpty)
         {
             // Group viewable items and Create group headers and assign items to them
-            viewableItems = new List<IViewableItem>(this.items.Lock());
+            viewableItems = new List<IViewableItem>(items.Lock());
             grpHeaders = new List<GroupHeaderInformation>();
             if (areGroupsVisible)
             {
@@ -2634,7 +2339,7 @@ public class ItemView : ScrollControl
                 {
                     grouper = new AlphabetGrouper(grouper);
                 }
-                GroupManager<IViewableItem> groupManager = new GroupManager<IViewableItem>(grouper, viewableItems);
+                GroupManager<IViewableItem> groupManager = new(grouper, viewableItems);
                 IEnumerable<GroupContainer<IViewableItem>> enumerable = groupManager.GetGroups();
                 if (GroupSortingOrder != 0)
                 {
@@ -2658,10 +2363,10 @@ public class ItemView : ScrollControl
             // Create item stacks from each group header
             if (IsStacked)
             {
-                Dictionary<IViewableItem, StackInfo> dictionary = new Dictionary<IViewableItem, StackInfo>();
+                Dictionary<IViewableItem, StackInfo> dictionary = new();
                 foreach (GroupHeaderInformation groupHeaderInfo in grpHeaders)
                 {
-                    GroupManager<IViewableItem> groupManager2 = new GroupManager<IViewableItem>(ItemStacker, groupHeaderInfo.Items);
+                    GroupManager<IViewableItem> groupManager2 = new(ItemStacker, groupHeaderInfo.Items);
                     groupHeaderInfo.Items.Clear();
                     groupHeaderInfo.ItemCount = 0;
                     // Iterate through each stack and create the stackInfo used when referring to stacks
@@ -2675,7 +2380,7 @@ public class ItemView : ScrollControl
                             var stackSortComparer = stackSorter is null ? ItemStackSorter : ItemStackSorter.Chain(stackSorter); // Default comparer if no specific sorter is found
                             group.Items.Sort(stackSortComparer); // Sort the items in the group using the stack sorter
                         }
-                        StackInfo stackInfo = new StackInfo(group);
+                        StackInfo stackInfo = new(group);
                         OnProcessStack(stackInfo); // Settings like Top of Stack & Custom Thumbnail will be applied here
                         IViewableItem key = group.Items[0]; // Use the first item of the stack
                         dictionary[key] = stackInfo;
@@ -2690,17 +2395,17 @@ public class ItemView : ScrollControl
                         }
                     }
                 }
-                using (ItemMonitor.Lock(this.stackInfo))
+                using (ItemMonitor.Lock(stackInfo))
                 {
-                    this.stackInfo = dictionary;
+                    stackInfo = dictionary;
                 }
             }
             else
             {
                 // Clear the stack info if not stacked
-                using (ItemMonitor.Lock(this.stackInfo))
+                using (ItemMonitor.Lock(stackInfo))
                 {
-                    this.stackInfo.Clear();
+                    stackInfo.Clear();
                 }
             }
 
@@ -2721,10 +2426,7 @@ public class ItemView : ScrollControl
             {
                 try
                 {
-                    grpHeaders.ParallelForEach((GroupHeaderInformation ghi) =>
-                    {
-                        ghi.Items.Sort(comparer);
-                    });
+                    grpHeaders.ParallelForEach((GroupHeaderInformation ghi) => ghi.Items.Sort(comparer));
                 }
                 catch
                 {
@@ -2753,7 +2455,7 @@ public class ItemView : ScrollControl
         {
             groupsStatus = new ItemViewGroupsStatus(grpHeaders);
         }
-        Dictionary<IViewableItem, ItemInformation> dictionary2 = new Dictionary<IViewableItem, ItemInformation>();
+        Dictionary<IViewableItem, ItemInformation> dictionary2 = new();
         int width = 0;
         int height = 0;
         int col = 0;
@@ -2761,7 +2463,7 @@ public class ItemView : ScrollControl
         int itemIndex = 0;
         IColumn expandedColumn = GetExpandedColumn();
         IColumn column = columns.FirstOrDefault((IColumn c) => c.Visible);
-        Rectangle rectangle = ((expandedColumn != null) ? GetColumnHeaderRectangle(expandedColumn) : Rectangle.Empty);
+        Rectangle rectangle = (expandedColumn != null) ? GetColumnHeaderRectangle(expandedColumn) : Rectangle.Empty;
         Rectangle viewRectangle = ViewRectangle;
         Size itemBorderSize = GetItemBorderSize();
         if (ItemViewMode == ItemViewMode.Detail)
@@ -2770,7 +2472,7 @@ public class ItemView : ScrollControl
             viewRectangle.Y -= ViewRectangle.Y - DisplayRectangle.Y;
         }
         Point empty = Point.Empty;
-        Rectangle rectangle2 = new Rectangle(empty, Size.Empty);
+        Rectangle rectangle2 = new(empty, Size.Empty);
         for (int i = 0; i < grpHeaders.Count; i++)
         {
             GroupHeaderInformation groupHeaderInformation = grpHeaders[i];
@@ -2810,7 +2512,7 @@ public class ItemView : ScrollControl
                     case ItemViewMode.Thumbnail:
                     case ItemViewMode.Tile:
                         {
-                            ItemSizeInformation itemSizeInformation = new ItemSizeInformation
+                            ItemSizeInformation itemSizeInformation = new()
                             {
                                 Graphics = gr,
                                 Size = size,
@@ -2854,7 +2556,7 @@ public class ItemView : ScrollControl
                     empty.X += itemBorderSize.Width * 2 + width;
                     width = size.Width;
                 }
-                Rectangle rectangle3 = new Rectangle(empty.X + itemBorderSize.Width + offset, empty.Y + itemBorderSize.Height, size.Width, size.Height);
+                Rectangle rectangle3 = new(empty.X + itemBorderSize.Width + offset, empty.Y + itemBorderSize.Height, size.Width, size.Height);
                 rectangle3.Offset(viewRectangle.Location);
                 if (expandedColumn != null)
                 {
@@ -3079,8 +2781,7 @@ public class ItemView : ScrollControl
         {
             return false;
         }
-        IViewableItemHitTest viewableItemHitTest = item as IViewableItemHitTest;
-        if (viewableItemHitTest == null)
+        if (item is not IViewableItemHitTest viewableItemHitTest)
         {
             return true;
         }
@@ -3095,8 +2796,7 @@ public class ItemView : ScrollControl
         {
             return false;
         }
-        IViewableItemHitTest viewableItemHitTest = item as IViewableItemHitTest;
-        if (viewableItemHitTest == null)
+        if (item is not IViewableItemHitTest viewableItemHitTest)
         {
             return true;
         }
@@ -3140,7 +2840,7 @@ public class ItemView : ScrollControl
 
     protected virtual void OnDrawColumnHeaders(Graphics gr)
     {
-        foreach (ItemViewColumn column in columns)
+        foreach (ItemViewColumn column in columns.Cast<ItemViewColumn>())
         {
             if (!column.Visible)
             {
@@ -3177,10 +2877,10 @@ public class ItemView : ScrollControl
     protected virtual void OnDrawGroupHeader(Graphics graphics, GroupHeaderInformation groupHeaderInformation)
     {
         Rectangle bounds = groupHeaderInformation.Bounds;
-        string text = (ShowGroupCount ? $"{groupHeaderInformation.Caption} ({groupHeaderInformation.ItemCount})" : groupHeaderInformation.Caption);
+        string text = ShowGroupCount ? $"{groupHeaderInformation.Caption} ({groupHeaderInformation.ItemCount})" : groupHeaderInformation.Caption;
         Font font = FC.Get(Font, Font.Size * 1.15f);
         Size size = graphics.MeasureString(text, font).ToSize();
-        Bitmap bitmap = (groupHeaderInformation.Collapsed ? groupCollapsedImage : groupExpandedImage);
+        Bitmap bitmap = groupHeaderInformation.Collapsed ? groupCollapsedImage : groupExpandedImage;
         int num = size.Width;
         int height = size.Height;
         int num2 = (bounds.Height - height) / 2 + 2;
@@ -3198,7 +2898,7 @@ public class ItemView : ScrollControl
         if (bitmap != null)
         {
             int y2 = num2 + (height - bitmap.Height) / 2;
-            Rectangle rectangle = new Rectangle(num3, y2, bitmap.Width, bitmap.Height);
+            Rectangle rectangle = new(num3, y2, bitmap.Width, bitmap.Height);
             graphics.DrawImage(bitmap, rectangle);
             rectangle.Offset(bounds.Location);
             groupHeaderInformation.ArrowBounds = rectangle;
@@ -3214,7 +2914,7 @@ public class ItemView : ScrollControl
             groupHeaderInformation.TextBounds = new Rectangle(bounds.X + num3, bounds.Y + num2, size.Width, size.Height);
         }
         int num5 = num4 + num + 5;
-        Rectangle rect = new Rectangle(num5, y, bounds.Width - num5 - 5, 1);
+        Rectangle rect = new(num5, y, bounds.Width - num5 - 5, 1);
         if (rect.Width > 5)
         {
             using (Brush brush2 = new SolidBrush(ThemeColors.ItemView.GroupSeparator))
@@ -3252,7 +2952,7 @@ public class ItemView : ScrollControl
         }
         if ((drawItemsFlags & DrawItemViewOptions.BackgroundImage) != 0 && BackgroundImage != null)
         {
-            Rectangle rectangle = new Rectangle(0, 0, BackgroundImage.Width, BackgroundImage.Height);
+            Rectangle rectangle = new(0, 0, BackgroundImage.Width, BackgroundImage.Height);
             gr.DrawImage(BackgroundImage, rectangle.Align(DisplayRectangle, BackgroundImageAlignment), rectangle, GraphicsUnit.Pixel);
         }
     }
@@ -3291,7 +2991,7 @@ public class ItemView : ScrollControl
                         {
                             visibleItems.Clear();
                             selectedItems.Clear();
-                            ItemDrawInformation itemDrawInformation = new ItemDrawInformation
+                            ItemDrawInformation itemDrawInformation = new()
                             {
                                 Item = -1,
                                 Graphics = gr,
@@ -3321,7 +3021,7 @@ public class ItemView : ScrollControl
                                         gr.IntersectClip(expandedColumnBounds);
                                         gr.TranslateTransform(expandedColumnBounds.X, expandedColumnBounds.Y);
                                         expandedColumnBounds.Offset(-expandedColumnBounds.X, -expandedColumnBounds.Y);
-                                        ItemDrawInformation drawInfo = new ItemDrawInformation
+                                        ItemDrawInformation drawInfo = new()
                                         {
                                             Item = itemDrawInformation.Item + 1,
                                             Graphics = gr,
@@ -3401,7 +3101,7 @@ public class ItemView : ScrollControl
                                             {
                                                 continue;
                                             }
-                                            foreach (ItemViewColumn column in columns)
+                                            foreach (ItemViewColumn column in columns.Cast<ItemViewColumn>())
                                             {
                                                 itemDrawInformation.SubItem++;
                                                 if (!column.Visible || column == expandedColumn)
@@ -3514,10 +3214,7 @@ public class ItemView : ScrollControl
 
     protected virtual void OnPostPaint(PaintEventArgs e)
     {
-        if (this.PostPaint != null)
-        {
-            this.PostPaint(this, e);
-        }
+        PostPaint?.Invoke(this, e);
     }
 
     protected override void OnResize(EventArgs e)
@@ -3555,42 +3252,26 @@ public class ItemView : ScrollControl
 
     private ContextMenuStrip GetHeaderMenu()
     {
-        if (HeaderContextMenuStrip != null)
-        {
-            return HeaderContextMenuStrip;
-        }
-        if (AutomaticHeaderMenu)
-        {
-            return autoHeaderContextMenuStrip;
-        }
-        return null;
+        return HeaderContextMenuStrip ?? (AutomaticHeaderMenu ? autoHeaderContextMenuStrip : null);
     }
 
     public ContextMenuStrip GetViewMenu()
     {
-        if (ViewContextMenuStrip != null)
-        {
-            return ViewContextMenuStrip;
-        }
-        if (AutomaticViewMenu && Columns.Count > 0)
-        {
-            return autoViewContextMenuStrip;
-        }
-        return null;
+        return ViewContextMenuStrip ?? (AutomaticViewMenu && Columns.Count > 0 ? autoViewContextMenuStrip : null);
     }
 
     public void CreateGroupMenu(ToolStripItemCollection toolStripItemCollection)
     {
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
-        ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(tr["NotGrouped", "Not Grouped"])
+        ContextMenuBuilder contextMenuBuilder = new();
+        ToolStripMenuItem toolStripMenuItem = new(tr["NotGrouped", "Not Grouped"])
         {
-            Checked = (ItemGrouper == null),
+            Checked = ItemGrouper == null,
             Tag = null
         };
         toolStripMenuItem.Click += GroupMenuItemClicked;
         toolStripItemCollection.Add(toolStripMenuItem);
         toolStripItemCollection.Add(new ToolStripSeparator());
-        foreach (ItemViewColumn column in Columns)
+        foreach (ItemViewColumn column in Columns.Cast<ItemViewColumn>())
         {
             if (column.ColumnGrouper != null)
             {
@@ -3604,15 +3285,15 @@ public class ItemView : ScrollControl
 
     public void CreateArrangeMenu(ToolStripItemCollection toolStripItemCollection)
     {
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
-        ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(tr["NotSorted", "Not Sorted"])
+        ContextMenuBuilder contextMenuBuilder = new();
+        ToolStripMenuItem toolStripMenuItem = new(tr["NotSorted", "Not Sorted"])
         {
-            Checked = (ItemSorter == null)
+            Checked = ItemSorter == null
         };
         toolStripMenuItem.Click += ArrangeMenuItemClicked;
         toolStripItemCollection.Add(toolStripMenuItem);
         toolStripItemCollection.Add(new ToolStripSeparator());
-        foreach (ItemViewColumn column in Columns)
+        foreach (ItemViewColumn column in Columns.Cast<ItemViewColumn>())
         {
             if (column.ColumnSorter != null)
             {
@@ -3648,7 +3329,7 @@ public class ItemView : ScrollControl
             }
         });
         toolStripItemCollection.Add(new ToolStripSeparator());
-        ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(tr["Layout", "Layout"], null)
+        ToolStripMenuItem toolStripMenuItem = new(tr["Layout", "Layout"], null)
         {
             DropDown = GetViewMenu()
         };
@@ -3657,8 +3338,8 @@ public class ItemView : ScrollControl
             toolStripItemCollection.Add(toolStripMenuItem);
             toolStripItemCollection.Add(new ToolStripSeparator());
         }
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
-        foreach (ItemViewColumn column in columns)
+        ContextMenuBuilder contextMenuBuilder = new();
+        foreach (ItemViewColumn column in columns.Cast<ItemViewColumn>())
         {
             contextMenuBuilder.Add(FormUtility.FixAmpersand(column.Text), column.Visible, column.Visible, HeaderMenuItemClicked, column.Id, column.LastTimeVisible);
         }
@@ -3670,8 +3351,8 @@ public class ItemView : ScrollControl
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)toolStripItemCollection.Add(tr["NotStacked", "Not Stacked"], null, StackMenuItemClicked);
         toolStripMenuItem.Checked = ItemStacker == null;
         toolStripItemCollection.Add(new ToolStripSeparator());
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
-        foreach (ItemViewColumn column in columns)
+        ContextMenuBuilder contextMenuBuilder = new();
+        foreach (ItemViewColumn column in columns.Cast<ItemViewColumn>())
         {
             if (column.ColumnGrouper != null && column.ColumnSorter != null)
             {
@@ -3686,8 +3367,7 @@ public class ItemView : ScrollControl
     private void GroupMenuItemClicked(object sender, EventArgs e)
     {
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
-        ItemViewColumn itemViewColumn = toolStripMenuItem.Tag as ItemViewColumn;
-        if (itemViewColumn == null)
+        if (toolStripMenuItem.Tag is not ItemViewColumn itemViewColumn)
         {
             GroupDisplayEnabled = false;
             ItemGrouper = null;
@@ -3713,8 +3393,7 @@ public class ItemView : ScrollControl
     private void ArrangeMenuItemClicked(object sender, EventArgs e)
     {
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
-        ItemViewColumn itemViewColumn = toolStripMenuItem.Tag as ItemViewColumn;
-        if (itemViewColumn == null)
+        if (toolStripMenuItem.Tag is not ItemViewColumn itemViewColumn)
         {
             ItemSorter = null;
             return;
@@ -3741,21 +3420,15 @@ public class ItemView : ScrollControl
     private void StackMenuItemClicked(object sender, EventArgs e)
     {
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
-        ItemViewColumn itemViewColumn = toolStripMenuItem.Tag as ItemViewColumn;
-        if (itemViewColumn == null)
+        if (toolStripMenuItem.Tag is not ItemViewColumn itemViewColumn)
         {
             ItemStacker = null;
             return;
         }
         ItemStackSorter = itemViewColumn.ColumnSorter;
-        if (Control.ModifierKeys.HasFlag(Keys.Control))
-        {
-            ItemStacker = ItemStacker.Append(itemViewColumn.ColumnGrouper, 3, removeIfContained: true);
-        }
-        else
-        {
-            ItemStacker = itemViewColumn.ColumnGrouper;
-        }
+        ItemStacker = Control.ModifierKeys.HasFlag(Keys.Control)
+            ? ItemStacker.Append(itemViewColumn.ColumnGrouper, 3, removeIfContained: true)
+            : itemViewColumn.ColumnGrouper;
     }
 
     private void autoHeaderContextMenuStrip_Opening(object sender, CancelEventArgs e)
@@ -3872,7 +3545,7 @@ public class ItemView : ScrollControl
             }
             return;
         }
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         if ((!flag3 && SelectionMode == SelectionMode.MultiSimple && (e.Button & MouseButtons.Left) != 0) || !IsItemSelected(item) || flag4)
         {
             if (!flag4)
@@ -3969,11 +3642,11 @@ public class ItemView : ScrollControl
         }
         else
         {
-            if (SelectionMode == SelectionMode.One || SelectionMode == SelectionMode.None)
+            if (SelectionMode is SelectionMode.One or SelectionMode.None)
             {
                 return;
             }
-            StateInfo stateInfo = new StateInfo(itemStates);
+            StateInfo stateInfo = new(itemStates);
             ItemViewStates itemViewStates = ItemViewStates.Focused;
             stateInfo.Clear(ItemViewStates.Selected | ItemViewStates.Focused);
             foreach (IViewableItem item in groupHeaderInformation.Items.Lock())
@@ -4057,7 +3730,7 @@ public class ItemView : ScrollControl
         IViewableItem focusedItem = FocusedItem;
         longClickTimer.Stop();
         longClickSubItem = -1;
-        if (e.Button == MouseButtons.XButton1 || e.Button == MouseButtons.XButton2)
+        if (e.Button is MouseButtons.XButton1 or MouseButtons.XButton2)
         {
             return;
         }
@@ -4111,7 +3784,7 @@ public class ItemView : ScrollControl
         Invalidate(Translate(selectionRect, fromClient: false));
         selectionRect = right;
         Invalidate(Translate(selectionRect, fromClient: false));
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         stateInfo.Clear(ItemViewStates.Focused);
         bool flag = false;
         bool flag2 = (Control.ModifierKeys & Keys.Control) != 0;
@@ -4154,7 +3827,7 @@ public class ItemView : ScrollControl
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        string text = ((hotHeader == null || !HeaderToolTips) ? string.Empty : hotHeader.TooltipText);
+        string text = (hotHeader == null || !HeaderToolTips) ? string.Empty : hotHeader.TooltipText;
         if (text != toolTip.GetToolTip(this))
         {
             toolTip.SetToolTip(this, text);
@@ -4189,7 +3862,7 @@ public class ItemView : ScrollControl
         }
         SetHotHeader(ColumnHeaderHitTest(e.X, e.Y));
         UpdateContextMenu(e.Location);
-        Cursor = ((ColumnHeaderSeparatorHitTest(e.X, e.Y) != -1) ? Cursors.VSplit : Cursors.Default);
+        Cursor = (ColumnHeaderSeparatorHitTest(e.X, e.Y) != -1) ? Cursors.VSplit : Cursors.Default;
         UpdateHotItemState(e.Button, e.X, e.Y);
         if (e.Button != MouseButtons.Middle)
         {
@@ -4273,7 +3946,7 @@ public class ItemView : ScrollControl
     {
         StopLongClick();
         SetHotHeader(null);
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         IViewableItem item;
         while ((item = stateInfo.FindFirst(ItemViewStates.Hot)) != null)
         {
@@ -4289,7 +3962,7 @@ public class ItemView : ScrollControl
         StopLongClick();
         if (Control.ModifierKeys == Keys.None)
         {
-            float num = (float)(-e.Delta) / (float)SystemInformation.MouseWheelScrollDelta;
+            float num = (float)-e.Delta / (float)SystemInformation.MouseWheelScrollDelta;
             ScrollView(num * (float)SystemInformation.MouseWheelScrollLines);
         }
     }
@@ -4299,11 +3972,7 @@ public class ItemView : ScrollControl
         screenCursorLocation = PointToClient(screenCursorLocation);
         int subItem;
         IViewableItem viewableItem = ItemHitTest(screenCursorLocation.X, screenCursorLocation.Y, out subItem);
-        if (viewableItem == null || subItem == -1)
-        {
-            return false;
-        }
-        return EditItem(viewableItem, subItem);
+        return viewableItem == null || subItem == -1 ? false : EditItem(viewableItem, subItem);
     }
 
     public bool EditItem(IViewableItem editItem, int editSubItem = -1)
@@ -4445,7 +4114,7 @@ public class ItemView : ScrollControl
                     int num;
                     if (e.KeyCode == Keys.Tab)
                     {
-                        num = ((!e.Modifiers.HasFlag(Keys.Shift)) ? 1 : (-1));
+                        num = (!e.Modifiers.HasFlag(Keys.Shift)) ? 1 : (-1);
                     }
                     else
                     {
@@ -4453,7 +4122,7 @@ public class ItemView : ScrollControl
                         {
                             break;
                         }
-                        num = ((e.KeyCode != Keys.Left) ? 1 : (-1));
+                        num = (e.KeyCode != Keys.Left) ? 1 : (-1);
                     }
                     IViewableItem viewableItem = currentInplaceEditItem;
                     int nextEditSubItem = GetNextEditSubItem(viewableItem, currentInplaceEditSubItem + num, num);
@@ -4565,27 +4234,18 @@ public class ItemView : ScrollControl
         {
             num2 = ViewRectangle.Width / GetDefaultItemSize(ViewRectangle.Width).Width;
         }
-        switch (key)
+        return key switch
         {
-            case Keys.Left:
-                return GetRelativeItem(focus, -1, 0);
-            case Keys.Right:
-                return GetRelativeItem(focus, 1, 0);
-            case Keys.Up:
-                return GetRelativeItem(focus, 0, -1);
-            case Keys.Down:
-                return GetRelativeItem(focus, 0, 1);
-            case Keys.Next:
-                return GetRelativeItem(focus, num2, num);
-            case Keys.Prior:
-                return GetRelativeItem(focus, -num2, -num);
-            case Keys.Home:
-                return GetColumnRowItems(0, 0).FirstOrDefault();
-            case Keys.End:
-                return GetRelativeItem(focus, 10000000, 10000000);
-            default:
-                return focus;
-        }
+            Keys.Left => GetRelativeItem(focus, -1, 0),
+            Keys.Right => GetRelativeItem(focus, 1, 0),
+            Keys.Up => GetRelativeItem(focus, 0, -1),
+            Keys.Down => GetRelativeItem(focus, 0, 1),
+            Keys.Next => GetRelativeItem(focus, num2, num),
+            Keys.Prior => GetRelativeItem(focus, -num2, -num),
+            Keys.Home => GetColumnRowItems(0, 0).FirstOrDefault(),
+            Keys.End => GetRelativeItem(focus, 10000000, 10000000),
+            _ => focus,
+        };
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -4600,14 +4260,11 @@ public class ItemView : ScrollControl
             base.OnKeyDown(e);
             return;
         }
-        StateInfo stateInfo = new StateInfo(itemStates);
+        StateInfo stateInfo = new(itemStates);
         IViewableItem viewableItem = stateInfo.FindFirst(ItemViewStates.Focused);
         using (ItemMonitor.Lock(displayedItems))
         {
-            if (viewableItem == null)
-            {
-                viewableItem = displayedItems[0];
-            }
+            viewableItem ??= displayedItems[0];
         }
         switch (e.KeyCode)
         {
@@ -4669,29 +4326,21 @@ public class ItemView : ScrollControl
 
     protected override bool IsInputKey(Keys keyData)
     {
-        switch (keyData & ~Keys.Shift)
+        return (keyData & ~Keys.Shift) switch
         {
-            case Keys.Left:
-            case Keys.Up:
-            case Keys.Right:
-            case Keys.Down:
-                return true;
-            default:
-                return base.IsInputKey(keyData);
-        }
+            Keys.Left or Keys.Up or Keys.Right or Keys.Down => true,
+            _ => base.IsInputKey(keyData),
+        };
     }
 
     public static SortOrder FlipSortOrder(SortOrder sortOrder)
     {
-        switch (sortOrder)
+        return sortOrder switch
         {
-            case SortOrder.Ascending:
-                return SortOrder.Descending;
-            case SortOrder.Descending:
-                return SortOrder.Ascending;
-            default:
-                return SortOrder.None;
-        }
+            SortOrder.Ascending => SortOrder.Descending,
+            SortOrder.Descending => SortOrder.Ascending,
+            _ => SortOrder.None,
+        };
     }
 
     private void InitializeComponent()
@@ -4712,32 +4361,32 @@ public class ItemView : ScrollControl
         autoHeaderContextMenuStrip.SuspendLayout();
         autoViewContextMenuStrip.SuspendLayout();
         SuspendLayout();
-        autoHeaderContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[1]
-        {
+        autoHeaderContextMenuStrip.Items.AddRange(
+        [
             dummyItem
-        });
+        ]);
         autoHeaderContextMenuStrip.Name = "autoHeaderContextMenuStrip";
         autoHeaderContextMenuStrip.Size = new System.Drawing.Size(181, 26);
         autoHeaderContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(autoHeaderContextMenuStrip_Opening);
         dummyItem.Name = "dummyItem";
         dummyItem.Size = new System.Drawing.Size(180, 22);
         dummyItem.Text = "toolStripMenuItem1";
-        autoViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[4]
-        {
+        autoViewContextMenuStrip.Items.AddRange(
+        [
             miViewMode,
             miArrange,
             miGroup,
             miStack
-        });
+        ]);
         autoViewContextMenuStrip.Name = "autoViewContextMenuStrip";
         autoViewContextMenuStrip.Size = new System.Drawing.Size(133, 92);
         autoViewContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(autoViewContextMenuStrip_Opening);
-        miViewMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[3]
-        {
+        miViewMode.DropDownItems.AddRange(
+        [
             miViewThumbs,
             miViewTiles,
             miViewDetails
-        });
+        ]);
         miViewMode.Name = "miViewMode";
         miViewMode.Size = new System.Drawing.Size(132, 22);
         miViewMode.Text = "View";

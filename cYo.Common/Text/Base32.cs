@@ -4,8 +4,8 @@ namespace cYo.Common.Text;
 
 public static class Base32
 {
-    private static readonly char[] Base32Chars = new char[32]
-    {
+    private static readonly char[] Base32Chars =
+    [
         'A',
         'B',
         'C',
@@ -38,7 +38,7 @@ public static class Base32
         '5',
         '6',
         '7'
-    };
+    ];
 
     public static string ToBase32String(byte[] inArray)
     {
@@ -49,7 +49,7 @@ public static class Base32
         int num = inArray.Length;
         int num2 = num / 5;
         int num3 = num - 5 * num2;
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         int num4 = 0;
         for (int i = 0; i < num2; i++)
         {

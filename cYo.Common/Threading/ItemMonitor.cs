@@ -53,20 +53,12 @@ public struct ItemMonitor : IDisposable
 
     public override bool Equals(object obj)
     {
-        if (obj == null || obj.GetType() != typeof(ItemMonitor))
-        {
-            return false;
-        }
-        return lockItem == ((ItemMonitor)obj).lockItem;
+        return obj == null || obj.GetType() != typeof(ItemMonitor) ? false : lockItem == ((ItemMonitor)obj).lockItem;
     }
 
     public override int GetHashCode()
     {
-        if (lockItem != null)
-        {
-            return lockItem.GetHashCode();
-        }
-        return 0;
+        return lockItem != null ? lockItem.GetHashCode() : 0;
     }
 
     public static bool operator ==(ItemMonitor a, ItemMonitor b)

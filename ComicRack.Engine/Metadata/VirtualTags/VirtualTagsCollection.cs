@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IdentityModel.Tokens;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
-using cYo.Common.Collections;
-using cYo.Projects.ComicRack.Engine.IO.Provider;
 
 namespace cYo.Projects.ComicRack.Engine;
 
 public class VirtualTagsCollection : Dictionary<int, IVirtualTag>
 {
-    private static readonly Lazy<VirtualTagsCollection> instance = new Lazy<VirtualTagsCollection>(() => new VirtualTagsCollection(Init()));
+    private static readonly Lazy<VirtualTagsCollection> instance = new(() => new VirtualTagsCollection(Init()));
     private static IVirtualTagSettings Settings;
 
     public static event EventHandler TagsRefresh;
@@ -43,10 +32,7 @@ public class VirtualTagsCollection : Dictionary<int, IVirtualTag>
 
     public IVirtualTag GetValue(int i)
     {
-        if (Tags.TryGetValue(i, out var tag))
-            return tag;
-
-        return new VirtualTag();
+        return Tags.TryGetValue(i, out var tag) ? tag : new VirtualTag();
     }
 
     private static Dictionary<int, IVirtualTag> InitDictionary(IEnumerable<IVirtualTag> list) => list.ToDictionary(v => v.ID, v => v);

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Windows.Forms;
 
@@ -15,7 +9,7 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public class ComicBookMetadataManager
 {
-    private static readonly Lazy<ComicBookMetadataManager> manager = new Lazy<ComicBookMetadataManager>(() => new ComicBookMetadataManager());
+    private static readonly Lazy<ComicBookMetadataManager> manager = new(() => new ComicBookMetadataManager());
 
     private readonly ComicBookMetadataCollection collection;
     public static ComicBookMetadataCollection Collection => manager.Value?.collection;
@@ -40,7 +34,7 @@ public class ComicBookMetadataManager
             if (Collection.Any(m => m.Id == column.Id))
                 return;
 
-            ComicBookMetadata metadata = new ComicBookMetadata(column.Id, column.Name, column.ColumnSorter, column.ColumnGrouper);
+            ComicBookMetadata metadata = new(column.Id, column.Name, column.ColumnSorter, column.ColumnGrouper);
             Collection.Add(metadata);
         }
     }
@@ -52,10 +46,9 @@ public class ComicBookMetadataManager
     {
         var columns = ConvertKeyToMetadata(sortKey);
         var comparers = columns.Where(m => m != null);
-        if (comparers?.FirstOrDefault()?.GetComparer<T>() == null)
-            return null;
-
-        return comparers.Where(m => m.GetComparer<T>() != null).Select(m => m.GetComparer<T>());
+        return comparers?.FirstOrDefault()?.GetComparer<T>() == null
+            ? null
+            : comparers.Where(m => m.GetComparer<T>() != null).Select(m => m.GetComparer<T>());
     }
 
     // Gets the first generic comparer for the given comma separated sort key
@@ -65,7 +58,7 @@ public class ComicBookMetadataManager
     private static IComparer<T>[] GetGenericChainedComparer<T>(string sortKey)
     {
         var comparer = GetGenericComparers<T>(sortKey);
-        return comparer is null ? null : comparer.TakeWhile(x => x != null).ToArray();
+        return comparer?.TakeWhile(x => x != null).ToArray();
     }
     #endregion
 
@@ -91,10 +84,9 @@ public class ComicBookMetadataManager
     {
         var columns = ConvertKeyToMetadata(sortKey);
         var groupers = columns.Where(m => m != null);
-        if (groupers?.FirstOrDefault()?.GetGrouper<T>() == null)
-            return null;
-
-        return groupers?.Where(m => m.GetGrouper<T>() != null).Select(m => m.GetGrouper<T>());
+        return groupers?.FirstOrDefault()?.GetGrouper<T>() == null
+            ? null
+            : (groupers?.Where(m => m.GetGrouper<T>() != null).Select(m => m.GetGrouper<T>()));
     }
 
     // Gets the first generic grouper for the given comma separated sort key

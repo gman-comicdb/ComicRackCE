@@ -23,21 +23,19 @@ public static class LocalizeUtility
 
     public static void Localize(TR tr, ToolStripItem tsi)
     {
-        if (tsi is ToolStripTextBox || tsi is ToolStripComboBox)
+        if (tsi is ToolStripTextBox or ToolStripComboBox)
         {
             return;
         }
         bool flag = tsi.ToolTipText != tsi.Text;
         tsi.Text = tr[tsi.Name, tsi.Text];
-        tsi.ToolTipText = (flag ? tr[tsi.Name + ".Tooltip", tsi.ToolTipText] : tsi.Text);
-        ToolStripDropDownItem toolStripDropDownItem = tsi as ToolStripDropDownItem;
-        if (toolStripDropDownItem != null && toolStripDropDownItem.HasDropDownItems)
+        tsi.ToolTipText = flag ? tr[tsi.Name + ".Tooltip", tsi.ToolTipText] : tsi.Text;
+        if (tsi is ToolStripDropDownItem toolStripDropDownItem && toolStripDropDownItem.HasDropDownItems)
         {
             Localize(tr, toolStripDropDownItem.DropDownItems);
             return;
         }
-        ToolStripDropDownButton toolStripDropDownButton = tsi as ToolStripDropDownButton;
-        if (toolStripDropDownButton != null && toolStripDropDownButton.HasDropDownItems)
+        if (tsi is ToolStripDropDownButton toolStripDropDownButton && toolStripDropDownButton.HasDropDownItems)
         {
             Localize(tr, toolStripDropDownButton.DropDownItems);
         }
@@ -50,7 +48,7 @@ public static class LocalizeUtility
 
     public static void Localize(TR tr, Control c)
     {
-        if (c is Label || c is GroupBox || c is CollapsibleGroupBox || c is ButtonBase || c is Form)
+        if (c is Label or GroupBox or CollapsibleGroupBox or ButtonBase or Form)
         {
             c.Text = tr[c.Name, c.Text];
         }
@@ -75,9 +73,8 @@ public static class LocalizeUtility
                 item.ToolTipText = tr[item.Name + ".Tooltip", item.ToolTipText];
             }
         }
-        else if (c is ListView)
+        else if (c is ListView listView)
         {
-            ListView listView = (ListView)c;
             foreach (ColumnHeader column in listView.Columns)
             {
                 column.Text = tr["col" + column.Text, column.Text];
@@ -87,9 +84,8 @@ public static class LocalizeUtility
                 group.Header = tr[group.Name, group.Header];
             }
         }
-        else if (c is DataGridView)
+        else if (c is DataGridView dataGridView)
         {
-            DataGridView dataGridView = (DataGridView)c;
             foreach (DataGridViewColumn column2 in dataGridView.Columns)
             {
                 column2.HeaderText = tr[column2.Name, column2.HeaderText];
@@ -97,7 +93,7 @@ public static class LocalizeUtility
         }
         foreach (Control control in c.Controls)
         {
-            if (!(control is UserControl))
+            if (control is not UserControl)
             {
                 Localize(tr, control);
             }
@@ -154,10 +150,6 @@ public static class LocalizeUtility
     {
         FieldInfo field = enumType.GetField(name);
         DescriptionAttribute descriptionAttribute = field.GetCustomAttributes(typeof(DescriptionAttribute), inherit: false).Cast<DescriptionAttribute>().FirstOrDefault();
-        if (descriptionAttribute != null)
-        {
-            return descriptionAttribute.Description;
-        }
-        return name;
+        return descriptionAttribute != null ? descriptionAttribute.Description : name;
     }
 }

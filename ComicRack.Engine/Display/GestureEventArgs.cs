@@ -10,47 +10,19 @@ public class GestureEventArgs : EventArgs
 
     public GestureType Gesture => gesture;
 
-    public ContentAlignment Area
-    {
-        get;
-        set;
-    }
+    public ContentAlignment Area { get; set; }
 
-    public Rectangle AreaBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle AreaBounds { get; set; }
 
-    public Point Location
-    {
-        get;
-        set;
-    }
+    public Point Location { get; set; }
 
-    public MouseButtons MouseButton
-    {
-        get;
-        set;
-    }
+    public MouseButtons MouseButton { get; set; }
 
-    public bool Double
-    {
-        get;
-        set;
-    }
+    public bool Double { get; set; }
 
-    public bool Handled
-    {
-        get;
-        set;
-    }
+    public bool Handled { get; set; }
 
-    public bool IsTouch
-    {
-        get;
-        set;
-    }
+    public bool IsTouch { get; set; }
 
     public GestureEventArgs(GestureType gesture)
     {

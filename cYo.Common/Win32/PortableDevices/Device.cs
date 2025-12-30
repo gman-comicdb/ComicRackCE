@@ -16,22 +16,14 @@ public class Device
 
     private PortableDeviceApi.IPortableDeviceContent portableContent;
 
-    public string Id
-    {
-        get;
-        private set;
-    }
+    public string Id { get; private set; }
 
     public string Name
     {
         get
         {
             string stringValue = GetStringValue(PortableDeviceApi.WPD_DEVICE_FRIENDLY_NAME);
-            if (!string.IsNullOrEmpty(stringValue))
-            {
-                return stringValue;
-            }
-            return Model;
+            return !string.IsNullOrEmpty(stringValue) ? stringValue : Model;
         }
     }
 
@@ -72,11 +64,8 @@ public class Device
 
     public void Disconnect()
     {
-        if (portableDevice != null)
-        {
-            portableDevice.Close();
-            portableDevice = null;
-        }
+        portableDevice?.Close();
+        portableDevice = null;
     }
 
     public IEnumerable<DeviceItem> EnumerateItems(DeviceFolder parent)
@@ -105,7 +94,7 @@ public class Device
             portableContent.Transfer(out var ppResources);
             ppResources.GetStream(file.Id, ref PortableDeviceApi.WPD_RESOURCE_DEFAULT, 0u, ref pdwOptimalBufferSize, out var ppStream);
             byte[] array = new byte[pdwOptimalBufferSize];
-            MemoryStream memoryStream = new MemoryStream();
+            MemoryStream memoryStream = new();
             uint pcbRead;
             do
             {
@@ -142,7 +131,7 @@ public class Device
         DeviceItem deviceItem = folder.Items.FirstOrDefault((DeviceItem item) => item.Name == fileName);
         if (deviceItem != null)
         {
-            if (!(deviceItem is DeviceFile))
+            if (deviceItem is not DeviceFile)
             {
                 throw new IOException("Can not create file with same name as folder");
             }
@@ -158,28 +147,14 @@ public class Device
         portableDeviceValues.SetStringValue(ref PortableDeviceApi.WPD_OBJECT_NAME, fileNameWithoutExtension);
         portableDeviceValues.SetStringValue(ref PortableDeviceApi.WPD_OBJECT_ORIGINAL_FILE_NAME, fileName);
         portableDeviceValues.SetGuidValue(ref PortableDeviceApi.WPD_OBJECT_CONTENT_TYPE, ref PortableDeviceApi.WPD_CONTENT_TYPE_GENERIC_FILE);
-        Guid Value;
-        switch (text)
+        var Value = text switch
         {
-            case ".xml":
-                Value = PortableDeviceApi.WPD_OBJECT_FORMAT_XML;
-                break;
-            case ".jpg":
-            case ".jpeg":
-            case ".jiff":
-                Value = PortableDeviceApi.WPD_OBJECT_FORMAT_JFIF;
-                break;
-            case ".txt":
-                Value = PortableDeviceApi.WPD_OBJECT_FORMAT_TEXT;
-                break;
-            case ".tif":
-            case ".tiff":
-                Value = PortableDeviceApi.WPD_OBJECT_FORMAT_TIFF;
-                break;
-            default:
-                Value = PortableDeviceApi.WPD_OBJECT_FORMAT_UNSPECIFIED;
-                break;
-        }
+            ".xml" => PortableDeviceApi.WPD_OBJECT_FORMAT_XML,
+            ".jpg" or ".jpeg" or ".jiff" => PortableDeviceApi.WPD_OBJECT_FORMAT_JFIF,
+            ".txt" => PortableDeviceApi.WPD_OBJECT_FORMAT_TEXT,
+            ".tif" or ".tiff" => PortableDeviceApi.WPD_OBJECT_FORMAT_TIFF,
+            _ => PortableDeviceApi.WPD_OBJECT_FORMAT_UNSPECIFIED,
+        };
         portableDeviceValues.SetGuidValue(ref PortableDeviceApi.WPD_OBJECT_FORMAT, ref Value);
         uint pdwOptimalWriteBufferSize = 0u;
         string ppszCookie = null;

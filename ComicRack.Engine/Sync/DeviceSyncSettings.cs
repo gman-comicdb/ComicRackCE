@@ -35,75 +35,39 @@ public class DeviceSyncSettings
     {
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool OptimizePortable
-        {
-            get;
-            set;
-        }
+        public bool OptimizePortable { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool OnlyUnread
-        {
-            get;
-            set;
-        }
+        public bool OnlyUnread { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool KeepLastRead
-        {
-            get;
-            set;
-        }
+        public bool KeepLastRead { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool OnlyChecked
-        {
-            get;
-            set;
-        }
+        public bool OnlyChecked { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool Limit
-        {
-            get;
-            set;
-        }
+        public bool Limit { get; set; }
 
         [XmlAttribute]
         [DefaultValue(true)]
-        public bool Sort
-        {
-            get;
-            set;
-        }
+        public bool Sort { get; set; }
 
         [XmlAttribute]
         [DefaultValue(50)]
-        public int LimitValue
-        {
-            get;
-            set;
-        }
+        public int LimitValue { get; set; }
 
         [XmlAttribute]
         [DefaultValue(LimitType.Books)]
-        public LimitType LimitValueType
-        {
-            get;
-            set;
-        }
+        public LimitType LimitValueType { get; set; }
 
         [XmlAttribute]
         [DefaultValue(ListSort.Series)]
-        public ListSort ListSortType
-        {
-            get;
-            set;
-        }
+        public ListSort ListSortType { get; set; }
 
         public SharedListSettings()
         {
@@ -131,11 +95,7 @@ public class DeviceSyncSettings
     public class SharedList : SharedListSettings
     {
         [XmlAttribute]
-        public Guid ListId
-        {
-            get;
-            set;
-        }
+        public Guid ListId { get; set; }
 
         public SharedList()
         {
@@ -157,18 +117,10 @@ public class DeviceSyncSettings
     public const string ClipboardFormat = "DeviceSyncSettings";
 
     [XmlAttribute("Name")]
-    public string DeviceName
-    {
-        get;
-        set;
-    }
+    public string DeviceName { get; set; }
 
     [XmlAttribute("Key")]
-    public string DeviceKey
-    {
-        get;
-        set;
-    }
+    public string DeviceKey { get; set; }
 
     public SmartList<SharedList> Lists
     {
@@ -204,11 +156,6 @@ public class DeviceSyncSettings
 
     public override bool Equals(object obj)
     {
-        DeviceSyncSettings deviceSyncSettings = obj as DeviceSyncSettings;
-        if (deviceSyncSettings != null)
-        {
-            return deviceSyncSettings.DeviceKey == DeviceKey;
-        }
-        return false;
+        return obj is DeviceSyncSettings deviceSyncSettings ? deviceSyncSettings.DeviceKey == DeviceKey : false;
     }
 }

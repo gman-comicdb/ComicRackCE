@@ -6,14 +6,8 @@ public class Bold : Span
 {
     public override FontStyle FontStyle
     {
-        get
-        {
-            return base.FontStyle | FontStyle.Bold;
-        }
-        set
-        {
-            base.FontStyle = value;
-        }
+        get => base.FontStyle | FontStyle.Bold;
+        set => base.FontStyle = value;
     }
 
     public Bold()

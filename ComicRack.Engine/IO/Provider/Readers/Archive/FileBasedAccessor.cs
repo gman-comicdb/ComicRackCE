@@ -10,11 +10,7 @@ public abstract class FileBasedAccessor : IComicAccessor
 
     protected bool HasSignature => signature != null;
 
-    public int Format
-    {
-        get;
-        private set;
-    }
+    public int Format { get; private set; }
 
     public FileBasedAccessor(int format)
     {

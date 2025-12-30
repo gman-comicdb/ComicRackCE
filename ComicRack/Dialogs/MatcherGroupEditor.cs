@@ -12,7 +12,6 @@ using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -75,7 +74,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
     {
         miNewGroup.Enabled = level <= 5;
         ToolStripMenuItem toolStripMenuItem = miDelete;
-        bool enabled = (miCut.Enabled = matchers.Count > 1);
+        bool enabled = miCut.Enabled = matchers.Count > 1;
         toolStripMenuItem.Enabled = enabled;
         miPaste.Enabled = Clipboard.ContainsData(ComicBookMatcher.ClipboardFormat);
         miMoveDown.Enabled = matchers.IndexOf(currentComicBookMatcher) < matchers.Count - 1;
@@ -162,7 +161,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
 
     private void cbMatchMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        currentComicBookMatcher.MatcherMode = ((cbMatchMode.SelectedIndex != 0) ? MatcherMode.Or : MatcherMode.And);
+        currentComicBookMatcher.MatcherMode = (cbMatchMode.SelectedIndex != 0) ? MatcherMode.Or : MatcherMode.And;
     }
 
     private void chkNot_CheckedChanged(object sender, EventArgs e)
@@ -175,7 +174,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
         int dialogEditorOffset = DialogEditorOffset;
         currentComicBookMatcher.Collapsed = !chkExpanded.Checked;
         matcherControls.Visible = chkExpanded.Checked;
-        labelSubRules.Text = (chkExpanded.Checked ? rulesText : Description);
+        labelSubRules.Text = chkExpanded.Checked ? rulesText : Description;
         DialogEditorOffset = dialogEditorOffset;
     }
 
@@ -186,14 +185,14 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
         {
             AddMatcherControl(matcher);
         }
-        labelSubRules.Text = (chkExpanded.Checked ? rulesText : Description);
+        labelSubRules.Text = chkExpanded.Checked ? rulesText : Description;
     }
 
     public void AddMatcherControl(ComicBookMatcher icbm)
     {
-        Size size3 = (matcherControls.MinimumSize = (matcherControls.MaximumSize = new Size(base.Width - matcherControls.Left, 0)));
+        Size size3 = matcherControls.MinimumSize = matcherControls.MaximumSize = new Size(base.Width - matcherControls.Left, 0);
         int width = matcherControls.Width;
-        Control control = ((icbm is ComicBookGroupMatcher) ? CreateGroupMatchPanel(icbm as ComicBookGroupMatcher, width) : CreateMatchPanel(icbm as ComicBookValueMatcher, width));
+        Control control = (icbm is ComicBookGroupMatcher) ? CreateGroupMatchPanel(icbm as ComicBookGroupMatcher, width) : CreateMatchPanel(icbm as ComicBookValueMatcher, width);
         matcherControls.Controls.Add(control);
         matcherControls.Controls.SetChildIndex(control, currentComicBookMatcher.Matchers.IndexOf(icbm));
         matcherControls.AutoTabIndex();
@@ -213,7 +212,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
     {
         currentComicBookMatcher = comicBookMatcher;
         chkNot.Checked = comicBookMatcher.Not;
-        cbMatchMode.SelectedIndex = ((comicBookMatcher.MatcherMode != 0) ? 1 : 0);
+        cbMatchMode.SelectedIndex = (comicBookMatcher.MatcherMode != 0) ? 1 : 0;
         chkExpanded.Checked = !comicBookMatcher.Collapsed;
     }
 
@@ -252,8 +251,7 @@ public partial class MatcherGroupEditor : UserControlEx, IMatcherEditor
 
     public void PasteClipboard()
     {
-        ComicBookMatcher comicBookMatcher = Clipboard.GetData(ComicBookMatcher.ClipboardFormat) as ComicBookMatcher;
-        if (comicBookMatcher != null && (!(comicBookMatcher is ComicBookGroupMatcher) || level <= 5))
+        if (Clipboard.GetData(ComicBookMatcher.ClipboardFormat) is ComicBookMatcher comicBookMatcher && (comicBookMatcher is not ComicBookGroupMatcher || level <= 5))
         {
             matchers.Insert(matchers.IndexOf(currentComicBookMatcher) + 1, comicBookMatcher);
         }

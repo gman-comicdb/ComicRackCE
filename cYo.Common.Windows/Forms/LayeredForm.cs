@@ -110,10 +110,10 @@ public partial class LayeredForm : FormEx
             {
                 intPtr2 = bitmap.GetHbitmap(Color.FromArgb(0));
                 hObject = SelectObject(intPtr, intPtr2);
-                Size psize = new Size(bitmap.Width, bitmap.Height);
-                Point pprSrc = new Point(0, 0);
-                Point pptDst = new Point(form.Left, form.Top);
-                BLENDFUNCTION pblend = default(BLENDFUNCTION);
+                Size psize = new(bitmap.Width, bitmap.Height);
+                Point pprSrc = new(0, 0);
+                Point pptDst = new(form.Left, form.Top);
+                BLENDFUNCTION pblend = default;
                 pblend.BlendOp = 0;
                 pblend.BlendFlags = 0;
                 pblend.SourceConstantAlpha = (byte)alpha;
@@ -139,10 +139,7 @@ public partial class LayeredForm : FormEx
 
     public Bitmap Surface
     {
-        get
-        {
-            return surface;
-        }
+        get => surface;
         set
         {
             if (surface != value)
@@ -157,10 +154,7 @@ public partial class LayeredForm : FormEx
 
     public int Alpha
     {
-        get
-        {
-            return alpha;
-        }
+        get => alpha;
         set
         {
             if (alpha != value)
@@ -201,7 +195,7 @@ public partial class LayeredForm : FormEx
             {
                 return;
             }
-            using (Bitmap bitmap = new Bitmap(base.Width, base.Height))
+            using (Bitmap bitmap = new(base.Width, base.Height))
             {
                 using (Graphics graphics = Graphics.FromImage(bitmap))
                 {

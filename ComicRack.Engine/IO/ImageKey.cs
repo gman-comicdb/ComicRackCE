@@ -37,18 +37,8 @@ public abstract class ImageKey
     [XmlIgnore]
     public object Source
     {
-        get
-        {
-            if (source != null)
-            {
-                return source.Target;
-            }
-            return null;
-        }
-        set
-        {
-            source = new WeakReference(value);
-        }
+        get => source?.Target;
+        set => source = new WeakReference(value);
     }
 
     public ImageRotation Rotation { get => rotation; set => rotation = value; }
@@ -81,11 +71,7 @@ public abstract class ImageKey
 
     public bool IsSameFile(string location, long size, DateTime modified)
     {
-        if (this.location == location && this.size == size)
-        {
-            return this.modified == modified;
-        }
-        return false;
+        return this.location == location && this.size == size ? this.modified == modified : false;
     }
 
     protected virtual int CreateHashCode()
@@ -106,16 +92,11 @@ public abstract class ImageKey
 
     public override bool Equals(object obj)
     {
-        ImageKey imageKey = obj as ImageKey;
-        if (imageKey == null)
-        {
-            return false;
-        }
-        if (IsSameFile(imageKey.location, imageKey.size, imageKey.modified) && index == imageKey.index)
-        {
-            return rotation == imageKey.rotation;
-        }
-        return false;
+        return obj is not ImageKey imageKey
+            ? false
+            : IsSameFile(imageKey.location, imageKey.size, imageKey.modified) && index == imageKey.index
+            ? rotation == imageKey.rotation
+            : false;
     }
 
     public override string ToString()

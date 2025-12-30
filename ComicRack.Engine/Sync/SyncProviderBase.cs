@@ -24,21 +24,13 @@ public abstract class SyncProviderBase : ISyncProvider
 {
     public class SyncReadingList
     {
-        private readonly List<Guid> books = new List<Guid>();
+        private readonly List<Guid> books = new();
 
         [XmlAttribute]
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
         [DefaultValue("")]
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
 
         [XmlArrayItem("Id")]
         public List<Guid> Books => books;
@@ -58,19 +50,11 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public class SyncInformation
     {
-        private readonly List<SyncReadingList> lists = new List<SyncReadingList>();
+        private readonly List<SyncReadingList> lists = new();
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public int Version
-        {
-            get;
-            set;
-        }
+        public int Version { get; set; }
 
         [XmlArrayItem("List")]
         public List<SyncReadingList> Lists => lists;
@@ -94,23 +78,15 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public const string SyncFormatExtension = ".cbp";
 
-    private readonly ProcessingQueue<ComicBook> writeQueue = new ProcessingQueue<ComicBook>("Write books to Device");
+    private readonly ProcessingQueue<ComicBook> writeQueue = new("Write books to Device");
 
     private Exception pendingException;
 
-    private readonly object deviceAccessLock = new object();
+    private readonly object deviceAccessLock = new();
 
-    protected ComicBookCollection BooksOnDevice
-    {
-        get;
-        set;
-    }
+    protected ComicBookCollection BooksOnDevice { get; set; }
 
-    public DeviceInfo Device
-    {
-        get;
-        private set;
-    }
+    public DeviceInfo Device { get; private set; }
 
     protected abstract void OnStart();
 
@@ -135,7 +111,7 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public virtual IEnumerable<ComicBook> GetBooks()
     {
-        ComicBookCollection comicBookCollection = new ComicBookCollection();
+        ComicBookCollection comicBookCollection = new();
         string[] array = GetFileList().Where(IsValidSyncFile).ToArray();
         for (int i = 0; i < array.Length; i++)
         {
@@ -224,10 +200,7 @@ public abstract class SyncProviderBase : ISyncProvider
                 {
                     WriteBookInfo(book, Path.GetFileName(existing.FilePath));
                 }
-                if (completedCallback != null)
-                {
-                    completedCallback();
-                }
+                completedCallback?.Invoke();
             });
             return;
         }
@@ -240,7 +213,7 @@ public abstract class SyncProviderBase : ISyncProvider
         {
             Thread.Sleep(1000);
         }
-        ComicExporter export = new ComicExporter(ListExtensions.AsEnumerable<ComicBook>(book), portableFormat, 0);
+        ComicExporter export = new(ListExtensions.AsEnumerable<ComicBook>(book), portableFormat, 0);
         export.Progress += delegate
         {
             if (writeQueue.Count == 0 && workingCallback != null)
@@ -288,10 +261,7 @@ public abstract class SyncProviderBase : ISyncProvider
                         book.FilePath = uniqueFileName;
                         WriteBookInfo(book, uniqueFileName);
                         BooksOnDevice.Add(book);
-                        if (completedCallback != null)
-                        {
-                            completedCallback();
-                        }
+                        completedCallback?.Invoke();
                     }
                 }
                 catch (Exception ex3)
@@ -333,12 +303,12 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public void SetLists(IEnumerable<ComicIdListItem> lists)
     {
-        SyncInformation syncInformation = new SyncInformation();
+        SyncInformation syncInformation = new();
         syncInformation.Lists.AddRange(from cli in lists
                                        select new SyncReadingList(cli) into cli
                                        where cli.Books.Count > 0
                                        select cli);
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             XmlUtility.Store(memoryStream, syncInformation, compressed: false);
             memoryStream.Position = 0L;
@@ -354,7 +324,7 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public void Completed()
     {
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             using (Stream stream = ReadFile(MarkerFile))
             {
@@ -369,7 +339,7 @@ public abstract class SyncProviderBase : ISyncProvider
     private void WriteBookInfo(ComicBook book, string fileName)
     {
         book.ComicInfoIsDirty = false;
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             book.SerializeFull(memoryStream);
             memoryStream.Position = 0L;
@@ -379,11 +349,9 @@ public abstract class SyncProviderBase : ISyncProvider
 
     protected static bool IsValidSyncFile(string file)
     {
-        if (!string.IsNullOrEmpty(file))
-        {
-            return string.Equals(Path.GetExtension(file), SyncFormatExtension, StringComparison.OrdinalIgnoreCase);
-        }
-        return false;
+        return !string.IsNullOrEmpty(file)
+            ? string.Equals(Path.GetExtension(file), SyncFormatExtension, StringComparison.OrdinalIgnoreCase)
+            : false;
     }
 
     protected ComicBook DeserializeBook(string comicPath, Stream inputStream = null)
@@ -423,11 +391,7 @@ public abstract class SyncProviderBase : ISyncProvider
         {
             return false;
         }
-        if (deviceKey != null)
-        {
-            return Device.Key == deviceKey;
-        }
-        return true;
+        return deviceKey != null ? Device.Key == deviceKey : true;
     }
 
     private string GetUniqueFileName(string baseName)
@@ -466,11 +430,9 @@ public abstract class SyncProviderBase : ISyncProvider
 
     public static bool ContentIsSame(ComicBook a, ComicBook b)
     {
-        if (a.IsSameContent(b, withPages: false) && a.Rating == b.Rating && a.OpenedCount == b.OpenedCount && a.LastPageRead == b.LastPageRead && a.OpenedTime == b.OpenedTime && a.AddedTime == b.AddedTime && a.ReleasedTime == b.ReleasedTime)
-        {
-            return PagesAreSame(a, b, withBookmarks: true);
-        }
-        return false;
+        return a.IsSameContent(b, withPages: false) && a.Rating == b.Rating && a.OpenedCount == b.OpenedCount && a.LastPageRead == b.LastPageRead && a.OpenedTime == b.OpenedTime && a.AddedTime == b.AddedTime && a.ReleasedTime == b.ReleasedTime
+            ? PagesAreSame(a, b, withBookmarks: true)
+            : false;
     }
 
     public static string MakeSidecar(string fileName)
@@ -481,12 +443,12 @@ public abstract class SyncProviderBase : ISyncProvider
     public static ExportSetting GetPortableFormat(DeviceInfo device, bool optimized)
     {
         bool flag = device.Capabilites.HasFlag(DeviceCapabilites.WebP);
-        ExportSetting exportSetting = new ExportSetting
+        ExportSetting exportSetting = new()
         {
             Naming = ExportNaming.Caption,
             Target = ExportTarget.NewFolder,
             FormatId = 2,
-            PageType = ((!flag || !EngineConfiguration.Default.SyncWebP) ? StoragePageType.Jpeg : StoragePageType.Webp),
+            PageType = (!flag || !EngineConfiguration.Default.SyncWebP) ? StoragePageType.Jpeg : StoragePageType.Webp,
             EmbedComicInfo = false,
             AddKeyToPageInfo = true,
             Overwrite = true,
@@ -502,7 +464,7 @@ public abstract class SyncProviderBase : ISyncProvider
             exportSetting.DontEnlarge = true;
             if (flag)
             {
-                exportSetting.PageType = ((!EngineConfiguration.Default.SyncOptimizeWebP) ? StoragePageType.Jpeg : StoragePageType.Webp);
+                exportSetting.PageType = (!EngineConfiguration.Default.SyncOptimizeWebP) ? StoragePageType.Jpeg : StoragePageType.Webp;
             }
             if (EngineConfiguration.Default.SyncOptimizeSharpen)
             {

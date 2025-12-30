@@ -14,14 +14,7 @@ public class UIComicPageControl : ComicPageControl
 {
     public Control Plugin
     {
-        get
-        {
-            if (base.Controls.Count != 0)
-            {
-                return base.Controls[0];
-            }
-            return null;
-        }
+        get => base.Controls.Count != 0 ? base.Controls[0] : null;
         set
         {
             if (Plugin != value)
@@ -39,11 +32,7 @@ public class UIComicPageControl : ComicPageControl
         }
     }
 
-    public Func<Control> CreatePlugin
-    {
-        get;
-        set;
-    }
+    public Func<Control> CreatePlugin { get; set; }
 
     public UIComicPageControl(Control c)
     {
@@ -77,7 +66,7 @@ public class UIComicPageControl : ComicPageControl
     {
         if (CreatePlugin != null && m.Msg == 256)
         {
-            KeyEventArgs keyEventArgs = new KeyEventArgs((Keys)((int)(long)m.WParam | (int)Control.ModifierKeys));
+            KeyEventArgs keyEventArgs = new((Keys)((int)(long)m.WParam | (int)Control.ModifierKeys));
             Trace.WriteLine(keyEventArgs.KeyCode);
             if (keyEventArgs.KeyCode == Keys.R && Control.ModifierKeys == (Keys.Shift | Keys.Control | Keys.Alt))
             {

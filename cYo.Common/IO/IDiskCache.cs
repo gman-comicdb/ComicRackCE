@@ -4,27 +4,13 @@ namespace cYo.Common.IO;
 
 public interface IDiskCache<K, T> : IDisposable
 {
-    bool Enabled
-    {
-        get;
-        set;
-    }
+    bool Enabled { get; set; }
 
-    int CacheSizeMB
-    {
-        get;
-        set;
-    }
+    int CacheSizeMB { get; set; }
 
-    long Size
-    {
-        get;
-    }
+    long Size { get; }
 
-    int Count
-    {
-        get;
-    }
+    int Count { get; }
 
     event EventHandler SizeChanged;
 

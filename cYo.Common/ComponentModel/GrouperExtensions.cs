@@ -13,9 +13,8 @@ public static class GrouperExtensions
         {
             return grouper;
         }
-        List<IGrouper<T>> list = new List<IGrouper<T>>();
-        CompoundSingleGrouper<T> compoundSingleGrouper = itemGrouper as CompoundSingleGrouper<T>;
-        if (compoundSingleGrouper == null)
+        List<IGrouper<T>> list = new();
+        if (itemGrouper is not CompoundSingleGrouper<T> compoundSingleGrouper)
         {
             list.Add(itemGrouper);
         }
@@ -31,11 +30,7 @@ public static class GrouperExtensions
         {
             list.Add(grouper);
         }
-        if (list.Count != 0)
-        {
-            return new CompoundSingleGrouper<T>(list.Take(max).ToArray());
-        }
-        return null;
+        return list.Count != 0 ? new CompoundSingleGrouper<T>(list.Take(max).ToArray()) : (IGrouper<T>)null;
     }
 
     public static bool Contains<T>(this IGrouper<T> itemGrouper, IGrouper<T> grouper)
@@ -45,16 +40,9 @@ public static class GrouperExtensions
 
     public static IEnumerable<IGrouper<T>> GetGroupers<T>(this IGrouper<T> itemGrouper)
     {
-        if (itemGrouper == null)
-        {
-            return Enumerable.Empty<IGrouper<T>>();
-        }
-        CompoundSingleGrouper<T> compoundSingleGrouper = itemGrouper as CompoundSingleGrouper<T>;
-        if (compoundSingleGrouper == null)
-        {
-            return ListExtensions.AsEnumerable<IGrouper<T>>(itemGrouper);
-        }
-        return compoundSingleGrouper.Groupers;
+        return itemGrouper == null
+            ? []
+            : itemGrouper is not CompoundSingleGrouper<T> compoundSingleGrouper ? ListExtensions.AsEnumerable<IGrouper<T>>(itemGrouper) : compoundSingleGrouper.Groupers;
     }
 
     public static IGrouper<T> First<T>(this IGrouper<T> itemGrouper)

@@ -6,59 +6,23 @@ namespace cYo.Common.Drawing;
 
 public class TextLine : DisposableObject
 {
-    public bool Separator
-    {
-        get;
-        set;
-    }
+    public bool Separator { get; set; }
 
-    public string Text
-    {
-        get;
-        set;
-    }
+    public string Text { get; set; }
 
-    public Color ForeColor
-    {
-        get;
-        set;
-    }
+    public Color ForeColor { get; set; }
 
-    public Font Font
-    {
-        get;
-        set;
-    }
+    public Font Font { get; set; }
 
-    public int BeforeSpacing
-    {
-        get;
-        set;
-    }
+    public int BeforeSpacing { get; set; }
 
-    public int AfterSpacing
-    {
-        get;
-        set;
-    }
+    public int AfterSpacing { get; set; }
 
-    public StringFormat Format
-    {
-        get;
-        set;
-    }
+    public StringFormat Format { get; set; }
 
-    public bool FontOwned
-    {
-        get;
-        set;
-    }
+    public bool FontOwned { get; set; }
 
-    public bool ScrollStart
-    {
-        get;
-        set;
-    }
+    public bool ScrollStart { get; set; }
 
     public TextLine(string text, Font font, Color foreColor, StringFormat format, int beforeSpacing = 0, int afterSpacing = 0)
     {
@@ -84,7 +48,7 @@ public class TextLine : DisposableObject
 
     private static StringFormat CreateStringFormat(StringAlignment align, StringFormatFlags options)
     {
-        StringFormat stringFormat = new StringFormat(options)
+        StringFormat stringFormat = new(options)
         {
             Alignment = align
         };
@@ -99,10 +63,7 @@ public class TextLine : DisposableObject
     {
         if (disposing)
         {
-            if (Format != null)
-            {
-                Format.Dispose();
-            }
+            Format?.Dispose();
             if (FontOwned && Font != null && !Font.IsSystemFont)
             {
                 Font.Dispose();

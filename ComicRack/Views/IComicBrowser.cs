@@ -8,21 +8,11 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public interface IComicBrowser : IGetBookList
 {
-    string SelectionInfo
-    {
-        get;
-    }
+    string SelectionInfo { get; }
 
-    ComicLibrary Library
-    {
-        get;
-    }
+    ComicLibrary Library { get; }
 
-    DisplayListConfig ListConfig
-    {
-        get;
-        set;
-    }
+    DisplayListConfig ListConfig { get; set; }
 
     bool SelectComic(ComicBook comic);
 

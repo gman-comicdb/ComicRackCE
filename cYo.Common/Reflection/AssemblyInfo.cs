@@ -11,11 +11,7 @@ public static class AssemblyInfo
             return null;
         }
         object[] customAttributes = ass.GetCustomAttributes(typeof(AssemblyCompanyAttribute), inherit: true);
-        if (customAttributes.Length == 0)
-        {
-            return null;
-        }
-        return ((AssemblyCompanyAttribute)customAttributes[0]).Company;
+        return customAttributes.Length == 0 ? null : ((AssemblyCompanyAttribute)customAttributes[0]).Company;
     }
 
     public static string GetProductName(Assembly ass)
@@ -25,10 +21,6 @@ public static class AssemblyInfo
             return null;
         }
         object[] customAttributes = ass.GetCustomAttributes(typeof(AssemblyProductAttribute), inherit: true);
-        if (customAttributes.Length == 0)
-        {
-            return null;
-        }
-        return ((AssemblyProductAttribute)customAttributes[0]).Product;
+        return customAttributes.Length == 0 ? null : ((AssemblyProductAttribute)customAttributes[0]).Product;
     }
 }

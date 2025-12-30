@@ -17,13 +17,9 @@ public class ItemViewGroupsStatus
         KeysCollapsed
     }
 
-    private HashSet<int> keys = new HashSet<int>();
+    private HashSet<int> keys = new();
 
-    public GroupStatus Status
-    {
-        get;
-        set;
-    }
+    public GroupStatus Status { get; set; }
 
     public HashSet<int> Keys => keys;
 
@@ -69,17 +65,13 @@ public class ItemViewGroupsStatus
 
     public bool IsCollapsed(string caption)
     {
-        switch (Status)
+        return Status switch
         {
-            default:
-                return true;
-            case GroupStatus.AllExpanded:
-                return false;
-            case GroupStatus.KeysCollapsed:
-                return keys.Contains(caption.GetHashCode());
-            case GroupStatus.KeysExpanded:
-                return !keys.Contains(caption.GetHashCode());
-        }
+            GroupStatus.AllExpanded => false,
+            GroupStatus.KeysCollapsed => keys.Contains(caption.GetHashCode()),
+            GroupStatus.KeysExpanded => !keys.Contains(caption.GetHashCode()),
+            _ => true,
+        };
     }
 
     public bool IsCollapsed(GroupHeaderInformation header)

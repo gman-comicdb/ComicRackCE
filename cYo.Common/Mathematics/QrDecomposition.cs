@@ -29,14 +29,14 @@ public class QrDecomposition
         get
         {
             int columns = QR.Columns;
-            Matrix matrix = new Matrix(columns, columns);
+            Matrix matrix = new(columns, columns);
             double[][] array = matrix.Array;
             double[][] array2 = QR.Array;
             for (int i = 0; i < columns; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    array[i][j] = ((i < j) ? array2[i][j] : ((i == j) ? Rdiag[i] : 0.0));
+                    array[i][j] = (i < j) ? array2[i][j] : ((i == j) ? Rdiag[i] : 0.0);
                 }
             }
             return matrix;
@@ -47,7 +47,7 @@ public class QrDecomposition
     {
         get
         {
-            Matrix matrix = new Matrix(QR.Rows, QR.Columns);
+            Matrix matrix = new(QR.Rows, QR.Columns);
             double[][] array = matrix.Array;
             double[][] array2 = QR.Array;
             for (int num = QR.Columns - 1; num >= 0; num--)

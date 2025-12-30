@@ -6,14 +6,8 @@ public class Strike : Span
 {
     public override FontStyle FontStyle
     {
-        get
-        {
-            return base.FontStyle | FontStyle.Strikeout;
-        }
-        set
-        {
-            base.FontStyle = value;
-        }
+        get => base.FontStyle | FontStyle.Strikeout;
+        set => base.FontStyle = value;
     }
 
     public Strike()

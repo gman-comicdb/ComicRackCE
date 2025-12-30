@@ -30,16 +30,9 @@ public class BodyBlock : FlowBlock, IResources
 
         public override bool Equals(object obj)
         {
-            FontKey fontKey = obj as FontKey;
-            if (fontKey == null)
-            {
-                return false;
-            }
-            if (fontKey.FontFamily == FontFamily && fontKey.FontSize == FontSize)
-            {
-                return fontKey.FontStyle == FontStyle;
-            }
-            return false;
+            return obj is not FontKey fontKey
+                ? false
+                : fontKey.FontFamily == FontFamily && fontKey.FontSize == FontSize ? fontKey.FontStyle == FontStyle : false;
         }
 
         public override int GetHashCode()
@@ -50,15 +43,13 @@ public class BodyBlock : FlowBlock, IResources
         }
     }
 
-    private readonly Dictionary<FontKey, Font> fontCache = new Dictionary<FontKey, Font>();
+    private readonly Dictionary<FontKey, Font> fontCache = new();
 
     private Font GetCachedFont(FontKey fontKey)
     {
-        if (fontCache.TryGetValue(fontKey, out var value))
-        {
-            return value;
-        }
-        return fontCache[fontKey] = new Font(fontKey.FontFamily, fontKey.FontSize, fontKey.FontStyle);
+        return fontCache.TryGetValue(fontKey, out var value)
+            ? value
+            : (fontCache[fontKey] = new Font(fontKey.FontFamily, fontKey.FontSize, fontKey.FontStyle));
     }
 
     public override Font GetFont(string fontFamily, float fontSize, FontStyle fontStyle)

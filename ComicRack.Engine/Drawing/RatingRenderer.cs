@@ -9,100 +9,46 @@ public class RatingRenderer
 {
     private Rectangle bounds;
 
-    public bool Fast
-    {
-        get;
-        set;
-    }
+    public bool Fast { get; set; }
 
-    public Image RatingImage
-    {
-        get;
-        set;
-    }
+    public Image RatingImage { get; set; }
 
-    public Color RatingTextColor
-    {
-        get;
-        set;
-    }
+    public Color RatingTextColor { get; set; }
 
-    public int MaximumRating
-    {
-        get;
-        set;
-    }
+    public int MaximumRating { get; set; }
 
     public Rectangle Bounds
     {
-        get
-        {
-            return bounds;
-        }
-        set
-        {
-            bounds = value;
-        }
+        get => bounds;
+        set => bounds = value;
     }
 
-    public bool VerticalAlignment
-    {
-        get;
-        set;
-    }
+    public bool VerticalAlignment { get; set; }
 
-    public RectangleScaleMode RatingScaleMode
-    {
-        get;
-        set;
-    }
+    public RectangleScaleMode RatingScaleMode { get; set; }
 
     public int X
     {
-        get
-        {
-            return bounds.X;
-        }
-        set
-        {
-            bounds.X = value;
-        }
+        get => bounds.X;
+        set => bounds.X = value;
     }
 
     public int Y
     {
-        get
-        {
-            return bounds.Y;
-        }
-        set
-        {
-            bounds.Y = value;
-        }
+        get => bounds.Y;
+        set => bounds.Y = value;
     }
 
     public int Height
     {
-        get
-        {
-            return bounds.Height;
-        }
-        set
-        {
-            bounds.Height = value;
-        }
+        get => bounds.Height;
+        set => bounds.Height = value;
     }
 
     public int Width
     {
-        get
-        {
-            return bounds.Width;
-        }
-        set
-        {
-            bounds.Width = value;
-        }
+        get => bounds.Width;
+        set => bounds.Width = value;
     }
 
     public RatingRenderer(Image image, Rectangle bounds, int count = 5, bool vertical = false)
@@ -161,27 +107,17 @@ public class RatingRenderer
     public float GetRatingFromStrip(Point pt)
     {
         RectangleF stripDisplayBounds = GetStripDisplayBounds();
-        if (VerticalAlignment)
-        {
-            if ((float)pt.Y < stripDisplayBounds.Y)
-            {
-                return 0f;
-            }
-            if ((float)pt.Y > stripDisplayBounds.Bottom)
-            {
-                return MaximumRating;
-            }
-            return ((float)pt.Y - stripDisplayBounds.Y) / stripDisplayBounds.Height * (float)MaximumRating;
-        }
-        if ((float)pt.X < stripDisplayBounds.X)
-        {
-            return 0f;
-        }
-        if ((float)pt.X > stripDisplayBounds.Right)
-        {
-            return MaximumRating;
-        }
-        return ((float)pt.X - stripDisplayBounds.X) / stripDisplayBounds.Width * (float)MaximumRating;
+        return VerticalAlignment
+            ? (float)pt.Y < stripDisplayBounds.Y
+                ? 0f
+                : (float)pt.Y > stripDisplayBounds.Bottom
+                ? MaximumRating
+                : ((float)pt.Y - stripDisplayBounds.Y) / stripDisplayBounds.Height * (float)MaximumRating
+            : (float)pt.X < stripDisplayBounds.X
+            ? 0f
+            : (float)pt.X > stripDisplayBounds.Right
+            ? MaximumRating
+            : ((float)pt.X - stripDisplayBounds.X) / stripDisplayBounds.Width * (float)MaximumRating;
     }
 
     public RectangleF DrawRatingTag(Graphics gr, float rating, int ratingDigits = 1)
@@ -204,11 +140,11 @@ public class RatingRenderer
         float num = (float)rect.Width / sizeF.Width * 0.9f;
         using (gr.SaveState())
         {
-            using (SolidBrush brush = new SolidBrush(ratingTextColor))
+            using (SolidBrush brush = new(ratingTextColor))
             {
                 gr.ScaleTransform(num, num);
                 rect = rect.Scale(1f / num);
-                using (StringFormat format = new StringFormat
+                using (StringFormat format = new()
                 {
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Far
@@ -232,7 +168,7 @@ public class RatingRenderer
         {
             return Rectangle.Empty;
         }
-        SizeF size = ((!VerticalAlignment) ? ((SizeF)new Size(MaximumRating * RatingImage.Width, RatingImage.Height)) : ((SizeF)new Size(RatingImage.Width, MaximumRating * RatingImage.Height)));
+        SizeF size = (!VerticalAlignment) ? ((SizeF)new Size(MaximumRating * RatingImage.Width, RatingImage.Height)) : ((SizeF)new Size(RatingImage.Width, MaximumRating * RatingImage.Height));
         return size.ToRectangle(Bounds, RatingScaleMode);
     }
 
@@ -251,7 +187,7 @@ public class RatingRenderer
             num = stripDisplayBounds.Height / (float)RatingImage.Height;
             pointF = new PointF((float)RatingImage.Width * num, 0f);
         }
-        RectangleF value = new RectangleF(stripDisplayBounds.Location, RatingImage.Size.Scale(num));
+        RectangleF value = new(stripDisplayBounds.Location, RatingImage.Size.Scale(num));
         for (int i = 0; i < MaximumRating; i++)
         {
             gr.DrawImage(RatingImage, Rectangle.Round(value), alpha);

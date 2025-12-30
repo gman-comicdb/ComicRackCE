@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 
 using DynamicExpresso;
 
@@ -21,8 +20,7 @@ public abstract record FunctionParametersEval(string Text) : FunctionParameter
     {
         get
         {
-            if (eval == null)
-                eval = GetEval();
+            eval ??= GetEval();
 
             return eval;
         }

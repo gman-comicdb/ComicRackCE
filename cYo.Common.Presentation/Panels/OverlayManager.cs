@@ -12,11 +12,11 @@ namespace cYo.Common.Presentation.Panels;
 
 public class OverlayManager : Component
 {
-    private Size alignmentBorder = new Size(10, 10);
+    private Size alignmentBorder = new(10, 10);
 
     private Control control;
 
-    private readonly OverlayPanelCollection panels = new OverlayPanelCollection();
+    private readonly OverlayPanelCollection panels = new();
 
     private bool mouseHandled;
 
@@ -24,9 +24,9 @@ public class OverlayManager : Component
 
     private Thread animationThread;
 
-    private readonly ManualResetEvent animationSignal = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent animationSignal = new(initialState: false);
 
-    private readonly ManualResetEvent animationStopSignal = new ManualResetEvent(initialState: false);
+    private readonly ManualResetEvent animationStopSignal = new(initialState: false);
 
     private OverlayPanel currentPanel;
 
@@ -57,10 +57,7 @@ public class OverlayManager : Component
 
     public Control Control
     {
-        get
-        {
-            return control;
-        }
+        get => control;
         set
         {
             if (control == value)
@@ -113,10 +110,7 @@ public class OverlayManager : Component
 
     public bool AnimationEnabled
     {
-        get
-        {
-            return animationThread != null;
-        }
+        get => animationThread != null;
         set
         {
             using (ItemMonitor.Lock(this))
@@ -176,11 +170,11 @@ public class OverlayManager : Component
 
     private void RunAnimation()
     {
-        ManualResetEvent[] waitHandles = new ManualResetEvent[2]
-        {
+        ManualResetEvent[] waitHandles =
+        [
             animationSignal,
             animationStopSignal
-        };
+        ];
         while (WaitHandle.WaitAny(waitHandles) == 0)
         {
             animationSignal.Reset();
@@ -230,18 +224,12 @@ public class OverlayManager : Component
 
     public virtual void Invalidate()
     {
-        if (Control != null)
-        {
-            Control.Invalidate();
-        }
+        Control?.Invalidate();
     }
 
     public virtual void Invalidate(Rectangle rc)
     {
-        if (Control != null)
-        {
-            Control.Invalidate(rc);
-        }
+        Control?.Invalidate(rc);
     }
 
     private void AlignPanels()
@@ -307,7 +295,7 @@ public class OverlayManager : Component
     private void control_PanStart(object sender, EventArgs e)
     {
         IPanableControl panableControl = control as IPanableControl;
-        MouseEventArgs e2 = new MouseEventArgs(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
+        MouseEventArgs e2 = new(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
         control_MouseMove(sender, e2);
         control_MouseDown(sender, e2);
     }
@@ -315,20 +303,20 @@ public class OverlayManager : Component
     private void control_Pan(object sender, EventArgs e)
     {
         IPanableControl panableControl = control as IPanableControl;
-        MouseEventArgs e2 = new MouseEventArgs(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
+        MouseEventArgs e2 = new(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
         control_MouseMove(sender, e2);
     }
 
     private void control_PanEnd(object sender, EventArgs e)
     {
         IPanableControl panableControl = control as IPanableControl;
-        MouseEventArgs e2 = new MouseEventArgs(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
+        MouseEventArgs e2 = new(MouseButtons.Left, 1, panableControl.PanLocation.X, panableControl.PanLocation.Y, 0);
         control_MouseUp(sender, e2);
     }
 
     private static MouseEventArgs GetMouseEventArgsOffset(MouseEventArgs e, Point offset)
     {
-        Point point = new Point(e.X - offset.X, e.Y - offset.Y);
+        Point point = new(e.X - offset.X, e.Y - offset.Y);
         return new MouseEventArgs(e.Button, e.Clicks, point.X, point.Y, e.Delta);
     }
 

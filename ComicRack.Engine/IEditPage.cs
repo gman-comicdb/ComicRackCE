@@ -4,20 +4,9 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IEditPage
 {
-    bool IsValid
-    {
-        get;
-    }
+    bool IsValid { get; }
 
-    ComicPageType PageType
-    {
-        get;
-        set;
-    }
+    ComicPageType PageType { get; set; }
 
-    ImageRotation Rotation
-    {
-        get;
-        set;
-    }
+    ImageRotation Rotation { get; set; }
 }

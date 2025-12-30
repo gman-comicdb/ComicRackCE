@@ -16,7 +16,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 {
     private MatcherMode matcherMode;
 
-    private readonly ComicBookMatcherCollection matchers = new ComicBookMatcherCollection();
+    private readonly ComicBookMatcherCollection matchers = new();
 
     public override bool TimeDependant => Matchers.Any((ComicBookMatcher m) => m.TimeDependant);
 
@@ -24,25 +24,15 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
     [DefaultValue(MatcherMode.And)]
     public MatcherMode MatcherMode
     {
-        get
-        {
-            return matcherMode;
-        }
-        set
-        {
-            matcherMode = value;
-        }
+        get => matcherMode;
+        set => matcherMode = value;
     }
 
     public ComicBookMatcherCollection Matchers => matchers;
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool Collapsed
-    {
-        get;
-        set;
-    }
+    public bool Collapsed { get; set; }
 
     public override string ToString()
     {
@@ -55,7 +45,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
         {
             return items;
         }
-        MatcherSet<ComicBook> matcherSet = new MatcherSet<ComicBook>();
+        MatcherSet<ComicBook> matcherSet = new();
         foreach (ComicBookMatcher matcher in Matchers)
         {
             matcherSet.Add(matcher, MatcherMode, matcher.Not);
@@ -65,7 +55,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     public override object Clone()
     {
-        ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher
+        ComicBookGroupMatcher comicBookGroupMatcher = new()
         {
             Not = base.Not,
             MatcherMode = MatcherMode,
@@ -77,12 +67,9 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     public override bool IsSame(ComicBookMatcher cbm)
     {
-        ComicBookGroupMatcher comicBookGroupMatcher = cbm as ComicBookGroupMatcher;
-        if (comicBookGroupMatcher != null && base.IsSame(cbm) && comicBookGroupMatcher.MatcherMode == MatcherMode && comicBookGroupMatcher.Collapsed == Collapsed)
-        {
-            return Matchers.SequenceEqual(Matchers);
-        }
-        return false;
+        return cbm is ComicBookGroupMatcher comicBookGroupMatcher && base.IsSame(cbm) && comicBookGroupMatcher.MatcherMode == MatcherMode && comicBookGroupMatcher.Collapsed == Collapsed
+            ? Matchers.SequenceEqual(Matchers)
+            : false;
     }
 
     public override IEnumerable<string> GetDependentProperties()
@@ -97,15 +84,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     public ComicBookMatcher Optimized()
     {
-        if (Matchers.Count == 0)
-        {
-            return null;
-        }
-        if (Matchers.Count == 1)
-        {
-            return Matchers[0];
-        }
-        return this;
+        return Matchers.Count == 0 ? null : Matchers.Count == 1 ? Matchers[0] : this;
     }
 
     public static void ConvertQueryToParamerters(IComicBookGroupMatcher gm, Tokenizer tokens)
@@ -159,7 +138,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
         }
         if (tokens.Is("MATCH"))
         {
-            ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher
+            ComicBookGroupMatcher comicBookGroupMatcher = new()
             {
                 Not = not
             };
@@ -197,7 +176,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     public static string ConvertParametersToQuery(IComicBookGroupMatcher gm, bool format = true)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         int count = gm.Matchers.Count;
         stringBuilder.Append("Match");
         if (count > 0)

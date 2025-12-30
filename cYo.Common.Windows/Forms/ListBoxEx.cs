@@ -33,9 +33,6 @@ public class ListBoxEx : ListBox
 
     protected virtual void OnItemDrag(ItemDragEventArgs e)
     {
-        if (this.ItemDrag != null)
-        {
-            this.ItemDrag(this, e);
-        }
+        ItemDrag?.Invoke(this, e);
     }
 }

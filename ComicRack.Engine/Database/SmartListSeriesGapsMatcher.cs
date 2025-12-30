@@ -10,10 +10,6 @@ public class SmartListSeriesGapsMatcher : ComicBookNumericMatcher
 {
     protected override float GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).GapCount;
-        }
-        return 0f;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).GapCount : 0f;
     }
 }

@@ -24,7 +24,7 @@ public class SevenZipEngine : FileBasedAccessor
 
     public static readonly string PackDll64 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources\\7z64.dll");
 
-    private static readonly Regex rxList = new Regex("Path = (?<filename>.*)\\r\\n(Folder.*\\r\\n)*?Size = (?<size>\\d+)", RegexOptions.Compiled);
+    private static readonly Regex rxList = new("Path = (?<filename>.*)\\r\\n(Folder.*\\r\\n)*?Size = (?<size>\\d+)", RegexOptions.Compiled);
 
     private bool libraryMode;
 
@@ -34,10 +34,7 @@ public class SevenZipEngine : FileBasedAccessor
     {
         get
         {
-            if (sevenZipFactory == null)
-            {
-                sevenZipFactory = new SevenZipFactory(Environment.Is64BitProcess ? PackDll64 : PackDll32);
-            }
+            sevenZipFactory ??= new SevenZipFactory(Environment.Is64BitProcess ? PackDll64 : PackDll32);
             return sevenZipFactory;
         }
     }
@@ -79,8 +76,8 @@ public class SevenZipEngine : FileBasedAccessor
                 int count = archive.GetNumberOfItems();
                 for (int i = 0; i < count; i++)
                 {
-                    PropVariant value = default(PropVariant);
-                    PropVariant value2 = default(PropVariant);
+                    PropVariant value = default;
+                    PropVariant value2 = default;
                     archive.GetProperty(i, ItemPropId.kpidPath, ref value);
                     archive.GetProperty(i, ItemPropId.kpidSize, ref value2);
                     yield return new ProviderImageInfo(i, value.GetObject().ToString(), value2.longValue);
@@ -104,8 +101,8 @@ public class SevenZipEngine : FileBasedAccessor
 
     private IDisposable OpenArchive(string source, out IInArchive archive)
     {
-        IInArchive a = (archive = SevenZipFactory.CreateInArchive(MapFileFormat(base.Format)));
-        InStreamWrapper archiveStream = new InStreamWrapper(File.OpenRead(source));
+        IInArchive a = archive = SevenZipFactory.CreateInArchive(MapFileFormat(base.Format));
+        InStreamWrapper archiveStream = new(File.OpenRead(source));
         long maxCheckStartPosition = SevenZipCheckSize;
         if (archive.Open(archiveStream, ref maxCheckStartPosition, new StubOpenCallback()) != 0)
         {
@@ -125,7 +122,7 @@ public class SevenZipEngine : FileBasedAccessor
         MemoryStream memoryStream;
         try
         {
-            PropVariant value = default(PropVariant);
+            PropVariant value = default;
             archive.GetProperty(fileNumber, ItemPropId.kpidSize, ref value);
             memoryStream = new MemoryStream((int)value.longValue);
         }
@@ -133,10 +130,10 @@ public class SevenZipEngine : FileBasedAccessor
         {
             memoryStream = new MemoryStream();
         }
-        archive.Extract(new int[1]
-        {
+        archive.Extract(
+        [
             fileNumber
-        }, 1, 0, new ExtractToStreamCallback(fileNumber, memoryStream));
+        ], 1, 0, new ExtractToStreamCallback(fileNumber, memoryStream));
         return memoryStream.ToArray();
     }
 
@@ -152,7 +149,7 @@ public class SevenZipEngine : FileBasedAccessor
                     int numberOfItems = archive.GetNumberOfItems();
                     for (int i = 0; i < numberOfItems; i++)
                     {
-                        PropVariant value = default(PropVariant);
+                        PropVariant value = default;
                         archive.GetProperty(i, ItemPropId.kpidPath, ref value);
                         if (file.Equals(value.GetObject().ToString(), StringComparison.OrdinalIgnoreCase))
                         {
@@ -215,21 +212,15 @@ public class SevenZipEngine : FileBasedAccessor
 
     private static KnownSevenZipFormat MapFileFormat(int format)
     {
-        switch (format)
+        return format switch
         {
-            case KnownFileFormats.CBZ:
-                return KnownSevenZipFormat.Zip;
-            case KnownFileFormats.CB7:
-                return KnownSevenZipFormat.SevenZip;
-            case KnownFileFormats.CBT:
-                return KnownSevenZipFormat.Tar;
-            case KnownFileFormats.CBR:
-                return KnownSevenZipFormat.Rar;
-            case KnownFileFormats.RAR5:
-                return KnownSevenZipFormat.Rar5;
-            default:
-                throw new NotSupportedException("Type if not supported");
-        }
+            KnownFileFormats.CBZ => KnownSevenZipFormat.Zip,
+            KnownFileFormats.CB7 => KnownSevenZipFormat.SevenZip,
+            KnownFileFormats.CBT => KnownSevenZipFormat.Tar,
+            KnownFileFormats.CBR => KnownSevenZipFormat.Rar,
+            KnownFileFormats.RAR5 => KnownSevenZipFormat.Rar5,
+            _ => throw new NotSupportedException("Type if not supported"),
+        };
     }
 
     public static bool UpdateComicInfo(string file, int format, ComicInfo comicInfo)

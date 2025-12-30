@@ -110,23 +110,14 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
 
     public ImagePartInfo PagePart
     {
-        get
-        {
-            return pagePart;
-        }
-        set
-        {
-            pagePart = value;
-        }
+        get => pagePart;
+        set => pagePart = value;
     }
 
     [DefaultValue(false)]
     public YesNo RightToLeftReading
     {
-        get
-        {
-            return rightToLeftReading;
-        }
+        get => rightToLeftReading;
         set
         {
             if (rightToLeftReading != value)
@@ -140,22 +131,13 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
     [DefaultValue(true)]
     public bool UpdateCurrentPageEnabled
     {
-        get
-        {
-            return updateCurrentPageEnabled;
-        }
-        set
-        {
-            updateCurrentPageEnabled = value;
-        }
+        get => updateCurrentPageEnabled;
+        set => updateCurrentPageEnabled = value;
     }
 
     public Bitmap Thumbnail
     {
-        get
-        {
-            return thumbnail;
-        }
+        get => thumbnail;
         set
         {
             if (value != thumbnail)
@@ -167,11 +149,7 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
         }
     }
 
-    public int IndexPagesRetrieved
-    {
-        get;
-        private set;
-    }
+    public int IndexPagesRetrieved { get; private set; }
 
     public ImageProviderStatus ProviderStatus
     {
@@ -193,10 +171,7 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
 
     public int CurrentPage
     {
-        get
-        {
-            return currentPage;
-        }
+        get => currentPage;
         set
         {
             //This sets the CurrentPage to the last page if the value exceeds the total number of pages.
@@ -217,20 +192,14 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
                 {
                     Comic.CurrentPage = CurrentPage;
                 }
-                if (this.Navigation != null)
-                {
-                    this.Navigation(this, new BookPageEventArgs(Comic, oldPage, CurrentPage, CurrentPageInfo, CurrentPageName));
-                }
+                Navigation?.Invoke(this, new BookPageEventArgs(Comic, oldPage, CurrentPage, CurrentPageInfo, CurrentPageName));
             }
         }
     }
 
     public int LastPageRead
     {
-        get
-        {
-            return lastPageRead;
-        }
+        get => lastPageRead;
         set
         {
             if (value != LastPageRead)
@@ -267,17 +236,7 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
 
     public int Count => ProviderPageCount;
 
-    public bool IsSlow
-    {
-        get
-        {
-            if (provider != null)
-            {
-                return provider.IsSlow;
-            }
-            return false;
-        }
-    }
+    public bool IsSlow => provider != null ? provider.IsSlow : false;
 
     public event EventHandler IndexRetrievalStarted;
 
@@ -350,11 +309,7 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
     public string GetImageName(int imageIndex)
     {
         ProviderImageInfo imageInfo = GetImageInfo(imageIndex);
-        if (imageInfo != null && imageInfo.Name != null)
-        {
-            return imageInfo.Name;
-        }
-        return string.Empty;
+        return imageInfo != null && imageInfo.Name != null ? imageInfo.Name : string.Empty;
     }
 
     public string GetImageName(int imageIndex, bool noPath)
@@ -403,7 +358,7 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
                 break;
             case PageSeekOrigin.Current:
                 page = CurrentPage;
-                direction = ((offset == 0) ? 1 : Math.Sign(offset));
+                direction = (offset == 0) ? 1 : Math.Sign(offset);
                 break;
             case PageSeekOrigin.End:
                 page = ProviderPageCount - 1;
@@ -502,73 +457,73 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
 
     protected virtual void OnPageFilterChanged()
     {
-        if (!base.IsDisposed && this.PageFilterChanged != null)
+        if (!base.IsDisposed && PageFilterChanged != null)
         {
-            this.PageFilterChanged(this, EventArgs.Empty);
+            PageFilterChanged(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnRightToLeftReadingChanged()
     {
-        if (!base.IsDisposed && this.RightToLeftReadingChanged != null)
+        if (!base.IsDisposed && RightToLeftReadingChanged != null)
         {
-            this.RightToLeftReadingChanged(this, EventArgs.Empty);
+            RightToLeftReadingChanged(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnColorAdjustmentChanged()
     {
-        if (!base.IsDisposed && this.ColorAdjustmentChanged != null)
+        if (!base.IsDisposed && ColorAdjustmentChanged != null)
         {
-            this.ColorAdjustmentChanged(this, EventArgs.Empty);
+            ColorAdjustmentChanged(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnPagesChanged()
     {
-        if (!base.IsDisposed && this.PagesChanged != null)
+        if (!base.IsDisposed && PagesChanged != null)
         {
-            this.PagesChanged(this, EventArgs.Empty);
+            PagesChanged(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnIndexRetrievalStarted()
     {
-        if (!base.IsDisposed && this.IndexRetrievalStarted != null)
+        if (!base.IsDisposed && IndexRetrievalStarted != null)
         {
-            this.IndexRetrievalStarted(this, EventArgs.Empty);
+            IndexRetrievalStarted(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnIndexRetrievalCompleted()
     {
-        if (!base.IsDisposed && this.IndexRetrievalCompleted != null)
+        if (!base.IsDisposed && IndexRetrievalCompleted != null)
         {
-            this.IndexRetrievalCompleted(this, EventArgs.Empty);
+            IndexRetrievalCompleted(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnIndexOfPageReady(BookPageEventArgs bpea)
     {
-        if (!base.IsDisposed && this.IndexOfPageReady != null)
+        if (!base.IsDisposed && IndexOfPageReady != null)
         {
-            this.IndexOfPageReady(this, bpea);
+            IndexOfPageReady(this, bpea);
         }
     }
 
     protected virtual void OnErrorOpening()
     {
-        if (!base.IsDisposed && this.ErrorOpening != null)
+        if (!base.IsDisposed && ErrorOpening != null)
         {
-            this.ErrorOpening(this, EventArgs.Empty);
+            ErrorOpening(this, EventArgs.Empty);
         }
     }
 
     protected virtual void OnOpened()
     {
-        if (!base.IsDisposed && this.Opened != null)
+        if (!base.IsDisposed && Opened != null)
         {
-            this.Opened(this, EventArgs.Empty);
+            Opened(this, EventArgs.Empty);
         }
     }
 
@@ -654,38 +609,22 @@ public class ComicBookNavigator : DisposableObject, IImageProvider, IDisposable,
 
     public Bitmap GetImage(int index)
     {
-        if (provider == null)
-        {
-            return null;
-        }
-        return provider.GetImage(index);
+        return provider?.GetImage(index);
     }
 
     public byte[] GetByteImage(int index)
     {
-        if (provider == null)
-        {
-            return null;
-        }
-        return provider.GetByteImage(index);
+        return provider?.GetByteImage(index);
     }
 
     public ExportImageContainer GetByteImageForExport(int index)
     {
-        if (provider == null)
-        {
-            return null;
-        }
-        return provider.GetByteImageForExport(index);
+        return provider?.GetByteImageForExport(index);
     }
 
     public ProviderImageInfo GetImageInfo(int index)
     {
-        if (provider == null)
-        {
-            return null;
-        }
-        return provider.GetImageInfo(index);
+        return provider?.GetImageInfo(index);
     }
 
     public ThumbnailImage GetThumbnail(int index)

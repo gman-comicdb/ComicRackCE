@@ -4,10 +4,7 @@ namespace cYo.Common.Presentation;
 
 public abstract class RendererImage
 {
-    public abstract Bitmap Bitmap
-    {
-        get;
-    }
+    public abstract Bitmap Bitmap { get; }
 
     public virtual bool IsValid => Bitmap != null;
 
@@ -19,15 +16,7 @@ public abstract class RendererImage
 
     public override bool Equals(object obj)
     {
-        if (obj == null)
-        {
-            return false;
-        }
-        if (obj.GetType() != GetType())
-        {
-            return false;
-        }
-        return ((RendererImage)obj).Bitmap == Bitmap;
+        return obj == null ? false : obj.GetType() != GetType() ? false : ((RendererImage)obj).Bitmap == Bitmap;
     }
 
     public override int GetHashCode()

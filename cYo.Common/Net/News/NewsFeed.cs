@@ -4,7 +4,7 @@ public abstract class NewsFeed
 {
     private string rawFeed;
 
-    private NewsChannelCollection channels = new NewsChannelCollection();
+    private NewsChannelCollection channels = new();
 
     public string RawFeed => rawFeed;
 

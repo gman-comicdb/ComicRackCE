@@ -4,18 +4,9 @@ namespace cYo.Common.ComponentModel;
 
 public interface IGroupInfo : IComparable<IGroupInfo>
 {
-    object Key
-    {
-        get;
-    }
+    object Key { get; }
 
-    string Caption
-    {
-        get;
-    }
+    string Caption { get; }
 
-    int Index
-    {
-        get;
-    }
+    int Index { get; }
 }

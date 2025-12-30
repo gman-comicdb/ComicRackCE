@@ -9,36 +9,17 @@ namespace cYo.Projects.ComicRack.Plugins;
 
 public interface IPluginEnvironment : IPluginConfig, ICloneable
 {
-    IWin32Window MainWindow
-    {
-        get;
-    }
+    IWin32Window MainWindow { get; }
 
-    IApplication App
-    {
-        get;
-    }
+    IApplication App { get; }
 
-    IOpenBooksManager OpenBooks
-    {
-        get;
-    }
+    IOpenBooksManager OpenBooks { get; }
 
-    IBrowser Browser
-    {
-        get;
-    }
+    IBrowser Browser { get; }
 
-    IComicDisplay ComicDisplay
-    {
-        get;
-    }
+    IComicDisplay ComicDisplay { get; }
 
-    string CommandPath
-    {
-        get;
-        set;
-    }
+    string CommandPath { get; set; }
 
     IThemePlugin Theme { get; set; }
 

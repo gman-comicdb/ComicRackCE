@@ -6,7 +6,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class CoverViewItemBookComparer<T> : CoverViewItemComparer, IComicBookComparer where T : IComparer<ComicBook>, new()
 {
-    private readonly T comparer = new T();
+    private readonly T comparer = new();
 
     IComparer<ComicBook> IComicBookComparer.Comparer => comparer; // Expose the comparer through the interface
 

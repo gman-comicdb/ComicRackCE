@@ -12,10 +12,6 @@ public class ComicBookNumberMatcher : ComicBookNumericMatcher
 {
     protected override float GetValue(ComicBook comicBook)
     {
-        if (!comicBook.ShadowNumber.TryParse(out float f, invariant: true))
-        {
-            return -1f;
-        }
-        return f;
+        return !comicBook.ShadowNumber.TryParse(out float f, invariant: true) ? -1f : f;
     }
 }

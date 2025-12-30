@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 
 using cYo.Common.Reflection;
-
-using static cYo.Common.Win32.ExecuteProcess;
 
 namespace cYo.Projects.ComicRack.Engine;
 
@@ -34,10 +29,9 @@ public abstract class ComicBookVirtualTagMatcher : ComicBookStringMatcher
 
     public static Type GetMatcher(IVirtualTag tag)
     {
-        if (tag is null || string.IsNullOrEmpty(tag.PropertyName))
-            return default;
-
-        return GetAvailableMatcherTypes().FirstOrDefault(x => typeof(ComicBookVirtualTagMatcher).IsAssignableFrom(x)
+        return tag is null || string.IsNullOrEmpty(tag.PropertyName)
+            ? default
+            : GetAvailableMatcherTypes().FirstOrDefault(x => typeof(ComicBookVirtualTagMatcher).IsAssignableFrom(x)
             && GetAttribute(x).Properties.FirstOrDefault() == tag.PropertyName);
     }
 

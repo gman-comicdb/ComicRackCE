@@ -24,14 +24,8 @@ public class KeySearch : Component
 
     public int SearchDelay
     {
-        get
-        {
-            return searchDelay;
-        }
-        set
-        {
-            searchDelay = value;
-        }
+        get => searchDelay;
+        set => searchDelay = value;
     }
 
     public KeySearch(Func<string, bool> select)
@@ -46,7 +40,7 @@ public class KeySearch : Component
         {
             currentText = string.Empty;
         }
-        string arg = ((c != '\b') ? (CurrentText + c) : (string.IsNullOrEmpty(CurrentText) ? string.Empty : CurrentText.Substring(0, CurrentText.Length - 1)));
+        string arg = (c != '\b') ? (CurrentText + c) : (string.IsNullOrEmpty(CurrentText) ? string.Empty : CurrentText.Substring(0, CurrentText.Length - 1));
         bool flag = select(arg);
         if (flag)
         {
@@ -69,7 +63,7 @@ public class KeySearch : Component
 
     public static void Create(ListView listView, bool ignoreAricles)
     {
-        KeySearch ks = new KeySearch(delegate (string s)
+        KeySearch ks = new(delegate (string s)
         {
             ListViewItem li = listView.Enumerate().FirstOrDefault((ListViewItem item) => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
             if (li == null)
@@ -106,7 +100,7 @@ public class KeySearch : Component
 
     public static void Create(ItemView itemView, bool ignoreAricles)
     {
-        KeySearch ks = new KeySearch(delegate (string s)
+        KeySearch ks = new(delegate (string s)
         {
             IViewableItem viewableItem = itemView.DisplayedItems.FirstOrDefault((IViewableItem item) => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
             if (viewableItem == null)
@@ -136,7 +130,7 @@ public class KeySearch : Component
 
     private static void RegisterKeys(Control control, KeySearch ks)
     {
-        ToolTip toolTip = new ToolTip();
+        ToolTip toolTip = new();
         control.KeyPress += delegate (object s, KeyPressEventArgs e)
         {
             if (!e.Handled)

@@ -60,66 +60,37 @@ public class TabBar : ContainerControl
         private bool closeButtonHot;
 
         [DefaultValue(null)]
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
         [DefaultValue(null)]
         public string Text
         {
-            get
-            {
-                return text;
-            }
-            set
-            {
-                SetValue(ref text, value);
-            }
+            get => text;
+            set => SetValue(ref text, value);
         }
 
         [DefaultValue(null)]
-        public virtual string ToolTipText
-        {
-            get;
-            set;
-        }
+        public virtual string ToolTipText { get; set; }
 
         [DefaultValue(typeof(Size), "Empty")]
-        public virtual Size ToolTipSize
-        {
-            get;
-            set;
-        }
+        public virtual Size ToolTipSize { get; set; }
 
         [DefaultValue(null)]
-        public object Tag
-        {
-            get;
-            set;
-        }
+        public object Tag { get; set; }
 
         [DefaultValue(null)]
         public Image Image
         {
-            get
-            {
-                return image;
-            }
+            get => image;
             set
             {
                 SetValue(ref image, value);
-                ImageSize = ((image == null) ? Size.Empty : image.Size);
+                ImageSize = (image == null) ? Size.Empty : image.Size;
             }
         }
 
         [Browsable(false)]
-        public Size ImageSize
-        {
-            get;
-            private set;
-        }
+        public Size ImageSize { get; private set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -132,23 +103,14 @@ public class TabBar : ContainerControl
         [DefaultValue(true)]
         public bool Enabled
         {
-            get
-            {
-                return enabled;
-            }
-            set
-            {
-                SetValue(ref enabled, value);
-            }
+            get => enabled;
+            set => SetValue(ref enabled, value);
         }
 
         [DefaultValue(TabItemState.Normal)]
         public TabItemState State
         {
-            get
-            {
-                return state;
-            }
+            get => state;
             set
             {
                 if (state == value)
@@ -159,7 +121,7 @@ public class TabBar : ContainerControl
                 {
                     TabItemState tabItemState = state;
                     state = value;
-                    CancelEventArgs cancelEventArgs = new CancelEventArgs();
+                    CancelEventArgs cancelEventArgs = new();
                     OnSelected(cancelEventArgs);
                     if (cancelEventArgs.Cancel)
                     {
@@ -175,145 +137,77 @@ public class TabBar : ContainerControl
         [DefaultValue(typeof(Padding), "Empty")]
         public Padding Padding
         {
-            get
-            {
-                return padding;
-            }
-            set
-            {
-                SetValue(ref padding, value);
-            }
+            get => padding;
+            set => SetValue(ref padding, value);
         }
 
         [DefaultValue(true)]
         public bool ShowInDropDown
         {
-            get
-            {
-                return showInDropDown;
-            }
-            set
-            {
-                showInDropDown = value;
-            }
+            get => showInDropDown;
+            set => showInDropDown = value;
         }
 
         [DefaultValue(false)]
         public bool CanClose
         {
-            get
-            {
-                return canClose;
-            }
-            set
-            {
-                SetValue(ref canClose, value);
-            }
+            get => canClose;
+            set => SetValue(ref canClose, value);
         }
 
         [DefaultValue(null)]
-        public ContextMenuStrip ContextMenu
-        {
-            get;
-            set;
-        }
+        public ContextMenuStrip ContextMenu { get; set; }
 
         [DefaultValue(true)]
         public bool Visible
         {
-            get
-            {
-                return visible;
-            }
-            set
-            {
-                SetValue(ref visible, value);
-            }
+            get => visible;
+            set => SetValue(ref visible, value);
         }
 
         [DefaultValue(false)]
         public bool FontBold
         {
-            get
-            {
-                return fontBold;
-            }
-            set
-            {
-                SetValue(ref fontBold, value);
-            }
+            get => fontBold;
+            set => SetValue(ref fontBold, value);
         }
 
         [DefaultValue(TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine)]
         public TextFormatFlags TextFormat
         {
-            get
-            {
-                return textFormat;
-            }
-            set
-            {
-                SetValue(ref textFormat, value);
-            }
+            get => textFormat;
+            set => SetValue(ref textFormat, value);
         }
 
         [DefaultValue(60)]
         public int MinimumWidth
         {
-            get
-            {
-                return minimumWidth;
-            }
-            set
-            {
-                SetValue(ref minimumWidth, value);
-            }
+            get => minimumWidth;
+            set => SetValue(ref minimumWidth, value);
         }
 
         [DefaultValue(true)]
         public bool AdjustWidth
         {
-            get
-            {
-                return adjustWidth;
-            }
-            set
-            {
-                SetValue(ref adjustWidth, value);
-            }
+            get => adjustWidth;
+            set => SetValue(ref adjustWidth, value);
         }
 
         [DefaultValue(true)]
         public bool ShowText
         {
-            get
-            {
-                return showText;
-            }
-            set
-            {
-                SetValue(ref showText, value);
-            }
+            get => showText;
+            set => SetValue(ref showText, value);
         }
 
         public bool IsSelected => State == TabItemState.Selected;
 
-        internal Rectangle CloseBounds
-        {
-            get;
-            set;
-        }
+        internal Rectangle CloseBounds { get; set; }
 
         internal bool CloseButtonHot
         {
-            get
-            {
-                return closeButtonHot;
-            }
-            set
-            {
-                SetValue(ref closeButtonHot, value);
-            }
+            get => closeButtonHot;
+            set => SetValue(ref closeButtonHot, value);
         }
 
         public event EventHandler Changed;
@@ -339,59 +233,37 @@ public class TabBar : ContainerControl
 
         internal Font GetFont(Font font)
         {
-            if (!FontBold)
-            {
-                return font;
-            }
-            return FC.Get(font, FontStyle.Bold);
+            return !FontBold ? font : FC.Get(font, FontStyle.Bold);
         }
 
         protected virtual void OnChanged()
         {
-            if (this.Changed != null)
-            {
-                this.Changed(this, EventArgs.Empty);
-            }
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void OnClick()
         {
-            if (this.Click != null)
-            {
-                this.Click(this, EventArgs.Empty);
-            }
+            Click?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void OnCaptionClick(CancelEventArgs e)
         {
-            if (this.CaptionClick != null)
-            {
-                this.CaptionClick(this, e);
-            }
+            CaptionClick?.Invoke(this, e);
         }
 
         protected virtual void OnCloseClick()
         {
-            if (this.CloseClick != null)
-            {
-                this.CloseClick(this, EventArgs.Empty);
-            }
+            CloseClick?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void OnSelected(CancelEventArgs e)
         {
-            if (this.Selected != null)
-            {
-                this.Selected(this, e);
-            }
+            Selected?.Invoke(this, e);
         }
 
         protected virtual void OnRemoved()
         {
-            if (this.Removed != null)
-            {
-                this.Removed(this, EventArgs.Empty);
-            }
+            Removed?.Invoke(this, EventArgs.Empty);
         }
 
         private bool SetValue<T>(ref T value, T newValue)
@@ -407,7 +279,7 @@ public class TabBar : ContainerControl
 
         public bool InvokeCaptionClick()
         {
-            CancelEventArgs cancelEventArgs = new CancelEventArgs();
+            CancelEventArgs cancelEventArgs = new();
             OnCaptionClick(cancelEventArgs);
             return cancelEventArgs.Cancel;
         }
@@ -472,17 +344,11 @@ public class TabBar : ContainerControl
 
         public bool Spring
         {
-            get
-            {
-                return spring;
-            }
+            get => spring;
             set
             {
                 spring = value;
-                if (base.Owner != null)
-                {
-                    base.Owner.PerformLayout();
-                }
+                base.Owner?.PerformLayout();
             }
         }
 
@@ -549,7 +415,7 @@ public class TabBar : ContainerControl
         {
             base.OnRenderToolStripBorder(e);
             Rectangle affectedBounds = e.AffectedBounds;
-            using (Pen pen = new Pen(BorderColor))
+            using (Pen pen = new(BorderColor))
             {
                 e.Graphics.DrawLine(pen, affectedBounds.Left, affectedBounds.Bottom - 2, affectedBounds.Right, affectedBounds.Bottom - 2);
             }
@@ -562,7 +428,7 @@ public class TabBar : ContainerControl
                 base.OnRenderToolStripBackground(e);
                 return;
             }
-            VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(VisualStyleElement.Tab.Body.Normal);
+            VisualStyleRenderer visualStyleRenderer = new(VisualStyleElement.Tab.Body.Normal);
             visualStyleRenderer.DrawBackground(e.Graphics, e.AffectedBounds);
         }
     }
@@ -581,17 +447,17 @@ public class TabBar : ContainerControl
 
     private static Bitmap insertArrow = Resources.InsertArrow;
 
-    private readonly Timer scrollTimer = new Timer();
+    private readonly Timer scrollTimer = new();
 
-    private readonly Timer toolTipTimer = new Timer();
+    private readonly Timer toolTipTimer = new();
 
-    private readonly ToolTip toolTip = new ToolTip();
+    private readonly ToolTip toolTip = new();
 
     private Point clickPoint;
 
     private int inDrag = -1;
 
-    private readonly TabBarItemCollection items = new TabBarItemCollection();
+    private readonly TabBarItemCollection items = new();
 
     private TabBarItem selectedTab;
 
@@ -629,7 +495,7 @@ public class TabBar : ContainerControl
 
     private TabBarItem toolTipItem;
 
-    private readonly Dictionary<TabBarItem, Image> animatedImages = new Dictionary<TabBarItem, Image>();
+    private readonly Dictionary<TabBarItem, Image> animatedImages = new();
 
     private GestureHandler gestureHandler;
 
@@ -639,10 +505,7 @@ public class TabBar : ContainerControl
     [Browsable(false)]
     public TabBarItem SelectedTab
     {
-        get
-        {
-            return selectedTab;
-        }
+        get => selectedTab;
         set
         {
             if (value != null)
@@ -667,10 +530,7 @@ public class TabBar : ContainerControl
     [Browsable(false)]
     public int SelectedTabIndex
     {
-        get
-        {
-            return items.IndexOf(selectedTab);
-        }
+        get => items.IndexOf(selectedTab);
         set
         {
             if (value >= 0 && value < items.Count)
@@ -683,133 +543,71 @@ public class TabBar : ContainerControl
     [DefaultValue(true)]
     public bool ShowDropDown
     {
-        get
-        {
-            return showDropDown;
-        }
-        set
-        {
-            SetValue(ref showDropDown, value);
-        }
+        get => showDropDown;
+        set => SetValue(ref showDropDown, value);
     }
 
     [DefaultValue(null)]
     public Bitmap CloseImage
     {
-        get
-        {
-            return closeImage;
-        }
-        set
-        {
-            SetValue(ref closeImage, value);
-        }
+        get => closeImage;
+        set => SetValue(ref closeImage, value);
     }
 
     [DefaultValue(0)]
     public int TabHeight
     {
-        get
-        {
-            return tabHeight;
-        }
-        set
-        {
-            SetValue(ref tabHeight, value);
-        }
+        get => tabHeight;
+        set => SetValue(ref tabHeight, value);
     }
 
     [DefaultValue(2)]
     public int TopPadding
     {
-        get
-        {
-            return topPadding;
-        }
-        set
-        {
-            SetValue(ref topPadding, value);
-        }
+        get => topPadding;
+        set => SetValue(ref topPadding, value);
     }
 
     [DefaultValue(4)]
     public int BottomPadding
     {
-        get
-        {
-            return bottomPadding;
-        }
-        set
-        {
-            SetValue(ref bottomPadding, value);
-        }
+        get => bottomPadding;
+        set => SetValue(ref bottomPadding, value);
     }
 
     [DefaultValue(true)]
     public bool DrawBaseLine
     {
-        get
-        {
-            return drawBaseLine;
-        }
-        set
-        {
-            SetValue(ref drawBaseLine, value);
-        }
+        get => drawBaseLine;
+        set => SetValue(ref drawBaseLine, value);
     }
 
     [DefaultValue(0)]
     public int LeftIndent
     {
-        get
-        {
-            return leftIndent;
-        }
-        set
-        {
-            SetValue(ref leftIndent, value);
-        }
+        get => leftIndent;
+        set => SetValue(ref leftIndent, value);
     }
 
     [DefaultValue(false)]
-    public bool OwnerDrawnTooltips
-    {
-        get;
-        set;
-    }
+    public bool OwnerDrawnTooltips { get; set; }
 
     [DefaultValue(250)]
     public int MinimumTabWidth
     {
-        get
-        {
-            return minimumTabWidth;
-        }
-        set
-        {
-            SetValue(ref minimumTabWidth, value);
-        }
+        get => minimumTabWidth;
+        set => SetValue(ref minimumTabWidth, value);
     }
 
     [DefaultValue(-1)]
     public int MarkerPosition
     {
-        get
-        {
-            return markerPosition;
-        }
-        set
-        {
-            SetValue(ref markerPosition, value);
-        }
+        get => markerPosition;
+        set => SetValue(ref markerPosition, value);
     }
 
     [DefaultValue(false)]
-    public bool DragDropReorder
-    {
-        get;
-        set;
-    }
+    public bool DragDropReorder { get; set; }
 
     private static Color BorderColor
     {
@@ -818,7 +616,7 @@ public class TabBar : ContainerControl
             Color result = ThemeColors.TabBar.DefaultBorder;
             if (Application.RenderWithVisualStyles)
             {
-                VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(VisualStyleElement.Tab.Pane.Normal);
+                VisualStyleRenderer visualStyleRenderer = new(VisualStyleElement.Tab.Pane.Normal);
                 //result = visualStyleRenderer.GetColor(ColorProperty.BorderColorHint);
                 result = visualStyleRenderer.GetThemeColor(ColorProperty.BorderColorHint);
 
@@ -829,10 +627,7 @@ public class TabBar : ContainerControl
 
     private bool ShowArrows
     {
-        get
-        {
-            return showArrows;
-        }
+        get => showArrows;
         set
         {
             if (showArrows != value)
@@ -845,10 +640,7 @@ public class TabBar : ContainerControl
 
     private ItemState LeftArrowState
     {
-        get
-        {
-            return leftArrowState;
-        }
+        get => leftArrowState;
         set
         {
             if (leftArrowState != value)
@@ -861,10 +653,7 @@ public class TabBar : ContainerControl
 
     private ItemState RightArrowState
     {
-        get
-        {
-            return rightArrowState;
-        }
+        get => rightArrowState;
         set
         {
             if (rightArrowState != value)
@@ -877,10 +666,7 @@ public class TabBar : ContainerControl
 
     private ItemState DropDownState
     {
-        get
-        {
-            return dropDownState;
-        }
+        get => dropDownState;
         set
         {
             if (dropDownState != value)
@@ -893,10 +679,7 @@ public class TabBar : ContainerControl
 
     private int TabsOffset
     {
-        get
-        {
-            return tabsOffset;
-        }
+        get => tabsOffset;
         set
         {
             int num = value;
@@ -920,14 +703,8 @@ public class TabBar : ContainerControl
     [Browsable(true)]
     public override bool AutoSize
     {
-        get
-        {
-            return base.AutoSize;
-        }
-        set
-        {
-            base.AutoSize = value;
-        }
+        get => base.AutoSize;
+        set => base.AutoSize = value;
     }
 
     private Rectangle TabsRectangle
@@ -1025,7 +802,7 @@ public class TabBar : ContainerControl
         int num = array.FindIndex((TabBarItem t) => t == items[tab]);
         if (num == -1)
         {
-            num = ((tab >= array.Length) ? (array.Length - 1) : 0);
+            num = (tab >= array.Length) ? (array.Length - 1) : 0;
         }
         SelectedTab = array[rollover ? Numeric.Rollover(num, array.Length, offset) : num.Clamp(0, array.Length)];
         return true;
@@ -1109,7 +886,7 @@ public class TabBar : ContainerControl
     {
         TabBarItem tabBarItem = selectedTab;
         TabBarItem newItem = sender as TabBarItem;
-        SelectedTabChangedEventArgs selectedTabChangedEventArgs = new SelectedTabChangedEventArgs(selectedTab, newItem);
+        SelectedTabChangedEventArgs selectedTabChangedEventArgs = new(selectedTab, newItem);
         selectedTab = newItem;
         try
         {
@@ -1197,7 +974,7 @@ public class TabBar : ContainerControl
             e.DrawText();
             return;
         }
-        using (FontDC dc = new FontDC(e.Graphics, e.Font))
+        using (FontDC dc = new(e.Graphics, e.Font))
         {
             Rectangle backgroundContentRectangle = vr.GetBackgroundContentRectangle(dc, e.Bounds);
             //vr.DrawText(dc, backgroundContentRectangle, e.ToolTipText);
@@ -1216,7 +993,7 @@ public class TabBar : ContainerControl
 
     private void ShowTabDropDown(Point location)
     {
-        ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+        ContextMenuStrip contextMenuStrip = new();
         bool flag = false;
         int num = items.Count((TabBarItem x) => x.Visible);
         for (int i = 0; i < items.Count; i++)
@@ -1228,7 +1005,7 @@ public class TabBar : ContainerControl
                 {
                     contextMenuStrip.Items.Add(new ToolStripSeparator());
                 }
-                ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(tbi.Text, tbi.Image, delegate
+                ToolStripMenuItem toolStripMenuItem = new(tbi.Text, tbi.Image, delegate
                 {
                     SelectedTab = tbi;
                 });
@@ -1261,19 +1038,12 @@ public class TabBar : ContainerControl
 
     private void DrawButton(Graphics gr, Rectangle rc, Image image, ItemState state)
     {
-        TabItemState tabItemState;
-        switch (state)
+        var tabItemState = state switch
         {
-            case ItemState.None:
-                tabItemState = TabItemState.Normal;
-                break;
-            default:
-                tabItemState = TabItemState.Hot;
-                break;
-            case ItemState.Selected:
-                tabItemState = TabItemState.Selected;
-                break;
-        }
+            ItemState.None => TabItemState.Normal,
+            ItemState.Selected => TabItemState.Selected,
+            _ => TabItemState.Hot,
+        };
         DrawTabItem(gr, rc, tabItemState, buttonMode: true);
         Rectangle rect = image.Size.Align(rc, System.Drawing.ContentAlignment.MiddleCenter);
         gr.DrawImage(image, rect);
@@ -1287,7 +1057,7 @@ public class TabBar : ContainerControl
             TabRendererEx.DrawTabItem(gr, rc, tabItemState);
             if (buttonMode)
             {
-                using (Pen pen = new Pen(BorderColor))
+                using (Pen pen = new(BorderColor))
                 {
                     gr.DrawLine(pen, rc.Left, rc.Bottom - 1, rc.Right, rc.Bottom - 1);
                 }
@@ -1325,7 +1095,7 @@ public class TabBar : ContainerControl
             {
                 if (x.State != TabItemState.Selected)
                 {
-                    x.State = ((x != tbi) ? TabItemState.Normal : TabItemState.Hot);
+                    x.State = (x != tbi) ? TabItemState.Normal : TabItemState.Hot;
                 }
                 x.CloseButtonHot = false;
             });
@@ -1352,7 +1122,7 @@ public class TabBar : ContainerControl
     private void ShowToolTip(bool always, TabBarItem item)
     {
         Point pt = PointToClient(Cursor.Position);
-        item = item ?? items.Find((TabBarItem x) => x.Bounds.Contains(pt));
+        item ??= items.Find((TabBarItem x) => x.Bounds.Contains(pt));
         if (item == null)
         {
             HideToolTip();
@@ -1421,7 +1191,7 @@ public class TabBar : ContainerControl
             rectangle = rectangle.Pad(0, topPadding, 0, bottomPadding);
             if (drawBaseLine)
             {
-                using (Pen pen = new Pen(BorderColor))
+                using (Pen pen = new(BorderColor))
                 {
                     if (BottomPadding == 0)
                     {
@@ -1472,15 +1242,7 @@ public class TabBar : ContainerControl
 
     private static ItemState GetItemState(Rectangle rc, Point pt, MouseButtons mb)
     {
-        if (!rc.Contains(pt))
-        {
-            return ItemState.None;
-        }
-        if ((mb & MouseButtons.Left) == 0)
-        {
-            return ItemState.Hot;
-        }
-        return ItemState.Selected;
+        return !rc.Contains(pt) ? ItemState.None : (mb & MouseButtons.Left) == 0 ? ItemState.Hot : ItemState.Selected;
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
@@ -1528,8 +1290,8 @@ public class TabBar : ContainerControl
             }
             x.CloseButtonHot = false;
         });
-        ItemState itemState2 = (DropDownState = ItemState.None);
-        ItemState itemState5 = (RightArrowState = (LeftArrowState = itemState2));
+        ItemState itemState2 = DropDownState = ItemState.None;
+        ItemState itemState5 = RightArrowState = LeftArrowState = itemState2;
         HideToolTip();
         toolTipTimer.Stop();
         toolTipTimer.Tag = null;
@@ -1554,7 +1316,7 @@ public class TabBar : ContainerControl
             if (inDrag != MarkerPosition && MarkerPosition >= 0 && MarkerPosition <= array.Length)
             {
                 TabBarItem item = array[inDrag];
-                int newIndex = ((MarkerPosition < array.Length) ? items.IndexOf(array[MarkerPosition]) : items.Count);
+                int newIndex = (MarkerPosition < array.Length) ? items.IndexOf(array[MarkerPosition]) : items.Count;
                 items.Move(items.IndexOf(item), newIndex);
             }
             MarkerPosition = -1;
@@ -1608,16 +1370,11 @@ public class TabBar : ContainerControl
 
     protected override bool IsInputKey(Keys keyData)
     {
-        switch (keyData)
+        return keyData switch
         {
-            case Keys.End:
-            case Keys.Home:
-            case Keys.Left:
-            case Keys.Right:
-                return true;
-            default:
-                return base.IsInputKey(keyData);
-        }
+            Keys.End or Keys.Home or Keys.Left or Keys.Right => true,
+            _ => base.IsInputKey(keyData),
+        };
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -1748,29 +1505,21 @@ public class TabBar : ContainerControl
 
     private Rectangle GetLeftArrowBounds(Rectangle rc)
     {
-        if (!ShowArrows)
-        {
-            return Rectangle.Empty;
-        }
-        return new Rectangle(rc.Left, rc.Top, arrowWidth, rc.Height);
+        return !ShowArrows ? Rectangle.Empty : new Rectangle(rc.Left, rc.Top, arrowWidth, rc.Height);
     }
 
     private Rectangle GetRightArrowBounds(Rectangle rc)
     {
-        if (!ShowArrows)
-        {
-            return Rectangle.Empty;
-        }
-        return new Rectangle(rc.Right - GetDropDownBounds(rc).Width + 1 - arrowWidth, rc.Top, arrowWidth, rc.Height);
+        return !ShowArrows
+            ? Rectangle.Empty
+            : new Rectangle(rc.Right - GetDropDownBounds(rc).Width + 1 - arrowWidth, rc.Top, arrowWidth, rc.Height);
     }
 
     private Rectangle GetDropDownBounds(Rectangle rc)
     {
-        if (!ShowArrows || !ShowDropDown || !items.Exists((TabBarItem x) => x.ShowInDropDown))
-        {
-            return Rectangle.Empty;
-        }
-        return new Rectangle(rc.Right - dropDownWidth, rc.Top, dropDownWidth, rc.Height);
+        return !ShowArrows || !ShowDropDown || !items.Exists((TabBarItem x) => x.ShowInDropDown)
+            ? Rectangle.Empty
+            : new Rectangle(rc.Right - dropDownWidth, rc.Top, dropDownWidth, rc.Height);
     }
 
     private int LayoutTabs(int offset, Rectangle rc, int decreaseSize)
@@ -1819,14 +1568,9 @@ public class TabBar : ContainerControl
             {
                 item.Bounds = item.Bounds.Pad(0, 2, 0, drawBaseLine ? 2 : 0);
             }
-            if (item.CanClose && closeImage != null && (item.State == TabItemState.Hot || item.State == TabItemState.Selected))
-            {
-                item.CloseBounds = new Rectangle(item.Bounds.Right - FormUtility.ScaleDpiX(closeImage.Width) - 2, item.Bounds.Top + 2, FormUtility.ScaleDpiX(closeImage.Width), FormUtility.ScaleDpiY(closeImage.Height));
-            }
-            else
-            {
-                item.CloseBounds = Rectangle.Empty;
-            }
+            item.CloseBounds = item.CanClose && closeImage != null && (item.State == TabItemState.Hot || item.State == TabItemState.Selected)
+                ? new Rectangle(item.Bounds.Right - FormUtility.ScaleDpiX(closeImage.Width) - 2, item.Bounds.Top + 2, FormUtility.ScaleDpiX(closeImage.Width), FormUtility.ScaleDpiY(closeImage.Height))
+                : Rectangle.Empty;
             num2 += item.Bounds.Width - 1;
             result = num2 - num;
             num2 += item.Padding.Right;
@@ -1901,10 +1645,7 @@ public class TabBar : ContainerControl
 
     protected virtual void OnSelectedTabChanged(SelectedTabChangedEventArgs e)
     {
-        if (this.SelectedTabChanged != null)
-        {
-            this.SelectedTabChanged(this, e);
-        }
+        SelectedTabChanged?.Invoke(this, e);
     }
 
     private void InitWindowsTouch()

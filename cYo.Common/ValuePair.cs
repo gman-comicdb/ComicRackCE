@@ -9,19 +9,11 @@ public class ValuePair<K, T>
 {
     [XmlAttribute]
     [DefaultValue(null)]
-    public K Key
-    {
-        get;
-        set;
-    }
+    public K Key { get; set; }
 
     [XmlAttribute]
     [DefaultValue(null)]
-    public T Value
-    {
-        get;
-        set;
-    }
+    public T Value { get; set; }
 
     public ValuePair()
     {

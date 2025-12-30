@@ -15,17 +15,9 @@ public class ComboBoxSkinner
 {
     public interface IComboBoxItem
     {
-        bool IsSeparator
-        {
-            get;
-            set;
-        }
+        bool IsSeparator { get; set; }
 
-        bool IsOwnerDrawn
-        {
-            get;
-            set;
-        }
+        bool IsOwnerDrawn { get; set; }
 
         Size Measure(Graphics gr, Font font);
 
@@ -34,23 +26,11 @@ public class ComboBoxSkinner
 
     public class ComboBoxItem<T> : IComboBoxItem
     {
-        public T Item
-        {
-            get;
-            set;
-        }
+        public T Item { get; set; }
 
-        public bool IsSeparator
-        {
-            get;
-            set;
-        }
+        public bool IsSeparator { get; set; }
 
-        public bool IsOwnerDrawn
-        {
-            get;
-            set;
-        }
+        public bool IsOwnerDrawn { get; set; }
 
         public ComboBoxItem(T item)
         {
@@ -139,10 +119,7 @@ public class ComboBoxSkinner
 
     public ComboBox ComboBox
     {
-        get
-        {
-            return comboBox;
-        }
+        get => comboBox;
         set
         {
             if (comboBox != null)
@@ -167,10 +144,7 @@ public class ComboBoxSkinner
     [DefaultValue(4)]
     public int VerticalItemPadding
     {
-        get
-        {
-            return verticalItemPadding;
-        }
+        get => verticalItemPadding;
         set
         {
             if (verticalItemPadding != value)
@@ -183,10 +157,7 @@ public class ComboBoxSkinner
 
     public int SeparatorHeight
     {
-        get
-        {
-            return separatorHeight;
-        }
+        get => separatorHeight;
         set
         {
             if (separatorHeight != value)
@@ -200,32 +171,18 @@ public class ComboBoxSkinner
     [DefaultValue(true)]
     public bool AutoSizeDropDown
     {
-        get
-        {
-            return autoSizeDropDown;
-        }
-        set
-        {
-            autoSizeDropDown = value;
-        }
+        get => autoSizeDropDown;
+        set => autoSizeDropDown = value;
     }
 
     [DefaultValue(1)]
     public int MaxHeightScale { get; set; } = 1;
 
     [DefaultValue(null)]
-    public IImagePackage IconPackage
-    {
-        get;
-        set;
-    }
+    public IImagePackage IconPackage { get; set; }
 
     [DefaultValue(typeof(Size), "24, 24")]
-    public Size IconSize
-    {
-        get;
-        set;
-    }
+    public Size IconSize { get; set; }
 
     public ComboBoxSkinner()
     {
@@ -320,7 +277,7 @@ public class ComboBoxSkinner
             }
             else
             {
-                using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap)
+                using (StringFormat format = new(StringFormatFlags.NoWrap)
                 {
                     LineAlignment = StringAlignment.Center,
                     Alignment = StringAlignment.Near
@@ -331,7 +288,7 @@ public class ComboBoxSkinner
             }
             if (flag2)
             {
-                Rectangle rect = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, separatorHeight);
+                Rectangle rect = new(e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, separatorHeight);
                 using (Brush brush2 = new SolidBrush(comboBox.BackColor))
                 {
                     e.Graphics.FillRectangle(brush2, rect);
@@ -351,7 +308,7 @@ public class ComboBoxSkinner
 
     public static IList AutoSeparatorList(IEnumerable st)
     {
-        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList = new();
         bool flag = false;
         foreach (object item in st)
         {

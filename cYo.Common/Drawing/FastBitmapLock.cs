@@ -50,14 +50,14 @@ public sealed class FastBitmapLock : DisposableObject
             width = rc.Width;
             height = rc.Height;
             size = width * height * 4;
-            if (bmp.PixelFormat != PixelFormat.Format32bppArgb && bmp.PixelFormat != PixelFormat.Format24bppRgb)
+            if (bmp.PixelFormat is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
             {
                 bitmap = bmp.CreateCopy(rc, PixelFormat.Format32bppArgb);
                 bitmapOwned = true;
                 rc.Location = Point.Empty;
             }
             bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), (!allowWrite) ? ImageLockMode.ReadOnly : ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            data = (scan = bitmapData.Scan0);
+            data = scan = bitmapData.Scan0;
             if (rc.Location.IsEmpty && rc.Size == bitmap.Size && bitmap.PixelFormat == PixelFormat.Format32bppArgb)
             {
                 return;
@@ -102,10 +102,10 @@ public sealed class FastBitmapLock : DisposableObject
                                 byte* ptr4 = ptr2;
                                 for (int j = 0; j < num; j++)
                                 {
-                                    *(ptr4++) = *(ptr3++);
-                                    *(ptr4++) = *(ptr3++);
-                                    *(ptr4++) = *(ptr3++);
-                                    *(ptr4++) = byte.MaxValue;
+                                    *ptr4++ = *ptr3++;
+                                    *ptr4++ = *ptr3++;
+                                    *ptr4++ = *ptr3++;
+                                    *ptr4++ = byte.MaxValue;
                                 }
                                 ptr2 += width << 2;
                                 ptr += stride;

@@ -7,28 +7,14 @@ namespace cYo.Common.Presentation;
 
 public class ScalableBitmap
 {
-    public Bitmap Bitmap
-    {
-        get;
-        set;
-    }
+    public Bitmap Bitmap { get; set; }
 
-    public Padding Margin
-    {
-        get;
-        set;
-    }
+    public Padding Margin { get; set; }
 
     public Rectangle Inner
     {
-        get
-        {
-            return new Rectangle(Point.Empty, Bitmap.Size).Pad(Margin);
-        }
-        set
-        {
-            Margin = value.GetPadding(Bitmap.Size);
-        }
+        get => new Rectangle(Point.Empty, Bitmap.Size).Pad(Margin);
+        set => Margin = value.GetPadding(Bitmap.Size);
     }
 
     public ScalableBitmap(Bitmap bitmap, Padding margin)
@@ -83,8 +69,8 @@ public class ScalableBitmap
         float num2 = margin.Right;
         float num3 = margin.Top;
         float num4 = margin.Bottom;
-        RectangleF src2 = new RectangleF(src.Left + (float)margin.Left, src.Top + (float)margin.Top, src.Width - (float)margin.Horizontal, src.Height - (float)margin.Vertical);
-        RectangleF rectangleF = new RectangleF(dest.Left + num, dest.Top + num3, dest.Width - num - num2, dest.Height - num3 - num4);
+        RectangleF src2 = new(src.Left + (float)margin.Left, src.Top + (float)margin.Top, src.Width - (float)margin.Horizontal, src.Height - (float)margin.Vertical);
+        RectangleF rectangleF = new(dest.Left + num, dest.Top + num3, dest.Width - num - num2, dest.Height - num3 - num4);
         if (gr != null)
         {
             gr.DrawImage(bmp, new RectangleF(dest.Left, dest.Top, num, num3), new RectangleF(src.Left, src.Top, margin.Left, margin.Top), itf, opacity);

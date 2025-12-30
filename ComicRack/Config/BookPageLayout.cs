@@ -14,62 +14,32 @@ public class BookPageLayout
 
     [Browsable(false)]
     [DefaultValue(ImageFitMode.FitWidth)]
-    public ImageFitMode PageDisplayMode
-    {
-        get;
-        set;
-    }
+    public ImageFitMode PageDisplayMode { get; set; }
 
     [DefaultValue(true)]
-    public bool FitOnlyIfOversized
-    {
-        get;
-        set;
-    }
+    public bool FitOnlyIfOversized { get; set; }
 
     [DefaultValue(false)]
-    public bool AutoRotate
-    {
-        get;
-        set;
-    }
+    public bool AutoRotate { get; set; }
 
     [Browsable(false)]
     [DefaultValue(ImageRotation.None)]
-    public ImageRotation PageImageRotation
-    {
-        get;
-        set;
-    }
+    public ImageRotation PageImageRotation { get; set; }
 
     [Browsable(false)]
     [DefaultValue(PageLayoutMode.Single)]
-    public PageLayoutMode PageLayout
-    {
-        get;
-        set;
-    }
+    public PageLayoutMode PageLayout { get; set; }
 
     [Browsable(false)]
     [DefaultValue(1f)]
     public float PageZoom
     {
-        get
-        {
-            return pageZoom;
-        }
-        set
-        {
-            pageZoom = value.Clamp(1f, 8f);
-        }
+        get => pageZoom;
+        set => pageZoom = value.Clamp(1f, 8f);
     }
 
     [DefaultValue(false)]
-    public bool TwoPageAutoScroll
-    {
-        get;
-        set;
-    }
+    public bool TwoPageAutoScroll { get; set; }
 
     public BookPageLayout()
     {

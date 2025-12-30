@@ -17,14 +17,10 @@ public static class Keyboard
 
     public static string GetLocalizedKeyName(Keys key)
     {
-        StringBuilder stringBuilder = new StringBuilder(256);
+        StringBuilder stringBuilder = new(256);
         uint uCode = (uint)key;
         uint scanCode = Native.MapVirtualKey(uCode, 0u) << 16;
         Native.GetKeyNameText(scanCode, stringBuilder, stringBuilder.Capacity);
-        if (stringBuilder.Length != 0)
-        {
-            return stringBuilder.ToString();
-        }
-        return key.ToString();
+        return stringBuilder.Length != 0 ? stringBuilder.ToString() : key.ToString();
     }
 }

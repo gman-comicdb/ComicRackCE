@@ -38,11 +38,7 @@ public static class RectangleExtensions
 
     public static bool IsEmpty(this Rectangle rc)
     {
-        if (rc.Width != 0)
-        {
-            return rc.Height == 0;
-        }
-        return true;
+        return rc.Width != 0 ? rc.Height == 0 : true;
     }
 
     public static Point GetCenter(this Rectangle rc)
@@ -226,7 +222,7 @@ public static class RectangleExtensions
                 item2.Height = height;
             }
         }
-        List<RectangleF> list = new List<RectangleF>(4);
+        List<RectangleF> list = new(4);
         if (!item2.IsEmpty)
         {
             list.Add(item2);
@@ -250,7 +246,7 @@ public static class RectangleExtensions
     {
         int nx = (int)((rect.Width + sub.Width - 1f) / sub.Width);
         int ny = (int)((rect.Height + sub.Height - 1f) / sub.Height);
-        RectangleF r = new RectangleF(rect.Location, sub.Size);
+        RectangleF r = new(rect.Location, sub.Size);
         for (int x = 0; x < nx; x++)
         {
             for (int y = 0; y < ny; y++)
@@ -311,15 +307,12 @@ public static class RectangleExtensions
 
     public static Rectangle AlignHorizontal(this Rectangle rectangle, int offset, StringAlignment alignment)
     {
-        switch (alignment)
+        return alignment switch
         {
-            default:
-                return new Rectangle(offset - rectangle.Width / 2, rectangle.Y, rectangle.Width, rectangle.Height);
-            case StringAlignment.Far:
-                return new Rectangle(offset, rectangle.Y, rectangle.Width, rectangle.Height);
-            case StringAlignment.Near:
-                return new Rectangle(offset - rectangle.Width, rectangle.Y, rectangle.Width, rectangle.Height);
-        }
+            StringAlignment.Far => new Rectangle(offset, rectangle.Y, rectangle.Width, rectangle.Height),
+            StringAlignment.Near => new Rectangle(offset - rectangle.Width, rectangle.Y, rectangle.Width, rectangle.Height),
+            _ => new Rectangle(offset - rectangle.Width / 2, rectangle.Y, rectangle.Width, rectangle.Height),
+        };
     }
 
     public static RectangleF Align(this RectangleF rectangle, RectangleF bounds, ContentAlignment alignment)
@@ -370,15 +363,12 @@ public static class RectangleExtensions
 
     public static RectangleF AlignHorizontal(this RectangleF rectangle, float offset, StringAlignment alignment)
     {
-        switch (alignment)
+        return alignment switch
         {
-            default:
-                return new RectangleF(offset - rectangle.Width / 2f, rectangle.Y, rectangle.Width, rectangle.Height);
-            case StringAlignment.Far:
-                return new RectangleF(offset, rectangle.Y, rectangle.Width, rectangle.Height);
-            case StringAlignment.Near:
-                return new RectangleF(offset - rectangle.Width, rectangle.Y, rectangle.Width, rectangle.Height);
-        }
+            StringAlignment.Far => new RectangleF(offset, rectangle.Y, rectangle.Width, rectangle.Height),
+            StringAlignment.Near => new RectangleF(offset - rectangle.Width, rectangle.Y, rectangle.Width, rectangle.Height),
+            _ => new RectangleF(offset - rectangle.Width / 2f, rectangle.Y, rectangle.Width, rectangle.Height),
+        };
     }
 
     public static Rectangle Scale(this Rectangle rect, float scaleX, float scaleY)
@@ -442,13 +432,13 @@ public static class RectangleExtensions
         {
             throw new ArgumentNullException();
         }
-        Point[] array = new Point[4]
-        {
-            new Point(rectangle.X, rectangle.Y),
-            new Point(rectangle.Right, rectangle.Y),
-            new Point(rectangle.Right, rectangle.Bottom),
-            new Point(rectangle.X, rectangle.Bottom)
-        };
+        Point[] array =
+        [
+            new(rectangle.X, rectangle.Y),
+            new(rectangle.Right, rectangle.Y),
+            new(rectangle.Right, rectangle.Bottom),
+            new(rectangle.X, rectangle.Bottom)
+        ];
         rotationMatrix.TransformPoints(array);
         return array.GetBounds();
     }
@@ -465,25 +455,25 @@ public static class RectangleExtensions
 
     public static PointF[] ToPoints(this RectangleF rect)
     {
-        return new PointF[4]
-        {
+        return
+        [
             rect.TopLeft(),
             rect.TopRight(),
             rect.BottomLeft(),
             rect.BottomRight()
-        };
+        ];
     }
 
     public static PointF[] ToLineStrip(this RectangleF rect)
     {
-        return new PointF[5]
-        {
+        return
+        [
             rect.TopLeft(),
             rect.TopRight(),
             rect.BottomRight(),
             rect.BottomLeft(),
             rect.TopLeft()
-        };
+        ];
     }
 
     public static RectangleF ToRectangle(this IEnumerable<PointF> points)
@@ -493,13 +483,13 @@ public static class RectangleExtensions
 
     public static Point[] ToPoints(this Rectangle rect)
     {
-        return new Point[4]
-        {
+        return
+        [
             rect.TopLeft(),
             rect.TopRight(),
             rect.BottomLeft(),
             rect.BottomRight()
-        };
+        ];
     }
 
     public static Rectangle ToRectangle(this IEnumerable<Point> points)
@@ -509,20 +499,12 @@ public static class RectangleExtensions
 
     public static RectangleF Union(this RectangleF a, RectangleF b)
     {
-        if (!a.IsEmpty)
-        {
-            return RectangleF.Union(a, b);
-        }
-        return b;
+        return !a.IsEmpty ? RectangleF.Union(a, b) : b;
     }
 
     public static Rectangle Union(this Rectangle a, Rectangle b)
     {
-        if (!a.IsEmpty)
-        {
-            return Rectangle.Union(a, b);
-        }
-        return b;
+        return !a.IsEmpty ? Rectangle.Union(a, b) : b;
     }
 
     public static Rectangle Subtract(this Rectangle a, Rectangle b)

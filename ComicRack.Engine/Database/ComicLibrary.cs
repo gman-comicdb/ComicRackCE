@@ -18,15 +18,14 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     [Serializable]
     private class ComicListItemLookup
     {
-        private ReverseIndex<ComicListItem, string> reversePropertyIndex = new ReverseIndex<ComicListItem, string>();
+        private ReverseIndex<ComicListItem, string> reversePropertyIndex = new();
 
-        private ReverseIndex<ComicListItem, Guid> reverseBaseListIndex = new ReverseIndex<ComicListItem, Guid>();
+        private ReverseIndex<ComicListItem, Guid> reverseBaseListIndex = new();
 
         public void Add(ComicListItem item)
         {
             reversePropertyIndex.Add(item, item.GetDependentProperties());
-            ComicSmartListItem comicSmartListItem = item as ComicSmartListItem;
-            if (comicSmartListItem != null && comicSmartListItem.BaseListId != Guid.Empty)
+            if (item is ComicSmartListItem comicSmartListItem && comicSmartListItem.BaseListId != Guid.Empty)
             {
                 reverseBaseListIndex.Add(item, comicSmartListItem.BaseListId);
             }
@@ -40,8 +39,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
         public void AddRange(ComicListItem item)
         {
             Add(item);
-            ComicListItemFolder comicListItemFolder = item as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (item is ComicListItemFolder comicListItemFolder)
             {
                 AddRange(comicListItemFolder.Items.GetItems<ComicListItem>());
             }
@@ -61,8 +59,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
         public void RemoveRange(ComicListItem item)
         {
             Remove(item);
-            ComicListItemFolder comicListItemFolder = item as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (item is ComicListItemFolder comicListItemFolder)
             {
                 RemoveRange(comicListItemFolder.Items.GetItems<ComicListItem>());
             }
@@ -90,44 +87,32 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     private bool isLoaded;
 
-    private HashSet<string> customValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> customValues = new(StringComparer.OrdinalIgnoreCase);
 
-    private ComicListItemCollection comicLists = new ComicListItemCollection();
+    private ComicListItemCollection comicLists = new();
 
-    private readonly ComicListItemLookup comicListItemLookup = new ComicListItemLookup();
+    private readonly ComicListItemLookup comicListItemLookup = new();
 
     [NonSerialized]
     private Dictionary<ComicBookSeriesStatistics.Key, ComicBookSeriesStatistics> seriesStats;
 
     [NonSerialized]
-    private object seriesStatsLock = new object();
+    private object seriesStatsLock = new();
 
     private static Type[] extraTypes;
 
     [XmlIgnore]
     public bool IsDirty
     {
-        get
-        {
-            return isDirty;
-        }
-        set
-        {
-            isDirty = value;
-        }
+        get => isDirty;
+        set => isDirty = value;
     }
 
     [XmlIgnore]
     public bool IsLoaded
     {
-        get
-        {
-            return isLoaded;
-        }
-        set
-        {
-            isLoaded = value;
-        }
+        get => isLoaded;
+        set => isLoaded = value;
     }
 
     [XmlIgnore]
@@ -158,23 +143,11 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     public ComicListItemCollection ComicLists => comicLists;
 
     [XmlIgnore]
-    public bool ComicListsLocked
-    {
-        get;
-        set;
-    }
+    public bool ComicListsLocked { get; set; }
 
-    public static QueryCacheMode QueryCacheMode
-    {
-        get;
-        set;
-    }
+    public static QueryCacheMode QueryCacheMode { get; set; }
 
-    public static bool BackgroundQueryCacheUpdate
-    {
-        get;
-        set;
-    }
+    public static bool BackgroundQueryCacheUpdate { get; set; }
 
     public static bool IsQueryCacheEnabled => QueryCacheMode != QueryCacheMode.Disabled;
 
@@ -254,11 +227,11 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public void InitializeDefaultLists()
     {
-        ComicLibraryListItem item = new ComicLibraryListItem(ComicBook.TR["Library", "Library"]);
+        ComicLibraryListItem item = new(ComicBook.TR["Library", "Library"]);
         comicLists.Add(item);
-        ComicListItemFolder comicListItemFolder = new ComicListItemFolder(ComicBook.TR["SmartLists", "Smart Lists"]);
+        ComicListItemFolder comicListItemFolder = new(ComicBook.TR["SmartLists", "Smart Lists"]);
         comicLists.Add(comicListItemFolder);
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem(ComicBook.TR["MyFavoritesList", "My Favorites"]);
+        ComicSmartListItem comicSmartListItem = new(ComicBook.TR["MyFavoritesList", "My Favorites"]);
         comicSmartListItem.Matchers.Add(typeof(ComicBookRatingMatcher), 1, "3", "");
         comicListItemFolder.Items.Add(comicSmartListItem);
         comicListItemFolder.Items.Add(DefaultRecentlyAddedList());
@@ -277,7 +250,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public static ShareableComicListItem DefaultReadingList(ComicLibrary lib = null)
     {
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem(ComicBook.TR["ReadingList", "Reading"]);
+        ComicSmartListItem comicSmartListItem = new(ComicBook.TR["ReadingList", "Reading"]);
         comicSmartListItem.Matchers.Add(typeof(ComicBookReadPercentageMatcher), 3, EngineConfiguration.Default.IsNotReadCompletionPercentage.ToString(), EngineConfiguration.Default.IsReadCompletionPercentage.ToString());
         comicSmartListItem.Library = lib;
         return comicSmartListItem;
@@ -285,7 +258,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public static ShareableComicListItem DefaultRecentlyReadList(ComicLibrary lib = null)
     {
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem(ComicBook.TR["RecentlyReadList", "Recently Read"]);
+        ComicSmartListItem comicSmartListItem = new(ComicBook.TR["RecentlyReadList", "Recently Read"]);
         comicSmartListItem.Matchers.Add(typeof(ComicBookOpenedMatcher), 3, EngineConfiguration.Default.IsRecentInDays.ToString(), "");
         comicSmartListItem.Library = lib;
         return comicSmartListItem;
@@ -293,7 +266,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public static ShareableComicListItem DefaultRecentlyAddedList(ComicLibrary lib = null)
     {
-        ComicSmartListItem comicSmartListItem = new ComicSmartListItem(ComicBook.TR["RecentlyAddedList", "Recently Added"]);
+        ComicSmartListItem comicSmartListItem = new(ComicBook.TR["RecentlyAddedList", "Recently Added"]);
         comicSmartListItem.Matchers.Add(typeof(ComicBookAddedMatcher), 3, EngineConfiguration.Default.IsRecentInDays.ToString(), "");
         comicSmartListItem.Library = lib;
         return comicSmartListItem;
@@ -309,8 +282,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
         foreach (ComicListItem item in comicListItemCollection)
         {
             item.Display = CloneUtility.Clone(cfg);
-            ComicListItemFolder comicListItemFolder = item as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (item is ComicListItemFolder comicListItemFolder)
             {
                 SetDisplayListConfig(comicListItemFolder.Items, cfg);
             }
@@ -321,10 +293,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     {
         isDirty = true;
         UpdateQueryCacheListIndex(e);
-        if (this.ComicListsChanged != null)
-        {
-            this.ComicListsChanged(this, e);
-        }
+        ComicListsChanged?.Invoke(this, e);
     }
 
     public void NotifyComicListChanged(ComicListItem item, ComicListItemChange changeType)
@@ -339,9 +308,9 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     private void AddCustomValues(ComicBook book)
     {
-        if (AddCustomValues(customValues, book) && this.CustomValuesChanged != null)
+        if (AddCustomValues(customValues, book) && CustomValuesChanged != null)
         {
-            this.CustomValuesChanged(this, EventArgs.Empty);
+            CustomValuesChanged(this, EventArgs.Empty);
         }
     }
 
@@ -391,9 +360,9 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
         {
             flag |= item.InvalidateCache(cb, pendingCacheAction, propertyHint);
         }
-        if (flag && this.ComicListCachesUpdated != null)
+        if (flag && ComicListCachesUpdated != null)
         {
-            this.ComicListCachesUpdated(this, EventArgs.Empty);
+            ComicListCachesUpdated(this, EventArgs.Empty);
         }
     }
 
@@ -438,7 +407,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     {
         using (ItemMonitor.Lock(seriesStatsLock))
         {
-            seriesStats = seriesStats ?? ComicBookSeriesStatistics.Create(GetBooks());
+            seriesStats ??= ComicBookSeriesStatistics.Create(GetBooks());
             return seriesStats[new ComicBookSeriesStatistics.Key(book)];
         }
     }
@@ -464,7 +433,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public static ComicLibrary Attach(ComicLibrary library)
     {
-        ComicLibrary comicLibrary = new ComicLibrary
+        ComicLibrary comicLibrary = new()
         {
             Name = library.Name,
             Id = library.Id
@@ -478,7 +447,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     {
         if (extraTypes == null)
         {
-            List<Type> list = new List<Type>();
+            List<Type> list = new();
             list.AddRange(ComicBookValueMatcher.GetAvailableMatcherTypes());
             list.Add(typeof(ComicBookGroupMatcher));
             extraTypes = list.ToArray();
@@ -503,7 +472,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
 
     public static IEnumerable<string> GetCustomFields(IEnumerable<ComicBook> comicBooks, bool showAll)
     {
-        HashSet<string> result = new HashSet<string>();
+        HashSet<string> result = new();
         foreach (ComicBook comicBook in comicBooks)
         {
             AddCustomValues(result, comicBook, showAll);

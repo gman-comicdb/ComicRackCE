@@ -22,9 +22,9 @@ public class TarSharpZipEngine : FileBasedAccessor
     {
         try
         {
-            using (FileStream inputStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+            using (FileStream inputStream = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
             {
-                using (TarInputStream tarInputStream = new TarInputStream(inputStream, Encoding.UTF8))
+                using (TarInputStream tarInputStream = new(inputStream, Encoding.UTF8))
                 {
                     return tarInputStream.GetNextEntry() != null;
                 }
@@ -38,9 +38,9 @@ public class TarSharpZipEngine : FileBasedAccessor
 
     public override IEnumerable<ProviderImageInfo> GetEntryList(string source)
     {
-        using (FileStream fs = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+        using (FileStream fs = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
         {
-            using (TarInputStream tis = new TarInputStream(fs, Encoding.UTF8))
+            using (TarInputStream tis = new(fs, Encoding.UTF8))
             {
                 while (true)
                 {
@@ -63,9 +63,9 @@ public class TarSharpZipEngine : FileBasedAccessor
     {
         try
         {
-            using (FileStream inputStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+            using (FileStream inputStream = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
             {
-                using (TarInputStream tarInputStream = new TarInputStream(inputStream, Encoding.UTF8))
+                using (TarInputStream tarInputStream = new(inputStream, Encoding.UTF8))
                 {
                     TarEntry nextEntry;
                     do
@@ -74,11 +74,7 @@ public class TarSharpZipEngine : FileBasedAccessor
                     }
                     while (!(nextEntry.Name == info.Name));
                     byte[] array = new byte[info.Size];
-                    if (tarInputStream.Read(array, 0, array.Length) != array.Length)
-                    {
-                        throw new IOException();
-                    }
-                    return array;
+                    return tarInputStream.Read(array, 0, array.Length) != array.Length ? throw new IOException() : array;
                 }
             }
         }
@@ -94,8 +90,8 @@ public class TarSharpZipEngine : FileBasedAccessor
         {
             byte[] buffer = new byte[BufferSize];
 
-            using (FileStream inputStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
-            using (TarInputStream tarInputStream = new TarInputStream(inputStream, Encoding.UTF8))
+            using (FileStream inputStream = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+            using (TarInputStream tarInputStream = new(inputStream, Encoding.UTF8))
             {
                 return XmlInfoProviders.Readers.DeserializeAll(s =>
                 {
@@ -105,7 +101,7 @@ public class TarSharpZipEngine : FileBasedAccessor
                         nextEntry = tarInputStream.GetNextEntry();
                     } while (String.Compare(Path.GetFileName(nextEntry.Name), s, StringComparison.OrdinalIgnoreCase) != 0);
 
-                    MemoryStream inStream = new MemoryStream();
+                    MemoryStream inStream = new();
                     int bytesRead;
                     while ((bytesRead = tarInputStream.Read(buffer, 0, buffer.Length)) > 0)
                     {

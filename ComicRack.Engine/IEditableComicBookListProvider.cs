@@ -6,10 +6,7 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IEditableComicBookListProvider : IComicBookListProvider, ILiteComponent, IDisposable, IIdentity, IComicBookList
 {
-    bool IsLibrary
-    {
-        get;
-    }
+    bool IsLibrary { get; }
 
     int Add(ComicBook comicBook);
 

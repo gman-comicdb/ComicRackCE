@@ -35,16 +35,15 @@ public class ComicPageContainerControl : ContainerControl
     {
         base.OnControlAdded(e);
         Control c = e.Control;
-        if (!(c is TabBar))
+        if (c is not TabBar)
         {
             string text = c.Text;
             Image image = null;
-            ComicPageControl comicPageControl = e.Control as ComicPageControl;
-            if (comicPageControl != null)
+            if (e.Control is ComicPageControl comicPageControl)
             {
                 image = comicPageControl.Icon;
             }
-            TabBar.TabBarItem tbi = new TabBar.TabBarItem
+            TabBar.TabBarItem tbi = new()
             {
                 Text = text,
                 Image = image,

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -55,7 +52,7 @@ public class GithubAPI(string sha1 = "", string headTag = "nightly")
         if (response == null)
             return string.Empty;
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         for (int i = 0; i < response.commits.Length; i++)
         {
             Commit item = response.commits[i];

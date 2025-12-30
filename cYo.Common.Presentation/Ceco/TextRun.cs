@@ -86,8 +86,8 @@ public class TextRun : Span, IRender
                 hrgn = region.GetHrgn(graphics);
             }
             dc = graphics.GetHdc();
-            HandleRef hdc = new HandleRef(this, dc);
-            HandleRef hRegion = new HandleRef(null, hrgn);
+            HandleRef hdc = new(this, dc);
+            HandleRef hRegion = new(null, hrgn);
             SetTransform(hdc, xform);
             SetClip(hdc, hRegion);
             return dc;
@@ -133,27 +133,11 @@ public class TextRun : Span, IRender
 
     public string Text
     {
-        get
-        {
-            return text;
-        }
-        set
-        {
-            text = value;
-        }
+        get => text;
+        set => text = value;
     }
 
-    public bool IsWhiteSpace
-    {
-        get
-        {
-            if (text != null)
-            {
-                return text.All((char c) => char.IsWhiteSpace(c));
-            }
-            return true;
-        }
-    }
+    public bool IsWhiteSpace => text != null ? text.All((char c) => char.IsWhiteSpace(c)) : true;
 
     static TextRun()
     {
@@ -253,8 +237,8 @@ public class TextRun : Span, IRender
 
     public static IList<Inline> GetWords(string text)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Inline> list = new List<Inline>();
+        StringBuilder stringBuilder = new();
+        List<Inline> list = new();
         for (int i = 0; i < text.Length; i++)
         {
             char c = text[i];

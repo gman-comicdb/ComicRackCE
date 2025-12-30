@@ -28,7 +28,7 @@ public class CbtStorageProvider : PackedStorageProvider
 
     protected override void AddEntry(string name, byte[] data)
     {
-        TarHeader tarHeader = new TarHeader
+        TarHeader tarHeader = new()
         {
             Name = name,
             UserName = "ComicRack",

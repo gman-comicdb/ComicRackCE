@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -19,17 +17,9 @@ public partial class ListLayoutDialog : FormEx
 {
     public class TileTextItem
     {
-        public int Value
-        {
-            get;
-            set;
-        }
+        public int Value { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public override string ToString()
         {
@@ -39,17 +29,9 @@ public partial class ListLayoutDialog : FormEx
 
     private class CaptionData
     {
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public CaptionData(int id, string text)
         {
@@ -65,22 +47,12 @@ public partial class ListLayoutDialog : FormEx
 
     private Action<DisplayListConfig> apply;
 
-    public DisplayListConfig DisplayListConfig
-    {
-        get;
-        set;
-    }
+    public DisplayListConfig DisplayListConfig { get; set; }
 
     public ItemViewConfig Config
     {
-        get
-        {
-            return DisplayListConfig.View;
-        }
-        set
-        {
-            DisplayListConfig.View = value;
-        }
+        get => DisplayListConfig.View;
+        set => DisplayListConfig.View = value;
     }
 
     public ListLayoutDialog()
@@ -203,10 +175,7 @@ public partial class ListLayoutDialog : FormEx
     private void btApply_Click(object sender, EventArgs e)
     {
         Apply();
-        if (apply != null)
-        {
-            apply(DisplayListConfig);
-        }
+        apply?.Invoke(DisplayListConfig);
     }
 
     private static int GetCaptionId(ComboBox cb)
@@ -247,8 +216,7 @@ public partial class ListLayoutDialog : FormEx
         ListViewItem listViewItem = lvColumns.Items.Add(ci.Name);
         listViewItem.Checked = ci.Visible;
         listViewItem.Tag = ci;
-        ComicListField comicListField = ci.Tag as ComicListField;
-        if (comicListField != null)
+        if (ci.Tag is ComicListField comicListField)
         {
             listViewItem.SubItems.Add(comicListField.Description);
         }
@@ -256,11 +224,7 @@ public partial class ListLayoutDialog : FormEx
 
     private int SelectedColumnIndex()
     {
-        if (lvColumns.SelectedIndices.Count <= 0)
-        {
-            return -1;
-        }
-        return lvColumns.SelectedIndices[0];
+        return lvColumns.SelectedIndices.Count <= 0 ? -1 : lvColumns.SelectedIndices[0];
     }
 
     private void SetTileTextElements(ComicTextElements texts)
@@ -287,7 +251,7 @@ public partial class ListLayoutDialog : FormEx
 
     public static bool Show(IWin32Window parent, DisplayListConfig displayListConfig, ItemViewMode mode, Action<DisplayListConfig> apply = null)
     {
-        using (ListLayoutDialog listLayoutDialog = new ListLayoutDialog())
+        using (ListLayoutDialog listLayoutDialog = new())
         {
             listLayoutDialog.apply = apply;
             listLayoutDialog.DisplayListConfig = displayListConfig;

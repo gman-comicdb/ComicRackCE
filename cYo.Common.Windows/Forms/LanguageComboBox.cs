@@ -19,11 +19,7 @@ public class LanguageComboBox : ComboBox
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(base.Item.Name))
-            {
-                return string.Empty;
-            }
-            return base.Item.DisplayName;
+            return string.IsNullOrEmpty(base.Item.Name) ? string.Empty : Item.DisplayName;
         }
 
         public int CompareTo(LanguageItem other)
@@ -38,22 +34,13 @@ public class LanguageComboBox : ComboBox
 
     public override string Text
     {
-        get
-        {
-            return SelectedCulture;
-        }
-        set
-        {
-            SelectedCulture = value;
-        }
+        get => SelectedCulture;
+        set => SelectedCulture = value;
     }
 
     public CultureTypes CultureTypes
     {
-        get
-        {
-            return cultureTypes;
-        }
+        get => cultureTypes;
         set
         {
             if (value != cultureTypes)
@@ -66,10 +53,7 @@ public class LanguageComboBox : ComboBox
 
     public IEnumerable<string> TopISOLanguages
     {
-        get
-        {
-            return topISOLanguages;
-        }
+        get => topISOLanguages;
         set
         {
             topISOLanguages = value;
@@ -84,11 +68,9 @@ public class LanguageComboBox : ComboBox
         get
         {
             LanguageItem languageItem = (LanguageItem)base.SelectedItem;
-            if (languageItem != null && !string.IsNullOrEmpty(languageItem.Item.Name))
-            {
-                return languageItem.Item.TwoLetterISOLanguageName;
-            }
-            return string.Empty;
+            return languageItem != null && !string.IsNullOrEmpty(languageItem.Item.Name)
+                ? languageItem.Item.TwoLetterISOLanguageName
+                : string.Empty;
         }
         set
         {
@@ -107,16 +89,9 @@ public class LanguageComboBox : ComboBox
     {
         get
         {
-            LanguageItem languageItem = base.SelectedItem as LanguageItem;
-            if (languageItem == null)
-            {
-                return string.Empty;
-            }
-            if (!string.IsNullOrEmpty(languageItem.Item.Name))
-            {
-                return languageItem.Item.Name;
-            }
-            return string.Empty;
+            return base.SelectedItem is not LanguageItem languageItem
+                ? string.Empty
+                : !string.IsNullOrEmpty(languageItem.Item.Name) ? languageItem.Item.Name : string.Empty;
         }
         set
         {
@@ -169,8 +144,8 @@ public class LanguageComboBox : ComboBox
         base.Items.Clear();
         base.Items.Add(new LanguageItem(new CultureInfo(string.Empty)));
         base.Sorted = false;
-        LanguageItem[] array = ((topISOLanguages == null) ? null : (from iso in topISOLanguages.Where(IsValidCulture)
-                                                                    select new LanguageItem(new CultureInfo(iso))).ToArray().Sort());
+        LanguageItem[] array = (topISOLanguages == null) ? null : (from iso in topISOLanguages.Where(IsValidCulture)
+                                                                    select new LanguageItem(new CultureInfo(iso))).ToArray().Sort();
         bool hasTop = array != null && array.Length != 0;
         if (hasTop)
         {

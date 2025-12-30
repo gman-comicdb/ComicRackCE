@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Xml.Serialization;
 
 using cYo.Common.ComponentModel;
 using cYo.Common.Runtime;
@@ -22,28 +21,14 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
     {
         private long length;
 
-        public string File
-        {
-            get;
-            set;
-        }
+        public string File { get; set; }
 
-        public K Key
-        {
-            get;
-            set;
-        }
+        public K Key { get; set; }
 
         public long Length
         {
-            get
-            {
-                return Interlocked.Read(ref length);
-            }
-            set
-            {
-                Interlocked.Exchange(ref length, value);
-            }
+            get => Interlocked.Read(ref length);
+            set => Interlocked.Exchange(ref length, value);
         }
 
         public string FileName => Path.GetFileName(File);
@@ -68,9 +53,9 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     private readonly string cacheIndex;
 
-    private readonly Dictionary<K, LinkedListNode<CacheItem>> fileDict = new Dictionary<K, LinkedListNode<CacheItem>>();
+    private readonly Dictionary<K, LinkedListNode<CacheItem>> fileDict = new();
 
-    private readonly LinkedList<CacheItem> fileList = new LinkedList<CacheItem>();
+    private readonly LinkedList<CacheItem> fileList = new();
 
     private readonly LockFile lockFile;
 
@@ -84,16 +69,13 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     private volatile bool enabled = true;
 
-    private readonly Dictionary<K, ManualResetEvent> creationLocks = new Dictionary<K, ManualResetEvent>();
+    private readonly Dictionary<K, ManualResetEvent> creationLocks = new();
 
     public string CacheFolder => cacheFolder;
 
     public int CacheSizeMB
     {
-        get
-        {
-            return cacheSizeMB;
-        }
+        get => cacheSizeMB;
         set
         {
             cacheSizeMB = value;
@@ -116,21 +98,11 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     public bool Enabled
     {
-        get
-        {
-            return enabled;
-        }
-        set
-        {
-            enabled = value;
-        }
+        get => enabled;
+        set => enabled = value;
     }
 
-    public bool CacheIndexDirty
-    {
-        get;
-        set;
-    }
+    public bool CacheIndexDirty { get; set; }
 
     public event EventHandler SizeChanged;
 
@@ -200,19 +172,13 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
     {
         indexSaver.SafeDispose();
         SaveCacheIndex(cacheIndex);
-        if (lockFile != null)
-        {
-            lockFile.Dispose();
-        }
+        lockFile?.Dispose();
         base.Dispose(disposing);
     }
 
     protected virtual void OnSizeChanged()
     {
-        if (this.SizeChanged != null)
-        {
-            this.SizeChanged(this, EventArgs.Empty);
-        }
+        SizeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void IncSize(long add)
@@ -227,7 +193,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
         {
             string cacheIndexLegacy = cacheIndexFile;
             string cacheIndexXml = $"{cacheIndexFile}.xml";
-            List<CacheItem> index = new List<CacheItem>();
+            List<CacheItem> index = new();
 
             try
             {
@@ -240,10 +206,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
             {
             }
 
-            if (index.Count > 0)
-                return index;
-
-            return LoadCacheIndexBinary(cacheIndexLegacy);
+            return index.Count > 0 ? index : LoadCacheIndexBinary(cacheIndexLegacy);
         }
         catch (Exception)
         {
@@ -255,7 +218,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
     {
         try
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter
+            BinaryFormatter binaryFormatter = new()
             {
                 Binder = new VersionNeutralBinder()
             };
@@ -307,7 +270,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
             try
             {
                 CacheIndexDirty = false;
-                BinaryFormatter binaryFormatter = new BinaryFormatter
+                BinaryFormatter binaryFormatter = new()
                 {
                     TypeFormat = FormatterTypeStyle.TypesWhenNeeded
                 };
@@ -398,17 +361,13 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     public bool IsAvailable(K key)
     {
-        if (Enabled)
-        {
-            return GetCacheItem(key) != null;
-        }
-        return false;
+        return Enabled ? GetCacheItem(key) != null : false;
     }
 
     public T GetItem(K key)
     {
         LinkedListNode<CacheItem> cacheItem = GetCacheItem(key);
-        T result = default(T);
+        T result = default;
         if (cacheItem != null)
         {
             using (ItemMonitor.Lock(cacheItem))
@@ -467,7 +426,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
             {
                 return false;
             }
-            CacheItem cacheItem2 = new CacheItem(key, CreateCacheFileName(), 0L);
+            CacheItem cacheItem2 = new(key, CreateCacheFileName(), 0L);
             string fullPath = GetFullPath(cacheItem2);
             string directoryName = Path.GetDirectoryName(fullPath);
             if (!Directory.Exists(directoryName))
@@ -534,7 +493,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     public void UpdateKeys(Func<K, bool> select, Action<K> update)
     {
-        List<LinkedListNode<CacheItem>> list = new List<LinkedListNode<CacheItem>>();
+        List<LinkedListNode<CacheItem>> list = new();
         using (ItemMonitor.Lock(fileList))
         {
             for (LinkedListNode<CacheItem> linkedListNode = fileList.First; linkedListNode != null; linkedListNode = linkedListNode.Next)
@@ -560,7 +519,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
 
     public void RemoveKeys(Func<K, bool> select)
     {
-        List<K> list = new List<K>();
+        List<K> list = new();
         using (ItemMonitor.Lock(fileList))
         {
             for (LinkedListNode<CacheItem> linkedListNode = fileList.First; linkedListNode != null; linkedListNode = linkedListNode.Next)

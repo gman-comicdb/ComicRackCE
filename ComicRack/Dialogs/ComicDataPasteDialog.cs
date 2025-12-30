@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -92,8 +91,8 @@ public partial class ComicDataPasteDialog : FormEx
     {
         IEnumerable<string> checks = null;
         int count = books.Count();
-        string[] array = (Program.Settings.ShowCustomBookFields ? Program.Database.CustomValues.Where((string k) => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray() : null);
-        using (ComicDataPasteDialog comicDataPasteDialog = new ComicDataPasteDialog())
+        string[] array = Program.Settings.ShowCustomBookFields ? Program.Database.CustomValues.Where((string k) => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray() : null;
+        using (ComicDataPasteDialog comicDataPasteDialog = new())
         {
             comicDataPasteDialog.SetChecks(data, Program.Settings.PasteProperties.Split(';'));
             comicDataPasteDialog.Text = StringUtility.Format(comicDataPasteDialog.Text, count);
@@ -150,9 +149,9 @@ public partial class ComicDataPasteDialog : FormEx
                 CheckBox checkBox2 = comicDataPasteDialog.chkOpenedTime;
                 CheckBox checkBox3 = comicDataPasteDialog.chkPageCount;
                 CheckBox checkBox4 = comicDataPasteDialog.chkOpenedTime;
-                bool flag2 = (comicDataPasteDialog.chkPageCount.Enabled = false);
-                bool flag4 = (checkBox4.Enabled = flag2);
-                bool visible = (checkBox3.Visible = flag4);
+                bool flag2 = comicDataPasteDialog.chkPageCount.Enabled = false;
+                bool flag4 = checkBox4.Enabled = flag2;
+                bool visible = checkBox3.Visible = flag4;
                 checkBox2.Visible = visible;
             }
             if (!books.Any((ComicBook cb) => cb.IsInContainer))
@@ -161,10 +160,10 @@ public partial class ComicDataPasteDialog : FormEx
                 CheckBox checkBox6 = comicDataPasteDialog.chkRating;
                 CheckBox checkBox7 = comicDataPasteDialog.chkTags;
                 CheckBox checkBox8 = comicDataPasteDialog.chkColor;
-                bool flag7 = (comicDataPasteDialog.chkSeriesComplete.Enabled = false);
-                bool flag2 = (checkBox8.Enabled = flag7);
-                bool flag4 = (checkBox7.Enabled = flag2);
-                bool visible = (checkBox6.Enabled = flag4);
+                bool flag7 = comicDataPasteDialog.chkSeriesComplete.Enabled = false;
+                bool flag2 = checkBox8.Enabled = flag7;
+                bool flag4 = checkBox7.Enabled = flag2;
+                bool visible = checkBox6.Enabled = flag4;
                 checkBox5.Enabled = visible;
             }
             if (comicDataPasteDialog.ShowDialog(parent) == DialogResult.OK)

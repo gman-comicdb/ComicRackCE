@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -22,16 +20,7 @@ public partial class OpenWithDialog : FormEx
 
     public IList Items { get; set; }
 
-    public object SelectedItem
-    {
-        get
-        {
-            if (lvItems.SelectedItems.Count != 0)
-                return lvItems.SelectedItems[0].Tag;
-
-            return null;
-        }
-    }
+    public object SelectedItem => lvItems.SelectedItems.Count != 0 ? lvItems.SelectedItems[0].Tag : null;
 
     public OpenWithDialog()
     {
@@ -48,13 +37,10 @@ public partial class OpenWithDialog : FormEx
         lvItems.Items.Clear();
         foreach (object item in Items)
         {
-            INamed named = item as INamed;
-            IPath path = item as IPath;
-            IOverride over = item as IOverride;
-            ListViewItem listViewItem = lvItems.Items.Add((named != null) ? named.Name : item.ToString());
-            if (path != null)
+            ListViewItem listViewItem = lvItems.Items.Add((item is INamed named) ? named.Name : item.ToString());
+            if (item is IPath path)
                 listViewItem.SubItems.Add(path.FullPath);
-            if (over != null)
+            if (item is IOverride over)
                 listViewItem.SubItems.Add(over.Override.ToString());
             listViewItem.Tag = item;
             listViewItem.Selected = item == selectedItem;
@@ -151,32 +137,23 @@ public partial class OpenWithDialog : FormEx
 
     protected virtual void OnNew()
     {
-        if (newAction != null)
-        {
-            newAction();
-        }
+        newAction?.Invoke();
     }
 
     protected virtual void OnEdit()
     {
-        if (editAction != null)
-        {
-            editAction();
-        }
+        editAction?.Invoke();
     }
 
     protected virtual void OnOverride()
     {
-        if (overrideAction != null)
-        {
-            overrideAction();
-        }
+        overrideAction?.Invoke();
     }
 
     public static IList<T> Show<T>(IWin32Window parent, string caption, IList<T> items, Func<T> newAction = null, Func<T, bool> editAction = null, Func<T, bool> overrideAction = null) where T : class
     {
         items = (IList<T>)items.ToList<T>();
-        using (OpenWithDialog dlg = new OpenWithDialog())
+        using (OpenWithDialog dlg = new())
         {
             dlg.Text = caption;
             dlg.Items = (IList)items;
@@ -187,7 +164,7 @@ public partial class OpenWithDialog : FormEx
                 dlg.newAction = (Action)(() =>
                 {
                     T obj = newAction();
-                    if ((object)obj == null)
+                    if (obj is null)
                         return;
 
                     ((ICollection<T>)items).Add(obj);
@@ -199,7 +176,7 @@ public partial class OpenWithDialog : FormEx
                 dlg.btEdit.Visible = true;
                 dlg.editAction = (Action)(() =>
                 {
-                    if (!(dlg.SelectedItem is T selectedItem2) || !editAction(selectedItem2))
+                    if (dlg.SelectedItem is not T selectedItem2 || !editAction(selectedItem2))
                         return;
 
                     dlg.FillList();
@@ -210,7 +187,7 @@ public partial class OpenWithDialog : FormEx
                 dlg.btOverride.Visible = true;
                 dlg.overrideAction = (Action)(() =>
                 {
-                    if (!(dlg.SelectedItem is T selectedItem4))
+                    if (dlg.SelectedItem is not T selectedItem4)
                         return;
 
                     overrideAction(selectedItem4);

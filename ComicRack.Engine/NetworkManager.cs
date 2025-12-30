@@ -14,11 +14,7 @@ public class NetworkManager : DisposableObject
 {
     public class RemoteServerStartedEventArgs : EventArgs
     {
-        public ShareInformation Information
-        {
-            get;
-            private set;
-        }
+        public ShareInformation Information { get; private set; }
 
         public RemoteServerStartedEventArgs(ShareInformation information)
         {
@@ -28,11 +24,7 @@ public class NetworkManager : DisposableObject
 
     public class RemoteServerStoppedEventArgs : EventArgs
     {
-        public string Address
-        {
-            get;
-            private set;
-        }
+        public string Address { get; private set; }
 
         public RemoteServerStoppedEventArgs(string address)
         {
@@ -44,45 +36,21 @@ public class NetworkManager : DisposableObject
 
     private Broadcaster<BroadcastData> broadcaster;
 
-    private readonly SmartList<ComicLibraryServer> runningServers = new SmartList<ComicLibraryServer>();
+    private readonly SmartList<ComicLibraryServer> runningServers = new();
 
-    private readonly Dictionary<string, ShareInformation> localShares = new Dictionary<string, ShareInformation>();
+    private readonly Dictionary<string, ShareInformation> localShares = new();
 
-    public DatabaseManager DatabaseManager
-    {
-        get;
-        private set;
-    }
+    public DatabaseManager DatabaseManager { get; private set; }
 
-    public CacheManager CacheManager
-    {
-        get;
-        private set;
-    }
+    public CacheManager CacheManager { get; private set; }
 
-    public int PrivatePort
-    {
-        get;
-        set;
-    }
+    public int PrivatePort { get; set; }
 
-    public int PublicPort
-    {
-        get;
-        set;
-    }
+    public int PublicPort { get; set; }
 
-    public bool DisableBroadcast
-    {
-        get;
-        set;
-    }
+    public bool DisableBroadcast { get; set; }
 
-    public ISharesSettings Settings
-    {
-        get;
-        private set;
-    }
+    public ISharesSettings Settings { get; private set; }
 
     public Broadcaster<BroadcastData> Broadcaster
     {
@@ -141,18 +109,12 @@ public class NetworkManager : DisposableObject
 
     public void BroadcastStart()
     {
-        if (Broadcaster != null)
-        {
-            Broadcaster.Broadcast(new BroadcastData(BroadcastType.ClientStarted));
-        }
+        Broadcaster?.Broadcast(new BroadcastData(BroadcastType.ClientStarted));
     }
 
     public void BroadcastStop()
     {
-        if (Broadcaster != null)
-        {
-            Broadcaster.Broadcast(new BroadcastData(BroadcastType.ClientStopped));
-        }
+        Broadcaster?.Broadcast(new BroadcastData(BroadcastType.ClientStopped));
     }
 
     public void Start()
@@ -166,7 +128,7 @@ public class NetworkManager : DisposableObject
         foreach (ComicLibraryServerConfig share in Settings.Shares)
         {
             share.OnlyPrivateConnections = !share.IsInternet && PrivatePort == PublicPort;
-            share.PrivateListPassword = ((share.IsInternet && share.IsPrivate) ? Settings.PrivateListingPassword : string.Empty);
+            share.PrivateListPassword = (share.IsInternet && share.IsPrivate) ? Settings.PrivateListingPassword : string.Empty;
         }
         runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => !sc.IsInternet), PrivatePort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
         runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => sc.IsInternet), PublicPort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
@@ -218,9 +180,9 @@ public class NetworkManager : DisposableObject
                             serverInfo.IsLocal = true;
                             localShares[text2] = serverInfo;
                         }
-                        if (Settings.LookForShared && this.RemoteServerStarted != null)
+                        if (Settings.LookForShared && RemoteServerStarted != null)
                         {
-                            this.RemoteServerStarted(this, new RemoteServerStartedEventArgs(serverInfo));
+                            RemoteServerStarted(this, new RemoteServerStartedEventArgs(serverInfo));
                         }
                     }
                     break;
@@ -232,10 +194,7 @@ public class NetworkManager : DisposableObject
                     {
                         localShares.Remove(text);
                     }
-                    if (this.RemoteServerStopped != null)
-                    {
-                        this.RemoteServerStopped(this, new RemoteServerStoppedEventArgs(text));
-                    }
+                    RemoteServerStopped?.Invoke(this, new RemoteServerStoppedEventArgs(text));
                     break;
                 }
             case BroadcastType.ClientStopped:

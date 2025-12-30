@@ -20,41 +20,17 @@ public partial class SearchBrowserControl : UserControlEx
 {
     public class SelectionEntry : IComparable<SelectionEntry>
     {
-        public int Index
-        {
-            get;
-            private set;
-        }
+        public int Index { get; private set; }
 
-        public int Id
-        {
-            get;
-            private set;
-        }
+        public int Id { get; private set; }
 
-        public string Property
-        {
-            get;
-            private set;
-        }
+        public string Property { get; private set; }
 
-        public Type MatcherType
-        {
-            get;
-            private set;
-        }
+        public Type MatcherType { get; private set; }
 
-        public bool MultipleValues
-        {
-            get;
-            private set;
-        }
+        public bool MultipleValues { get; private set; }
 
-        public string Caption
-        {
-            get;
-            private set;
-        }
+        public string Caption { get; private set; }
 
         public SelectionEntry(int index, int id, string property, string caption, Type matcherType, bool multiValue)
         {
@@ -107,17 +83,17 @@ public partial class SearchBrowserControl : UserControlEx
 
     public const int ColumnCount = 3;
 
-    private static readonly char[] listSeparators = new char[2]
-    {
+    private static readonly char[] listSeparators =
+    [
         ',',
         ';'
-    };
+    ];
 
     private readonly SelectionInfo[] workingSelectionInfos = new SelectionInfo[3];
 
     private readonly string allText = TR.Load("SearchBrowser")["AllItems", "All ({0} {1})"];
 
-    private readonly ComicBookCollection books = new ComicBookCollection();
+    private readonly ComicBookCollection books = new();
 
     private string unspecifiedText = TR.Load("SearchBrowser")["Unspecified", "Unspecified"];
 
@@ -139,54 +115,30 @@ public partial class SearchBrowserControl : UserControlEx
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int Column1
     {
-        get
-        {
-            return GetSelectedIndex(cbType1);
-        }
-        set
-        {
-            SetSelectedIndex(cbType1, value);
-        }
+        get => GetSelectedIndex(cbType1);
+        set => SetSelectedIndex(cbType1, value);
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int Column2
     {
-        get
-        {
-            return GetSelectedIndex(cbType2);
-        }
-        set
-        {
-            SetSelectedIndex(cbType2, value);
-        }
+        get => GetSelectedIndex(cbType2);
+        set => SetSelectedIndex(cbType2, value);
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int Column3
     {
-        get
-        {
-            return GetSelectedIndex(cbType3);
-        }
-        set
-        {
-            SetSelectedIndex(cbType3, value);
-        }
+        get => GetSelectedIndex(cbType3);
+        set => SetSelectedIndex(cbType3, value);
     }
 
     [DefaultValue("Unspecified")]
     [Localizable(true)]
     public string UnspecifiedText
     {
-        get
-        {
-            return unspecifiedText;
-        }
-        set
-        {
-            unspecifiedText = value;
-        }
+        get => unspecifiedText;
+        set => unspecifiedText = value;
     }
 
     public event EventHandler CurrentMatcherChanged;
@@ -266,7 +218,7 @@ public partial class SearchBrowserControl : UserControlEx
     private static List<SelectionEntry> CreateVirtualTagEntries(int index)
     {
         //Create the list of columns that we want to show, based on our Virtual Tags settings
-        List<SelectionEntry> entries = new List<SelectionEntry>();
+        List<SelectionEntry> entries = new();
         foreach (var vtag in VirtualTagsCollection.Tags.Values)
         {
             if (vtag != null && vtag.IsEnabled)
@@ -429,18 +381,12 @@ public partial class SearchBrowserControl : UserControlEx
 
     protected virtual void OnCurrentMatcherChanged()
     {
-        if (this.CurrentMatcherChanged != null)
-        {
-            this.CurrentMatcherChanged(this, EventArgs.Empty);
-        }
+        CurrentMatcherChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnItemDrag(MouseButtons buttons, object data)
     {
-        if (this.ItemDrag != null)
-        {
-            this.ItemDrag(this, new ItemDragEventArgs(buttons, data));
-        }
+        ItemDrag?.Invoke(this, new ItemDragEventArgs(buttons, data));
     }
 
     public void UpdateLists()
@@ -454,17 +400,13 @@ public partial class SearchBrowserControl : UserControlEx
 
     public SelectionEntry GetSelectionColumn(int column)
     {
-        switch (column)
+        return column switch
         {
-            case 0:
-                return cbType1.SelectedItem as SelectionEntry;
-            case 1:
-                return cbType2.SelectedItem as SelectionEntry;
-            case 2:
-                return cbType3.SelectedItem as SelectionEntry;
-            default:
-                return null;
-        }
+            0 => cbType1.SelectedItem as SelectionEntry,
+            1 => cbType2.SelectedItem as SelectionEntry,
+            2 => cbType3.SelectedItem as SelectionEntry,
+            _ => null,
+        };
     }
 
     public void SelectEntry(int column, string value)
@@ -490,8 +432,8 @@ public partial class SearchBrowserControl : UserControlEx
             shieldNot = true;
             CheckBox checkBox = btNot1;
             CheckBox checkBox2 = btNot2;
-            bool flag2 = (btNot3.Checked = false);
-            bool @checked = (checkBox2.Checked = flag2);
+            bool flag2 = btNot3.Checked = false;
+            bool @checked = checkBox2.Checked = flag2;
             checkBox.Checked = @checked;
         }
         finally
@@ -519,8 +461,7 @@ public partial class SearchBrowserControl : UserControlEx
     {
         for (int i = 0; i < cb.Items.Count; i++)
         {
-            SelectionEntry selectionEntry = cb.Items[i] as SelectionEntry;
-            if (selectionEntry != null && selectionEntry.Id == id)
+            if (cb.Items[i] is SelectionEntry selectionEntry && selectionEntry.Id == id)
             {
                 cb.SelectedIndex = i;
                 return;
@@ -531,7 +472,7 @@ public partial class SearchBrowserControl : UserControlEx
 
     private ComicBookMatcher GetMatcherUpTo(SelectionInfo end)
     {
-        ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+        ComicBookGroupMatcher comicBookGroupMatcher = new();
         if (books == null || books.Count == 0)
         {
             return null;
@@ -556,7 +497,7 @@ public partial class SearchBrowserControl : UserControlEx
     {
         shieldIndex = true;
         ListView listView = si.ListView;
-        HashSet<string> hashSet = new HashSet<string>(si.SelectedItems);
+        HashSet<string> hashSet = new(si.SelectedItems);
         try
         {
             if (listView.Items[0].Selected)
@@ -595,22 +536,19 @@ public partial class SearchBrowserControl : UserControlEx
 
     public void FillTypeCombos(bool update = false)
     {
-        this.SuspendLayout();
+        SuspendLayout();
         FillTypeCombo(cbType1, 0, listView1, btNot1, 1, update);
         FillTypeCombo(cbType2, 1, listView2, btNot2, 0, update);
         FillTypeCombo(cbType3, 2, listView3, btNot3, 2, update);
-        this.ResumeLayout(false);
+        ResumeLayout(false);
     }
 
     private void BuildList(int start)
     {
         int num = -1;
         IEnumerable<ComicBook> enumerable = books;
-        MatcherSet<ComicBook> matcherSet = new MatcherSet<ComicBook>();
-        if (enumerable == null)
-        {
-            enumerable = new ComicBook[0];
-        }
+        MatcherSet<ComicBook> matcherSet = new();
+        enumerable ??= new ComicBook[0];
         SelectionInfo[] array = workingSelectionInfos;
         foreach (SelectionInfo selectionInfo in array)
         {
@@ -620,7 +558,7 @@ public partial class SearchBrowserControl : UserControlEx
                 {
                     enumerable = matcherSet.Match(enumerable).ToArray();
                 }
-                HashSet<string> hashSet = (EngineConfiguration.Default.SearchBrowserCaseSensitive ? new HashSet<string>() : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase));
+                HashSet<string> hashSet = EngineConfiguration.Default.SearchBrowserCaseSensitive ? new HashSet<string>() : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
                 foreach (ComicBook item in enumerable)
                 {
                     string stringPropertyValue = item.GetStringPropertyValue(selectionInfo.Property, ComicValueType.Shadow);
@@ -658,15 +596,15 @@ public partial class SearchBrowserControl : UserControlEx
 
     private void BuildLists()
     {
-        this.SuspendLayout();
+        SuspendLayout();
         BuildList(0);
-        this.ResumeLayout();
+        ResumeLayout();
     }
 
     private static void FillSelectonInfoList(SelectionInfo si, List<string> names)
     {
         ListView listView = si.ListView;
-        HashSet<string> hashSet = new HashSet<string>(si.SelectedItems);
+        HashSet<string> hashSet = new(si.SelectedItems);
         si.SelectedItems.Clear();
         si.CachedItems.Clear();
         listView.BeginUpdate();
@@ -717,7 +655,7 @@ public partial class SearchBrowserControl : UserControlEx
                 }
             default:
                 {
-                    ComicBookGroupMatcher subSet = new ComicBookGroupMatcher
+                    ComicBookGroupMatcher subSet = new()
                     {
                         MatcherMode = MatcherMode.Or,
                         Not = si.Not
@@ -779,8 +717,8 @@ public partial class SearchBrowserControl : UserControlEx
         ListView listView = (ListView)sender;
         SelectionInfo si = listView.Tag as SelectionInfo;
         ComicBookMatcher comicBookMatcher = CreateMatcher(si);
-        ComicBookContainer comicBookContainer = new ComicBookContainer(((ListViewItem)e.Item).Text);
-        DataObject dataObject = new DataObject();
+        ComicBookContainer comicBookContainer = new(((ListViewItem)e.Item).Text);
+        DataObject dataObject = new();
         if (comicBookMatcher == null)
         {
             comicBookContainer.Books.AddRange(books);
@@ -803,10 +741,7 @@ public partial class SearchBrowserControl : UserControlEx
         finally
         {
             dragBitmap.Dispose();
-            if (dragCursor != null)
-            {
-                dragCursor.Dispose();
-            }
+            dragCursor?.Dispose();
         }
     }
 
@@ -815,7 +750,7 @@ public partial class SearchBrowserControl : UserControlEx
         if (dragCursor != null && !(dragCursor.Cursor == null))
         {
             e.UseDefaultCursors = false;
-            dragCursor.OverlayCursor = ((e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default);
+            dragCursor.OverlayCursor = (e.Effect == DragDropEffects.None) ? Cursors.No : Cursors.Default;
             Cursor.Current = dragCursor.Cursor;
         }
     }
@@ -830,14 +765,14 @@ public partial class SearchBrowserControl : UserControlEx
         }
         list.Sort();
         int height = Font.Height;
-        Rectangle rectangle = new Rectangle(0, 0, listView.Width, height * list.Count + 4);
-        Bitmap bitmap = new Bitmap(rectangle.Width + 1, rectangle.Height + 1);
+        Rectangle rectangle = new(0, 0, listView.Width, height * list.Count + 4);
+        Bitmap bitmap = new(rectangle.Width + 1, rectangle.Height + 1);
         Rectangle r = rectangle;
         r.Inflate(-2, -2);
         using (Graphics graphics = Graphics.FromImage(bitmap))
         {
             graphics.Clear(Color.White);
-            using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap))
+            using (StringFormat format = new(StringFormatFlags.NoWrap))
             {
                 using (Brush brush = new SolidBrush(ForeColor))
                 {
@@ -848,7 +783,7 @@ public partial class SearchBrowserControl : UserControlEx
                     }
                 }
             }
-            using (Pen pen = new Pen(ForeColor))
+            using (Pen pen = new(ForeColor))
             {
                 graphics.DrawRectangle(pen, rectangle);
             }

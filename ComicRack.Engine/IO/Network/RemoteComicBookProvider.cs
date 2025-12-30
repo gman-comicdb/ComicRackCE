@@ -11,7 +11,7 @@ public class RemoteComicBookProvider : ImageProvider
 
     private readonly ComicLibraryClient client;
 
-    private readonly object retrieveLock = new object();
+    private readonly object retrieveLock = new();
 
     public override ImageProviderCapabilities Capabilities => base.Capabilities;
 

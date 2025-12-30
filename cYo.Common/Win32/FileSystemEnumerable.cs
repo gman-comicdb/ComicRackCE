@@ -47,7 +47,7 @@ public class FileSystemEnumerable : IEnumerable<string>, IEnumerable
 
         public const int MAX_ALTERNATE = 14;
 
-        public static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+        public static readonly IntPtr INVALID_HANDLE_VALUE = new(-1);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
         public static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);

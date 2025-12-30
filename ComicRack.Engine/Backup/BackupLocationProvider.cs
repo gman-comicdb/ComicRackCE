@@ -35,10 +35,9 @@ internal class BackupLocationProvider : IBackupLocationProvider
     public virtual IEnumerable<string> GetPaths()
     {
         var paths = this.paths;
-        if (paths == null)
-            return Enumerable.Empty<string>();
-
-        return IsFile
+        return paths == null
+            ? []
+            : IsFile
             ? paths.Where(File.Exists)
             : paths.Where(Directory.Exists);
     }
@@ -73,7 +72,7 @@ internal class FullBackupLocationProvider : BackupLocationProvider
 
     public override IEnumerable<string> GetPaths()
     {
-        List<string> newPaths = new List<string>();
+        List<string> newPaths = new();
         foreach (string p in paths)
         {
             bool wasTouched = ReplaceBasePath(p, currentBaseAppData, currentAppData, out string fixedPath); // Replaces the path of the file so it is always the absolute base
@@ -119,6 +118,6 @@ internal class FullBackupLocationProvider : BackupLocationProvider
         catch
         {
         }
-        return Enumerable.Empty<string>();
+        return [];
     }
 }

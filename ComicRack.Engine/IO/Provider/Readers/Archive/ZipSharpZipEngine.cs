@@ -19,9 +19,9 @@ public class ZipSharpZipEngine : FileBasedAccessor
 
     public override IEnumerable<ProviderImageInfo> GetEntryList(string source)
     {
-        using (FileStream fs = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+        using (FileStream fs = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
         {
-            using (ZipFile zf = new ZipFile(fs))
+            using (ZipFile zf = new(fs))
             {
                 foreach (ZipEntry item in zf)
                 {
@@ -35,19 +35,15 @@ public class ZipSharpZipEngine : FileBasedAccessor
     {
         try
         {
-            using (FileStream file = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+            using (FileStream file = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
             {
-                using (ZipFile zipFile = new ZipFile(file))
+                using (ZipFile zipFile = new(file))
                 {
                     ZipEntry entry = zipFile.GetEntry(info.Name);
                     using (Stream stream = zipFile.GetInputStream(entry))
                     {
                         byte[] array = new byte[(int)entry.Size];
-                        if (stream.Read(array, 0, array.Length) != array.Length)
-                        {
-                            throw new IOException();
-                        }
-                        return array;
+                        return stream.Read(array, 0, array.Length) != array.Length ? throw new IOException() : array;
                     }
                 }
             }
@@ -62,18 +58,14 @@ public class ZipSharpZipEngine : FileBasedAccessor
     {
         try
         {
-            using (FileStream file = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
+            using (FileStream file = new(source, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize))
             {
-                using (ZipFile zipFile = new ZipFile(file))
+                using (ZipFile zipFile = new(file))
                 {
                     return XmlInfoProviders.Readers.DeserializeAll(s =>
                     {
                         int num = zipFile.FindEntry(s, ignoreCase: true);
-                        if (num != -1)
-                        {
-                            return zipFile.GetInputStream(num);
-                        }
-                        return null;
+                        return num != -1 ? zipFile.GetInputStream(num) : null;
                     });
                 }
             }

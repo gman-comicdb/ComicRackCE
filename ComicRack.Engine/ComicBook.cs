@@ -19,7 +19,6 @@ using cYo.Common.Drawing;
 using cYo.Common.IO;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
-using cYo.Common.Net.Search;
 using cYo.Common.Reflection;
 using cYo.Common.Text;
 using cYo.Common.Threading;
@@ -27,8 +26,6 @@ using cYo.Common.Xml;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Engine.Sync;
-
-using SharpCompress.Common;
 
 namespace cYo.Projects.ComicRack.Engine;
 
@@ -223,10 +220,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     {
         get
         {
-            if (tr == null)
-            {
-                tr = TR.Load("ComicBook");
-            }
+            tr ??= TR.Load("ComicBook");
             return tr;
         }
     }
@@ -234,14 +228,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [XmlIgnore]
     public ComicBookContainer Container
     {
-        get
-        {
-            return container;
-        }
-        internal set
-        {
-            container = value;
-        }
+        get => container; internal set => container = value;
     }
 
     [XmlAttribute]
@@ -281,10 +268,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
                 return addedTime;
             }
         }
-        set
-        {
-            SetProperty("AddedTime", ref addedTime, value, lockItem: true, !IsLinked);
-        }
+
+        set => SetProperty("AddedTime", ref addedTime, value, lockItem: true, !IsLinked);
     }
 
     [Browsable(true)]
@@ -300,10 +285,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
                 return releasedTime.DateOnly();
             }
         }
-        set
-        {
-            SetProperty("ReleasedTime", ref releasedTime, value, lockItem: true);
-        }
+
+        set => SetProperty("ReleasedTime", ref releasedTime, value, lockItem: true);
     }
 
     [Browsable(true)]
@@ -319,10 +302,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
                 return openedTime;
             }
         }
-        set
-        {
-            SetProperty("OpenedTime", ref openedTime, value, lockItem: true, !IsLinked);
-        }
+
+        set => SetProperty("OpenedTime", ref openedTime, value, lockItem: true, !IsLinked);
     }
 
     [Browsable(true)]
@@ -331,10 +312,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(1)]
     public int OpenedCount
     {
-        get
-        {
-            return openCount;
-        }
+        get => openCount;
         set
         {
             if (openCount != value)
@@ -350,10 +328,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(1)]
     public int CurrentPage
     {
-        get
-        {
-            return currentPage;
-        }
+        get => currentPage;
         set
         {
             value = Math.Max(0, value);
@@ -374,10 +349,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(1)]
     public int LastPageRead
     {
-        get
-        {
-            return lastPage;
-        }
+        get => lastPage;
         set
         {
             value = Math.Max(0, value);
@@ -394,14 +366,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public float Rating
     {
-        get
-        {
-            return rating;
-        }
-        set
-        {
-            SetProperty("Rating", ref rating, value.Clamp(0f, 5f));
-        }
+        get => rating;
+        set => SetProperty("Rating", ref rating, value.Clamp(0f, 5f));
     }
 
     [DefaultValue(typeof(BitmapAdjustment), "Empty")]
@@ -437,14 +403,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public bool EnableProposed
     {
-        get
-        {
-            return enableProposed;
-        }
-        set
-        {
-            SetProperty("EnableProposed", ref enableProposed, value);
-        }
+        get => enableProposed;
+        set => SetProperty("EnableProposed", ref enableProposed, value);
     }
 
     [Browsable(true)]
@@ -452,14 +412,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public YesNo SeriesComplete
     {
-        get
-        {
-            return seriesComplete;
-        }
-        set
-        {
-            SetProperty("SeriesComplete", ref seriesComplete, value);
-        }
+        get => seriesComplete;
+        set => SetProperty("SeriesComplete", ref seriesComplete, value);
     }
 
     [Browsable(true)]
@@ -467,21 +421,11 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(1)]
     public bool EnableDynamicUpdate
     {
-        get
-        {
-            return enableDynamicUpdate;
-        }
-        set
-        {
-            SetProperty("EnableDynamicUpdate", ref enableDynamicUpdate, value);
-        }
+        get => enableDynamicUpdate;
+        set => SetProperty("EnableDynamicUpdate", ref enableDynamicUpdate, value);
     }
 
-    public Guid LastOpenedFromListId
-    {
-        get;
-        set;
-    }
+    public Guid LastOpenedFromListId { get; set; }
 
     public bool LastOpenedFromListIdSpecified => LastOpenedFromListId != Guid.Empty;
 
@@ -489,38 +433,23 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [DefaultValue(true)]
     public bool Checked
     {
-        get
-        {
-            return check;
-        }
-        set
-        {
-            SetProperty("Checked", ref check, value);
-        }
+        get => check;
+        set => SetProperty("Checked", ref check, value);
     }
 
     [Browsable(true)]
     [XmlIgnore]
     public bool FileInfoRetrieved
     {
-        get
-        {
-            return fileInfoRetrieved;
-        }
-        set
-        {
-            fileInfoRetrieved = value;
-        }
+        get => fileInfoRetrieved;
+        set => fileInfoRetrieved = value;
     }
 
     [Browsable(true)]
     [DefaultValue(false)]
     public bool ComicInfoIsDirty
     {
-        get
-        {
-            return comicInfoIsDirty;
-        }
+        get => comicInfoIsDirty;
         set
         {
             if (comicInfoIsDirty != value)
@@ -536,10 +465,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [DefaultValue("")]
     public string FilePath
     {
-        get
-        {
-            return filePath;
-        }
+        get => filePath;
         set
         {
             if (value == null)
@@ -565,10 +491,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [DefaultValue(-1)]
     public long FileSize
     {
-        get
-        {
-            return Interlocked.Read(ref fileSize);
-        }
+        get => Interlocked.Read(ref fileSize);
         set
         {
             if (Interlocked.Read(ref fileSize) != value)
@@ -584,10 +507,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [DefaultValue(false)]
     public bool FileIsMissing
     {
-        get
-        {
-            return fileIsMissing;
-        }
+        get => fileIsMissing;
         set
         {
             if (fileIsMissing != value)
@@ -652,10 +572,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string CustomThumbnailKey
     {
-        get
-        {
-            return customThumbnailKey;
-        }
+        get => customThumbnailKey;
         set
         {
             if (!(customThumbnailKey == value))
@@ -671,14 +588,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public float BookPrice
     {
-        get
-        {
-            return bookPrice;
-        }
-        set
-        {
-            SetProperty("BookPrice", ref bookPrice, value);
-        }
+        get => bookPrice;
+        set => SetProperty("BookPrice", ref bookPrice, value);
     }
 
     [Browsable(true)]
@@ -686,14 +597,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookAge
     {
-        get
-        {
-            return bookAge;
-        }
-        set
-        {
-            SetProperty("BookAge", ref bookAge, value);
-        }
+        get => bookAge;
+        set => SetProperty("BookAge", ref bookAge, value);
     }
 
     [Browsable(true)]
@@ -701,14 +606,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookCondition
     {
-        get
-        {
-            return bookCondition;
-        }
-        set
-        {
-            SetProperty("BookCondition", ref bookCondition, value);
-        }
+        get => bookCondition;
+        set => SetProperty("BookCondition", ref bookCondition, value);
     }
 
     [Browsable(true)]
@@ -716,14 +615,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookStore
     {
-        get
-        {
-            return bookStore;
-        }
-        set
-        {
-            SetProperty("BookStore", ref bookStore, value);
-        }
+        get => bookStore;
+        set => SetProperty("BookStore", ref bookStore, value);
     }
 
     [Browsable(true)]
@@ -731,14 +624,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookOwner
     {
-        get
-        {
-            return bookOwner;
-        }
-        set
-        {
-            SetProperty("BookOwner", ref bookOwner, value);
-        }
+        get => bookOwner;
+        set => SetProperty("BookOwner", ref bookOwner, value);
     }
 
     [Browsable(true)]
@@ -746,14 +633,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookCollectionStatus
     {
-        get
-        {
-            return bookCollectionStatus;
-        }
-        set
-        {
-            SetProperty("BookCollectionStatus", ref bookCollectionStatus, value);
-        }
+        get => bookCollectionStatus;
+        set => SetProperty("BookCollectionStatus", ref bookCollectionStatus, value);
     }
 
     [Browsable(true)]
@@ -761,14 +642,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookNotes
     {
-        get
-        {
-            return bookNotes;
-        }
-        set
-        {
-            SetProperty("BookNotes", ref bookNotes, value);
-        }
+        get => bookNotes;
+        set => SetProperty("BookNotes", ref bookNotes, value);
     }
 
     [Browsable(true)]
@@ -776,14 +651,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string BookLocation
     {
-        get
-        {
-            return bookLocation;
-        }
-        set
-        {
-            SetProperty("BookLocation", ref bookLocation, value);
-        }
+        get => bookLocation;
+        set => SetProperty("BookLocation", ref bookLocation, value);
     }
 
     [Browsable(true)]
@@ -791,27 +660,14 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string ISBN
     {
-        get
-        {
-            return isbn;
-        }
-        set
-        {
-            SetProperty("ISBN", ref isbn, value);
-        }
+        get => isbn;
+        set => SetProperty("ISBN", ref isbn, value);
     }
 
     [XmlIgnore]
     public string PagesAsTextSimple
     {
-        get
-        {
-            if (base.PageCount > 0)
-            {
-                return base.PageCount.ToString();
-            }
-            return "-";
-        }
+        get => base.PageCount > 0 ? base.PageCount.ToString() : "-";
         set
         {
             if (int.TryParse(value, out var result) && result >= 0)
@@ -927,17 +783,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     }
 
     [Browsable(true)]
-    public bool IsValidComicBook
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(FilePath))
-            {
-                return Providers.Readers.GetSourceProviderType(FilePath) != null;
-            }
-            return false;
-        }
-    }
+    public bool IsValidComicBook => !string.IsNullOrEmpty(FilePath) ? Providers.Readers.GetSourceProviderType(FilePath) != null : false;
 
     //TODO: check to update Caption to a Virtual Tag
     [Browsable(true)]
@@ -955,17 +801,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public string TargetFilename => GetFullTitle(EngineConfiguration.Default.ComicExportFileNameFormat);
 
     [Browsable(true)]
-    public int ReadPercentage
-    {
-        get
-        {
-            if (base.PageCount <= 0 || LastPageRead <= 0)
-            {
-                return 0;
-            }
-            return ((LastPageRead + 1) * 100 / base.PageCount).Clamp(1, 100);
-        }
-    }
+    public int ReadPercentage => base.PageCount <= 0 || LastPageRead <= 0 ? 0 : ((LastPageRead + 1) * 100 / base.PageCount).Clamp(1, 100);
 
     public string ReadPercentageAsText => $"{ReadPercentage}%";
 
@@ -976,10 +812,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [XmlIgnore]
     public bool HasBeenRead
     {
-        get
-        {
-            return ReadPercentage >= ReadPercentageAsRead;
-        }
+        get => ReadPercentage >= ReadPercentageAsRead;
         set
         {
             if (value)
@@ -1001,7 +834,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             stringBuilder.AppendFormat("{0}\n", FileName);
             stringBuilder.AppendFormat("{0} ({1})\n\n", FileSizeAsText, PagesAsText);
             stringBuilder.AppendFormat("{0}\n", ActualFileFormat);
@@ -1025,48 +858,18 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public string VolumeAsText => FormatVolume(base.Volume);
 
     [Browsable(true)]
-    public string VolumeOnly
-    {
-        get
-        {
-            if (base.Volume >= 0)
-            {
-                return base.Volume.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string VolumeOnly => base.Volume >= 0 ? base.Volume.ToString() : string.Empty;
 
-    public string LastPageReadAsText
-    {
-        get
-        {
-            if (LastPageRead > 0)
-            {
-                return (LastPageRead + 1).ToString();
-            }
-            return noneText.Value;
-        }
-    }
+    public string LastPageReadAsText => LastPageRead > 0 ? (LastPageRead + 1).ToString() : noneText.Value;
 
-    public string LanguageAsText
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(base.LanguageISO))
-            {
-                return GetLanguageName(base.LanguageISO);
-            }
-            return string.Empty;
-        }
-    }
+    public string LanguageAsText => !string.IsNullOrEmpty(base.LanguageISO) ? GetLanguageName(base.LanguageISO) : string.Empty;
 
     public string ArtistInfo
     {
         get
         {
-            HashSet<string> uniqueNames = new HashSet<string>();
-            StringBuilder stringBuilder = new StringBuilder();
+            HashSet<string> uniqueNames = new();
+            StringBuilder stringBuilder = new();
             AppendUniqueName(stringBuilder, "/", base.Writer, uniqueNames);
             AppendUniqueName(stringBuilder, "/", base.Penciller, uniqueNames);
             AppendUniqueName(stringBuilder, "/", base.Inker, uniqueNames);
@@ -1081,40 +884,16 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public string YearAsText => FormatYear(base.Year);
 
-    public string MonthAsText
-    {
-        get
-        {
-            if (base.Month != -1)
-            {
-                return base.Month.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string MonthAsText => base.Month != -1 ? base.Month.ToString() : string.Empty;
 
-    public string DayAsText
-    {
-        get
-        {
-            if (base.Day != -1)
-            {
-                return base.Day.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string DayAsText => base.Day != -1 ? base.Day.ToString() : string.Empty;
 
     public int Week
     {
         get
         {
             DateTime published = Published;
-            if (published == DateTime.MinValue)
-            {
-                return -1;
-            }
-            return weekCalendar.GetWeekOfYear(published, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            return published == DateTime.MinValue ? -1 : weekCalendar.GetWeekOfYear(published, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
         }
     }
 
@@ -1123,11 +902,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         get
         {
             int week = Week;
-            if (week != -1)
-            {
-                return week.ToString();
-            }
-            return string.Empty;
+            return week != -1 ? week.ToString() : string.Empty;
         }
     }
 
@@ -1172,41 +947,11 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         }
     }
 
-    public string CountAsText
-    {
-        get
-        {
-            if (base.Count != -1)
-            {
-                return base.Count.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string CountAsText => base.Count != -1 ? base.Count.ToString() : string.Empty;
 
-    public string NewPagesAsText
-    {
-        get
-        {
-            if (!IsDynamicSource || NewPages <= 0)
-            {
-                return string.Empty;
-            }
-            return NewPages.ToString();
-        }
-    }
+    public string NewPagesAsText => !IsDynamicSource || NewPages <= 0 ? string.Empty : NewPages.ToString();
 
-    public string AlternateCountAsText
-    {
-        get
-        {
-            if (base.AlternateCount != -1)
-            {
-                return base.AlternateCount.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string AlternateCountAsText => base.AlternateCount != -1 ? base.AlternateCount.ToString() : string.Empty;
 
     public string RatingAsText => FormatRating(Rating);
 
@@ -1219,14 +964,12 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         get
         {
             long num = FileSize;
-            if (num == -1)
-            {
-                return notFoundText.Value;
-            }
-            return string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            return num == -1
+                ? notFoundText.Value
+                : string.Format(new FileLengthFormat(), "{0}",
+            [
                 num
-            });
+            ]);
         }
     }
 
@@ -1242,43 +985,13 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public string BlackAndWhiteAsText => ComicInfo.GetYesNoAsText(base.BlackAndWhite);
 
-    public string BookmarkCountAsText
-    {
-        get
-        {
-            if (base.BookmarkCount > 0)
-            {
-                return base.BookmarkCount.ToString();
-            }
-            return noneText.Value;
-        }
-    }
+    public string BookmarkCountAsText => base.BookmarkCount > 0 ? base.BookmarkCount.ToString() : noneText.Value;
 
     public ComicPageInfo CurrentPageInfo => GetPage(CurrentPage);
 
-    public string FileLocation
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(fileLocation))
-            {
-                return fileLocation;
-            }
-            return FilePath;
-        }
-    }
+    public string FileLocation => !string.IsNullOrEmpty(fileLocation) ? fileLocation : FilePath;
 
-    public string DisplayFileLocation
-    {
-        get
-        {
-            if (!IsInContainer)
-            {
-                return FilePath;
-            }
-            return Caption;
-        }
-    }
+    public string DisplayFileLocation => !IsInContainer ? FilePath : Caption;
 
     public int Status
     {
@@ -1303,25 +1016,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [XmlIgnore]
     public string BookPriceAsText
     {
-        get
-        {
-            if (!(bookPrice < 0f))
-            {
-                return $"{bookPrice:0.00}";
-            }
-            return unkownText.Value;
-        }
-        set
-        {
-            if (float.TryParse(value, out var result))
-            {
-                BookPrice = result;
-            }
-            else
-            {
-                BookPrice = -1f;
-            }
-        }
+        get => !(bookPrice < 0f) ? $"{bookPrice:0.00}" : unkownText.Value;
+        set => BookPrice = float.TryParse(value, out var result) ? result : -1f;
     }
 
     public string OpenedTimeAsText => FormatDate(OpenedTime);
@@ -1336,37 +1032,17 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public bool IsInContainer => container != null;
 
-    public ComicsEditModes EditMode
-    {
-        get
-        {
-            if (!IsInContainer)
-            {
-                return ComicsEditModes.Default;
-            }
-            return Container.EditMode;
-        }
-    }
+    public ComicsEditModes EditMode => !IsInContainer ? ComicsEditModes.Default : Container.EditMode;
 
     [DefaultValue(false)]
     [XmlAttribute]
-    public bool IsDynamicSource
-    {
-        get;
-        set;
-    }
+    public bool IsDynamicSource { get; set; }
 
     [DefaultValue(0)]
     public int NewPages
     {
-        get
-        {
-            return newPages;
-        }
-        set
-        {
-            SetProperty("NewPages", ref newPages, value);
-        }
+        get => newPages;
+        set => SetProperty("NewPages", ref newPages, value);
     }
 
     public string ProposedSeries
@@ -1410,11 +1086,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         get
         {
             UpdateProposed();
-            if (!(base.Number == "-"))
-            {
-                return proposed.Number;
-            }
-            return string.Empty;
+            return !(base.Number == "-") ? proposed.Number : string.Empty;
         }
     }
 
@@ -1442,113 +1114,23 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public string ProposedVolumeAsText => FormatVolume(ProposedVolume);
 
-    public string ProposedNakedVolumeAsText
-    {
-        get
-        {
-            if (ProposedVolume != -1)
-            {
-                return ProposedVolume.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string ProposedNakedVolumeAsText => ProposedVolume != -1 ? ProposedVolume.ToString() : string.Empty;
 
-    public string ProposedCountAsText
-    {
-        get
-        {
-            if (ProposedCount != -1)
-            {
-                return ProposedCount.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string ProposedCountAsText => ProposedCount != -1 ? ProposedCount.ToString() : string.Empty;
 
-    public string ShadowSeries
-    {
-        get
-        {
-            if (!EnableProposed || !string.IsNullOrEmpty(base.Series))
-            {
-                return base.Series;
-            }
-            return ProposedSeries;
-        }
-    }
+    public string ShadowSeries => !EnableProposed || !string.IsNullOrEmpty(base.Series) ? base.Series : ProposedSeries;
 
-    public string ShadowTitle
-    {
-        get
-        {
-            if (!EnableProposed || !string.IsNullOrEmpty(base.Title))
-            {
-                return base.Title;
-            }
-            return ProposedTitle;
-        }
-    }
+    public string ShadowTitle => !EnableProposed || !string.IsNullOrEmpty(base.Title) ? base.Title : ProposedTitle;
 
-    public string ShadowFormat
-    {
-        get
-        {
-            if (!EnableProposed || !string.IsNullOrEmpty(base.Format))
-            {
-                return base.Format;
-            }
-            return ProposedFormat;
-        }
-    }
+    public string ShadowFormat => !EnableProposed || !string.IsNullOrEmpty(base.Format) ? base.Format : ProposedFormat;
 
-    public int ShadowVolume
-    {
-        get
-        {
-            if (!EnableProposed || base.Volume != -1)
-            {
-                return base.Volume;
-            }
-            return ProposedVolume;
-        }
-    }
+    public int ShadowVolume => !EnableProposed || base.Volume != -1 ? base.Volume : ProposedVolume;
 
-    public string ShadowNumber
-    {
-        get
-        {
-            if (!EnableProposed || !string.IsNullOrEmpty(base.Number))
-            {
-                return base.Number;
-            }
-            return ProposedNumber;
-        }
-    }
+    public string ShadowNumber => !EnableProposed || !string.IsNullOrEmpty(base.Number) ? base.Number : ProposedNumber;
 
-    public int ShadowCount
-    {
-        get
-        {
-            if (!EnableProposed || base.Count != -1)
-            {
-                return base.Count;
-            }
-            return ProposedCount;
-        }
-    }
+    public int ShadowCount => !EnableProposed || base.Count != -1 ? base.Count : ProposedCount;
 
-    public int ShadowYear
-    {
-        get
-        {
-            if (!EnableProposed || base.Year != -1)
-            {
-                return base.Year;
-            }
-            return ProposedYear;
-        }
-    }
+    public int ShadowYear => !EnableProposed || base.Year != -1 ? base.Year : ProposedYear;
 
     [Browsable(true)]
     public string ShadowYearAsText => FormatYear(ShadowYear);
@@ -1557,21 +1139,11 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public string ShadowVolumeAsText => FormatVolume(ShadowVolume);
 
-    public string ShadowCountAsText
-    {
-        get
-        {
-            if (ShadowCount != -1)
-            {
-                return ShadowCount.ToString();
-            }
-            return string.Empty;
-        }
-    }
+    public string ShadowCountAsText => ShadowCount != -1 ? ShadowCount.ToString() : string.Empty;
 
-    public TextNumberFloat CompareNumber => compareNumber ?? (compareNumber = new ComicTextNumberFloat(ShadowNumber));
+    public TextNumberFloat CompareNumber => compareNumber ??= new ComicTextNumberFloat(ShadowNumber);
 
-    public TextNumberFloat CompareAlternateNumber => compareAlternateNumber ?? (compareAlternateNumber = new ComicTextNumberFloat(base.AlternateNumber));
+    public TextNumberFloat CompareAlternateNumber => compareAlternateNumber ??= new ComicTextNumberFloat(base.AlternateNumber);
 
     [DefaultValue(null)]
     public ExtraSyncInformation ExtraSyncInformation
@@ -1598,14 +1170,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [ResetValue(0)]
     public string CustomValuesStore
     {
-        get
-        {
-            return customValuesStore;
-        }
-        set
-        {
-            SetProperty("CustomValuesStore", ref customValuesStore, value);
-        }
+        get => customValuesStore;
+        set => SetProperty("CustomValuesStore", ref customValuesStore, value);
     }
 
     public static ImagePackage PublisherIcons => publisherIcons;
@@ -1618,11 +1184,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static Dictionary<string, ImagePackage> GenericIcons { get; set; } = new Dictionary<string, ImagePackage>(StringComparer.OrdinalIgnoreCase);
 
-    public static bool NewBooksChecked
-    {
-        get;
-        set;
-    }
+    public static bool NewBooksChecked { get; set; }
 
     [field: NonSerialized]
     public event EventHandler<ComicBookFileRenameEventArgs> FileRenamed;
@@ -1635,7 +1197,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static event EventHandler<ParseFilePathEventArgs> ParseFilePath;
 
-    Dictionary<int, string> CachedVirtualTags = new Dictionary<int, string>();
+    Dictionary<int, string> CachedVirtualTags = new();
     public string GetVirtualTagValue(int id)
     {
         using (ItemMonitor.Lock(CachedVirtualTags))
@@ -1740,7 +1302,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static ComicBook Create(string file, RefreshInfoOptions options)
     {
-        ComicBook comicBook = new ComicBook
+        ComicBook comicBook = new()
         {
             FilePath = file
         };
@@ -1750,7 +1312,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     private void ResetOptimizedNumbers()
     {
-        compareNumber = (compareAlternateNumber = null);
+        compareNumber = compareAlternateNumber = null;
     }
 
     public static void ClearExtraSyncInformation()
@@ -1793,7 +1355,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public ThumbnailKey GetThumbnailKey(int page)
     {
-        string locationKey = ((!IsLinked) ? (string.IsNullOrEmpty(CustomThumbnailKey) ? ThumbnailKey.GetResource(ThumbnailKey.ResourceKey, "Unknown") : ThumbnailKey.GetResource(ThumbnailKey.CustomKey, CustomThumbnailKey)) : FileLocation);
+        string locationKey = (!IsLinked) ? (string.IsNullOrEmpty(CustomThumbnailKey) ? ThumbnailKey.GetResource(ThumbnailKey.ResourceKey, "Unknown") : ThumbnailKey.GetResource(ThumbnailKey.CustomKey, CustomThumbnailKey)) : FileLocation;
         return GetThumbnailKey(page, locationKey);
     }
 
@@ -1824,9 +1386,9 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public ImageProvider CreateImageProvider()
     {
-        CreateComicProviderEventArgs createComicProviderEventArgs = new CreateComicProviderEventArgs();
+        CreateComicProviderEventArgs createComicProviderEventArgs = new();
         OnCreateComicProvider(createComicProviderEventArgs);
-        createComicProviderEventArgs.Provider = createComicProviderEventArgs.Provider ?? Providers.Readers.CreateSourceProvider(FilePath);
+        createComicProviderEventArgs.Provider ??= Providers.Readers.CreateSourceProvider(FilePath);
         OnComicProviderCreated(createComicProviderEventArgs);
         return createComicProviderEventArgs.Provider;
     }
@@ -1857,25 +1419,17 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public string GetPublisherIconKey(bool yearOnly = true)
     {
         string text = base.Publisher;
-        if (base.Year >= 0 && base.Month >= 0 && !yearOnly)
-            return $"{text}({YearAsText}_{Month:00})";
-
-        if (base.Year >= 0)
-            return $"{text}({YearAsText})";
-
-        return text;
+        return base.Year >= 0 && base.Month >= 0 && !yearOnly
+            ? $"{text}({YearAsText}_{Month:00})"
+            : base.Year >= 0 ? $"{text}({YearAsText})" : text;
     }
 
     public string GetImprintIconKey(bool yearOnly = true)
     {
         string text = base.Imprint;
-        if (base.Year >= 0 && base.Month >= 0 && !yearOnly)
-            return $"{text}({YearAsText}_{Month:00})";
-
-        if (base.Year >= 0)
-            return $"{text}({YearAsText})";
-
-        return text;
+        return base.Year >= 0 && base.Month >= 0 && !yearOnly
+            ? $"{text}({YearAsText}_{Month:00})"
+            : base.Year >= 0 ? $"{text}({YearAsText})" : text;
     }
 
     private IEnumerable<Image> GetIconsInternal()
@@ -1928,7 +1482,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         {
             foreach (string item in Tags.ListStringToSet(','))
             {
-                image = (image = SpecialIcons.GetImage(item));
+                image = image = SpecialIcons.GetImage(item);
                 if (image != null)
                     yield return image;
             }
@@ -2065,8 +1619,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public void MarkAsNotRead()
     {
         OpenedTime = DateTime.MinValue;
-        int num2 = (CurrentPage = 0);
-        int num5 = (OpenedCount = (LastPageRead = num2));
+        int num2 = CurrentPage = 0;
+        int num5 = OpenedCount = LastPageRead = num2;
     }
 
     public void MarkAsRead()
@@ -2096,11 +1650,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public bool IsSearchable(string propName)
     {
-        if (searchableProperties == null)
-        {
-            searchableProperties = new HashSet<string>(from pi in GetType().GetProperties().Where(SearchableAttribute.IsSearchable)
+        searchableProperties ??= new HashSet<string>(from pi in GetType().GetProperties().Where(SearchableAttribute.IsSearchable)
                                                        select pi.Name);
-        }
         return searchableProperties.Contains(propName);
     }
 
@@ -2123,7 +1674,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         }
         catch (Exception)
         {
-            return default(T);
+            return default;
         }
     }
 
@@ -2135,11 +1686,9 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public T GetPropertyValue<T>(string propName, bool proposed)
     {
         T propertyValue = GetPropertyValue<T>(propName);
-        if (!proposed || !EnableProposed || !IsDefaultPropertyValue(propertyValue) || !MapPropertyName(propName, out propName, ComicValueType.Proposed))
-        {
-            return propertyValue;
-        }
-        return GetPropertyValue<T>(propName);
+        return !proposed || !EnableProposed || !IsDefaultPropertyValue(propertyValue) || !MapPropertyName(propName, out propName, ComicValueType.Proposed)
+            ? propertyValue
+            : GetPropertyValue<T>(propName);
     }
 
     public string FormatString(string format)
@@ -2218,7 +1767,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     {
         try
         {
-            ComicBookNavigator comicBookNavigator = new ComicBookNavigator(this);
+            ComicBookNavigator comicBookNavigator = new(this);
             switch (base.Manga)
             {
                 case MangaYesNo.Unknown:
@@ -2294,7 +1843,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     {
         ComicBook comicBook = CloneUtility.Clone(this);
         comicBook.Id = Guid.NewGuid();
-        DataObject dataObject = new DataObject();
+        DataObject dataObject = new();
         dataObject.SetData(DataFormats.UnicodeText, GetInfo().ToXml());
         dataObject.SetData(ClipboardFormat, comicBook);
         Clipboard.SetDataObject(dataObject);
@@ -2327,8 +1876,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         {
             using (ImageProvider imageProvider = Providers.Readers.CreateSourceProvider(FilePath))
             {
-                IDynamicImages dynamicImages = imageProvider as IDynamicImages;
-                if (dynamicImages != null)
+                if (imageProvider is IDynamicImages dynamicImages)
                 {
                     dynamicImages.RefreshMode = refresh;
                 }
@@ -2359,15 +1907,14 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         {
             return false;
         }
-        FileInfo fileInfo = new FileInfo(FilePath);
+        FileInfo fileInfo = new(FilePath);
         if (!fileInfo.Exists || fileInfo.IsReadOnly)
         {
             return false;
         }
         using (ImageProvider imageProvider = CreateImageProvider())
         {
-            IInfoStorage infoStorage = imageProvider as IInfoStorage;
-            if (infoStorage == null)
+            if (imageProvider is not IInfoStorage infoStorage)
             {
                 return false;
             }
@@ -2422,8 +1969,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
         using (ImageProvider imageProvider = CreateImageProvider())
         {
-            IInfoStorage infoStorage = imageProvider as IInfoStorage;
-            if (infoStorage == null)
+            if (imageProvider is not IInfoStorage infoStorage)
             {
                 return;
             }
@@ -2486,7 +2032,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         }
         try
         {
-            FileInfo fileInfo = new FileInfo(FilePath);
+            FileInfo fileInfo = new(FilePath);
             FileIsMissing = !fileInfo.Exists;
             if (fileInfo.Exists)
             {
@@ -2553,32 +2099,23 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     protected virtual void OnFileRenamed(ComicBookFileRenameEventArgs e)
     {
-        if (this.FileRenamed != null)
-        {
-            this.FileRenamed(this, e);
-        }
+        FileRenamed?.Invoke(this, e);
     }
 
     protected virtual void OnCreateComicProvider(CreateComicProviderEventArgs cpea)
     {
-        if (this.CreateComicProvider != null)
-        {
-            this.CreateComicProvider(this, cpea);
-        }
+        CreateComicProvider?.Invoke(this, cpea);
     }
 
     protected virtual void OnComicProviderCreated(CreateComicProviderEventArgs cpea)
     {
-        if (this.ComicProviderCreated != null)
-        {
-            this.ComicProviderCreated(this, cpea);
-        }
+        ComicProviderCreated?.Invoke(this, cpea);
     }
 
     protected override void OnBookChanged(BookChangedEventArgs e)
     {
         base.OnBookChanged(e);
-        if (e.PropertyName == "FilePath" || e.PropertyName == "Number" || e.PropertyName == "EnableProposed")
+        if (e.PropertyName is "FilePath" or "Number" or "EnableProposed")
         {
             compareNumber = null;
         }
@@ -2627,29 +2164,17 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static string FormatPages(int pages)
     {
-        if (pages <= 0)
-        {
-            return unkownText.Value;
-        }
-        return StringUtility.Format(pagesText.Value, pages);
+        return pages <= 0 ? unkownText.Value : StringUtility.Format(pagesText.Value, pages);
     }
 
     public static string FormatRating(float rating)
     {
-        if (!(rating <= 0f))
-        {
-            return rating.ToString("0.0");
-        }
-        return noneText.Value;
+        return !(rating <= 0f) ? rating.ToString("0.0") : noneText.Value;
     }
 
     public static string FormatYear(int year)
     {
-        if (year != -1)
-        {
-            return year.ToString();
-        }
-        return string.Empty;
+        return year != -1 ? year.ToString() : string.Empty;
     }
 
     public static string FormatNumber(string number, int count)
@@ -2658,7 +2183,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         {
             return string.Empty;
         }
-        string text = ((number == "-") ? string.Empty : number);
+        string text = (number == "-") ? string.Empty : number;
         if (count >= 0)
         {
             text += StringUtility.Format(" ({0} {1})", ofText.Value, count);
@@ -2668,11 +2193,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static string FormatVolume(int volume)
     {
-        if (volume != -1)
-        {
-            return StringUtility.Format(volumeFormat.Value, volume);
-        }
-        return string.Empty;
+        return volume != -1 ? StringUtility.Format(volumeFormat.Value, volume) : string.Empty;
     }
 
     public static string FormatTitle(string textFormat, string series, string title = null, string volumeText = null, string numberText = null, string yearText = null, string monthText = null, string dayText = null, string format = null, string fileName = null)
@@ -2784,21 +2305,14 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public static CultureInfo GetIsoCulture(string iso)
     {
         iso = iso.ToLower();
-        if (languages == null)
-        {
-            languages = new Dictionary<string, CultureInfo>();
-        }
+        languages ??= new Dictionary<string, CultureInfo>();
         new Dictionary<string, CultureInfo>();
         if (languages.TryGetValue(iso, out var value))
         {
             return value;
         }
         CultureInfo cultureInfo = CultureInfo.GetCultures(CultureTypes.NeutralCultures).FirstOrDefault((CultureInfo info) => info.TwoLetterISOLanguageName == iso);
-        if (cultureInfo != null)
-        {
-            return languages[iso] = cultureInfo;
-        }
-        return new CultureInfo(string.Empty);
+        return cultureInfo != null ? (languages[iso] = cultureInfo) : new CultureInfo(string.Empty);
     }
 
     public static IEnumerable<string> GetProperties(bool onlyWritable, Type t = null)
@@ -2822,7 +2336,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public static bool MapPropertyName(string propName, out string newName, ComicValueType cvt)
     {
         string text = propName.ToLower();
-        if (text == "cover" || text == "rating")
+        if (text is "cover" or "rating")
         {
             propName += "AsText";
         }
@@ -2867,32 +2381,17 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     public static bool IsDefaultPropertyValue(object value)
     {
-        if (value == null)
-        {
-            return true;
-        }
-        if (value is string)
-        {
-            return string.IsNullOrEmpty((string)value);
-        }
-        if (value is int || value is double || value is float)
-        {
-            return (int)value == -1;
-        }
-        if (value is DateTime)
-        {
-            return (DateTime)value == DateTime.MinValue;
-        }
-        return false;
+        return value == null
+            ? true
+            : value is string
+            ? string.IsNullOrEmpty((string)value)
+            : value is int or double or float ? (int)value == -1 : value is DateTime ? (DateTime)value == DateTime.MinValue : false;
     }
 
     protected virtual void OnParseFilePath()
     {
-        ParseFilePathEventArgs parseFilePathEventArgs = new ParseFilePathEventArgs(FilePath);
-        if (ComicBook.ParseFilePath != null)
-        {
-            ComicBook.ParseFilePath(this, parseFilePathEventArgs);
-        }
+        ParseFilePathEventArgs parseFilePathEventArgs = new(FilePath);
+        ComicBook.ParseFilePath?.Invoke(this, parseFilePathEventArgs);
         proposed = parseFilePathEventArgs.NameInfo;
     }
 

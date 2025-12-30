@@ -22,11 +22,7 @@ public static class DuckTyping
             public override bool Equals(object obj)
             {
                 DictionaryEntry dictionaryEntry = (DictionaryEntry)obj;
-                if (InterfaceType == dictionaryEntry.InterfaceType)
-                {
-                    return DuckedType == dictionaryEntry.DuckedType;
-                }
-                return false;
+                return InterfaceType == dictionaryEntry.InterfaceType ? DuckedType == dictionaryEntry.DuckedType : false;
             }
 
             public override int GetHashCode()
@@ -35,9 +31,9 @@ public static class DuckTyping
             }
         }
 
-        private readonly Dictionary<DictionaryEntry, Type> dict = new Dictionary<DictionaryEntry, Type>();
+        private readonly Dictionary<DictionaryEntry, Type> dict = new();
 
-        private readonly object syncRoot = new object();
+        private readonly object syncRoot = new();
 
         public object SyncRoot => syncRoot;
 
@@ -57,7 +53,7 @@ public static class DuckTyping
         }
     }
 
-    private static readonly DuckTypeCache cache = new DuckTypeCache();
+    private static readonly DuckTypeCache cache = new();
 
     private static readonly IDuckTypeGenerator generator = new CodeDomDuckTypeGenerator();
 
@@ -146,10 +142,10 @@ public static class DuckTyping
             {
                 return cache.Get(interfaceType, duckedType);
             }
-            Type type = CreateDuckTypes(interfaceType, new Type[1]
-            {
+            Type type = CreateDuckTypes(interfaceType,
+            [
                 duckedType
-            })[0];
+            ])[0];
             cache.Insert(interfaceType, duckedType, type);
             return type;
         }
@@ -159,7 +155,7 @@ public static class DuckTyping
     {
         lock (cache.SyncRoot)
         {
-            List<Type> list = new List<Type>();
+            List<Type> list = new();
             foreach (Type type in duckedTypes)
             {
                 if (!cache.Exists(interfaceType, type) && !list.Contains(type))

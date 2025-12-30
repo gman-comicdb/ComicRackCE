@@ -27,10 +27,7 @@ public class FontDC : DisposableObject, IDeviceContext, IDisposable
 
     public Font Font
     {
-        get
-        {
-            return font;
-        }
+        get => font;
         set
         {
             if (font == value)

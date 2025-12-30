@@ -43,10 +43,7 @@ public class PopupComboBox : PopupComboBoxBase
 
     public Control DropDownControl
     {
-        get
-        {
-            return dropDownControl;
-        }
+        get => dropDownControl;
         set
         {
             if (dropDownControl != value)
@@ -68,14 +65,8 @@ public class PopupComboBox : PopupComboBoxBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new int DropDownWidth
     {
-        get
-        {
-            return base.DropDownWidth;
-        }
-        set
-        {
-            base.DropDownWidth = value;
-        }
+        get => base.DropDownWidth;
+        set => base.DropDownWidth = value;
     }
 
     [Browsable(false)]
@@ -83,14 +74,8 @@ public class PopupComboBox : PopupComboBoxBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new int DropDownHeight
     {
-        get
-        {
-            return base.DropDownHeight;
-        }
-        set
-        {
-            base.DropDownHeight = value;
-        }
+        get => base.DropDownHeight;
+        set => base.DropDownHeight = value;
     }
 
     [Browsable(false)]
@@ -98,14 +83,8 @@ public class PopupComboBox : PopupComboBoxBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new bool IntegralHeight
     {
-        get
-        {
-            return base.IntegralHeight;
-        }
-        set
-        {
-            base.IntegralHeight = value;
-        }
+        get => base.IntegralHeight;
+        set => base.IntegralHeight = value;
     }
 
     [Browsable(false)]
@@ -118,20 +97,14 @@ public class PopupComboBox : PopupComboBoxBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new int ItemHeight
     {
-        get
-        {
-            return base.ItemHeight;
-        }
-        set
-        {
-            base.ItemHeight = value;
-        }
+        get => base.ItemHeight;
+        set => base.ItemHeight = value;
     }
 
     public PopupComboBox()
     {
         dropDownHideTime = DateTime.Now;
-        base.DropDownHeight = (base.DropDownWidth = 1);
+        base.DropDownHeight = base.DropDownWidth = 1;
         base.IntegralHeight = false;
     }
 
@@ -160,10 +133,7 @@ public class PopupComboBox : PopupComboBoxBase
 
     public void HideDropDown()
     {
-        if (dropDown != null)
-        {
-            dropDown.Hide();
-        }
+        dropDown?.Hide();
     }
 
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

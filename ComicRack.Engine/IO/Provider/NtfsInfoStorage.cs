@@ -18,7 +18,7 @@ public static class NtfsInfoStorage
         }
         try
         {
-            FileInfo fileInfo = new FileInfo(file);
+            FileInfo fileInfo = new(file);
             using (StreamWriter streamWriter = AlternateDataStreamFile.CreateText(file, ComicBookInfoStream))
             {
                 comicInfo.Serialize(streamWriter.BaseStream);

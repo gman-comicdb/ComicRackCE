@@ -21,7 +21,7 @@ public class NavigatorManager : IOpenBooksManager
 {
     private int currentSlot = -1;
 
-    private readonly SmartList<ComicBookNavigator> slots = new SmartList<ComicBookNavigator>();
+    private readonly SmartList<ComicBookNavigator> slots = new();
 
     private readonly IComicDisplay comicDisplay;
 
@@ -31,10 +31,7 @@ public class NavigatorManager : IOpenBooksManager
 
     public int CurrentSlot
     {
-        get
-        {
-            return currentSlot;
-        }
+        get => currentSlot;
         set
         {
             value = value.Clamp(-1, slots.Count - 1);
@@ -45,7 +42,7 @@ public class NavigatorManager : IOpenBooksManager
             currentSlot = value;
             try
             {
-                ComicBookNavigator book = ((currentSlot < 0) ? null : slots[currentSlot]);
+                ComicBookNavigator book = (currentSlot < 0) ? null : slots[currentSlot];
                 if (Win7.TabbedThumbnailsEnabled && CurrentBook != null && comicDisplay.Book != null)
                 {
                     CurrentBook.Thumbnail = comicDisplay.CreateThumbnail();
@@ -332,50 +329,34 @@ public class NavigatorManager : IOpenBooksManager
             return string.Empty;
         }
         ComicBookNavigator itemOrDefault = slots.GetItemOrDefault(i);
-        if (itemOrDefault != null)
-        {
-            return itemOrDefault.Comic.Caption;
-        }
-        return TR.Default["None", "None"];
+        return itemOrDefault != null ? itemOrDefault.Comic.Caption : TR.Default["None", "None"];
     }
 
     protected virtual void OnBookOpened(BookEventArgs e)
     {
-        if (this.BookOpened != null)
-        {
-            this.BookOpened(this, e);
-        }
+        BookOpened?.Invoke(this, e);
     }
 
     protected virtual void OnBookClosed(BookEventArgs e)
     {
-        if (this.BookClosed != null)
-        {
-            this.BookClosed(this, e);
-        }
+        BookClosed?.Invoke(this, e);
     }
 
     protected virtual void OnBookClosing(BookEventArgs e)
     {
-        if (this.BookClosing != null)
-        {
-            this.BookClosing(this, e);
-        }
+        BookClosing?.Invoke(this, e);
     }
 
     protected virtual void OnOpenComicsChanged()
     {
-        if (this.OpenComicsChanged != null)
-        {
-            this.OpenComicsChanged(this, EventArgs.Empty);
-        }
+        OpenComicsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnCurrentSlotChanged()
     {
-        if (!blockCurrentSlotChanged && this.CurrentSlotChanged != null)
+        if (!blockCurrentSlotChanged && CurrentSlotChanged != null)
         {
-            this.CurrentSlotChanged(this, EventArgs.Empty);
+            CurrentSlotChanged(this, EventArgs.Empty);
         }
     }
 

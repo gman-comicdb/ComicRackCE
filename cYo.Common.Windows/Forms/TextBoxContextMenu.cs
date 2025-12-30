@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -16,17 +15,9 @@ public class TextBoxContextMenu : ContextMenuStrip
 {
     public class ContextMenuSource
     {
-        public Control Control
-        {
-            get;
-            set;
-        }
+        public Control Control { get; set; }
 
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
         public ContextMenuSource()
         {
@@ -77,7 +68,7 @@ public class TextBoxContextMenu : ContextMenuStrip
         {
             return;
         }
-        TextBoxContextMenu cm = new TextBoxContextMenu(tb.Container);
+        TextBoxContextMenu cm = new(tb.Container);
         cm.Opening += delegate
         {
             cm.miUndo.Enabled = tb.CanUndo;
@@ -125,13 +116,13 @@ public class TextBoxContextMenu : ContextMenuStrip
         {
             return;
         }
-        TextBoxContextMenu cm = new TextBoxContextMenu(cb.Container);
+        TextBoxContextMenu cm = new(cb.Container);
         cm.Items.Remove(cm.miUndo);
         cm.Items.Remove(cm.miUndoSep);
         cm.Opening += delegate
         {
             ToolStripMenuItem toolStripMenuItem = cm.miCopy;
-            bool enabled = (cm.miCut.Enabled = cb.SelectionLength != 0);
+            bool enabled = cm.miCut.Enabled = cb.SelectionLength != 0;
             toolStripMenuItem.Enabled = enabled;
             cm.miPaste.Enabled = Clipboard.ContainsText();
         };
@@ -186,7 +177,7 @@ public class TextBoxContextMenu : ContextMenuStrip
                 }
             }
             string text = cms.Text ?? string.Empty;
-            SearchContextMenuBuilder searchContextMenuBuilder = new SearchContextMenuBuilder();
+            SearchContextMenuBuilder searchContextMenuBuilder = new();
             ToolStripMenuItem[] array2 = searchContextMenuBuilder.CreateMenuItems(searches, (cms.Control.Tag as string) ?? string.Empty, text).ToArray();
             if (array2.Length != 0)
             {
@@ -228,7 +219,7 @@ public class TextBoxContextMenu : ContextMenuStrip
 
     private static string GetText(TextBoxBase tb)
     {
-        string text = (string.IsNullOrEmpty(tb.SelectedText) ? tb.Text : tb.SelectedText);
+        string text = string.IsNullOrEmpty(tb.SelectedText) ? tb.Text : tb.SelectedText;
         if (string.IsNullOrEmpty(text) && tb is IPromptText)
         {
             text = ((IPromptText)tb).PromptText;
@@ -283,8 +274,8 @@ public class TextBoxContextMenu : ContextMenuStrip
         miUndo.ShortcutKeys = System.Windows.Forms.Keys.Z | System.Windows.Forms.Keys.Control;
         miUndo.Size = new System.Drawing.Size(164, 22);
         miUndo.Text = "Undo";
-        Items.AddRange(new System.Windows.Forms.ToolStripItem[8]
-        {
+        Items.AddRange(
+        [
             miUndo,
             miUndoSep,
             miCut,
@@ -293,7 +284,7 @@ public class TextBoxContextMenu : ContextMenuStrip
             miDelete,
             miDeleteSep,
             miSelectAll
-        });
+        ]);
         base.Size = new System.Drawing.Size(165, 148);
         ResumeLayout(false);
     }

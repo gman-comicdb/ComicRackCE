@@ -6,9 +6,5 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public class CreateComicProviderEventArgs : EventArgs
 {
-    public ImageProvider Provider
-    {
-        get;
-        set;
-    }
+    public ImageProvider Provider { get; set; }
 }

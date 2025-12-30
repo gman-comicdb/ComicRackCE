@@ -18,10 +18,7 @@ public class TreeViewSkinner : Component
 
     public TreeNode DropNode
     {
-        get
-        {
-            return dropNode;
-        }
+        get => dropNode;
         set
         {
             if (dropNode != value)
@@ -35,10 +32,7 @@ public class TreeViewSkinner : Component
 
     public bool SeparatorDropNodeStyle
     {
-        get
-        {
-            return separatorDropNodeStyle;
-        }
+        get => separatorDropNodeStyle;
         set
         {
             if (separatorDropNodeStyle != value)
@@ -51,10 +45,7 @@ public class TreeViewSkinner : Component
 
     public TreeView TreeView
     {
-        get
-        {
-            return treeView;
-        }
+        get => treeView;
         set
         {
             if (treeView != value)
@@ -118,7 +109,7 @@ public class TreeViewSkinner : Component
                     graphics.TranslateTransform(e.Bounds.X, e.Bounds.Y);
                     bounds.Width--;
                     bounds.Height--;
-                    TreeViewSkinnerDrawInfo treeViewSkinnerDrawInfo = new TreeViewSkinnerDrawInfo(graphics, bounds, bounds2, e.Node, treeNodeStates, treeView.Font);
+                    TreeViewSkinnerDrawInfo treeViewSkinnerDrawInfo = new(graphics, bounds, bounds2, e.Node, treeNodeStates, treeView.Font);
                     treeViewSkinnerDrawInfo.Graphics.Clear(TreeView.BackColor);
                     DrawNode(treeViewSkinnerDrawInfo);
                 }
@@ -182,9 +173,9 @@ public class TreeViewSkinner : Component
     public Bitmap GetBitmap(TreeNode node)
     {
         Rectangle bounds = node.Bounds;
-        Rectangle itemBounds = new Rectangle(0, 0, treeView.ClientRectangle.Width, node.Bounds.Height);
+        Rectangle itemBounds = new(0, 0, treeView.ClientRectangle.Width, node.Bounds.Height);
         bounds.Y = 0;
-        Bitmap bitmap = new Bitmap(itemBounds.Width, itemBounds.Height);
+        Bitmap bitmap = new(itemBounds.Width, itemBounds.Height);
         try
         {
             using (Graphics graphics = Graphics.FromImage(bitmap))
@@ -216,10 +207,7 @@ public class TreeViewSkinner : Component
             cursorLocation.Offset(0, -node.Bounds.Y);
             bitmapCursor.BitmapOwned = true;
             bitmapCursor.HotSpot = cursorLocation;
-            if (bitmapCursor.Bitmap != null)
-            {
-                bitmapCursor.Bitmap.ChangeAlpha(alpha);
-            }
+            bitmapCursor.Bitmap?.ChangeAlpha(alpha);
         }
         return bitmapCursor;
     }

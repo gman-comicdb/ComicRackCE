@@ -5,23 +5,11 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider;
 [Serializable]
 public class ProviderImageInfo : IComparable<ProviderImageInfo>
 {
-    public int Index
-    {
-        get;
-        set;
-    }
+    public int Index { get; set; }
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public long Size
-    {
-        get;
-        set;
-    }
+    public long Size { get; set; }
 
     public ProviderImageInfo()
     {
@@ -41,10 +29,6 @@ public class ProviderImageInfo : IComparable<ProviderImageInfo>
 
     public int CompareTo(ProviderImageInfo other)
     {
-        if (other == null)
-        {
-            return 1;
-        }
-        return string.Compare(Name, other.Name);
+        return other == null ? 1 : string.Compare(Name, other.Name);
     }
 }

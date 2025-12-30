@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 using CSJ2K;
 using CSJ2K.j2k.util;
@@ -36,9 +30,9 @@ public static class Jpeg2000Image
         Bitmap bitmap = null;
         try
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
-                bitmap = ((bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb));
+                bitmap = (bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb);
                 Encode(bitmap, memoryStream, quality, isJp2);
                 return memoryStream.ToArray();
             }
@@ -76,7 +70,7 @@ public static class Jpeg2000Image
         if (data.Length >= 12)
         {
             // Check for JP2 header
-            byte[] jp2Signature = { 0x00, 0x00, 0x00, 0x0C, 0x6A, 0x50, 0x20, 0x20, 0x0D, 0x0A, 0x87, 0x0A };
+            byte[] jp2Signature = [0x00, 0x00, 0x00, 0x0C, 0x6A, 0x50, 0x20, 0x20, 0x0D, 0x0A, 0x87, 0x0A];
             if (data.Take(12).SequenceEqual(jp2Signature))
                 return true;
         }
@@ -84,7 +78,7 @@ public static class Jpeg2000Image
         if (data.Length >= 2)
         {
             // Check for J2K codestream header
-            byte[] j2kSignature = { 0xFF, 0x4F };
+            byte[] j2kSignature = [0xFF, 0x4F];
             if (data.Take(2).SequenceEqual(j2kSignature))
                 return true;
         }

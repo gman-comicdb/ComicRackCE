@@ -17,17 +17,9 @@ public class FileFormat : IComparable<FileFormat>
 
     private int iconId = 1;
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public int Id
-    {
-        get;
-        set;
-    }
+    public int Id { get; set; }
 
     public string ExtensionList => extensions;
 
@@ -37,7 +29,7 @@ public class FileFormat : IComparable<FileFormat>
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             string[] array = extensionArray;
             foreach (string value in array)
             {
@@ -54,27 +46,13 @@ public class FileFormat : IComparable<FileFormat>
 
     public int IconId
     {
-        get
-        {
-            return iconId;
-        }
-        set
-        {
-            iconId = value;
-        }
+        get => iconId;
+        set => iconId = value;
     }
 
-    public bool SupportsUpdate
-    {
-        get;
-        set;
-    }
+    public bool SupportsUpdate { get; set; }
 
-    public bool Dynamic
-    {
-        get;
-        set;
-    }
+    public bool Dynamic { get; set; }
 
     public string MainExtension => extensionArray[0];
 

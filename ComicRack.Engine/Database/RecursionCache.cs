@@ -8,7 +8,7 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 
 public class RecursionCache : Dictionary<Guid, RecursionCacheItem>
 {
-    private static Lazy<RecursionCache> instance = new Lazy<RecursionCache>(() => new RecursionCache());
+    private static Lazy<RecursionCache> instance = new(() => new RecursionCache());
 
     public static RecursionCache Items => instance.Value;
 

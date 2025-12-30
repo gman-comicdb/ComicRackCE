@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
@@ -12,17 +11,14 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListBrowser : SubView, IRefreshDisplay
 {
-    protected readonly CursorList<IComicBookListProvider> history = new CursorList<IComicBookListProvider>();
+    protected readonly CursorList<IComicBookListProvider> history = new();
 
     private IComicBookListProvider bookList;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public virtual IComicBookListProvider BookList
     {
-        get
-        {
-            return bookList;
-        }
+        get => bookList;
         protected set
         {
             if (bookList != value)
@@ -44,24 +40,11 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
     }
 
     [Browsable(false)]
-    public Guid BookListId
-    {
-        get
-        {
-            if (BookList != null)
-            {
-                return BookList.Id;
-            }
-            return Guid.Empty;
-        }
-    }
+    public Guid BookListId => BookList != null ? BookList.Id : Guid.Empty;
 
     public virtual bool TopBrowserVisible
     {
-        get
-        {
-            return false;
-        }
+        get => false;
         set
         {
         }
@@ -69,10 +52,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     public virtual int TopBrowserSplit
     {
-        get
-        {
-            return 100;
-        }
+        get => 100;
         set
         {
         }
@@ -89,10 +69,7 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     protected virtual void OnBookListChanged()
     {
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void bookList_ServiceRequest(object sender, ServiceRequestEventArgs e)
@@ -106,19 +83,13 @@ public partial class ComicListBrowser : SubView, IRefreshDisplay
 
     protected virtual IComicBookListProvider GetNewBookList()
     {
-        if (base.Main != null)
-        {
-            base.Main.StoreWorkspace();
-        }
+        base.Main?.StoreWorkspace();
         return BookList;
     }
 
     protected virtual void OnRefreshDisplay()
     {
-        if (this.RefreshLists != null)
-        {
-            this.RefreshLists(this, EventArgs.Empty);
-        }
+        RefreshLists?.Invoke(this, EventArgs.Empty);
     }
 
     public void OpenListInNewWindow()

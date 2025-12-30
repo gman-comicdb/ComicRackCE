@@ -91,11 +91,9 @@ public class Vertex
             return false;
         }
         Vertex vertex = (Vertex)obj;
-        if (X == vertex.X && Y == vertex.Y && Z == vertex.Z && U == vertex.U && V == vertex.V && A == vertex.A && R == vertex.R && G == vertex.G)
-        {
-            return B == vertex.B;
-        }
-        return false;
+        return X == vertex.X && Y == vertex.Y && Z == vertex.Z && U == vertex.U && V == vertex.V && A == vertex.A && R == vertex.R && G == vertex.G
+            ? B == vertex.B
+            : false;
     }
 
     public override int GetHashCode()

@@ -28,50 +28,28 @@ public class ContextHelp
         bool IMessageFilter.PreFilterMessage(ref Message m)
         {
             int msg = m.Msg;
-            if (msg == 256 && (int)m.WParam == 112 && Control.ModifierKeys == Keys.None)
-            {
-                return contextHelp.HelpRequest(Control.FromHandle(m.HWnd));
-            }
-            return false;
+            return msg == 256 && (int)m.WParam == 112 && Control.ModifierKeys == Keys.None
+                ? contextHelp.HelpRequest(Control.FromHandle(m.HWnd))
+                : false;
         }
     }
 
     private HelpMessageFilter filter;
 
-    private static Regex rxLink = new Regex("^[a-z]+:[/\\\\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static Regex rxLink = new("^[a-z]+:[/\\\\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public string HelpName
-    {
-        get;
-        private set;
-    }
+    public string HelpName { get; private set; }
 
-    public string HelpPath
-    {
-        get;
-        set;
-    }
+    public string HelpPath { get; set; }
 
-    public Dictionary<string, string> Lookup
-    {
-        get;
-        set;
-    }
+    public Dictionary<string, string> Lookup { get; set; }
 
-    public Dictionary<string, string> Variables
-    {
-        get;
-        private set;
-    }
+    public Dictionary<string, string> Variables { get; private set; }
 
     public IEnumerable<string> HelpSystems => from p in FileUtility.GetFiles(HelpPath, SearchOption.AllDirectories, ".ini")
                                               select Path.GetFileNameWithoutExtension(p);
 
-    public bool ShowKey
-    {
-        get;
-        set;
-    }
+    public bool ShowKey { get; set; }
 
     public ContextHelp(string helpPath)
     {
@@ -107,7 +85,7 @@ public class ContextHelp
         string value = null;
         do
         {
-            string key2 = ((++num == 1) ? key : (key + num));
+            string key2 = (++num == 1) ? key : (key + num);
             if (!Lookup.TryGetValue(key2, out value))
             {
                 return null;
@@ -131,10 +109,7 @@ public class ContextHelp
     private void StartLink(string link)
     {
         string value = null;
-        if (Lookup != null)
-        {
-            Lookup.TryGetValue("HelpLink", out value);
-        }
+        Lookup?.TryGetValue("HelpLink", out value);
         link = SubstituteVariabels(link).Trim();
         if (rxLink.IsMatch(link))
         {
@@ -160,10 +135,7 @@ public class ContextHelp
     {
         try
         {
-            if (c == null)
-            {
-                c = Form.ActiveForm.ActiveControl;
-            }
+            c ??= Form.ActiveForm.ActiveControl;
             Control control = c.TopParent();
             while (Lookup != null && c != null)
             {
@@ -210,7 +182,7 @@ public class ContextHelp
             return new
             {
                 Text = array[0],
-                Document = ((array.Length < 2) ? string.Empty : SubstituteVariabels(array[1]))
+                Document = (array.Length < 2) ? string.Empty : SubstituteVariabels(array[1])
             };
         });
         foreach (var item in enumerable)

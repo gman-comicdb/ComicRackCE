@@ -8,11 +8,7 @@ public class ServiceRequestEventArgs : EventArgs
 
     public Type ServiceType => serviceType;
 
-    public object Service
-    {
-        get;
-        set;
-    }
+    public object Service { get; set; }
 
     public ServiceRequestEventArgs(Type serviceType, object service)
     {

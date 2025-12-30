@@ -92,11 +92,7 @@ public class PowerRequest : IDisposable
         internal static bool FunctionExists(string library, string function)
         {
             UIntPtr uIntPtr = LoadLibrary(library);
-            if (uIntPtr == UIntPtr.Zero)
-            {
-                return false;
-            }
-            return GetProcAddress(uIntPtr, function) != UIntPtr.Zero;
+            return uIntPtr == UIntPtr.Zero ? false : GetProcAddress(uIntPtr, function) != UIntPtr.Zero;
         }
     }
 
@@ -107,7 +103,7 @@ public class PowerRequest : IDisposable
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
     public PowerRequest(string reason)
     {
-        NativeMethods.POWER_REQUEST_CONTEXT Context = new NativeMethods.POWER_REQUEST_CONTEXT
+        NativeMethods.POWER_REQUEST_CONTEXT Context = new()
         {
             Version = 0u,
             Flags = 1u,
@@ -156,18 +152,13 @@ public class PowerRequest : IDisposable
 
     private static NativeMethods.PowerRequestType ToNativeType(PowerRequestType type)
     {
-        switch (type)
+        return type switch
         {
-            case PowerRequestType.DisplayRequired:
-                return NativeMethods.PowerRequestType.PowerRequestDisplayRequired;
-            case PowerRequestType.SystemRequired:
-                return NativeMethods.PowerRequestType.PowerRequestSystemRequired;
-            case PowerRequestType.AwayModeRequired:
-                return NativeMethods.PowerRequestType.PowerRequestAwayModeRequired;
-            case PowerRequestType.ExecutionRequired:
-                return NativeMethods.PowerRequestType.PowerRequestExecutionRequired;
-            default:
-                throw new ArgumentException("Invalid power request type");
-        }
+            PowerRequestType.DisplayRequired => NativeMethods.PowerRequestType.PowerRequestDisplayRequired,
+            PowerRequestType.SystemRequired => NativeMethods.PowerRequestType.PowerRequestSystemRequired,
+            PowerRequestType.AwayModeRequired => NativeMethods.PowerRequestType.PowerRequestAwayModeRequired,
+            PowerRequestType.ExecutionRequired => NativeMethods.PowerRequestType.PowerRequestExecutionRequired,
+            _ => throw new ArgumentException("Invalid power request type"),
+        };
     }
 }

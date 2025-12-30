@@ -16,17 +16,17 @@ public static class OpenGlImageProcessing
     {
         InitializeOpenGl();
         Bitmap bitmap = null;
-        if (bmp.PixelFormat != PixelFormat.Format32bppArgb && bmp.PixelFormat != PixelFormat.Format24bppRgb)
+        if (bmp.PixelFormat is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
         {
-            bmp = (bitmap = bmp.CreateCopy(PixelFormat.Format32bppArgb));
+            bmp = bitmap = bmp.CreateCopy(PixelFormat.Format32bppArgb);
         }
         try
         {
-            Bitmap bitmap2 = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Bitmap bitmap2 = new(width, height, PixelFormat.Format32bppArgb);
             bool flag;
-            using (FastBitmapLock fastBitmapLock = new FastBitmapLock(bmp, bmp.Size.ToRectangle()))
+            using (FastBitmapLock fastBitmapLock = new(bmp, bmp.Size.ToRectangle()))
             {
-                using (FastBitmapLock fastBitmapLock2 = new FastBitmapLock(bitmap2, bitmap2.Size.ToRectangle(), allowWrite: true))
+                using (FastBitmapLock fastBitmapLock2 = new(bitmap2, bitmap2.Size.ToRectangle(), allowWrite: true))
                 {
                     Glu.gluScaleImage(32993, fastBitmapLock.Width, fastBitmapLock.Height, 5121, fastBitmapLock.Data, fastBitmapLock2.Width, fastBitmapLock2.Height, 5121, fastBitmapLock2.Data);
                     flag = Gl.glGetError() != 0;
@@ -61,7 +61,7 @@ public static class OpenGlImageProcessing
         {
             if (intPtr == IntPtr.Zero)
             {
-                Gdi.PIXELFORMATDESCRIPTOR pixelFormatDescriptor = default(Gdi.PIXELFORMATDESCRIPTOR);
+                Gdi.PIXELFORMATDESCRIPTOR pixelFormatDescriptor = default;
                 pixelFormatDescriptor.nSize = (short)Marshal.SizeOf((object)pixelFormatDescriptor);
                 pixelFormatDescriptor.nVersion = 1;
                 pixelFormatDescriptor.dwFlags = 33;

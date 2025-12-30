@@ -11,79 +11,39 @@ public class TextureManagerSettings : ICloneable
 {
     [CommandLineSwitch(ShortName = "hwmtm")]
     [DefaultValue(1024)]
-    public int MaxTextureMemoryMB
-    {
-        get;
-        set;
-    }
+    public int MaxTextureMemoryMB { get; set; }
 
     public bool IsMaxTextureMemoryMBDefault => MaxTextureMemoryMB == 1024;
 
     [CommandLineSwitch(ShortName = "hwmtc")]
     [DefaultValue(1024)]
-    public int MaxTextureCount
-    {
-        get;
-        set;
-    }
+    public int MaxTextureCount { get; set; }
 
     [CommandLineSwitch(ShortName = "hwmttsa")]
     [DefaultValue(16192)]
-    public int MaxTextureTileSizeArbitrary
-    {
-        get;
-        set;
-    }
+    public int MaxTextureTileSizeArbitrary { get; set; }
 
     [CommandLineSwitch(ShortName = "hwmttss")]
     [DefaultValue(512)]
-    public int MaxTextureTileSizeSquare
-    {
-        get;
-        set;
-    }
+    public int MaxTextureTileSizeSquare { get; set; }
 
     [CommandLineSwitch(ShortName = "hwmtts")]
     [DefaultValue(16)]
-    public int MinTextureTileSize
-    {
-        get;
-        set;
-    }
+    public int MinTextureTileSize { get; set; }
 
     [CommandLineSwitch(ShortName = "hwo")]
     [DefaultValue(TextureManagerOptions.MipMapFilter)]
-    public TextureManagerOptions TextureManagerOptions
-    {
-        get;
-        set;
-    }
+    public TextureManagerOptions TextureManagerOptions { get; set; }
 
     public bool IsTextureManagerOptionsDefault => TextureManagerOptions == TextureManagerOptions.MipMapFilter;
 
     public bool MipMapping
     {
-        get
-        {
-            return (TextureManagerOptions & TextureManagerOptions.MipMapFilter) != 0;
-        }
-        set
-        {
-            TextureManagerOptions = TextureManagerOptions.SetMask(TextureManagerOptions.MipMapFilter, value);
-        }
+        get => (TextureManagerOptions & TextureManagerOptions.MipMapFilter) != 0;
+        set => TextureManagerOptions = TextureManagerOptions.SetMask(TextureManagerOptions.MipMapFilter, value);
     }
 
-    public int MaxTextureTileSize
-    {
-        get
-        {
-            if (!IsSquareTextures)
-            {
-                return MaxTextureTileSizeArbitrary;
-            }
-            return MaxTextureTileSizeSquare;
-        }
-    }
+    public int MaxTextureTileSize => !IsSquareTextures ? MaxTextureTileSizeArbitrary : MaxTextureTileSizeSquare;
 
     public bool IsMipMapFilter => (TextureManagerOptions & TextureManagerOptions.MipMapFilter) != 0;
 

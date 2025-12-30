@@ -7,8 +7,6 @@ using System.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 
-using static cYo.Common.Win32.ExecuteProcess;
-
 namespace cYo.Common.Windows.Forms;
 
 public class ComboBoxEx : ComboBox, IPromptText
@@ -102,10 +100,7 @@ public class ComboBoxEx : ComboBox, IPromptText
     [Description("The prompt text to display when there is nothing in the Text property.")]
     public string PromptText
     {
-        get
-        {
-            return promptText;
-        }
+        get => promptText;
         set
         {
             promptText = value;
@@ -123,14 +118,8 @@ public class ComboBoxEx : ComboBox, IPromptText
     [DefaultValue(true)]
     public bool FocusSelect
     {
-        get
-        {
-            return focusSelect;
-        }
-        set
-        {
-            focusSelect = value;
-        }
+        get => focusSelect;
+        set => focusSelect = value;
     }
 
     protected override void OnHandleCreated(EventArgs e)
@@ -150,7 +139,7 @@ public class ComboBoxEx : ComboBox, IPromptText
 
     private NativeMethods.COMBOBOXINFO GetChildHandle()
     {
-        NativeMethods.COMBOBOXINFO pcbi = default(NativeMethods.COMBOBOXINFO);
+        NativeMethods.COMBOBOXINFO pcbi = default;
         pcbi.cbSize = Marshal.SizeOf((object)pcbi);
         NativeMethods.GetComboBoxInfo(base.Handle, ref pcbi);
         return pcbi;

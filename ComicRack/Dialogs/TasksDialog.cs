@@ -22,7 +22,7 @@ public partial class TasksDialog : FormEx
 {
     private readonly string counterFormat;
 
-    private SimpleCache<string, Image> imageCache = new SimpleCache<string, Image>();
+    private SimpleCache<string, Image> imageCache = new();
 
     private static readonly TR tr = TR.Load("TasksDialog");
 
@@ -58,10 +58,7 @@ public partial class TasksDialog : FormEx
 
     public IEnumerable<QueueManager.IPendingTasks> Processes
     {
-        get
-        {
-            return processes;
-        }
+        get => processes;
         set
         {
             taskImages.Images.Clear();
@@ -76,14 +73,8 @@ public partial class TasksDialog : FormEx
 
     public int SelectedTab
     {
-        get
-        {
-            return tabs.SelectedIndex;
-        }
-        set
-        {
-            tabs.SelectedIndex = value;
-        }
+        get => tabs.SelectedIndex;
+        set => tabs.SelectedIndex = value;
     }
 
     public TasksDialog()
@@ -112,7 +103,7 @@ public partial class TasksDialog : FormEx
         }
         int totalPendingItems = 0;
         int totalAbortableItems = 0;
-        int previousTopItemIndex = ((lvTasks.TopItem != null) ? lvTasks.TopItem.Index : 0);
+        int previousTopItemIndex = (lvTasks.TopItem != null) ? lvTasks.TopItem.Index : 0;
         lvTasks.BeginUpdate();
         try
         {
@@ -132,8 +123,7 @@ public partial class TasksDialog : FormEx
                     ListViewItem listViewItem = lvTasks.Items.Add(item.ToString());
                     listViewItem.ImageKey = process.Group;
                     listViewItem.Group = group;
-                    IProgressState progressState = item as IProgressState;
-                    if (progressState == null)
+                    if (item is not IProgressState progressState)
                     {
                         listViewItem.SubItems.Add(runningText);
                         continue;
@@ -188,7 +178,7 @@ public partial class TasksDialog : FormEx
 
     private void AddStats(TreeNode tnServer, string name, ServerStatistics.StatisticResult data)
     {
-        FileLengthFormat fileLengthFormat = new FileLengthFormat();
+        FileLengthFormat fileLengthFormat = new();
         TreeNode tn = tnServer.Nodes[name] ?? tnServer.Nodes.Add(name, name, 1, 1);
         AddNodeEntry(tn, Clients, data.ClientCount);
         AddNodeEntry(tn, Info, data.InfoRequestCount);
@@ -201,10 +191,10 @@ public partial class TasksDialog : FormEx
     private void UpdateServerStats()
     {
         tvStats.BeginUpdate();
-        ServerStatistics.StatisticResult statisticResult = new ServerStatistics.StatisticResult();
-        ServerStatistics.StatisticResult statisticResult2 = new ServerStatistics.StatisticResult();
-        ServerStatistics.StatisticResult statisticResult3 = new ServerStatistics.StatisticResult();
-        ServerStatistics.StatisticResult statisticResult4 = new ServerStatistics.StatisticResult();
+        ServerStatistics.StatisticResult statisticResult = new();
+        ServerStatistics.StatisticResult statisticResult2 = new();
+        ServerStatistics.StatisticResult statisticResult3 = new();
+        ServerStatistics.StatisticResult statisticResult4 = new();
         try
         {
             foreach (ComicLibraryServer runningServer in Program.NetworkManager.RunningServers)
@@ -276,10 +266,7 @@ public partial class TasksDialog : FormEx
     {
         foreach (QueueManager.IPendingTasks process in processes)
         {
-            if (process.Abort != null)
-            {
-                process.Abort();
-            }
+            process.Abort?.Invoke();
         }
     }
 
@@ -301,8 +288,7 @@ public partial class TasksDialog : FormEx
 
     private void lvTasks_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
     {
-        IProgressState progressState = e.Item.Tag as IProgressState;
-        if (e.ColumnIndex != 1 || progressState == null || !progressState.ProgressAvailable || progressState.State != ProgressState.Running)
+        if (e.ColumnIndex != 1 || e.Item.Tag is not IProgressState progressState || !progressState.ProgressAvailable || progressState.State != ProgressState.Running)
         {
             e.DrawDefault = true;
             return;
@@ -315,7 +301,7 @@ public partial class TasksDialog : FormEx
         // TODO : tweak so that this is more visible in Dark Mode
         e.Graphics.DrawStyledRectangle(bounds, StyledRenderer.AlphaStyle.Hot, Color.Green, StyledRenderer.Default.Frame(0, 1));
         ListViewItem.ListViewSubItem listViewSubItem = e.Item.SubItems[1];
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             LineAlignment = StringAlignment.Center,
             Alignment = StringAlignment.Center,
@@ -335,7 +321,7 @@ public partial class TasksDialog : FormEx
 
     public static TasksDialog Show(IWin32Window parent, IEnumerable<QueueManager.IPendingTasks> processes, int tab = 0)
     {
-        TasksDialog dlg = new TasksDialog
+        TasksDialog dlg = new()
         {
             Processes = processes,
             tabs =

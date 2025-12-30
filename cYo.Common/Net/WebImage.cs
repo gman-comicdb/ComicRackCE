@@ -21,78 +21,43 @@ public class WebImage : Component
 
     private string cacheLocation;
 
-    private TimeSpan checkIntervall = new TimeSpan(7, 0, 0, 0);
+    private TimeSpan checkIntervall = new(7, 0, 0, 0);
 
     private volatile Bitmap image;
 
     [DefaultValue("Image")]
     public string Name
     {
-        get
-        {
-            return name;
-        }
-        set
-        {
-            name = value;
-        }
+        get => name;
+        set => name = value;
     }
 
     [DefaultValue(null)]
     public Uri Uri
     {
-        get
-        {
-            return uri;
-        }
-        set
-        {
-            uri = value;
-        }
+        get => uri;
+        set => uri = value;
     }
 
     [DefaultValue(null)]
     public string CacheLocation
     {
-        get
-        {
-            return cacheLocation;
-        }
-        set
-        {
-            cacheLocation = value;
-        }
+        get => cacheLocation;
+        set => cacheLocation = value;
     }
 
     [DefaultValue(null)]
-    public Image DefaultImage
-    {
-        get;
-        set;
-    }
+    public Image DefaultImage { get; set; }
 
     public TimeSpan CheckIntervall
     {
-        get
-        {
-            return checkIntervall;
-        }
-        set
-        {
-            checkIntervall = value;
-        }
+        get => checkIntervall;
+        set => checkIntervall = value;
     }
 
     public Bitmap Image
     {
-        get
-        {
-            return image;
-        }
-        protected set
-        {
-            image = value;
-        }
+        get => image; protected set => image = value;
     }
 
     public event EventHandler ImageLoaded;
@@ -140,17 +105,14 @@ public class WebImage : Component
 
     protected virtual void OnImageLoaded()
     {
-        if (this.ImageLoaded != null)
-        {
-            this.ImageLoaded(this, EventArgs.Empty);
-        }
+        ImageLoaded?.Invoke(this, EventArgs.Empty);
     }
 
     private void LoadWebImage(object state)
     {
         try
         {
-            HttpAccess httpAccess = new HttpAccess
+            HttpAccess httpAccess = new()
             {
                 AskProxyCredentials = false
             };
@@ -173,11 +135,7 @@ public class WebImage : Component
 
     private string GetCacheLocation()
     {
-        if (string.IsNullOrEmpty(cacheLocation))
-        {
-            return DefaultCacheLocation;
-        }
-        return cacheLocation;
+        return string.IsNullOrEmpty(cacheLocation) ? DefaultCacheLocation : cacheLocation;
     }
 
     private string GetCacheFilename()
@@ -201,7 +159,7 @@ public class WebImage : Component
     {
         try
         {
-            FileInfo fileInfo = new FileInfo(GetCacheFilename());
+            FileInfo fileInfo = new(GetCacheFilename());
             return DateTime.Now - fileInfo.LastWriteTime < checkIntervall;
         }
         catch

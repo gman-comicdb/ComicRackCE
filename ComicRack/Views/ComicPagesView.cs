@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using cYo.Common.Localize;
@@ -26,7 +27,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
     private readonly Image groupDown = Resources.GroupDown;
     private readonly Image sortUp = Resources.SortUp;
     private readonly Image sortDown = Resources.SortDown;
-    private readonly CommandMapper command = new CommandMapper();
+    private readonly CommandMapper command = new();
     private EnumMenuUtility filterMenu;
 
     [Browsable(false)]
@@ -51,7 +52,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
                 if (base.Main.ComicDisplay.PageFilter != value)
                 {
                     ComicDisplay comicDisplay = base.Main.ComicDisplay;
-                    ComicPageType pageFilter = (pagesView.PageFilter = value);
+                    ComicPageType pageFilter = pagesView.PageFilter = value;
                     comicDisplay.PageFilter = pageFilter;
                 }
             }
@@ -65,14 +66,8 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ItemViewConfig ViewConfig
     {
-        get
-        {
-            return pagesView.ViewConfig;
-        }
-        set
-        {
-            pagesView.ViewConfig = value;
-        }
+        get => pagesView.ViewConfig;
+        set => pagesView.ViewConfig = value;
     }
 
     public ComicPagesView()
@@ -86,7 +81,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
         GroupedBy = TR.Load(base.Name)["GroupedBy", "Grouped by {0}"];
         NotGrouped = TR.Load(base.Name)["NotGrouped", "Not grouped"];
         SubView.TranslateColumns(pagesView.ItemView.Columns);
-        foreach (ItemViewColumn column in pagesView.ItemView.Columns)
+        foreach (ItemViewColumn column in pagesView.ItemView.Columns.Cast<ItemViewColumn>())
         {
             column.TooltipText = ((ComicListField)column.Tag).Description;
         }
@@ -136,8 +131,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
 
     private void ItemView_ItemActivate(object sender, EventArgs e)
     {
-        PageViewItem pageViewItem = pagesView.ItemView.FocusedItem as PageViewItem;
-        if (pageViewItem != null)
+        if (pagesView.ItemView.FocusedItem is PageViewItem pageViewItem)
         {
             pagesView.Book.Navigate(pageViewItem.Page, PageSeekOrigin.Absolute);
             base.Main.ShowComic();
@@ -150,13 +144,13 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
         {
             ItemView itemView = pagesView.ItemView;
             tbbSort.Enabled = itemView.Columns.Count != 0;
-            tbbSort.Text = ((itemView.SortColumn != null) ? itemView.SortColumn.Text : None);
+            tbbSort.Text = (itemView.SortColumn != null) ? itemView.SortColumn.Text : None;
             tbbSort.ToolTipText = StringUtility.Format(ArrangedBy, tbbSort.Text);
             tbbGroup.Enabled = itemView.Columns.Count != 0;
-            tbbGroup.Text = ((itemView.GroupColumn != null) ? itemView.GroupColumn.Text : None);
+            tbbGroup.Text = (itemView.GroupColumn != null) ? itemView.GroupColumn.Text : None;
             tbbGroup.ToolTipText = StringUtility.Format(GroupedBy, tbbGroup.Text);
-            tbbSort.Image = ((itemView.ItemSortOrder == SortOrder.Ascending) ? sortUp : sortDown);
-            tbbGroup.Image = ((itemView.GroupSortingOrder == SortOrder.Ascending) ? groupDown : groupUp);
+            tbbSort.Image = (itemView.ItemSortOrder == SortOrder.Ascending) ? sortUp : sortDown;
+            tbbGroup.Image = (itemView.GroupSortingOrder == SortOrder.Ascending) ? groupDown : groupUp;
         }
     }
 
@@ -202,17 +196,13 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
 
     public virtual ItemSizeInfo GetItemSize()
     {
-        switch (pagesView.ItemView.ItemViewMode)
+        return pagesView.ItemView.ItemViewMode switch
         {
-            case ItemViewMode.Thumbnail:
-                return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight), pagesView.ItemView.ItemThumbSize.Height);
-            case ItemViewMode.Tile:
-                return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight), pagesView.ItemView.ItemTileSize.Height);
-            case ItemViewMode.Detail:
-                return new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight), pagesView.ItemView.ItemRowHeight);
-            default:
-                return null;
-        }
+            ItemViewMode.Thumbnail => new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinThumbHeight), FormUtility.ScaleDpiY(Program.MaxThumbHeight), pagesView.ItemView.ItemThumbSize.Height),
+            ItemViewMode.Tile => new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinTileHeight), FormUtility.ScaleDpiY(Program.MaxTileHeight), pagesView.ItemView.ItemTileSize.Height),
+            ItemViewMode.Detail => new ItemSizeInfo(FormUtility.ScaleDpiY(Program.MinRowHeight), FormUtility.ScaleDpiY(Program.MaxRowHeight), pagesView.ItemView.ItemRowHeight),
+            _ => null,
+        };
     }
 
     public virtual void SetItemSize(int value)

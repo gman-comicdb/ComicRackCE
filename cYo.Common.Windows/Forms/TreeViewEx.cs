@@ -104,14 +104,8 @@ public class TreeViewEx : TreeView
     [DefaultValue(10)]
     public int DragScrollRegion
     {
-        get
-        {
-            return dragScrollRegion;
-        }
-        set
-        {
-            dragScrollRegion = value;
-        }
+        get => dragScrollRegion;
+        set => dragScrollRegion = value;
     }
 
     public event ScrollEventHandler Scroll;
@@ -207,9 +201,6 @@ public class TreeViewEx : TreeView
 
     protected virtual void OnScroll(ScrollEventArgs sea)
     {
-        if (this.Scroll != null)
-        {
-            this.Scroll(this, sea);
-        }
+        Scroll?.Invoke(this, sea);
     }
 }

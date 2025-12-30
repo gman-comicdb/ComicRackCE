@@ -17,7 +17,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views;
 
 public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDisplayWorkspace
 {
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
     private string cachedCurrentFolder = string.Empty;
 
@@ -29,14 +29,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string CurrentFolder
     {
-        get
-        {
-            if (tvFolders == null || tvFolders.Nodes.Count <= 0)
-            {
-                return cachedCurrentFolder;
-            }
-            return tvFolders.GetSelectedNodePath();
-        }
+        get => tvFolders == null || tvFolders.Nodes.Count <= 0 ? cachedCurrentFolder : tvFolders.GetSelectedNodePath();
         set
         {
             if (tvFolders == null || tvFolders.Nodes.Count == 0)
@@ -52,10 +45,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     public SmartList<string> Paths
     {
-        get
-        {
-            return paths;
-        }
+        get => paths;
         set
         {
             if (paths != value)
@@ -75,26 +65,14 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     public override bool TopBrowserVisible
     {
-        get
-        {
-            return favContainer.Expanded;
-        }
-        set
-        {
-            favContainer.Expanded = value;
-        }
+        get => favContainer.Expanded;
+        set => favContainer.Expanded = value;
     }
 
     public override int TopBrowserSplit
     {
-        get
-        {
-            return favContainer.ExpandedWidth;
-        }
-        set
-        {
-            favContainer.ExpandedWidth = value;
-        }
+        get => favContainer.ExpandedWidth;
+        set => favContainer.ExpandedWidth = value;
     }
 
     public ComicListFolderFilesBrowser()
@@ -184,8 +162,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     private void favView_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ItemViewItem itemViewItem = favView.FocusedItem as ItemViewItem;
-        if (itemViewItem != null)
+        if (favView.FocusedItem is ItemViewItem itemViewItem)
         {
             CurrentFolder = itemViewItem.Tag as string;
         }
@@ -210,7 +187,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
             {
                 return;
             }
-            List<string> list = new List<string>();
+            List<string> list = new();
             favView.Items.Clear();
             foreach (string favoriteFolder in Program.Settings.FavoriteFolders)
             {
@@ -234,7 +211,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
 
     private void RemoveFavorite()
     {
-        ItemViewItem itemViewItem = ((favView.FocusedItem == null) ? null : (favView.FocusedItem as ItemViewItem));
+        ItemViewItem itemViewItem = (favView.FocusedItem == null) ? null : (favView.FocusedItem as ItemViewItem);
         if (itemViewItem != null && Program.AskQuestion(this, TR.Messages["AskRemoveFavorite", "Do you really want to remove this Favorite Folder link?"], TR.Messages["Remove", "Remove"], HiddenMessageBoxes.RemoveFavorite))
         {
             Program.Settings.FavoriteFolders.Remove(itemViewItem.Tag as string);

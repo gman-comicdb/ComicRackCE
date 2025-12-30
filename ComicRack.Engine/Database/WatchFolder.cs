@@ -16,15 +16,12 @@ public class WatchFolder : DisposableObject
     private bool watch;
 
     [NonSerialized]
-    private FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
+    private FileSystemWatcher fileSystemWatcher = new();
 
     [XmlAttribute]
     public string Folder
     {
-        get
-        {
-            return folder;
-        }
+        get => folder;
         set
         {
             if (!(folder == value))
@@ -43,10 +40,7 @@ public class WatchFolder : DisposableObject
     [XmlAttribute]
     public bool Watch
     {
-        get
-        {
-            return watch;
-        }
+        get => watch;
         set
         {
             if (watch != value)

@@ -39,10 +39,6 @@ public class Vector3Converter : ExpandableObjectConverter
 
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
     {
-        if (sourceType == typeof(string))
-        {
-            return true;
-        }
-        return base.CanConvertFrom(context, sourceType);
+        return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
     }
 }

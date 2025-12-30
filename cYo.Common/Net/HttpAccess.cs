@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Web.Services.Protocols;
 using System.Windows.Forms;
 
 using cYo.Common.ComponentModel;
@@ -18,44 +17,21 @@ public class HttpAccess
 
     private static HashSet<string> ignored;
 
-    public string UserAgent
-    {
-        get;
-        set;
-    }
+    public string UserAgent { get; set; }
 
-    public bool AskProxyCredentials
-    {
-        get;
-        set;
-    }
+    public bool AskProxyCredentials { get; set; }
 
-    public NetworkCredential ProxyCredentials
-    {
-        get;
-        set;
-    }
+    public NetworkCredential ProxyCredentials { get; set; }
 
-    public bool AskSecureCredentials
-    {
-        get;
-        set;
-    }
+    public bool AskSecureCredentials { get; set; }
 
-    public NetworkCredential SecureCredentials
-    {
-        get;
-        set;
-    }
+    public NetworkCredential SecureCredentials { get; set; }
 
     private static HashSet<string> Ignored
     {
         get
         {
-            if (ignored == null)
-            {
-                ignored = new HashSet<string>();
-            }
+            ignored ??= new HashSet<string>();
             return ignored;
         }
     }
@@ -80,7 +56,7 @@ public class HttpAccess
                 }
                 if (SecureCredentials != null)
                 {
-                    CredentialCache credentialCache = new CredentialCache();
+                    CredentialCache credentialCache = new();
                     SecureCredentials.Domain = string.Empty;
                     credentialCache.Add(getConnectionUri(), "BASIC", SecureCredentials);
                     setSecureCredentials(credentialCache);
@@ -167,7 +143,7 @@ public class HttpAccess
             WebResponse response = request.GetResponse();
             try
             {
-                StreamEx streamEx = new StreamEx(response.GetResponseStream());
+                StreamEx streamEx = new(response.GetResponseStream());
                 streamEx.Closed += delegate
                 {
                     response.SafeDispose();
@@ -191,7 +167,7 @@ public class HttpAccess
         }
         using (ItemMonitor.Lock(typeof(HttpAccess)))
         {
-            using (UserCredentialsDialog userCredentialsDialog = new UserCredentialsDialog(text))
+            using (UserCredentialsDialog userCredentialsDialog = new(text))
             {
                 if (current == null)
                 {
@@ -217,15 +193,15 @@ public class HttpAccess
 
     public static string ReadText(string uri)
     {
-        Uri uri2 = new Uri(uri);
+        Uri uri2 = new(uri);
         if (uri2.IsFile)
         {
             return File.ReadAllText(uri2.LocalPath);
         }
-        HttpAccess httpAccess = new HttpAccess();
+        HttpAccess httpAccess = new();
         using (Stream stream = httpAccess.GetStream(uri2))
         {
-            using (StreamReader streamReader = new StreamReader(stream))
+            using (StreamReader streamReader = new(stream))
             {
                 return streamReader.ReadToEnd();
             }
@@ -234,15 +210,15 @@ public class HttpAccess
 
     public static byte[] ReadBinary(string uri)
     {
-        Uri uri2 = new Uri(uri);
+        Uri uri2 = new(uri);
         if (uri2.IsFile)
         {
             return File.ReadAllBytes(uri2.LocalPath);
         }
-        HttpAccess httpAccess = new HttpAccess();
+        HttpAccess httpAccess = new();
         using (Stream stream = httpAccess.GetStream(uri2))
         {
-            MemoryStream memoryStream = new MemoryStream();
+            MemoryStream memoryStream = new();
             byte[] array = new byte[10000];
             int count;
             while ((count = stream.Read(array, 0, array.Length)) > 0)

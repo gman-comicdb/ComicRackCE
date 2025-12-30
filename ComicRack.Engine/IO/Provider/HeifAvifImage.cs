@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -7,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
@@ -61,9 +58,9 @@ public static class HeifAvifImage
         Bitmap bitmap = null;
         try
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
-                bitmap = ((bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb));
+                bitmap = (bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb);
                 Encode(bitmap, memoryStream, quality, avif);
                 return memoryStream.ToArray();
             }
@@ -107,10 +104,7 @@ public static class HeifAvifImage
         {
             NativeMethods.heif_filetype_result result = NativeMethods.heif_check_filetype(dataPtr, data.Length);
 
-            if (result == NativeMethods.heif_filetype_result.heif_filetype_yes_supported)
-                return true;
-
-            return false;
+            return result == NativeMethods.heif_filetype_result.heif_filetype_yes_supported;
         }
         finally
         {
@@ -131,7 +125,7 @@ public static class HeifAvifImage
                 DecoderId = null
             };
 
-            using HeifContext context = new HeifContext(data);
+            using HeifContext context = new(data);
             using HeifImageHandle primaryImage = context.GetPrimaryImageHandle();
 
             bool hasAlpha = primaryImage.HasAlphaChannel;
@@ -232,7 +226,7 @@ public static class HeifAvifImage
             WriteTwoColorProfiles = false
         };
 
-        using HeifContext context = new HeifContext();
+        using HeifContext context = new();
         HeifEncoderDescriptor encoderDescriptor = context.GetEncoderDescriptors(format).FirstOrDefault();
         using HeifEncoder encoder = context.GetEncoder(encoderDescriptor);
         encoder.SetLossyQuality(quality);

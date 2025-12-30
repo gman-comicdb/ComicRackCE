@@ -8,17 +8,9 @@ namespace cYo.Common.Drawing;
 
 public class JpegFile
 {
-    public bool IsValid
-    {
-        get;
-        private set;
-    }
+    public bool IsValid { get; private set; }
 
-    public Size Size
-    {
-        get;
-        private set;
-    }
+    public Size Size { get; private set; }
 
     public int Width => Size.Width;
 
@@ -33,7 +25,7 @@ public class JpegFile
     {
         if (data != null && data.Length >= 2 && data[0] == byte.MaxValue && data[1] == 216)
         {
-            using (MemoryStream s = new MemoryStream(data))
+            using (MemoryStream s = new(data))
             {
                 Initialize(s);
             }
@@ -54,10 +46,10 @@ public class JpegFile
         bool flag;
         try
         {
-            using BinaryReader binaryReader = new BinaryReader(s);
+            using BinaryReader binaryReader = new(s);
 
             // Validate JPEG SOI marker
-            if (binaryReader.ReadByte() != byte.MaxValue || binaryReader.ReadByte() != 0xD8)
+            if (binaryReader.ReadByte() is not byte.MaxValue or not 0xD8)
             {
                 return false;
             }
@@ -70,7 +62,7 @@ public class JpegFile
                 } while (marker == byte.MaxValue);
 
                 // Check for start of frame (SOF) markers that contain image dimensions
-                if (marker >= 0xC0 && marker <= 0xC3)
+                if (marker is >= 0xC0 and <= 0xC3)
                 {
                     binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
                     int height = binaryReader.ReadUInt16BigEndian();

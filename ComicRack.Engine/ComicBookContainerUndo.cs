@@ -18,54 +18,26 @@ public class ComicBookContainerUndo
 
     private class UndoItem
     {
-        public string Marker
-        {
-            get;
-            set;
-        }
+        public string Marker { get; set; }
 
-        public UndoItemType Type
-        {
-            get;
-            set;
-        }
+        public UndoItemType Type { get; set; }
 
-        public Guid BookId
-        {
-            get;
-            set;
-        }
+        public Guid BookId { get; set; }
 
-        public string Property
-        {
-            get;
-            set;
-        }
+        public string Property { get; set; }
 
-        public object OldValue
-        {
-            get;
-            set;
-        }
+        public object OldValue { get; set; }
 
-        public object NewValue
-        {
-            get;
-            set;
-        }
+        public object NewValue { get; set; }
 
-        public ComicBook Book
-        {
-            get;
-            set;
-        }
+        public ComicBook Book { get; set; }
 
         public bool IsMarker => !string.IsNullOrEmpty(Marker);
     }
 
     private const int UndoSize = 10;
 
-    private readonly LinkedList<UndoItem> items = new LinkedList<UndoItem>();
+    private readonly LinkedList<UndoItem> items = new();
 
     private LinkedListNode<UndoItem> currentItem;
 
@@ -77,10 +49,7 @@ public class ComicBookContainerUndo
 
     public ComicBookContainer Container
     {
-        get
-        {
-            return container;
-        }
+        get => container;
         set
         {
             if (value != container)
@@ -108,11 +77,7 @@ public class ComicBookContainerUndo
         {
             using (ItemMonitor.Lock(items))
             {
-                if (currentItem == null)
-                {
-                    return items.First != null;
-                }
-                return currentItem.Next != null;
+                return currentItem == null ? items.First != null : currentItem.Next != null;
             }
         }
     }
@@ -226,7 +191,7 @@ public class ComicBookContainerUndo
             inUpdate = true;
             try
             {
-                currentItem = ((currentItem == null) ? items.First : currentItem.Next);
+                currentItem = (currentItem == null) ? items.First : currentItem.Next;
                 do
                 {
                     UndoItem value = currentItem.Value;
@@ -245,7 +210,7 @@ public class ComicBookContainerUndo
                     currentItem = currentItem.Next;
                 }
                 while (currentItem != null && !currentItem.Value.IsMarker);
-                currentItem = ((currentItem == null) ? items.Last : currentItem.Previous);
+                currentItem = (currentItem == null) ? items.Last : currentItem.Previous;
             }
             finally
             {

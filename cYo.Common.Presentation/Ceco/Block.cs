@@ -24,8 +24,7 @@ public abstract class Block : Span, IRender
         {
             if (border == -1)
             {
-                Block block = base.ParentInline as Block;
-                if (block != null)
+                if (base.ParentInline is Block block)
                 {
                     return block.Border;
                 }
@@ -48,8 +47,7 @@ public abstract class Block : Span, IRender
         {
             if (vAlign == VerticalAlignment.None)
             {
-                Block block = base.ParentInline as Block;
-                if (block != null)
+                if (base.ParentInline is Block block)
                 {
                     return block.VAlign;
                 }
@@ -68,10 +66,7 @@ public abstract class Block : Span, IRender
 
     public SizeValue BlockWidth
     {
-        get
-        {
-            return blockWidth;
-        }
+        get => blockWidth;
         set
         {
             if (!(blockWidth == value))
@@ -84,10 +79,7 @@ public abstract class Block : Span, IRender
 
     public int BlockHeight
     {
-        get
-        {
-            return blockHeight;
-        }
+        get => blockHeight;
         set
         {
             if (blockHeight != value)
@@ -100,10 +92,7 @@ public abstract class Block : Span, IRender
 
     public virtual Size Margin
     {
-        get
-        {
-            return margin;
-        }
+        get => margin;
         set
         {
             if (!(margin == value))
@@ -116,11 +105,7 @@ public abstract class Block : Span, IRender
 
     public override bool IsBlock => true;
 
-    public int MinimumWidth
-    {
-        get;
-        set;
-    }
+    public int MinimumWidth { get; set; }
 
     public override bool IsNode => false;
 
@@ -152,38 +137,18 @@ public abstract class Block : Span, IRender
 
     public void SetAlign(ContentAlignment contentAlignment)
     {
-        switch (contentAlignment)
+        Align = contentAlignment switch
         {
-            default:
-                Align = HorizontalAlignment.Left;
-                break;
-            case ContentAlignment.TopCenter:
-            case ContentAlignment.MiddleCenter:
-            case ContentAlignment.BottomCenter:
-                Align = HorizontalAlignment.Center;
-                break;
-            case ContentAlignment.TopRight:
-            case ContentAlignment.MiddleRight:
-            case ContentAlignment.BottomRight:
-                Align = HorizontalAlignment.Right;
-                break;
-        }
-        switch (contentAlignment)
+            ContentAlignment.TopCenter or ContentAlignment.MiddleCenter or ContentAlignment.BottomCenter => HorizontalAlignment.Center,
+            ContentAlignment.TopRight or ContentAlignment.MiddleRight or ContentAlignment.BottomRight => HorizontalAlignment.Right,
+            _ => HorizontalAlignment.Left,
+        };
+        VAlign = contentAlignment switch
         {
-            case ContentAlignment.BottomLeft:
-            case ContentAlignment.BottomCenter:
-            case ContentAlignment.BottomRight:
-                VAlign = VerticalAlignment.Bottom;
-                break;
-            case ContentAlignment.MiddleLeft:
-            case ContentAlignment.MiddleCenter:
-            case ContentAlignment.MiddleRight:
-                VAlign = VerticalAlignment.Middle;
-                break;
-            default:
-                VAlign = VerticalAlignment.Top;
-                break;
-        }
+            ContentAlignment.BottomLeft or ContentAlignment.BottomCenter or ContentAlignment.BottomRight => VerticalAlignment.Bottom,
+            ContentAlignment.MiddleLeft or ContentAlignment.MiddleCenter or ContentAlignment.MiddleRight => VerticalAlignment.Middle,
+            _ => VerticalAlignment.Top,
+        };
     }
 
     protected abstract void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl);

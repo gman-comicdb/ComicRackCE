@@ -7,7 +7,7 @@ public static class MatrixUtility
 {
     public static Matrix GetRotationMatrix(Point anchor, int pageRotation)
     {
-        Matrix matrix = new Matrix();
+        Matrix matrix = new();
         if (pageRotation % 360 == 0)
         {
             return matrix;

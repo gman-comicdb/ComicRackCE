@@ -21,21 +21,15 @@ public static class ColorExtensions
             num4 += color.B;
             num++;
         }
-        if (num == 0)
-        {
-            throw new ArgumentException("must be no empty list", "colors");
-        }
-        return Color.FromArgb(num2 / num, num3 / num, num4 / num);
+        return num == 0
+            ? throw new ArgumentException("must be no empty list", "colors")
+            : Color.FromArgb(num2 / num, num3 / num, num4 / num);
     }
 
     public static string IsNamedColor(string color)
     {
         Color color2 = Color.FromName(color);
-        if (string.IsNullOrEmpty(color2.Name))
-        {
-            throw new ArgumentException("Only named colors allowed");
-        }
-        return color2.Name;
+        return string.IsNullOrEmpty(color2.Name) ? throw new ArgumentException("Only named colors allowed") : color2.Name;
     }
 
     public static int ToRgb(this Color color)
@@ -46,11 +40,7 @@ public static class ColorExtensions
     public static bool IsBlackOrWhite(this Color color)
     {
         int num = color.ToRgb();
-        if (num != Color.White.ToRgb())
-        {
-            return num == Color.Black.ToRgb();
-        }
-        return true;
+        return num != Color.White.ToRgb() ? num == Color.Black.ToRgb() : true;
     }
 
     public static Color Transparent(this Color color, int alpha)

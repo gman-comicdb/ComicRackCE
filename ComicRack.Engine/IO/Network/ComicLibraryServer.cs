@@ -72,67 +72,36 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
 
     private ServiceHost serviceHost;
 
-    private readonly Cache<Guid, IImageProvider> providerCache = new Cache<Guid, IImageProvider>(EngineConfiguration.Default.ServerProviderCacheSize);
+    private readonly Cache<Guid, IImageProvider> providerCache = new(EngineConfiguration.Default.ServerProviderCacheSize);
 
     //private static readonly ServerRegistration serverRegistration = new ServerRegistration();
 
-    private static readonly Dictionary<int, int> shareCounts = new Dictionary<int, int>();
+    private static readonly Dictionary<int, int> shareCounts = new();
 
     public static X509Certificate2 Certificate
     {
         get
         {
-            if (certificate == null)
-            {
-                certificate = new X509Certificate2(Resources.Certificate2, string.Empty);
-            }
+            certificate ??= new X509Certificate2(Resources.Certificate2, string.Empty);
             return certificate;
         }
     }
 
-    public string Id
-    {
-        get;
-        private set;
-    }
+    public string Id { get; private set; }
 
-    public ComicLibraryServerConfig Config
-    {
-        get;
-        private set;
-    }
+    public ComicLibraryServerConfig Config { get; private set; }
 
-    public IBroadcast<BroadcastData> Broadcaster
-    {
-        get;
-        private set;
-    }
+    public IBroadcast<BroadcastData> Broadcaster { get; private set; }
 
-    public bool PingEnabled
-    {
-        get;
-        set;
-    }
+    public bool PingEnabled { get; set; }
 
-    public IPagePool PagePool
-    {
-        get;
-        set;
-    }
+    public IPagePool PagePool { get; set; }
 
-    public IThumbnailPool ThumbPool
-    {
-        get;
-        set;
-    }
+    public IThumbnailPool ThumbPool { get; set; }
 
     public ComicLibrary ComicLibrary => getComicLibrary();
 
-    public ServerStatistics Statistics
-    {
-        get;
-        private set;
-    }
+    public ServerStatistics Statistics { get; private set; }
 
     public bool IsRunning => serviceHost != null;
 
@@ -237,7 +206,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
                 using (IItemLock<PageImage> itemLock2 = PagePool.GetPage(comicBook.GetPageKey(index, BitmapAdjustment.Empty), itemLock.Item, onErrorThrowException: true))
                 {
                     int pageQuality = Config.PageQuality;
-                    byte[] array = ((pageQuality != 100) ? itemLock2.Item.Bitmap.ImageToJpegBytes(75 * pageQuality / 100) : ((byte[])itemLock2.Item.Data.Clone()));
+                    byte[] array = (pageQuality != 100) ? itemLock2.Item.Bitmap.ImageToJpegBytes(75 * pageQuality / 100) : ((byte[])itemLock2.Item.Data.Clone());
                     AddStats(ServerStatistics.StatisticType.PageRequest, array.Length);
                     return array;
                 }
@@ -260,7 +229,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
                 using (IItemLock<ThumbnailImage> itemLock2 = ThumbPool.GetThumbnail(comicBook.GetThumbnailKey(index), itemLock.Item, onErrorThrowException: true))
                 {
                     int thumbnailQuality = Config.ThumbnailQuality;
-                    byte[] array = ((thumbnailQuality != 100) ? new ThumbnailImage(itemLock2.Item.Bitmap.ImageToJpegBytes(75 * thumbnailQuality / 100), itemLock2.Item.Size, itemLock2.Item.OriginalSize).ToBytes() : itemLock2.Item.ToBytes());
+                    byte[] array = (thumbnailQuality != 100) ? new ThumbnailImage(itemLock2.Item.Bitmap.ImageToJpegBytes(75 * thumbnailQuality / 100), itemLock2.Item.Size, itemLock2.Item.OriginalSize).ToBytes() : itemLock2.Item.ToBytes();
                     AddStats(ServerStatistics.StatisticType.ThumbnailRequest, array.Length);
                     return array;
                 }
@@ -288,11 +257,9 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
 
     public string GetAnnouncementUri()
     {
-        if (!Config.IsInternet)
-        {
-            return null;
-        }
-        return ServiceAddress.CompletePortAndPath(GetExternalServiceAddress(), (Config.ServicePort == ComicLibraryServerConfig.DefaultPublicServicePort) ? null : Config.ServicePort.ToString(), (Config.ServiceName == ComicLibraryServerConfig.DefaultServiceName) ? null : Config.ServiceName);
+        return !Config.IsInternet
+            ? null
+            : ServiceAddress.CompletePortAndPath(GetExternalServiceAddress(), (Config.ServicePort == ComicLibraryServerConfig.DefaultPublicServicePort) ? null : Config.ServicePort.ToString(), (Config.ServiceName == ComicLibraryServerConfig.DefaultServiceName) ? null : Config.ServiceName);
     }
 
     public void AnnounceServer()
@@ -401,10 +368,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
             }
             else
             {
-                if (Broadcaster != null)
-                {
-                    Broadcaster.Broadcast(new BroadcastData(BroadcastType.ServerStarted, Config.ServiceName, Config.ServicePort));
-                }
+                Broadcaster?.Broadcast(new BroadcastData(BroadcastType.ServerStarted, Config.ServiceName, Config.ServicePort));
                 pingTimer = new Timer(ServerPing, null, 10000, 10000);
             }
             return true;
@@ -429,10 +393,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
             announceTimer = null;
             pingTimer.SafeDispose();
             pingTimer = null;
-            if (Broadcaster != null)
-            {
-                Broadcaster.Broadcast(new BroadcastData(BroadcastType.ServerStopped, Config.ServiceName, Config.ServicePort));
-            }
+            Broadcaster?.Broadcast(new BroadcastData(BroadcastType.ServerStopped, Config.ServiceName, Config.ServicePort));
             serviceHost.Close();
         }
         catch
@@ -463,12 +424,12 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
         {
             case LibraryShareMode.Selected:
                 {
-                    ComicLibrary comicLibrary = new ComicLibrary
+                    ComicLibrary comicLibrary = new()
                     {
                         Name = ComicLibrary.Name,
                         Id = ComicLibrary.Id
                     };
-                    HashSet<ComicBook> hashSet = new HashSet<ComicBook>();
+                    HashSet<ComicBook> hashSet = new();
                     IEnumerable<ShareableComicListItem> source = from scli in ComicLibrary.ComicLists.GetItems<ShareableComicListItem>()
                                                                  where Config.SharedItems.Contains(scli.Id)
                                                                  select scli;
@@ -497,8 +458,8 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
 
     public static Binding CreateChannel(bool secure)
     {
-        NetTcpBinding netTcpBinding = new NetTcpBinding();
-        netTcpBinding.Security.Mode = (secure ? SecurityMode.Message : SecurityMode.None);
+        NetTcpBinding netTcpBinding = new();
+        netTcpBinding.Security.Mode = secure ? SecurityMode.Message : SecurityMode.None;
         if (secure)
         {
             netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
@@ -512,7 +473,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
     {
         //ServerInfo[] source = HttpAccess.CallSoap(serverRegistration, (ServerRegistration s) => s.GetList((int)optionsMask, password));
         //return ((IEnumerable<ServerInfo>)source).Select((Func<ServerInfo, ShareInformation>)((ServerInfo s) => s));
-        return Enumerable.Empty<ShareInformation>();
+        return [];
     }
 
     public static string GetExternalServiceAddress()
@@ -521,11 +482,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
         text = text.Trim();
         try
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return ServiceAddress.GetWanAddress();
-            }
-            return text;
+            return string.IsNullOrEmpty(text) ? ServiceAddress.GetWanAddress() : text;
         }
         catch (Exception)
         {
@@ -540,7 +497,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
             int freeShareNumber = GetFreeShareNumber(port);
             item.ServicePort = port;
             item.ServiceName = "Share" + ((freeShareNumber > 0) ? (freeShareNumber + 1).ToString() : string.Empty);
-            ComicLibraryServer comicLibraryServer = new ComicLibraryServer(item, getComicLibrary, pagePool, thumbPool, broadcaster);
+            ComicLibraryServer comicLibraryServer = new(item, getComicLibrary, pagePool, thumbPool, broadcaster);
             if (comicLibraryServer.Start())
             {
                 yield return comicLibraryServer;
@@ -562,10 +519,6 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
         OperationContext current = OperationContext.Current;
         MessageProperties incomingMessageProperties = current.IncomingMessageProperties;
         RemoteEndpointMessageProperty remoteEndpointMessageProperty = incomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-        if (!IPAddress.TryParse(remoteEndpointMessageProperty.Address, out var address))
-        {
-            return null;
-        }
-        return address;
+        return !IPAddress.TryParse(remoteEndpointMessageProperty.Address, out var address) ? null : address;
     }
 }

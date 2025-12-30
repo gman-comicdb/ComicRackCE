@@ -10,10 +10,7 @@ public class FlowBlock : Block
 
     public Size ActualSize
     {
-        get
-        {
-            return actualSize;
-        }
+        get => actualSize;
         set
         {
             if (!(actualSize == value))
@@ -49,10 +46,10 @@ public class FlowBlock : Block
         int size = base.BlockWidth.GetSize(maxWidth);
         int blockHeight = base.BlockHeight;
         int minWidth;
-        Size size4 = (ActualSize = (base.Size = Layout(GetSubItems(includeOwn: false), gr, size, out minWidth)));
+        Size size4 = ActualSize = base.Size = Layout(GetSubItems(includeOwn: false), gr, size, out minWidth);
         if (!base.BlockWidth.IsAuto && base.Width < size)
         {
-            minWidth = (base.Width = size);
+            minWidth = base.Width = size;
         }
         if (base.Height < blockHeight)
         {
@@ -67,8 +64,7 @@ public class FlowBlock : Block
         location.Offset(base.Location);
         foreach (Inline subItem in GetSubItems(includeOwn: false))
         {
-            IRender render = subItem as IRender;
-            if (subItem.Visible && render != null)
+            if (subItem.Visible && subItem is IRender render)
             {
                 Rectangle bounds = subItem.Bounds;
                 bounds.Offset(location);
@@ -82,10 +78,7 @@ public class FlowBlock : Block
 
     protected virtual void OnActualSizeChanged()
     {
-        if (this.ActualSizeChanged != null)
-        {
-            this.ActualSizeChanged(this, EventArgs.Empty);
-        }
+        ActualSizeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private static Size Layout(IEnumerable<Inline> inlines, Graphics gr, int maxWidth, out int minWidth)
@@ -97,27 +90,26 @@ public class FlowBlock : Block
     {
         Point pt = Point.Empty;
         Rectangle a = Rectangle.Empty;
-        List<Inline> list = new List<Inline>();
-        List<Inline> list2 = new List<Inline>();
+        List<Inline> list = new();
+        List<Inline> list2 = new();
         int leftMargin = 0;
         int rightMargin = 0;
         int leftMarginDown = 0;
         int rightMarginDown = 0;
-        Inline inline = (inlines.MoveNext() ? inlines.Current : null);
+        Inline inline = inlines.MoveNext() ? inlines.Current : null;
         minWidth = 0;
         while (inline != null)
         {
             while (inline != null)
             {
-                IRender render = inlines.Current as IRender;
-                if (render == null || !inline.IsBlock || (inline.Align != HorizontalAlignment.Left && inline.Align != HorizontalAlignment.Right))
+                if (inlines.Current is not IRender render || !inline.IsBlock || (inline.Align != HorizontalAlignment.Left && inline.Align != HorizontalAlignment.Right))
                 {
                     break;
                 }
                 inline.Visible = true;
                 render.Measure(gr, maxWidth);
                 list.Add(inline);
-                inline = (inlines.MoveNext() ? inlines.Current : null);
+                inline = inlines.MoveNext() ? inlines.Current : null;
             }
             foreach (Inline item in list)
             {
@@ -134,7 +126,7 @@ public class FlowBlock : Block
                     rightMargin += item.Width;
                     rightMarginDown = Math.Max(rightMarginDown, item.Height);
                 }
-                a = (a.IsEmpty ? item.Bounds : Rectangle.Union(a, item.Bounds));
+                a = a.IsEmpty ? item.Bounds : Rectangle.Union(a, item.Bounds);
             }
             list.Clear();
             int width = maxWidth - leftMargin - rightMargin;
@@ -145,7 +137,7 @@ public class FlowBlock : Block
                 if ((inline.FlowBreak & FlowBreak.Before) != 0)
                 {
                     rectangle = Break(inline, list2, ref pt, ref leftMargin, ref leftMarginDown, ref rightMargin, ref rightMarginDown, ref width);
-                    a = (a.IsEmpty ? rectangle : Rectangle.Union(a, rectangle));
+                    a = a.IsEmpty ? rectangle : Rectangle.Union(a, rectangle);
                 }
                 if (!inline.IsNode)
                 {
@@ -174,13 +166,13 @@ public class FlowBlock : Block
                 {
                     break;
                 }
-                inline = (inlines.MoveNext() ? inlines.Current : null);
+                inline = inlines.MoveNext() ? inlines.Current : null;
             }
             rectangle = Break(inline, list2, ref pt, ref leftMargin, ref leftMarginDown, ref rightMargin, ref rightMarginDown, ref width);
-            a = (a.IsEmpty ? rectangle : Rectangle.Union(a, rectangle));
+            a = a.IsEmpty ? rectangle : Rectangle.Union(a, rectangle);
             if (inline != null && (inline.FlowBreak & FlowBreak.After) != 0)
             {
-                inline = (inlines.MoveNext() ? inlines.Current : null);
+                inline = inlines.MoveNext() ? inlines.Current : null;
             }
         }
         return a.Size;
@@ -219,11 +211,11 @@ public class FlowBlock : Block
         rightMarginDown -= num;
         if (leftMarginDown <= 0)
         {
-            leftMargin = (leftMarginDown = 0);
+            leftMargin = leftMarginDown = 0;
         }
         if (rightMarginDown <= 0)
         {
-            rightMargin = (rightMarginDown = 0);
+            rightMargin = rightMarginDown = 0;
         }
         return result;
     }
@@ -239,41 +231,27 @@ public class FlowBlock : Block
             num2 = Math.Max(item.BaseLine, num2);
             num = Math.Max(item.Height, num);
             horizontalAlignment = item.Align;
-            a = (a.IsEmpty ? item.Bounds : Rectangle.Union(a, item.Bounds));
+            a = a.IsEmpty ? item.Bounds : Rectangle.Union(a, item.Bounds);
         }
-        int num3;
-        switch (horizontalAlignment)
+
+        var num3 = horizontalAlignment switch
         {
-            case HorizontalAlignment.Center:
-                num3 = (width - a.Width) / 2;
-                break;
-            case HorizontalAlignment.Right:
-                num3 = width - a.Width;
-                break;
-            default:
-                num3 = leftMargin;
-                break;
-        }
+            HorizontalAlignment.Center => (width - a.Width) / 2,
+            HorizontalAlignment.Right => width - a.Width,
+            _ => leftMargin,
+        };
         a = Rectangle.Empty;
         foreach (Inline item2 in span)
         {
-            switch (item2.BaseAlign)
+            item2.Y += item2.BaseAlign switch
             {
-                case BaseAlignment.Top:
-                    item2.Y += -item2.DescentHeight;
-                    break;
-                case BaseAlignment.Bottom:
-                    item2.Y += num - item2.Height + item2.DescentHeight;
-                    break;
-                case BaseAlignment.Center:
-                    item2.Y += (num - item2.Height) / 2;
-                    break;
-                default:
-                    item2.Y += num2 - item2.BaseLine;
-                    break;
-            }
+                BaseAlignment.Top => -item2.DescentHeight,
+                BaseAlignment.Bottom => num - item2.Height + item2.DescentHeight,
+                BaseAlignment.Center => (num - item2.Height) / 2,
+                _ => num2 - item2.BaseLine,
+            };
             item2.X += num3;
-            a = (a.IsEmpty ? item2.Bounds : Rectangle.Union(a, item2.Bounds));
+            a = a.IsEmpty ? item2.Bounds : Rectangle.Union(a, item2.Bounds);
         }
         return a;
     }

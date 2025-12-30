@@ -12,14 +12,7 @@ public class StreamWrapper : DisposableObject
 
     public Stream BaseStream
     {
-        get
-        {
-            return baseStream;
-        }
-        protected set
-        {
-            baseStream = value;
-        }
+        get => baseStream; protected set => baseStream = value;
     }
 
     protected StreamWrapper(Stream baseStream)
@@ -29,10 +22,7 @@ public class StreamWrapper : DisposableObject
 
     protected override void Dispose(bool disposing)
     {
-        if (baseStream != null)
-        {
-            baseStream.Dispose();
-        }
+        baseStream?.Dispose();
     }
 
     public virtual void Seek(long offset, int seekOrigin, IntPtr newPosition)

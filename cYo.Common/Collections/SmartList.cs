@@ -10,7 +10,7 @@ namespace cYo.Common.Collections;
 [Serializable]
 public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection, IMoveable, ICloneable
 {
-    private List<T> innerList = new List<T>();
+    private List<T> innerList = new();
 
     private volatile SmartListOptions flags;
 
@@ -19,39 +19,13 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     public SmartListOptions Flags
     {
-        get
-        {
-            return flags;
-        }
-        set
-        {
-            flags = value;
-        }
+        get => flags;
+        set => flags = value;
     }
 
-    public T First
-    {
-        get
-        {
-            if (Count != 0)
-            {
-                return this[0];
-            }
-            return default(T);
-        }
-    }
+    public T First => Count != 0 ? this[0] : default;
 
-    public T Last
-    {
-        get
-        {
-            if (Count != 0)
-            {
-                return this[Count - 1];
-            }
-            return default(T);
-        }
-    }
+    public T Last => Count != 0 ? this[Count - 1] : default;
 
     public int Count
     {
@@ -120,14 +94,8 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     object IList.this[int index]
     {
-        get
-        {
-            return this[index];
-        }
-        set
-        {
-            this[index] = (T)value;
-        }
+        get => this[index];
+        set => this[index] = (T)value;
     }
 
     [field: NonSerialized]
@@ -159,8 +127,7 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     public void AddRange(IEnumerable<T> list)
     {
-        ICollection<T> collection = list as ICollection<T>;
-        if (collection != null)
+        if (list is ICollection<T> collection)
         {
             innerList.Capacity = Math.Max(innerList.Capacity, Count + collection.Count);
         }
@@ -213,7 +180,7 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     public SmartList<U> ConvertAll<U>(Converter<T, U> converter)
     {
-        SmartList<U> smartList = new SmartList<U>();
+        SmartList<U> smartList = new();
         using (GetLock(write: false))
         {
             foreach (T inner in innerList)
@@ -242,7 +209,7 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     public SmartList<T> FindAll(Predicate<T> predicate)
     {
-        SmartList<T> smartList = new SmartList<T>();
+        SmartList<T> smartList = new();
         using (GetLock(write: false))
         {
             foreach (T inner in innerList)
@@ -398,7 +365,7 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
         }
         catch
         {
-            return default(T);
+            return default;
         }
     }
 
@@ -540,11 +507,7 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     public IEnumerator<T> GetEnumerator()
     {
-        if (IsSynchronized)
-        {
-            return LockedEnumerable().GetEnumerator();
-        }
-        return innerList.GetEnumerator();
+        return IsSynchronized ? LockedEnumerable().GetEnumerator() : innerList.GetEnumerator();
     }
 
     void ICollection.CopyTo(Array array, int index)
@@ -634,19 +597,19 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
 
     protected virtual void OnClearCompleted()
     {
-        InvokeChanged(SmartListAction.Clear, -1, default(T), default(T));
+        InvokeChanged(SmartListAction.Clear, -1, default, default);
     }
 
     protected virtual void OnRefreshCompleted()
     {
-        InvokeChanged(SmartListAction.Refresh, -1, default(T), default(T));
+        InvokeChanged(SmartListAction.Refresh, -1, default, default);
     }
 
     private void InvokeChanged(SmartListAction action, int index, T item, T oldItem)
     {
-        if (this.Changed != null && (flags & SmartListOptions.DisableCollectionChangedEvent) == 0)
+        if (Changed != null && (flags & SmartListOptions.DisableCollectionChangedEvent) == 0)
         {
-            this.Changed(this, new SmartListChangedEventArgs<T>(action, index, item, oldItem));
+            Changed(this, new SmartListChangedEventArgs<T>(action, index, item, oldItem));
         }
     }
 
@@ -660,17 +623,10 @@ public class SmartList<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerabl
         {
             using (ItemMonitor.Lock(this))
             {
-                if (slimLock == null)
-                {
-                    slimLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-                }
+                slimLock ??= new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             }
         }
-        if (!write)
-        {
-            return slimLock.ReadLock();
-        }
-        return slimLock.WriteLock();
+        return !write ? slimLock.ReadLock() : slimLock.WriteLock();
     }
 
     protected IEnumerable<T> LockedEnumerable()

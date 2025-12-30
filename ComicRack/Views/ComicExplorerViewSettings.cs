@@ -12,126 +12,62 @@ public class ComicExplorerViewSettings
 {
     [XmlAttribute]
     [DefaultValue(true)]
-    public bool ShowBrowser
-    {
-        get;
-        set;
-    }
+    public bool ShowBrowser { get; set; }
 
     [XmlAttribute]
     [DefaultValue(150)]
-    public int BrowserSplit
-    {
-        get;
-        set;
-    }
+    public int BrowserSplit { get; set; }
 
     [XmlAttribute]
     [DefaultValue(150)]
-    public int PreviewSplit
-    {
-        get;
-        set;
-    }
+    public int PreviewSplit { get; set; }
 
     [XmlAttribute]
     [DefaultValue(150)]
-    public int TopBrowserSplit
-    {
-        get;
-        set;
-    }
+    public int TopBrowserSplit { get; set; }
 
     [DefaultValue(typeof(Size), "200, 150")]
-    public Size InfoBrowserSize
-    {
-        get;
-        set;
-    }
+    public Size InfoBrowserSize { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool InfoBrowserRight
-    {
-        get;
-        set;
-    }
+    public bool InfoBrowserRight { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool ShowPreview
-    {
-        get;
-        set;
-    }
+    public bool ShowPreview { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool ShowInfo
-    {
-        get;
-        set;
-    }
+    public bool ShowInfo { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool ShowTopBrowser
-    {
-        get;
-        set;
-    }
+    public bool ShowTopBrowser { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool ShowSearchBrowser
-    {
-        get;
-        set;
-    }
+    public bool ShowSearchBrowser { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool ShowSearchBar
-    {
-        get;
-        set;
-    }
+    public bool ShowSearchBar { get; set; }
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool TwoPagePreview
-    {
-        get;
-        set;
-    }
+    public bool TwoPagePreview { get; set; }
 
     [DefaultValue(null)]
-    public ItemViewConfig ItemViewConfig
-    {
-        get;
-        set;
-    }
+    public ItemViewConfig ItemViewConfig { get; set; }
 
     [DefaultValue(1)]
-    public int SearchBrowserColumn1
-    {
-        get;
-        set;
-    }
+    public int SearchBrowserColumn1 { get; set; }
 
     [DefaultValue(0)]
-    public int SearchBrowserColumn2
-    {
-        get;
-        set;
-    }
+    public int SearchBrowserColumn2 { get; set; }
 
     [DefaultValue(2)]
-    public int SearchBrowserColumn3
-    {
-        get;
-        set;
-    }
+    public int SearchBrowserColumn3 { get; set; }
 
     public ComicExplorerViewSettings()
     {

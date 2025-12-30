@@ -20,14 +20,8 @@ public class CheckedListBoxEx : CheckedListBox
     [DefaultValue(true)]
     public bool CustomDrawing
     {
-        get
-        {
-            return customDrawing;
-        }
-        set
-        {
-            customDrawing = value;
-        }
+        get => customDrawing;
+        set => customDrawing = value;
     }
 
     public event DrawItemEventHandler DrawItemText;
@@ -45,24 +39,24 @@ public class CheckedListBoxEx : CheckedListBox
             return;
         }
         // Provide control focus state to use alongside item state
-        e.DrawThemeBackground(focused: this.Focused);
+        e.DrawThemeBackground(focused: Focused);
         CheckState itemCheckState = GetItemCheckState(e.Index);
         Size size;
         if (Application.RenderWithVisualStyles)
         {
-            CheckBoxState state = ((itemCheckState == CheckState.Unchecked || itemCheckState != CheckState.Checked) ? CheckBoxState.UncheckedNormal : CheckBoxState.CheckedNormal);
+            CheckBoxState state = (itemCheckState is CheckState.Unchecked or not CheckState.Checked) ? CheckBoxState.UncheckedNormal : CheckBoxState.CheckedNormal;
             size = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
-            Point glyphLocation = new Point(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2);
+            Point glyphLocation = new(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2);
             CheckBoxRenderer.DrawCheckBox(e.Graphics, glyphLocation, state);
         }
         else
         {
-            ButtonState state2 = ((itemCheckState != 0 && itemCheckState == CheckState.Checked) ? ButtonState.Checked : ButtonState.Normal);
+            ButtonState state2 = (itemCheckState is not 0 and CheckState.Checked) ? ButtonState.Checked : ButtonState.Normal;
             size = new Size(14, 14);
-            Rectangle rectangle = new Rectangle(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2, size.Width, size.Height);
+            Rectangle rectangle = new(e.Bounds.X + 1, e.Bounds.Y + (e.Bounds.Height - size.Height) / 2, size.Width, size.Height);
             ControlPaint.DrawCheckBox(e.Graphics, rectangle, state2);
         }
-        Rectangle textRectangle = new Rectangle(e.Bounds.X + size.Width + 2, e.Bounds.Y, e.Bounds.Width - (size.Width + 2), e.Bounds.Height);
+        Rectangle textRectangle = new(e.Bounds.X + size.Width + 2, e.Bounds.Y, e.Bounds.Width - (size.Width + 2), e.Bounds.Height);
         OnDrawItemText(new DrawItemEventArgs(e.Graphics, e.Font, textRectangle, e.Index, e.State, e.ForeColor, e.BackColor)); // BackColor is unused
                                                                                                                               // This doesn't accurately draw FocusRectangle in Dark Mode (and probably Light mode)
                                                                                                                               //if ((e.State & DrawItemState.Focus) != 0 && (e.State & DrawItemState.NoFocusRect) == 0)
@@ -70,7 +64,7 @@ public class CheckedListBoxEx : CheckedListBox
                                                                                                                               //  ControlPaint.DrawFocusRectangle(e.Graphics, textRectangle);
                                                                                                                               //}
                                                                                                                               // Use extension method instead, providing control focus state to use alongside item state
-        e.DrawThemeFocusRectangle(textRectangle, focused: this.Focused);
+        e.DrawThemeFocusRectangle(textRectangle, focused: Focused);
     }
 
     protected override void OnMouseDown(MouseEventArgs e)
@@ -100,9 +94,9 @@ public class CheckedListBoxEx : CheckedListBox
 
     protected virtual void OnDrawItemText(DrawItemEventArgs e)
     {
-        if (this.DrawItemText != null)
+        if (DrawItemText != null)
         {
-            this.DrawItemText(this, e);
+            DrawItemText(this, e);
         }
         else
         {
@@ -112,7 +106,7 @@ public class CheckedListBoxEx : CheckedListBox
 
     public void DrawDefaultItemText(DrawItemEventArgs e)
     {
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             LineAlignment = StringAlignment.Center
         })

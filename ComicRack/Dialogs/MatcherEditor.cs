@@ -11,7 +11,6 @@ using cYo.Common.Text;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -32,11 +31,11 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
 
     public const int MaxLevel = 5;
 
-    public static readonly ValuePair<Color, Regex>[] ColorRegex = new ValuePair<Color, Regex>[2]
-    {
-        new ValuePair<Color, Regex>(Color.Red, new Regex("\\{[a-z]+\\}", RegexOptions.IgnoreCase | RegexOptions.Compiled)),
-        new ValuePair<Color, Regex>(Color.Blue, new Regex("\\{(" + ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties).ToListString("|") + ")\\}", RegexOptions.Compiled))
-    };
+    public static readonly ValuePair<Color, Regex>[] ColorRegex =
+    [
+        new(Color.Red, new Regex("\\{[a-z]+\\}", RegexOptions.IgnoreCase | RegexOptions.Compiled)),
+        new(Color.Blue, new Regex("\\{(" + ComicBookMatcher.ComicProperties.Concat(ComicBookMatcher.SeriesStatsProperties).ToListString("|") + ")\\}", RegexOptions.Compiled))
+    ];
 
     private ComicBookValueMatcher currentComicBookMatcher;
     private readonly ComicBookMatcherCollection matchers;
@@ -69,14 +68,14 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
         // a button pretending to be a dropdown combobox. lovely.
         // let's dress it up as one. Except for dropdown arrow to carot - that's asking too much
         // we also have to make it a bit smaller as otherwise borders are out of bounds
-        this.btMatcher.SetComboBoxButton();
+        btMatcher.SetComboBoxButton();
     }
 
     private void cmEdit_Opening(object sender, CancelEventArgs e)
     {
         miNewGroup.Enabled = level <= MaxLevel;
         ToolStripMenuItem toolStripMenuItem = miCut;
-        bool enabled = (miDelete.Enabled = matchers.Count > 1);
+        bool enabled = miDelete.Enabled = matchers.Count > 1;
         toolStripMenuItem.Enabled = enabled;
         miPaste.Enabled = Clipboard.ContainsData(ComicBookMatcher.ClipboardFormat);
         miMoveDown.Enabled = matchers.IndexOf(currentComicBookMatcher) < matchers.Count - 1;
@@ -171,7 +170,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
     private void rtfMatchValue_DoubleClick(object sender, EventArgs e)
     {
         TextBoxBase textBoxBase = sender as TextBoxBase;
-        using (ValueEditorDialog valueEditorDialog = new ValueEditorDialog())
+        using (ValueEditorDialog valueEditorDialog = new())
         {
             valueEditorDialog.SyntaxColoring(ColorRegex);
             valueEditorDialog.MatchValue = textBoxBase.Text;
@@ -221,8 +220,8 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
                 {
                     TextBox textBox2 = rtfMatchValue;
                     TextBox textBox3 = rtfMatchValue2;
-                    bool flag3 = (lblDescription.Visible = false);
-                    bool visible = (textBox3.Visible = flag3);
+                    bool flag3 = lblDescription.Visible = false;
+                    bool visible = textBox3.Visible = flag3;
                     textBox2.Visible = visible;
                     control.Width = rtfMatchValue2.Right - cbOperator.Left;
                     break;
@@ -245,7 +244,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
                 {
                     rtfMatchValue.Width = rtfMatchValue2.Left - spacing - rtfMatchValue.Left;
                     TextBox textBox = rtfMatchValue;
-                    bool visible = (rtfMatchValue2.Visible = true);
+                    bool visible = rtfMatchValue2.Visible = true;
                     textBox.Visible = visible;
                     lblDescription.Visible = false;
                     control.Width = rtfMatchValue.Left - 8 - control.Left;
@@ -270,7 +269,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
     {
         if (level <= MaxLevel)
         {
-            ComicBookGroupMatcher comicBookGroupMatcher = new ComicBookGroupMatcher();
+            ComicBookGroupMatcher comicBookGroupMatcher = new();
             comicBookGroupMatcher.Matchers.Add(currentComicBookMatcher.Clone() as ComicBookMatcher);
             matchers.Insert(matchers.IndexOf(currentComicBookMatcher) + 1, comicBookGroupMatcher);
         }
@@ -302,7 +301,7 @@ public partial class MatcherEditor : UserControlEx, IMatcherEditor
         catch
         {
         }
-        if (comicBookMatcher != null && (!(comicBookMatcher is ComicBookGroupMatcher) || level <= MaxLevel))
+        if (comicBookMatcher != null && (comicBookMatcher is not ComicBookGroupMatcher || level <= MaxLevel))
         {
             matchers.Insert(matchers.IndexOf(currentComicBookMatcher) + 1, comicBookMatcher);
         }

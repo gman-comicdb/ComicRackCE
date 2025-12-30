@@ -27,10 +27,7 @@ public class HeaderControl : Control
     [DefaultValue(false)]
     public bool Pressed
     {
-        get
-        {
-            return pressed;
-        }
+        get => pressed;
         set
         {
             if (pressed != value)
@@ -44,10 +41,7 @@ public class HeaderControl : Control
     [DefaultValue(HeaderAdornments.None)]
     public HeaderAdornments HeaderAdornments
     {
-        get
-        {
-            return headerAdornments;
-        }
+        get => headerAdornments;
         set
         {
             if (headerAdornments != value)
@@ -61,10 +55,7 @@ public class HeaderControl : Control
     [DefaultValue(StringAlignment.Near)]
     public StringAlignment TextAlignment
     {
-        get
-        {
-            return textAlignment;
-        }
+        get => textAlignment;
         set
         {
             if (textAlignment != value)
@@ -98,7 +89,7 @@ public class HeaderControl : Control
 
     public static void Draw(Graphics graphics, Rectangle bounds, Font font, StringAlignment alignment, string text, HeaderState state, HeaderAdornments adornments)
     {
-        using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap)
+        using (StringFormat format = new(StringFormatFlags.NoWrap)
         {
             LineAlignment = StringAlignment.Center,
             Alignment = alignment,
@@ -113,22 +104,13 @@ public class HeaderControl : Control
     public static void Draw(Graphics graphics, Rectangle bounds, Font font, string text, Color textColor, StringFormat format, HeaderState state, HeaderAdornments adornments)
     {
         graphics.FillRectangle(ThemeBrushes.Header.Back, bounds);
-        StyledRenderer.AlphaStyle state2;
-        switch (state)
+        var state2 = state switch
         {
-            case HeaderState.Pressed:
-                state2 = StyledRenderer.AlphaStyle.SelectedHot;
-                break;
-            case HeaderState.Hot:
-                state2 = StyledRenderer.AlphaStyle.Selected;
-                break;
-            case HeaderState.Active:
-                state2 = StyledRenderer.AlphaStyle.Hot;
-                break;
-            default:
-                state2 = StyledRenderer.AlphaStyle.Hot;
-                break;
-        }
+            HeaderState.Pressed => StyledRenderer.AlphaStyle.SelectedHot,
+            HeaderState.Hot => StyledRenderer.AlphaStyle.Selected,
+            HeaderState.Active => StyledRenderer.AlphaStyle.Hot,
+            _ => StyledRenderer.AlphaStyle.Hot,
+        };
         bounds.Width--;
         bounds.Height--;
         graphics.DrawStyledRectangle(bounds, state2, ThemeColors.Header.Separator, StyledRenderer.Default.Frame(0, 1));

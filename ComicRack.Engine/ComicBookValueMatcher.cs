@@ -29,13 +29,9 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     [XmlAttribute]
     [DefaultValue("")]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public string Description => description ?? (description = ComicBookMatcher.TRMatcher[GetType().Name, DescriptionNeutral]);
+    public string Description => description ??= ComicBookMatcher.TRMatcher[GetType().Name, DescriptionNeutral];
 
     public virtual string DescriptionNeutral
     {
@@ -52,10 +48,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public virtual string MatchValue
     {
-        get
-        {
-            return matchValue ?? string.Empty;
-        }
+        get => matchValue ?? string.Empty;
         set
         {
             if (!(matchValue == value))
@@ -69,10 +62,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
     [DefaultValue("")]
     public virtual string MatchValue2
     {
-        get
-        {
-            return matchValue2 ?? string.Empty;
-        }
+        get => matchValue2 ?? string.Empty;
         set
         {
             if (!(matchValue2 == value))
@@ -87,10 +77,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
     [DefaultValue(0)]
     public virtual int MatchOperator
     {
-        get
-        {
-            return matchOperator;
-        }
+        get => matchOperator;
         set
         {
             if (matchOperator != value)
@@ -101,20 +88,11 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
         }
     }
 
-    public abstract string[] OperatorsListNeutral
-    {
-        get;
-    }
+    public abstract string[] OperatorsListNeutral { get; }
 
-    public abstract string[] OperatorsList
-    {
-        get;
-    }
+    public abstract string[] OperatorsList { get; }
 
-    public abstract int ArgumentCount
-    {
-        get;
-    }
+    public abstract int ArgumentCount { get; }
 
     public virtual bool SwapOperatorArgument => false;
 
@@ -128,12 +106,10 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
     public override IEnumerable<ComicBook> Match(IEnumerable<ComicBook> items)
     {
         OnInitializeMatch();
-        if (ListExtensions.ParallelEnabled && items.Count() > 100)
-        {
-            return items.Lock().ToArray().AsParallelSafe()
-                .Where(Match);
-        }
-        return items.Where(Match);
+        return ListExtensions.ParallelEnabled && items.Count() > 100
+            ? items.Lock().ToArray().AsParallelSafe()
+                .Where(Match)
+            : items.Where(Match);
     }
 
     public override object Clone()
@@ -148,12 +124,9 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public override bool IsSame(ComicBookMatcher cbm)
     {
-        ComicBookValueMatcher comicBookValueMatcher = cbm as ComicBookValueMatcher;
-        if (comicBookValueMatcher != null && base.IsSame(cbm) && comicBookValueMatcher.MatchOperator == MatchOperator && comicBookValueMatcher.MatchValue == MatchValue)
-        {
-            return comicBookValueMatcher.MatchValue2 == MatchValue2;
-        }
-        return false;
+        return cbm is ComicBookValueMatcher comicBookValueMatcher && base.IsSame(cbm) && comicBookValueMatcher.MatchOperator == MatchOperator && comicBookValueMatcher.MatchValue == MatchValue
+            ? comicBookValueMatcher.MatchValue2 == MatchValue2
+            : false;
     }
 
     public override string ToString()
@@ -197,12 +170,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public int CompareTo(object obj)
     {
-        IComicBookValueMatcher comicBookValueMatcher = obj as IComicBookValueMatcher;
-        if (comicBookValueMatcher != null)
-        {
-            return string.Compare(Description, comicBookValueMatcher.Description, ignoreCase: true);
-        }
-        return 1;
+        return obj is IComicBookValueMatcher comicBookValueMatcher ? string.Compare(Description, comicBookValueMatcher.Description, ignoreCase: true) : 1;
     }
 
     private static string Escape(string value)
@@ -212,7 +180,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public static string ConvertParametersToString(ComicBookValueMatcher m)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         stringBuilder.Append(m.OperatorsListNeutral[m.MatchOperator]);
         for (int i = 0; i < m.ArgumentCount; i++)
         {
@@ -226,12 +194,9 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public static IEnumerable<Type> GetAvailableMatcherTypes()
     {
-        if (cachedTypeList == null)
-        {
-            cachedTypeList = new HashSet<Type>(from t in typeof(IComicBookValueMatcher).Assembly.GetExportedTypes()
+        cachedTypeList ??= new HashSet<Type>(from t in typeof(IComicBookValueMatcher).Assembly.GetExportedTypes()
                                                where t.GetInterface(typeof(IComicBookValueMatcher).Name) != null && !t.IsAbstract
                                                select t);
-        }
         return cachedTypeList;
     }
 
@@ -251,8 +216,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public static ComicBookValueMatcher Create(Type matchType, int matchOperator, string matchValue1, string matchValue2)
     {
-        ComicBookValueMatcher comicBookValueMatcher = Activator.CreateInstance(matchType) as ComicBookValueMatcher;
-        if (comicBookValueMatcher == null)
+        if (Activator.CreateInstance(matchType) is not ComicBookValueMatcher comicBookValueMatcher)
         {
             throw new ArgumentException("Must be a ComicBookValueMatcher", "matchType");
         }
@@ -283,19 +247,9 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
 
     private T matchValue2;
 
-    protected static readonly Regex FieldExpression = new Regex("{(?<name>[a-z]+)}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    protected static readonly Regex FieldExpression = new("{(?<name>[a-z]+)}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    public override bool IsOptimizedCacheUpdateDisabled
-    {
-        get
-        {
-            if (!base.IsOptimizedCacheUpdateDisabled && seriesStatsProperty == null)
-            {
-                return seriesStatsProperty2 != null;
-            }
-            return true;
-        }
-    }
+    public override bool IsOptimizedCacheUpdateDisabled => !base.IsOptimizedCacheUpdateDisabled && seriesStatsProperty == null ? seriesStatsProperty2 != null : true;
 
     public override IEnumerable<string> GetDependentProperties()
     {
@@ -315,15 +269,9 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
 
     public override bool UsesProperty(string propertyHint)
     {
-        if (comicProperty != null && comicProperty == propertyHint)
-        {
-            return true;
-        }
-        if (comicProperty2 != null && comicProperty2 == propertyHint)
-        {
-            return true;
-        }
-        return base.UsesProperty(propertyHint);
+        return comicProperty != null && comicProperty == propertyHint
+            ? true
+            : comicProperty2 != null && comicProperty2 == propertyHint ? true : base.UsesProperty(propertyHint);
     }
 
     public override bool Match(ComicBook item)
@@ -335,7 +283,7 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
     {
         base.OnMatchValueChanged();
         Match match = FieldExpression.Match(MatchValue ?? string.Empty);
-        comicProperty = (seriesStatsProperty = null);
+        comicProperty = seriesStatsProperty = null;
         if (!match.Success)
         {
             matchValue = ConvertMatchValue(PreparseMatchValue(MatchValue));
@@ -356,7 +304,7 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
     {
         base.OnMatchValue2Changed();
         Match match = FieldExpression.Match(MatchValue2 ?? string.Empty);
-        comicProperty2 = (seriesStatsProperty2 = null);
+        comicProperty2 = seriesStatsProperty2 = null;
         if (!match.Success)
         {
             matchValue2 = ConvertMatchValue(PreparseMatchValue(MatchValue2));
@@ -385,28 +333,20 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
 
     protected virtual T GetMatchValue(ComicBook comicBook)
     {
-        if (comicProperty != null)
-        {
-            return comicBook.GetPropertyValue<T>(comicProperty);
-        }
-        if (base.StatsProvider != null && seriesStatsProperty != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).GetTypedValue<T>(seriesStatsProperty);
-        }
-        return matchValue;
+        return comicProperty != null
+            ? comicBook.GetPropertyValue<T>(comicProperty)
+            : base.StatsProvider != null && seriesStatsProperty != null
+            ? base.StatsProvider.GetSeriesStats(comicBook).GetTypedValue<T>(seriesStatsProperty)
+            : matchValue;
     }
 
     protected virtual T GetMatchValue2(ComicBook comicBook)
     {
-        if (comicProperty2 != null)
-        {
-            return comicBook.GetPropertyValue<T>(comicProperty2);
-        }
-        if (base.StatsProvider != null && seriesStatsProperty2 != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).GetTypedValue<T>(seriesStatsProperty2);
-        }
-        return matchValue2;
+        return comicProperty2 != null
+            ? comicBook.GetPropertyValue<T>(comicProperty2)
+            : base.StatsProvider != null && seriesStatsProperty2 != null
+            ? base.StatsProvider.GetSeriesStats(comicBook).GetTypedValue<T>(seriesStatsProperty2)
+            : matchValue2;
     }
 
     protected virtual T ConvertMatchValue(string input)
@@ -423,7 +363,7 @@ public abstract class ComicBookValueMatcher<T> : ComicBookValueMatcher
 
     protected virtual T GetInvalidValue()
     {
-        return default(T);
+        return default;
     }
 
     protected abstract bool MatchBook(ComicBook book, T value);

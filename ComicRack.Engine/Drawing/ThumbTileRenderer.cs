@@ -18,33 +18,15 @@ public class ThumbTileRenderer : ViewItemRenderer
 
     public Font Font
     {
-        get
-        {
-            return font;
-        }
-        set
-        {
-            font = value;
-        }
+        get => font;
+        set => font = value;
     }
 
-    public bool ThreeD
-    {
-        get;
-        set;
-    }
+    public bool ThreeD { get; set; }
 
-    public IEnumerable<Image> Icons
-    {
-        get;
-        set;
-    }
+    public IEnumerable<Image> Icons { get; set; }
 
-    public int ScrollOffset
-    {
-        get;
-        set;
-    }
+    public int ScrollOffset { get; set; }
 
     public ThumbTileRenderer(Image image, ThumbnailDrawingOptions flags)
     {
@@ -128,12 +110,12 @@ public class ThumbTileRenderer : ViewItemRenderer
 
     private void Draw3DComic(Graphics graphics, Rectangle tileBounds)
     {
-        if (base.Image == null || !(base.Image is Bitmap))
+        if (base.Image is null or not Bitmap)
         {
             return;
         }
         Bitmap cover = base.Image as Bitmap;
-        Size size = new Size(512, 512);
+        Size size = new(512, 512);
         try
         {
             using (Bitmap bitmap = ComicBox3D.CreateDefaultBook(cover, null, size, base.PageCount))
@@ -178,7 +160,7 @@ public class ThumbTileRenderer : ViewItemRenderer
 
     public static void DrawTile(Graphics graphics, Rectangle bounds, Image image, ComicBook comicBook, int page, Font font, Color foreColor, Color backColor, ThumbnailDrawingOptions options, ComicTextElements elements, bool threeD, IEnumerable<Image> icons = null)
     {
-        ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(image, options)
+        ThumbTileRenderer thumbTileRenderer = new(image, options)
         {
             ForeColor = foreColor,
             BackColor = backColor,
@@ -189,11 +171,11 @@ public class ThumbTileRenderer : ViewItemRenderer
             thumbTileRenderer.PageCount = comicBook.PageCount;
             thumbTileRenderer.Rating1 = comicBook.Rating;
             thumbTileRenderer.Rating2 = comicBook.CommunityRating;
-            thumbTileRenderer.Bookmarks = new int[2]
-            {
+            thumbTileRenderer.Bookmarks =
+            [
                 comicBook.CurrentPage,
                 comicBook.LastPageRead
-            };
+            ];
             thumbTileRenderer.Icons = icons;
             if (page >= 0)
             {

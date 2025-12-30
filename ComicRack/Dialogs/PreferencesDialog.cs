@@ -45,30 +45,15 @@ public partial class PreferencesDialog : FormEx
 
     private bool blockSetTab;
 
-    public string AutoInstallPlugin
-    {
-        get;
-        set;
-    }
+    public string AutoInstallPlugin { get; set; }
 
-    public bool NeedsRestart
-    {
-        get;
-        set;
-    }
+    public bool NeedsRestart { get; set; }
 
-    public string BackupFile
-    {
-        get;
-        set;
-    }
+    public string BackupFile { get; set; }
 
     public PluginEngine Plugins
     {
-        get
-        {
-            return pluginEngine;
-        }
+        get => pluginEngine;
         set
         {
             pluginEngine = value;
@@ -160,7 +145,7 @@ public partial class PreferencesDialog : FormEx
     private void SetSize()
     {
         Size = !SafeSize.IsEmpty ? SafeSize : MinimumSize;
-        this.CenterToParent();
+        CenterToParent();
         AutoSizeColumn();
     }
 
@@ -215,7 +200,7 @@ public partial class PreferencesDialog : FormEx
                 text = text.AppendWithSeparator(", ", item.Device.Model);
             }
         }
-        lblWifiStatus.Text = (string.IsNullOrEmpty(text) ? TR.Load(base.Name)["msgNoDevicesFound", "No devices found!"] : TR.Load(base.Name)["msgDevicesFound", "{0} found!"].SafeFormat(text));
+        lblWifiStatus.Text = string.IsNullOrEmpty(text) ? TR.Load(base.Name)["msgNoDevicesFound", "No devices found!"] : TR.Load(base.Name)["msgDevicesFound", "{0} found!"].SafeFormat(text);
     }
 
     private void chkAdvanced_CheckedChanged(object sender, EventArgs e)
@@ -232,23 +217,16 @@ public partial class PreferencesDialog : FormEx
         CheckBox checkBox = chkLibraryGaugesNew;
         CheckBox checkBox2 = chkLibraryGaugesUnread;
         CheckBox checkBox3 = chkLibraryGaugesTotal;
-        bool flag = (chkLibraryGaugesNumeric.Enabled = chkLibraryGauges.Checked);
-        bool flag3 = (checkBox3.Enabled = flag);
-        bool enabled = (checkBox2.Enabled = flag3);
+        bool flag = chkLibraryGaugesNumeric.Enabled = chkLibraryGauges.Checked;
+        bool flag3 = checkBox3.Enabled = flag;
+        bool enabled = checkBox2.Enabled = flag3;
         checkBox.Enabled = enabled;
     }
 
     private void tbSystemMemory_ValueChanged(object sender, EventArgs e)
     {
         int num = tbMaximumMemoryUsage.Value * MaximumMemoryStepSize;
-        if (num == Settings.UnlimitedSystemMemory)
-        {
-            lblMaximumMemoryUsageValue.Text = TR.Default["Unlimited"];
-        }
-        else
-        {
-            lblMaximumMemoryUsageValue.Text = $"{num} MB";
-        }
+        lblMaximumMemoryUsageValue.Text = num == Settings.UnlimitedSystemMemory ? TR.Default["Unlimited"] : $"{num} MB";
     }
 
     private void lbPaths_DragDrop(object sender, DragEventArgs e)
@@ -263,13 +241,12 @@ public partial class PreferencesDialog : FormEx
 
     private void lbPaths_DragOver(object sender, DragEventArgs e)
     {
-        e.Effect = (e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void lvScripts_ItemChecked(object sender, ItemCheckedEventArgs e)
     {
-        Command command = e.Item.Tag as Command;
-        if (command != null)
+        if (e.Item.Tag is Command command)
         {
             command.Enabled = e.Item.Checked;
         }
@@ -288,13 +265,13 @@ public partial class PreferencesDialog : FormEx
 
     private void btConfigScript_Click(object sender, EventArgs e)
     {
-        (btConfigScript.Tag as Command)?.Invoke(new object[0], catchErrors: true);
+        (btConfigScript.Tag as Command)?.Invoke([], catchErrors: true);
     }
 
     private void lbPaths_DrawItemText(object sender, DrawItemEventArgs e)
     {
         CheckedListBoxEx checkedListBoxEx = (CheckedListBoxEx)sender;
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             LineAlignment = StringAlignment.Center,
             Trimming = StringTrimming.EllipsisPath
@@ -313,14 +290,9 @@ public partial class PreferencesDialog : FormEx
                 DatabaseScanNotify(sender, e);
             }))
             {
-                if (string.IsNullOrEmpty(e.File))
-                {
-                    lblScan.Text = string.Empty;
-                }
-                else
-                {
-                    lblScan.Text = StringUtility.Format(LocalizeUtility.GetText(this, "Scanning", "Scanning '{0}' ..."), e.File);
-                }
+                lblScan.Text = string.IsNullOrEmpty(e.File)
+                    ? string.Empty
+                    : StringUtility.Format(LocalizeUtility.GetText(this, "Scanning", "Scanning '{0}' ..."), e.File);
                 SetScanButtonText();
             }
         }
@@ -355,7 +327,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder containing Books");
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -372,12 +344,11 @@ public partial class PreferencesDialog : FormEx
 
     private void btChangeFolder_Click(object sender, EventArgs e)
     {
-        string text = lbPaths.SelectedItem as string;
-        if (text == null)
+        if (lbPaths.SelectedItem is not string text)
         {
             return;
         }
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder containing Books");
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -391,7 +362,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddLibraryFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectScriptFolder", "Please select a script library folder");
             folderBrowserDialog.ShowNewFolderButton = false;
@@ -437,7 +408,7 @@ public partial class PreferencesDialog : FormEx
     {
         e.DrawThemeBackground();
         string s = lbPaths.Items[e.Index] as string;
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             Trimming = StringTrimming.EllipsisPath
         })
@@ -453,7 +424,7 @@ public partial class PreferencesDialog : FormEx
     private void lbPaths_SelectedIndexChanged(object sender, EventArgs e)
     {
         Button button = btOpenFolder;
-        bool enabled = (btRemoveFolder.Enabled = lbPaths.SelectedIndex != -1);
+        bool enabled = btRemoveFolder.Enabled = lbPaths.SelectedIndex != -1;
         button.Enabled = enabled;
         btScan.Enabled = lbPaths.Items.Count > 0;
     }
@@ -469,17 +440,17 @@ public partial class PreferencesDialog : FormEx
         CheckBox checkBox = chkEnableDisplayChangeAnimation;
         CheckBox checkBox2 = chkEnableHardwareFiltering;
         CheckBox checkBox3 = chkEnableSoftwareFiltering;
-        bool flag = (chkEnableInertialMouseScrolling.Enabled = chkEnableHardware.Checked);
-        bool flag3 = (checkBox3.Enabled = flag);
-        bool enabled = (checkBox2.Enabled = flag3);
+        bool flag = chkEnableInertialMouseScrolling.Enabled = chkEnableHardware.Checked;
+        bool flag3 = checkBox3.Enabled = flag;
+        bool enabled = checkBox2.Enabled = flag3;
         checkBox.Enabled = enabled;
         chkAutoConnectShares.Enabled = chkLookForShared.Checked;
         btRemovePackage.Enabled = lvPackages.SelectedItems.Count > 0;
         labelPageOverlay.Enabled = chkShowCurrentPageOverlay.Checked;
         labelVisiblePartOverlay.Enabled = chkShowVisiblePartOverlay.Checked;
         labelStatusOverlay.Enabled = chkShowStatusOverlay.Checked;
-        labelNavigationOverlay.Top = ((cbNavigationOverlayPosition.SelectedIndex != 0) ? labelPageOverlay.Top : (labelVisiblePartOverlay.Bottom - labelNavigationOverlay.Height));
-        labelPageOverlay.Text = (chkShowPageNames.Checked ? LocalizeUtility.GetText(this, "PageNumberAndName", "Page\nName") : LocalizeUtility.GetText(this, "PageNumberOnly", "Page"));
+        labelNavigationOverlay.Top = (cbNavigationOverlayPosition.SelectedIndex != 0) ? labelPageOverlay.Top : (labelVisiblePartOverlay.Bottom - labelNavigationOverlay.Height);
+        labelPageOverlay.Text = chkShowPageNames.Checked ? LocalizeUtility.GetText(this, "PageNumberAndName", "Page\nName") : LocalizeUtility.GetText(this, "PageNumberOnly", "Page");
     }
 
     private void btApply_Click(object sender, EventArgs e)
@@ -517,9 +488,9 @@ public partial class PreferencesDialog : FormEx
         TrackBarLite trackBarLite = tbSaturation;
         TrackBarLite trackBarLite2 = tbBrightness;
         TrackBarLite trackBarLite3 = tbContrast;
-        int num2 = (tbGamma.Value = 0);
-        int num4 = (trackBarLite3.Value = num2);
-        int num7 = (trackBarLite.Value = (trackBarLite2.Value = num4));
+        int num2 = tbGamma.Value = 0;
+        int num4 = trackBarLite3.Value = num2;
+        int num7 = trackBarLite.Value = trackBarLite2.Value = num4;
     }
 
     private void tbOverlayScalingChanged(object sender, EventArgs e)
@@ -557,7 +528,7 @@ public partial class PreferencesDialog : FormEx
             bounds.X += FormUtility.ScaleDpiX(20);
             bounds.Width -= FormUtility.ScaleDpiX(20);
             string[] array = tRInfo.ToString().Split('\t');
-            using (StringFormat stringFormat = new StringFormat(StringFormatFlags.NoWrap)
+            using (StringFormat stringFormat = new(StringFormatFlags.NoWrap)
             {
                 Trimming = StringTrimming.Character,
                 LineAlignment = StringAlignment.Center
@@ -583,7 +554,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btBackupDatabase_Click(object sender, EventArgs e)
     {
-        SaveFileDialog dlg = new SaveFileDialog();
+        SaveFileDialog dlg = new();
         try
         {
             dlg.Title = btBackupDatabase.Text.Replace(".", string.Empty);
@@ -617,7 +588,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btRestoreDatabase_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btRestoreDatabase.Text.Replace(".", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["ComicRackBackup", "ComicRack Backup|*.zip"];
@@ -641,7 +612,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btInstallPackage_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btInstallPackage.Text.Replace(".", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["ScriptPackageOpen", "ComicRack Plugin|*.crplugin|Script Archive|*.zip"];
@@ -701,12 +672,12 @@ public partial class PreferencesDialog : FormEx
 
     private void lvPackages_DragOver(object sender, DragEventArgs e)
     {
-        e.Effect = (e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void keyboardShortcutEditor_DragOver(object sender, DragEventArgs e)
     {
-        e.Effect = (e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void keyboardShortcutEditor_DragDrop(object sender, DragEventArgs e)
@@ -722,7 +693,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btExportKeyboard_Click(object sender, EventArgs e)
     {
-        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+        using (SaveFileDialog saveFileDialog = new())
         {
             saveFileDialog.Title = btExportKeyboard.Text.Replace("&", string.Empty);
             saveFileDialog.FileName = TR.Load("FileFilter")["KeyboardLayout", "Keyboard Layout"] + ".xml";
@@ -748,7 +719,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btLoadKeyboard_Click(object sender, EventArgs e)
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Title = btImportKeyboard.Text.Replace("&", string.Empty);
             openFileDialog.Filter = TR.Load("FileFilter")["KeyboardLayoutFilter", "Keyboard Layout|*.xml"];
@@ -876,7 +847,7 @@ public partial class PreferencesDialog : FormEx
         lbBackupOptions.Items.Clear();
         foreach (BackupOptions option in Enum.GetValues(typeof(BackupOptions)))
         {
-            if (option != BackupOptions.None && option != BackupOptions.Full && option != BackupOptions.FullWithCache)
+            if (option is not BackupOptions.None and not BackupOptions.Full and not BackupOptions.FullWithCache)
             {
                 bool value = backupManagerOptions.Options.HasFlag(option);
                 int index = lbBackupOptions.Items.Add(option, value);
@@ -927,7 +898,7 @@ public partial class PreferencesDialog : FormEx
         Program.Settings.MemoryPageCacheCount = (int)numMemPageCount.Value;
         Program.Settings.MemoryThumbCacheOptimized = chkMemThumbOptimized.Checked;
         Program.Settings.MemoryThumbCacheSizeMB = (int)numMemThumbSize.Value;
-        BitmapAdjustmentOptions options = (chkAutoContrast.Checked ? BitmapAdjustmentOptions.AutoContrast : BitmapAdjustmentOptions.None);
+        BitmapAdjustmentOptions options = chkAutoContrast.Checked ? BitmapAdjustmentOptions.AutoContrast : BitmapAdjustmentOptions.None;
         Program.Settings.GlobalColorAdjustment = new BitmapAdjustment((float)tbSaturation.Value / 100f, (float)tbBrightness.Value / 100f, (float)tbContrast.Value / 100f, (float)tbGamma.Value / 100f, options, tbSharpening.Value);
         Program.Settings.ShowCurrentPageOverlay = chkShowCurrentPageOverlay.Checked;
         Program.Settings.ShowVisiblePagePartOverlay = chkShowVisiblePartOverlay.Checked;
@@ -955,7 +926,7 @@ public partial class PreferencesDialog : FormEx
         RegisterFileTypes();
         Program.Settings.UpdateComicFiles = chkUpdateComicFiles.Checked;
         Program.Settings.AutoUpdateComicsFiles = chkAutoUpdateComicFiles.Checked;
-        Program.Settings.IgnoredCoverImages = (string.IsNullOrEmpty(txCoverFilter.Text) ? null : txCoverFilter.Text);
+        Program.Settings.IgnoredCoverImages = string.IsNullOrEmpty(txCoverFilter.Text) ? null : txCoverFilter.Text;
         Program.Settings.ScriptingLibraries = txLibraries.Text;
         Program.Settings.Scripting = !chkDisableScripting.Checked;
         Program.Settings.HideSampleScripts = chkHideSampleScripts.Checked;
@@ -1017,7 +988,7 @@ public partial class PreferencesDialog : FormEx
 
     private void SetScanButtonText()
     {
-        btScan.Text = (Program.Scanner.IsScanning ? LocalizeUtility.GetText(this, "Stop", "Stop") : LocalizeUtility.GetText(this, "Scan", "Scan"));
+        btScan.Text = Program.Scanner.IsScanning ? LocalizeUtility.GetText(this, "Stop", "Stop") : LocalizeUtility.GetText(this, "Scan", "Scan");
     }
 
     private void SetSettings()
@@ -1043,7 +1014,7 @@ public partial class PreferencesDialog : FormEx
         chkShowVisiblePartOverlay.Checked = Program.Settings.ShowVisiblePagePartOverlay;
         chkShowStatusOverlay.Checked = Program.Settings.ShowStatusOverlay;
         chkShowNavigationOverlay.Checked = Program.Settings.ShowNavigationOverlay;
-        cbNavigationOverlayPosition.SelectedIndex = (Program.Settings.NavigationOverlayOnTop ? 1 : 0);
+        cbNavigationOverlayPosition.SelectedIndex = Program.Settings.NavigationOverlayOnTop ? 1 : 0;
         chkShowPageNames.Checked = Program.Settings.CurrentPageShowsName;
         chkEnableHardware.Checked = Program.Settings.HardwareAcceleration;
         chkSmoothAutoScrolling.Checked = Program.Settings.SmoothScrolling;
@@ -1094,11 +1065,11 @@ public partial class PreferencesDialog : FormEx
 
     private void AddSharePage(ComicLibraryServerConfig cfg)
     {
-        TabPage tab = new TabPage(cfg.Name)
+        TabPage tab = new(cfg.Name)
         {
             UseVisualStyleBackColor = true
         };
-        ServerEditControl sc = new ServerEditControl
+        ServerEditControl sc = new()
         {
             Dock = DockStyle.Fill,
             Config = cfg,
@@ -1181,18 +1152,18 @@ public partial class PreferencesDialog : FormEx
             UpdateDiskCacheStatus(sender, e);
         }))
         {
-            lblInternetCacheUsage.Text = string.Format("({0}/{1})", Program.InternetCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            lblInternetCacheUsage.Text = string.Format("({0}/{1})", Program.InternetCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.InternetCache.Size
-            }));
-            lblPageCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblPageCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Pages.DiskCache.Size
-            }));
-            lblThumbCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblThumbCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.DiskCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Thumbs.DiskCache.Size
-            }));
+            ]));
         }
     }
 
@@ -1200,14 +1171,14 @@ public partial class PreferencesDialog : FormEx
     {
         if (!this.BeginInvokeIfRequired(UpdateMemoryCacheStatus))
         {
-            lblPageMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            lblPageMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Pages.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Pages.MemoryCache.Size
-            }));
-            lblThumbMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}", new object[1]
-            {
+            ]));
+            lblThumbMemCacheUsage.Text = string.Format("({0}/{1})", Program.ImagePool.Thumbs.MemoryCache.Count, string.Format(new FileLengthFormat(), "{0}",
+            [
                 Program.ImagePool.Thumbs.MemoryCache.Size
-            }));
+            ]));
         }
     }
 
@@ -1231,18 +1202,12 @@ public partial class PreferencesDialog : FormEx
             }
             listViewItem.SubItems.Add(item.Author);
             listViewItem.SubItems.Add(item.Description);
-            switch (item.PackageType)
+            listViewItem.Group = item.PackageType switch
             {
-                default:
-                    listViewItem.Group = lvPackages.Groups["packageGroupInstalled"];
-                    break;
-                case PackageManager.PackageType.PendingInstall:
-                    listViewItem.Group = lvPackages.Groups["packageGroupInstall"];
-                    break;
-                case PackageManager.PackageType.PendingRemove:
-                    listViewItem.Group = lvPackages.Groups["packageGroupRemove"];
-                    break;
-            }
+                PackageManager.PackageType.PendingInstall => lvPackages.Groups["packageGroupInstall"],
+                PackageManager.PackageType.PendingRemove => lvPackages.Groups["packageGroupRemove"],
+                _ => lvPackages.Groups["packageGroupInstalled"],
+            };
         }
     }
 
@@ -1271,7 +1236,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btAddShare_Click(object sender, EventArgs e)
     {
-        ComicLibraryServerConfig comicLibraryServerConfig = new ComicLibraryServerConfig();
+        ComicLibraryServerConfig comicLibraryServerConfig = new();
         comicLibraryServerConfig.Name = $"{Environment.UserName}'s Library";
         if (tabShares.TabCount > 1)
         {
@@ -1292,11 +1257,11 @@ public partial class PreferencesDialog : FormEx
 
     public static bool Show(IWin32Window parent, KeyboardShortcuts commands, PluginEngine pe, string autoInstallPlugin = null)
     {
-        using (PreferencesDialog preferencesDialog = new PreferencesDialog())
+        using (PreferencesDialog preferencesDialog = new())
         {
             preferencesDialog.keyboardShortcutEditor.Shortcuts = commands;
             preferencesDialog.Plugins = pe;
-            preferencesDialog.AutoInstallPlugin = (File.Exists(autoInstallPlugin) ? autoInstallPlugin : null);
+            preferencesDialog.AutoInstallPlugin = File.Exists(autoInstallPlugin) ? autoInstallPlugin : null;
             bool flag = preferencesDialog.ShowDialog(parent) == DialogResult.OK;
             if (flag)
             {
@@ -1343,12 +1308,12 @@ public partial class PreferencesDialog : FormEx
     private void CreateValueContextMenu()
     {
         components = new Container();
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        ContextMenuBuilder contextMenuBuilder = new();
         foreach (string item in ComicBook.GetProperties(false))
         {
             contextMenuBuilder.Add(item, topLevel: false, chk: false, SetCaptionField, item, DateTime.MinValue);
         }
-        ContextMenuStrip cm = new ContextMenuStrip(components);
+        ContextMenuStrip cm = new(components);
         cm.Items.AddRange(contextMenuBuilder.Create(20));
         btInsertValue.Click += (sender, e) => cm.Show(btInsertValue, 0, btInsertValue.Height);
     }
@@ -1366,8 +1331,7 @@ public partial class PreferencesDialog : FormEx
         if (cbVirtualTags.SelectedIndex == -1)
             return;
 
-        VirtualTag vtag = cbVirtualTags.SelectedItem as VirtualTag;
-        if (vtag is null)
+        if (cbVirtualTags.SelectedItem is not VirtualTag vtag)
             return;
 
         //Fill UI with object from Combo Box
@@ -1474,7 +1438,7 @@ public partial class PreferencesDialog : FormEx
 
     private void btBackupLocation_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = LocalizeUtility.GetText(this, "SelectComicFolder", "Please select a folder to save your backups in");
             folderBrowserDialog.ShowNewFolderButton = true;

@@ -6,14 +6,8 @@ public class Underline : Span
 {
     public override FontStyle FontStyle
     {
-        get
-        {
-            return base.FontStyle | FontStyle.Underline;
-        }
-        set
-        {
-            base.FontStyle = value;
-        }
+        get => base.FontStyle | FontStyle.Underline;
+        set => base.FontStyle = value;
     }
 
     public Underline()

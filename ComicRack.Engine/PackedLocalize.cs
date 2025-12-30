@@ -27,7 +27,7 @@ public class PackedLocalize : IVirtualFolder
             {
                 using (Stream stream = loc.OpenRead(path2))
                 {
-                    using (ZipFile zipFile = new ZipFile(stream))
+                    using (ZipFile zipFile = new(stream))
                     {
                         ZipEntry entry = zipFile.GetEntry(fileName);
                         if (entry != null)
@@ -63,7 +63,7 @@ public class PackedLocalize : IVirtualFolder
         {
             using (Stream stream = loc.OpenRead(path2))
             {
-                using (ZipFile zipFile = new ZipFile(stream))
+                using (ZipFile zipFile = new(stream))
                 {
                     return zipFile.GetEntry(fileName) != null;
                 }
@@ -84,10 +84,10 @@ public class PackedLocalize : IVirtualFolder
             string path2 = path + ".zip";
             if (loc.FileExists(path2))
             {
-                List<string> list = new List<string>();
+                List<string> list = new();
                 using (Stream stream = loc.OpenRead(path2))
                 {
-                    using (ZipFile zipFile = new ZipFile(stream))
+                    using (ZipFile zipFile = new(stream))
                     {
                         foreach (ZipEntry item in zipFile)
                         {

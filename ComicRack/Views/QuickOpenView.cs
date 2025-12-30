@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,7 +15,6 @@ using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Viewer.Controls;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Views;
 
@@ -42,15 +40,11 @@ public partial class QuickOpenView : CaptionControl
         public int Compare(ComicBook cx, ComicBook cy)
         {
             int num = cy.OpenedTime.CompareTo(cx.OpenedTime);
-            if (num != 0)
-            {
-                return num;
-            }
-            return cy.AddedTime.CompareTo(cx.AddedTime);
+            return num != 0 ? num : cy.AddedTime.CompareTo(cx.AddedTime);
         }
     }
 
-    private readonly ThumbnailConfig tc = new ThumbnailConfig
+    private readonly ThumbnailConfig tc = new()
     {
         HideCaptions = true
     };
@@ -59,22 +53,13 @@ public partial class QuickOpenView : CaptionControl
 
     public bool ShowBrowserCommand
     {
-        get
-        {
-            return btBrowser.Visible;
-        }
-        set
-        {
-            btBrowser.Visible = value;
-        }
+        get => btBrowser.Visible;
+        set => btBrowser.Visible = value;
     }
 
     public int ThumbnailSize
     {
-        get
-        {
-            return itemView.ItemThumbSize.Height;
-        }
+        get => itemView.ItemThumbSize.Height;
         set
         {
             value = value.Clamp(Program.MinThumbHeight, Program.MaxThumbHeight);
@@ -102,7 +87,7 @@ public partial class QuickOpenView : CaptionControl
 
     public void AddGroup(IGroupInfo group, IEnumerable<ComicBook> books, int maxCount)
     {
-        HashSet<Guid> h = new HashSet<Guid>(from item in itemView.Items.OfType<CoverViewItem>()
+        HashSet<Guid> h = new(from item in itemView.Items.OfType<CoverViewItem>()
                                             select item.Comic.Id);
         int i = itemView.Items.Count;
         foreach (CoverViewItem item in from cb in (from cb in books.OrderBy((ComicBook cb) => cb, new ComicBookOpenedSorter())
@@ -143,26 +128,17 @@ public partial class QuickOpenView : CaptionControl
 
     protected virtual void OnItemActivate()
     {
-        if (this.BookActivated != null)
-        {
-            this.BookActivated(this, EventArgs.Empty);
-        }
+        BookActivated?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnShowBrowser()
     {
-        if (this.ShowBrowser != null)
-        {
-            this.ShowBrowser(this, EventArgs.Empty);
-        }
+        ShowBrowser?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnOpenFile()
     {
-        if (this.OpenFile != null)
-        {
-            this.OpenFile(this, EventArgs.Empty);
-        }
+        OpenFile?.Invoke(this, EventArgs.Empty);
     }
 
     private void itemView_SelectedIndexChanged(object sender, EventArgs e)

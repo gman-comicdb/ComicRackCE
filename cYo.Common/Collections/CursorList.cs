@@ -8,49 +8,15 @@ public class CursorList<T> : LinkedList<T>
 
     private LinkedListNode<T> cursorNode;
 
-    public int MaxSize
-    {
-        get;
-        set;
-    }
+    public int MaxSize { get; set; }
 
     public LinkedListNode<T> CursorNode => cursorNode;
 
-    public T CursorValue
-    {
-        get
-        {
-            if (cursorNode != null)
-            {
-                return cursorNode.Value;
-            }
-            return default(T);
-        }
-    }
+    public T CursorValue => cursorNode != null ? cursorNode.Value : default;
 
-    public bool CanMoveCursorPrevious
-    {
-        get
-        {
-            if (cursorNode != null)
-            {
-                return cursorNode.Previous != null;
-            }
-            return false;
-        }
-    }
+    public bool CanMoveCursorPrevious => cursorNode != null ? cursorNode.Previous != null : false;
 
-    public bool CanMoveCursorNext
-    {
-        get
-        {
-            if (cursorNode != null)
-            {
-                return cursorNode.Next != null;
-            }
-            return false;
-        }
-    }
+    public bool CanMoveCursorNext => cursorNode != null ? cursorNode.Next != null : false;
 
     public CursorList(int maxSize)
     {

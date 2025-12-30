@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using cYo.Common.ComponentModel;
 
@@ -25,7 +21,7 @@ public class ComicBookVirtualTagGrouper : SingleComicGrouper
     public override ComicBookMatcher CreateMatcher(IGroupInfo info)
     {
         ComicBookVirtualTagMatcher val = Activator.CreateInstance(ComicBookVirtualTagMatcher.GetMatcher(vtag)) as ComicBookVirtualTagMatcher;
-        val.MatchOperator = (info.Caption.Contains(",") ? ComicBookStringMatcher.OperatorListContains : ComicBookStringMatcher.OperatorEquals);
+        val.MatchOperator = info.Caption.Contains(",") ? ComicBookStringMatcher.OperatorListContains : ComicBookStringMatcher.OperatorEquals;
         val.MatchValue = info.Caption;
         return val;
     }

@@ -14,106 +14,54 @@ namespace cYo.Projects.ComicRack.Engine.IO;
 public class ExportSetting : StorageSetting
 {
     [XmlAttribute]
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
     public static string DefaultName => TR.Default["New", "New"];
 
     [DefaultValue(ExportTarget.NewFolder)]
-    public ExportTarget Target
-    {
-        get;
-        set;
-    }
+    public ExportTarget Target { get; set; }
 
     [DefaultValue(null)]
-    public string TargetFolder
-    {
-        get;
-        set;
-    }
+    public string TargetFolder { get; set; }
 
     [DefaultValue(false)]
-    public bool DeleteOriginal
-    {
-        get;
-        set;
-    }
+    public bool DeleteOriginal { get; set; }
 
     [DefaultValue(false)]
-    public bool AddToLibrary
-    {
-        get;
-        set;
-    }
+    public bool AddToLibrary { get; set; }
 
     [DefaultValue(false)]
-    public bool Overwrite
-    {
-        get;
-        set;
-    }
+    public bool Overwrite { get; set; }
 
     [DefaultValue(false)]
-    public bool Combine
-    {
-        get;
-        set;
-    }
+    public bool Combine { get; set; }
 
     [DefaultValue(ExportNaming.Filename)]
-    public ExportNaming Naming
-    {
-        get;
-        set;
-    }
+    public ExportNaming Naming { get; set; }
 
     [DefaultValue(null)]
-    public string CustomName
-    {
-        get;
-        set;
-    }
+    public string CustomName { get; set; }
 
     [DefaultValue(1)]
-    public int CustomNamingStart
-    {
-        get;
-        set;
-    }
+    public int CustomNamingStart { get; set; }
 
     [DefaultValue(null)]
-    public string ForcedName
-    {
-        get;
-        set;
-    }
+    public string ForcedName { get; set; }
 
     [DefaultValue(null)]
-    public string TagsToAppend
-    {
-        get;
-        set;
-    }
+    public string TagsToAppend { get; set; }
 
     [DefaultValue(ExportImageProcessingSource.Custom)]
-    public ExportImageProcessingSource ImageProcessingSource
-    {
-        get;
-        set;
-    }
+    public ExportImageProcessingSource ImageProcessingSource { get; set; }
 
-    public static ExportSetting ConvertToCBZ => new ExportSetting
+    public static ExportSetting ConvertToCBZ => new()
     {
         Name = TR.Messages["ConvertToCBZ", "Convert to CBZ"],
         Target = ExportTarget.ReplaceSource,
         FormatId = 2
     };
 
-    public static ExportSetting ConvertToCB7 => new ExportSetting
+    public static ExportSetting ConvertToCB7 => new()
     {
         Name = TR.Messages["ConvertToCB7", "Convert to CB7"],
         Target = ExportTarget.ReplaceSource,
@@ -142,11 +90,7 @@ public class ExportSetting : StorageSetting
 
     public string GetTargetFilePath(ComicBook cb)
     {
-        if (Target != 0)
-        {
-            return Path.GetDirectoryName(cb.FilePath);
-        }
-        return TargetFolder;
+        return Target != 0 ? Path.GetDirectoryName(cb.FilePath) : TargetFolder;
     }
 
     public string GetTargetFileName(ComicBook cb, int index)
@@ -160,10 +104,10 @@ public class ExportSetting : StorageSetting
         switch (Naming)
         {
             case ExportNaming.Caption:
-                text = (string.IsNullOrEmpty(CustomName) ? cb.TargetFilename : cb.GetFullTitle(CustomName));
+                text = string.IsNullOrEmpty(CustomName) ? cb.TargetFilename : cb.GetFullTitle(CustomName);
                 break;
             case ExportNaming.Custom:
-                text = (string.IsNullOrEmpty(CustomName) ? cb.FileName : CustomName);
+                text = string.IsNullOrEmpty(CustomName) ? cb.FileName : CustomName;
                 index += CustomNamingStart;
                 if (index > 0)
                 {

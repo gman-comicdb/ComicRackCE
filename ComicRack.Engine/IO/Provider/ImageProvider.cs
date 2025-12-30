@@ -18,12 +18,12 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
     {
         public int Count;
 
-        public readonly ReaderWriterLock Lock = new ReaderWriterLock();
+        public readonly ReaderWriterLock Lock = new();
     }
 
     private const int sourceLockTimeout = 60000;
 
-    private readonly object workLock = new object();
+    private readonly object workLock = new();
 
     private Thread parser;
 
@@ -33,16 +33,13 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
 
     private volatile ImageProviderStatus status;
 
-    private readonly List<ProviderImageInfo> imageInfos = new List<ProviderImageInfo>();
+    private readonly List<ProviderImageInfo> imageInfos = new();
 
-    private static readonly Dictionary<string, ReaderWriterLockItem> rwLocks = new Dictionary<string, ReaderWriterLockItem>();
+    private static readonly Dictionary<string, ReaderWriterLockItem> rwLocks = new();
 
     public string Source
     {
-        get
-        {
-            return source;
-        }
+        get => source;
         set
         {
             ReleaseLock(source);
@@ -293,9 +290,9 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
 
     protected static string CreateHashFromImageList(IEnumerable<ProviderImageInfo> images)
     {
-        using (MemoryStream output = new MemoryStream())
+        using (MemoryStream output = new())
         {
-            using (BinaryWriter binaryWriter = new BinaryWriter(output))
+            using (BinaryWriter binaryWriter = new(output))
             {
                 foreach (ProviderImageInfo image in images)
                 {
@@ -361,18 +358,12 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
 
     protected virtual void OnIndexReady(ImageIndexReadyEventArgs e)
     {
-        if (this.ImageReady != null)
-        {
-            this.ImageReady(this, e);
-        }
+        ImageReady?.Invoke(this, e);
     }
 
     protected virtual void OnIndexRetrievalCompleted(IndexRetrievalCompletedEventArgs e)
     {
-        if (this.IndexRetrievalCompleted != null)
-        {
-            this.IndexRetrievalCompleted(this, e);
-        }
+        IndexRetrievalCompleted?.Invoke(this, e);
     }
 
     protected bool FireIndexReady(ProviderImageInfo ii)
@@ -381,7 +372,7 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
         {
             imageInfos.Add(ii);
         }
-        ImageIndexReadyEventArgs imageIndexReadyEventArgs = new ImageIndexReadyEventArgs(Count - 1, ii);
+        ImageIndexReadyEventArgs imageIndexReadyEventArgs = new(Count - 1, ii);
         try
         {
             OnIndexReady(imageIndexReadyEventArgs);
@@ -396,7 +387,7 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
     {
         if (status == ImageProviderStatus.Running)
         {
-            status = ((Count == 0) ? ImageProviderStatus.Error : ImageProviderStatus.Completed);
+            status = (Count == 0) ? ImageProviderStatus.Error : ImageProviderStatus.Completed;
         }
         OnIndexRetrievalCompleted(new IndexRetrievalCompletedEventArgs(Status, Count));
     }
@@ -411,7 +402,7 @@ public abstract class ImageProvider : FileProviderBase, IImageProvider, IDisposa
         {
             if (!rwLocks.TryGetValue(source, out var value))
             {
-                ReaderWriterLockItem readerWriterLockItem2 = (rwLocks[source] = new ReaderWriterLockItem());
+                ReaderWriterLockItem readerWriterLockItem2 = rwLocks[source] = new ReaderWriterLockItem();
                 value = readerWriterLockItem2;
             }
             value.Count++;

@@ -37,13 +37,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
 
     public int Compare(object x, object y)
     {
-        string text = x as string;
-        string text2 = y as string;
-        if (text != null && text2 != null)
-        {
-            return Compare(text, text2, compareMode);
-        }
-        return Comparer.Default.Compare(x, y);
+        return x is string text && y is string text2 ? Compare(text, text2, compareMode) : Comparer.Default.Compare(x, y);
     }
 
     public static int Compare(string s1, string s2)
@@ -55,11 +49,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
     {
         if (string.IsNullOrEmpty(s1))
         {
-            if (!string.IsNullOrEmpty(s2))
-            {
-                return -1;
-            }
-            return 0;
+            return !string.IsNullOrEmpty(s2) ? -1 : 0;
         }
         if (string.IsNullOrEmpty(s2))
         {
@@ -108,7 +98,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
                     bool flag6 = char.IsLetter(c2);
                     if (flag5 && flag6)
                     {
-                        int num = (flag ? (char.ToUpper(c) - char.ToUpper(c2)) : string.Compare(s1, i, s2, i2, 1, ignoreCase));
+                        int num = flag ? (char.ToUpper(c) - char.ToUpper(c2)) : string.Compare(s1, i, s2, i2, 1, ignoreCase);
                         if (num != 0)
                         {
                             return num;
@@ -118,13 +108,9 @@ public sealed class ExtendedStringComparer : IComparer<string>
                     {
                         if (flag5 || flag6)
                         {
-                            if (flag5)
-                            {
-                                return 1;
-                            }
-                            return -1;
+                            return flag5 ? 1 : -1;
                         }
-                        int num2 = (flag ? (c - c2) : string.Compare(s1, i, s2, i2, 1));
+                        int num2 = flag ? (c - c2) : string.Compare(s1, i, s2, i2, 1);
                         if (num2 != 0)
                         {
                             return num2;
@@ -136,11 +122,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
             {
                 if (!(flag3 && flag4))
                 {
-                    if (flag3)
-                    {
-                        return -1;
-                    }
-                    return 1;
+                    return flag3 ? -1 : 1;
                 }
                 int num3 = CompareNumbers(s1, length, ref i, s2, length2, ref i2, zeroesFirst);
                 if (num3 != 0)
@@ -152,11 +134,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
             i2++;
             if (i >= length)
             {
-                if (i2 >= length2)
-                {
-                    return result;
-                }
-                return -1;
+                return i2 >= length2 ? result : -1;
             }
         }
         while (i2 < length2);
@@ -211,11 +189,7 @@ public sealed class ExtendedStringComparer : IComparer<string>
                 return 0;
             }
         }
-        if (num5 > num6)
-        {
-            return -1;
-        }
-        return 1;
+        return num5 > num6 ? -1 : 1;
     }
 
     private static void ScanNumber(string s, int length, int start, ref int nzStart, ref int end)

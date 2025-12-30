@@ -34,10 +34,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
 
     public HashSet<string> Pool
     {
-        get
-        {
-            return pool;
-        }
+        get => pool;
         set
         {
             pool = value;
@@ -47,13 +44,10 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
 
     public int Tab
     {
-        get
-        {
-            return tab;
-        }
+        get => tab;
         set
         {
-            tab = (lastTab = value);
+            tab = lastTab = value;
             switch (tab)
             {
                 default:
@@ -87,14 +81,8 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
     [Browsable(true)]
     public override string Text
     {
-        get
-        {
-            return base.Text;
-        }
-        set
-        {
-            base.Text = value;
-        }
+        get => base.Text;
+        set => base.Text = value;
     }
 
     public ListSelectorControl()
@@ -162,8 +150,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
 
     protected override void WndProc(ref Message m)
     {
-        Popup popup = base.Parent as Popup;
-        if (popup == null || !popup.ProcessResizing(ref m))
+        if (base.Parent is not Popup popup || !popup.ProcessResizing(ref m))
         {
             base.WndProc(ref m);
         }
@@ -347,10 +334,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
         finally
         {
             IDisposable disposable = enumerator2 as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
+            disposable?.Dispose();
         }
         foreach (string selectedItem2 in b.SelectedItems)
         {
@@ -379,7 +363,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
     {
         int num = FormUtility.ScaleDpiX(16);
         textBox.Width -= num;
-        Button bt = new Button();
+        Button bt = new();
         bt.Size = new Size(num, textBox.Height); // set the button size before adding to the table because the textbox would be resized otherwise
 
         if (textBox.Parent is TableLayoutPanel tableLayoutPanel)
@@ -389,7 +373,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
             textBox.Location = new Point(0, 0); // reset the location of the textbox to (0,0) because it will be inside a panel
             bt.Anchor = AnchorStyles.Top | AnchorStyles.Right; //Set the anchor styles of the button relative to the panel
 
-            Panel panel = new Panel(); // create a new panel to host the button and textbox
+            Panel panel = new(); // create a new panel to host the button and textbox
             panel.Size = new Size(textBox.Width + num, textBox.Height); // set the panel size to match original textbox
             panel.Dock = DockStyle.Fill; // fill the panel to the table cell
             panel.Controls.Add(bt); // add the button to the panel
@@ -452,7 +436,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
 
     public static Popup ShowPopup(TextBox textBox, IEnumerable<INetSearch> search = null)
     {
-        ListSelectorControl ls = new ListSelectorControl();
+        ListSelectorControl ls = new();
         string value = textBox.Text;
         if (string.IsNullOrEmpty(value) && textBox is IPromptText)
         {
@@ -461,9 +445,9 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
         ls.Text = value;
         ls.Pool = SetFromAutoComplete(textBox);
         ls.RegisterSearch(search);
-        Popup popup = new Popup(ls, autoDispose: true)
+        Popup popup = new(ls, autoDispose: true)
         {
-            ShowingAnimation = (Popup.PopupAnimations.TopToBottom | Popup.PopupAnimations.Slide),
+            ShowingAnimation = Popup.PopupAnimations.TopToBottom | Popup.PopupAnimations.Slide,
             Resizable = true
         };
         popup.PopupClosed += delegate
@@ -476,7 +460,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
 
     private static HashSet<string> SetFromAutoComplete(TextBox textBox)
     {
-        HashSet<string> hashSet = new HashSet<string>();
+        HashSet<string> hashSet = new();
         if (textBox is IDelayedAutoCompleteList)
         {
             ((IDelayedAutoCompleteList)textBox).BuildAutoComplete();

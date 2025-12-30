@@ -6,7 +6,7 @@ public class ColorTexture : ITexture
 {
     private Color color = Color.White;
 
-    public Size Size => new Size(1, 1);
+    public Size Size => new(1, 1);
 
     public ColorTexture()
         : this(Color.White)

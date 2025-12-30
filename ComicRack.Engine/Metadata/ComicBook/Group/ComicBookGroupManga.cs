@@ -8,16 +8,12 @@ public class ComicBookGroupManga : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        switch (item.Manga)
+        return item.Manga switch
         {
-            case MangaYesNo.YesAndRightToLeft:
-                return new GroupInfo(captions[0], 0);
-            case MangaYesNo.Yes:
-                return new GroupInfo(captions[1], 1);
-            case MangaYesNo.No:
-                return new GroupInfo(captions[2], 2);
-            default:
-                return new GroupInfo(captions[3], 3);
-        }
+            MangaYesNo.YesAndRightToLeft => new GroupInfo(captions[0], 0),
+            MangaYesNo.Yes => new GroupInfo(captions[1], 1),
+            MangaYesNo.No => new GroupInfo(captions[2], 2),
+            _ => new GroupInfo(captions[3], 3),
+        };
     }
 }

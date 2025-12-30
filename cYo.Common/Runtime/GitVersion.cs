@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace cYo.Common.Runtime;
 
@@ -38,7 +33,7 @@ public static class GitVersion
 
         if (sourceStream != null)
         {
-            using (StreamReader streamReader = new StreamReader(sourceStream))
+            using (StreamReader streamReader = new(sourceStream))
             {
                 result = streamReader.ReadToEnd();
             }

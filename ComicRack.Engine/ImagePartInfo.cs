@@ -38,11 +38,7 @@ public struct ImagePartInfo
             return false;
         }
         ImagePartInfo imagePartInfo = (ImagePartInfo)obj;
-        if (part == imagePartInfo.part)
-        {
-            return offset == imagePartInfo.offset;
-        }
-        return false;
+        return part == imagePartInfo.part ? offset == imagePartInfo.offset : false;
     }
 
     public override int GetHashCode()

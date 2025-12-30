@@ -8,7 +8,7 @@ namespace cYo.Common.Windows;
 [Serializable]
 public class KeyboardShortcuts : ICloneable
 {
-    private readonly List<KeyboardCommand> commands = new List<KeyboardCommand>();
+    private readonly List<KeyboardCommand> commands = new();
 
     public List<KeyboardCommand> Commands => commands;
 
@@ -54,33 +54,21 @@ public class KeyboardShortcuts : ICloneable
         {
             return HandleKey(doubleClick ? CommandKey.MouseDoubleLeft : CommandKey.MouseLeft, Control.ModifierKeys);
         }
-        if ((button & MouseButtons.Right) != 0)
-        {
-            return HandleKey(doubleClick ? CommandKey.MouseDoubleRight : CommandKey.MouseRight, Control.ModifierKeys);
-        }
-        if ((button & MouseButtons.Middle) != 0)
-        {
-            return HandleKey(doubleClick ? CommandKey.MouseDoubleMiddle : CommandKey.MouseMiddle, Control.ModifierKeys);
-        }
-        if ((button & MouseButtons.XButton1) != 0)
-        {
-            return HandleKey(doubleClick ? CommandKey.MouseDoubleButton4 : CommandKey.MouseButton4, Control.ModifierKeys);
-        }
-        if ((button & MouseButtons.XButton2) != 0)
-        {
-            return HandleKey(doubleClick ? CommandKey.MouseDoubleButton5 : CommandKey.MouseButton5, Control.ModifierKeys);
-        }
-        return false;
+        return (button & MouseButtons.Right) != 0
+            ? HandleKey(doubleClick ? CommandKey.MouseDoubleRight : CommandKey.MouseRight, Control.ModifierKeys)
+            : (button & MouseButtons.Middle) != 0
+            ? HandleKey(doubleClick ? CommandKey.MouseDoubleMiddle : CommandKey.MouseMiddle, Control.ModifierKeys)
+            : (button & MouseButtons.XButton1) != 0
+            ? HandleKey(doubleClick ? CommandKey.MouseDoubleButton4 : CommandKey.MouseButton4, Control.ModifierKeys)
+            : (button & MouseButtons.XButton2) != 0
+            ? HandleKey(doubleClick ? CommandKey.MouseDoubleButton5 : CommandKey.MouseButton5, Control.ModifierKeys)
+            : false;
     }
 
     public bool HandleKey(Keys k)
     {
         Keys keys = k & Keys.KeyCode;
-        if (Enum.IsDefined(typeof(CommandKey), (int)keys))
-        {
-            return HandleKey((CommandKey)k);
-        }
-        return false;
+        return Enum.IsDefined(typeof(CommandKey), (int)keys) ? HandleKey((CommandKey)k) : false;
     }
 
     public KeyboardCommand FindCommandByKey(string key)

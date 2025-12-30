@@ -39,7 +39,7 @@ public static class ApproximateMatching
             char c = s[i - 1];
             for (int j = 1; j <= length2; j++)
             {
-                int num2 = ((t[j - 1] != c) ? 1 : 0);
+                int num2 = (t[j - 1] != c) ? 1 : 0;
                 a[j] = Math.Min(Math.Min(b[j] + 1, a[j - 1] + 1), b[j - 1] + num2);
             }
             CloneUtility.Swap(ref a, ref b);

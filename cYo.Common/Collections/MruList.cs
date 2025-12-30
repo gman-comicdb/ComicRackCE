@@ -5,11 +5,7 @@ namespace cYo.Common.Collections;
 [Serializable]
 public class MruList<T> : SmartList<T>
 {
-    public int MaxCount
-    {
-        get;
-        set;
-    }
+    public int MaxCount { get; set; }
 
     public MruList(int maxCount)
     {

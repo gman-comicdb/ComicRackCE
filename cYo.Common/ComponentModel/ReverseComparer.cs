@@ -13,10 +13,6 @@ public class ReverseComparer<T> : Comparer<T>
 
     public override int Compare(T x, T y)
     {
-        if (comparer != null)
-        {
-            return comparer.Compare(y, x);
-        }
-        return 0;
+        return comparer != null ? comparer.Compare(y, x) : 0;
     }
 }

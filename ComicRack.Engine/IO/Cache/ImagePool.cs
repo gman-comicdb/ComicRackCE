@@ -60,25 +60,17 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public bool CacheThumbnailPages
     {
-        get
-        {
-            return cacheThumbnailPages;
-        }
-        set
-        {
-            cacheThumbnailPages = value;
-        }
+        get => cacheThumbnailPages;
+        set => cacheThumbnailPages = value;
     }
 
     public bool IsWorking
     {
         get
         {
-            if (!slowPageQueue.IsActive && !slowThumbnailQueue.IsActive && !slowThumbnailQueueUnlimited.IsActive && !fastPageQueue.IsActive)
-            {
-                return fastThumbnailQueue.IsActive;
-            }
-            return true;
+            return !slowPageQueue.IsActive && !slowThumbnailQueue.IsActive && !slowThumbnailQueueUnlimited.IsActive && !fastPageQueue.IsActive
+                ? fastThumbnailQueue.IsActive
+                : true;
         }
     }
 
@@ -86,10 +78,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public string CustomThumbnailFolder
     {
-        get
-        {
-            return customThumbnailFolder;
-        }
+        get => customThumbnailFolder;
         set
         {
             if (!(value == customThumbnailFolder))
@@ -126,16 +115,14 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
         slowThumbnailQueueUnlimited = new ProcessingQueue<ImageKey>(threadCount, "Background Slow Thumbnails Unlimited Queue", ThreadPriority.Lowest, int.MaxValue);
         pages.MemoryCache.ItemAdded += MemoryPageCacheItemAdded;
         thumbs.MemoryCache.ItemAdded += MemoryThumbnailCacheItemAdded;
-        slowThumbnailQueue.DefaultProcessingQueueAddMode = slowThumbnailQueueUnlimited.DefaultProcessingQueueAddMode = (fastThumbnailQueue.DefaultProcessingQueueAddMode = (slowPageQueue.DefaultProcessingQueueAddMode = (fastPageQueue.DefaultProcessingQueueAddMode = ProcessingQueueAddMode.AddToTop)));
+        slowThumbnailQueue.DefaultProcessingQueueAddMode = slowThumbnailQueueUnlimited.DefaultProcessingQueueAddMode = fastThumbnailQueue.DefaultProcessingQueueAddMode = slowPageQueue.DefaultProcessingQueueAddMode = fastPageQueue.DefaultProcessingQueueAddMode = ProcessingQueueAddMode.AddToTop;
     }
 
     public bool AreImagesPending(string filePath)
     {
-        if (!slowPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !slowThumbnailQueueUnlimited.PendingItems.Any((ImageKey key) => key.Location == filePath))
-        {
-            return slowThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath);
-        }
-        return true;
+        return !slowPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !slowThumbnailQueueUnlimited.PendingItems.Any((ImageKey key) => key.Location == filePath)
+            ? slowThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath)
+            : true;
     }
 
     public void AddThumbToQueue(ThumbnailKey key, object callbackKey, AsyncCallback asyncCallback)
@@ -180,7 +167,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public virtual Bitmap CreateErrorThumbnail(int height)
     {
-        Bitmap bitmap = new Bitmap(height * 2 / 3, height);
+        Bitmap bitmap = new(height * 2 / 3, height);
         using (Graphics graphics = Graphics.FromImage(bitmap))
         {
             using (Image image = Resources.RedCross)
@@ -195,31 +182,22 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     protected virtual void OnPageCached(CacheItemEventArgs<ImageKey, PageImage> e)
     {
-        if (this.PageCached != null)
-        {
-            this.PageCached(this, e);
-        }
+        PageCached?.Invoke(this, e);
     }
 
     protected virtual void OnThumbnailCached(CacheItemEventArgs<ImageKey, ThumbnailImage> e)
     {
-        if (this.ThumbnailCached != null)
-        {
-            this.ThumbnailCached(this, e);
-        }
+        ThumbnailCached?.Invoke(this, e);
     }
 
     protected virtual void OnRequestResourceThumbnail(ResourceThumbnailEventArgs e)
     {
-        if (this.RequestResourceThumbnail != null)
-        {
-            this.RequestResourceThumbnail(this, e);
-        }
+        RequestResourceThumbnail?.Invoke(this, e);
     }
 
     protected virtual ThumbnailImage GetResourceThumbnail(ThumbnailKey key)
     {
-        ResourceThumbnailEventArgs resourceThumbnailEventArgs = new ResourceThumbnailEventArgs(key);
+        ResourceThumbnailEventArgs resourceThumbnailEventArgs = new(key);
         OnRequestResourceThumbnail(resourceThumbnailEventArgs);
         return resourceThumbnailEventArgs.Image;
     }
@@ -236,7 +214,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public void AddPageToQueue(PageKey key, object callbackKey, AsyncCallback asyncCallback, bool bottom)
     {
-        ProcessingQueueAddMode mode = ((!bottom) ? ProcessingQueueAddMode.AddToTop : ProcessingQueueAddMode.AddToBottom);
+        ProcessingQueueAddMode mode = (!bottom) ? ProcessingQueueAddMode.AddToTop : ProcessingQueueAddMode.AddToBottom;
         if (pages.DiskCache.IsAvailable(key))
         {
             fastPageQueue.AddItem(key, callbackKey, asyncCallback, mode);
@@ -291,10 +269,10 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
                     }
                     if (bitmap2 == null)
                     {
-                        bitmap2 = (bitmap = provider.GetImage(key.Index));
+                        bitmap2 = bitmap = provider.GetImage(key.Index);
                         if (bitmap2 != null && provider.IsSlow)
                         {
-                            PageKey key2 = new PageKey(key.Source, key.Location, key.Size, key.Modified, key.Index, ImageRotation.None, BitmapAdjustment.Empty);
+                            PageKey key2 = new(key.Source, key.Location, key.Size, key.Modified, key.Index, ImageRotation.None, BitmapAdjustment.Empty);
                             using (PageImage item = PageImage.CreateFrom(bitmap2))
                             {
                                 pages.DiskCache.AddItem(key2, item);
@@ -329,20 +307,14 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
             }
             return null;
         });
-        if (itemLock != null)
-        {
-            return itemLock;
-        }
-        if (onErrorThrowException)
-        {
-            throw new Exception("Could not open image");
-        }
-        return pages.MemoryCache.LockItem(key, (ImageKey tk) => PageImage.Wrap(CreateErrorPage()));
+        return itemLock ?? (onErrorThrowException
+            ? throw new Exception("Could not open image")
+            : pages.MemoryCache.LockItem(key, (ImageKey tk) => PageImage.Wrap(CreateErrorPage())));
     }
 
     private Bitmap GetPartialDiskPage(PageKey key, ImageRotation rot, BitmapAdjustment transform)
     {
-        PageKey key2 = new PageKey(key.Source, key.Location, key.Size, key.Modified, key.Index, rot, transform);
+        PageKey key2 = new(key.Source, key.Location, key.Size, key.Modified, key.Index, rot, transform);
         using (PageImage pageImage = pages.DiskCache.GetItem(key2))
         {
             if (pageImage != null && pageImage.Bitmap != null)
@@ -411,7 +383,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
     {
         IItemLock<ThumbnailImage> itemLock = thumbs.AddImage(key, delegate
         {
-            PageKey key2 = new PageKey(key);
+            PageKey key2 = new(key);
             if (!string.IsNullOrEmpty(key.ResourceType))
             {
                 ThumbnailImage resourceThumbnail = GetResourceThumbnail(key);
@@ -452,7 +424,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
                         else
                         {
                             byte[] byteImage = provider.GetByteImage(key.Index);
-                            bitmap = ((byteImage == null) ? provider.GetImage(key.Index) : BitmapExtensions.BitmapFromBytes(byteImage, PixelFormat.Undefined));
+                            bitmap = (byteImage == null) ? provider.GetImage(key.Index) : BitmapExtensions.BitmapFromBytes(byteImage, PixelFormat.Undefined);
                             if (bitmap != null && key.Rotation != 0)
                             {
                                 Bitmap bitmap2 = bitmap.Rotate(key.Rotation);
@@ -478,21 +450,15 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
             }
             return null;
         });
-        if (itemLock != null)
-        {
-            return itemLock;
-        }
-        if (onErrorThrowException)
-        {
-            throw new InvalidOperationException("Could not load thumbnail");
-        }
-        return thumbs.MemoryCache.LockItem(key, delegate
+        return itemLock ?? (onErrorThrowException
+            ? throw new InvalidOperationException("Could not load thumbnail")
+            : thumbs.MemoryCache.LockItem(key, delegate
         {
             using (Bitmap image = CreateErrorThumbnail(ThumbnailImage.MaxHeight))
             {
                 return ThumbnailImage.CreateFrom(image, Size.Empty);
             }
-        });
+        }));
     }
 
     public void CacheThumbnail(ThumbnailKey key, bool checkMemoryOnly, IImageProvider provider)

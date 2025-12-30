@@ -11,9 +11,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider;
 
 public abstract class ProviderFactoryBase<T> where T : class
 {
-    protected readonly ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
+    protected readonly ReaderWriterLockSlim rwLock = new();
 
-    protected readonly List<IProviderInfo> providerDict = new List<IProviderInfo>();
+    protected readonly List<IProviderInfo> providerDict = new();
 
     public abstract void RegisterProvider(Type t, bool withLocking);
 
@@ -32,7 +32,7 @@ public abstract class ProviderFactoryBase<T> where T : class
         using (rwLock.WriteLock())
         {
             (from t in assembly.GetTypes()
-             where !t.IsAbstract && t.IsSubclassOf(baseType) && t.GetConstructor(new Type[0]) != null
+             where !t.IsAbstract && t.IsSubclassOf(baseType) && t.GetConstructor([]) != null
              select t).ForEach((Type t) => RegisterProvider(t, withLocking: false));
         }
     }

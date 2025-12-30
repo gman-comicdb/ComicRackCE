@@ -4,11 +4,7 @@ namespace cYo.Common.IO;
 
 public class AutoDeleteFileStream : FileStream
 {
-    public string File
-    {
-        get;
-        private set;
-    }
+    public string File { get; private set; }
 
     public AutoDeleteFileStream(string file)
         : base(file, FileMode.Open, FileAccess.Read, FileShare.Read)

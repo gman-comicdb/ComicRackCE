@@ -43,19 +43,16 @@ public struct Matrix4
         get
         {
             Matrix4 zero = Zero;
-            zero.A1 = (zero.B2 = (zero.C3 = (zero.D4 = 1f)));
+            zero.A1 = zero.B2 = zero.C3 = zero.D4 = 1f;
             return zero;
         }
     }
 
-    public static Matrix4 Zero => default(Matrix4);
+    public static Matrix4 Zero => default;
 
     public Vector4 Column1
     {
-        get
-        {
-            return new Vector4(A1, B1, C1, D1);
-        }
+        get => new(A1, B1, C1, D1);
         set
         {
             A1 = value.X;
@@ -67,10 +64,7 @@ public struct Matrix4
 
     public Vector4 Column2
     {
-        get
-        {
-            return new Vector4(A2, B2, C2, D2);
-        }
+        get => new(A2, B2, C2, D2);
         set
         {
             A2 = value.X;
@@ -82,10 +76,7 @@ public struct Matrix4
 
     public Vector4 Column3
     {
-        get
-        {
-            return new Vector4(A3, B3, C3, D3);
-        }
+        get => new(A3, B3, C3, D3);
         set
         {
             A3 = value.X;
@@ -97,10 +88,7 @@ public struct Matrix4
 
     public Vector4 Column4
     {
-        get
-        {
-            return new Vector4(A4, B4, C4, D4);
-        }
+        get => new(A4, B4, C4, D4);
         set
         {
             A4 = value.X;
@@ -112,10 +100,7 @@ public struct Matrix4
 
     public Vector3 LookAtVector
     {
-        get
-        {
-            return new Vector3(A3, B3, C3);
-        }
+        get => new(A3, B3, C3);
         set
         {
             A3 = value.X;
@@ -126,10 +111,7 @@ public struct Matrix4
 
     public Vector3 UpVector
     {
-        get
-        {
-            return new Vector3(A2, B2, C2);
-        }
+        get => new(A2, B2, C2);
         set
         {
             A2 = value.X;
@@ -140,10 +122,7 @@ public struct Matrix4
 
     public Vector3 RightVector
     {
-        get
-        {
-            return new Vector3(A1, B1, C1);
-        }
+        get => new(A1, B1, C1);
         set
         {
             A1 = value.X;
@@ -154,10 +133,7 @@ public struct Matrix4
 
     public Vector3 TranslationVector
     {
-        get
-        {
-            return new Vector3(D1, D2, D3);
-        }
+        get => new(D1, D2, D3);
         set
         {
             D1 = value.X;
@@ -168,10 +144,7 @@ public struct Matrix4
 
     public Matrix3 RotationMatrix
     {
-        get
-        {
-            return new Matrix3(A1, A2, A3, B1, B2, B3, C1, C2, C3);
-        }
+        get => new(A1, A2, A3, B1, B2, B3, C1, C2, C3);
         set
         {
             A1 = value.A1;
@@ -237,57 +210,34 @@ public struct Matrix4
 
     public float this[int column, int row]
     {
-        get
-        {
-            return this[column + row * 4];
-        }
-        set
-        {
-            this[column + row * 4] = value;
-        }
+        get => this[column + row * 4];
+        set => this[column + row * 4] = value;
     }
 
     public float this[int index]
     {
         get
         {
-            switch (index)
+            return index switch
             {
-                case 0:
-                    return A1;
-                case 1:
-                    return A2;
-                case 2:
-                    return A3;
-                case 3:
-                    return A4;
-                case 4:
-                    return B1;
-                case 5:
-                    return B2;
-                case 6:
-                    return B3;
-                case 7:
-                    return B4;
-                case 8:
-                    return C1;
-                case 9:
-                    return C2;
-                case 10:
-                    return C3;
-                case 11:
-                    return C4;
-                case 12:
-                    return D1;
-                case 13:
-                    return D2;
-                case 14:
-                    return D3;
-                case 15:
-                    return D4;
-                default:
-                    throw new IndexOutOfRangeException("Invalid matrix index!");
-            }
+                0 => A1,
+                1 => A2,
+                2 => A3,
+                3 => A4,
+                4 => B1,
+                5 => B2,
+                6 => B3,
+                7 => B4,
+                8 => C1,
+                9 => C2,
+                10 => C3,
+                11 => C4,
+                12 => D1,
+                13 => D2,
+                14 => D3,
+                15 => D4,
+                _ => throw new IndexOutOfRangeException("Invalid matrix index!"),
+            };
         }
         set
         {
@@ -499,11 +449,9 @@ public struct Matrix4
 
     public static Matrix4 Perspective(float width, float height, float near, float far)
     {
-        if (far == float.PositiveInfinity)
-        {
-            return PerspectiveInfinity(width, height, near);
-        }
-        return new Matrix4(2f * near / width, 0f, 0f, 0f, 0f, 2f * near / height, 0f, 0f, 0f, 0f, far / (far - near), 1f, 0f, 0f, near * far / (near - far), 0f);
+        return far == float.PositiveInfinity
+            ? PerspectiveInfinity(width, height, near)
+            : new Matrix4(2f * near / width, 0f, 0f, 0f, 0f, 2f * near / height, 0f, 0f, 0f, 0f, far / (far - near), 1f, 0f, 0f, near * far / (near - far), 0f);
     }
 
     public static Matrix4 PerspectiveInfinity(float width, float height, float near)
@@ -547,7 +495,7 @@ public struct Matrix4
         float num = Numeric.Cos(angle);
         float num2 = Numeric.Sin(angle);
         float num3 = 1f - num;
-        Matrix4 matrix = new Matrix4(num3 * vec.X * vec.X + num, num3 * vec.X * vec.Y + num2 * vec.Z, num3 * vec.X * vec.Z + num2 * vec.Y, 0f, num3 * vec.X * vec.Y - num2 * vec.Z, num3 * vec.Y * vec.Y + num, num3 * vec.Y * vec.Z + num2 * vec.X, 0f, num3 * vec.X * vec.Z + num2 * vec.Y, num3 * vec.Y * vec.Z - num2 * vec.X, num3 * vec.Z * vec.Z + num, 0f, 0f, 0f, 0f, 1f);
+        Matrix4 matrix = new(num3 * vec.X * vec.X + num, num3 * vec.X * vec.Y + num2 * vec.Z, num3 * vec.X * vec.Z + num2 * vec.Y, 0f, num3 * vec.X * vec.Y - num2 * vec.Z, num3 * vec.Y * vec.Y + num, num3 * vec.Y * vec.Z + num2 * vec.X, 0f, num3 * vec.X * vec.Z + num2 * vec.Y, num3 * vec.Y * vec.Z - num2 * vec.X, num3 * vec.Z * vec.Z + num, 0f, 0f, 0f, 0f, 1f);
         return Transpose(matrix);
     }
 
@@ -594,7 +542,7 @@ public struct Matrix4
     public static Matrix3 Minor(Matrix4 source, int column, int row)
     {
         int num = 0;
-        Matrix3 result = default(Matrix3);
+        Matrix3 result = default;
         for (int i = 0; i < 4; i++)
         {
             int num2 = 0;
@@ -622,14 +570,7 @@ public struct Matrix4
         {
             for (int j = 0; j < 4; j++)
             {
-                if ((j + i) % 2 == 0)
-                {
-                    zero[j, i] = Minor(source, i, j).Det();
-                }
-                else
-                {
-                    zero[j, i] = 0f - Minor(source, i, j).Det();
-                }
+                zero[j, i] = (j + i) % 2 == 0 ? Minor(source, i, j).Det() : 0f - Minor(source, i, j).Det();
             }
         }
         return zero;
@@ -670,12 +611,12 @@ public struct Matrix4
         translation.X = mat.D1;
         translation.Y = mat.D2;
         translation.Z = mat.D3;
-        Vector3[] array = new Vector3[3]
-        {
-            new Vector3(mat.A1, mat.A2, mat.A3),
-            new Vector3(mat.B1, mat.B2, mat.B3),
-            new Vector3(mat.C1, mat.C2, mat.C3)
-        };
+        Vector3[] array =
+        [
+            new(mat.A1, mat.A2, mat.A3),
+            new(mat.B1, mat.B2, mat.B3),
+            new(mat.C1, mat.C2, mat.C3)
+        ];
         scaling.X = array[0].Length();
         scaling.Y = array[1].Length();
         scaling.Z = array[2].Length();
@@ -807,11 +748,9 @@ public struct Matrix4
             return false;
         }
         Matrix4 matrix = (Matrix4)obj;
-        if (A1 == matrix.A1 && A2 == matrix.A2 && A3 == matrix.A3 && A4 == matrix.A4 && B1 == matrix.B1 && B2 == matrix.B2 && B3 == matrix.B3 && B4 == matrix.B4 && C1 == matrix.C1 && C2 == matrix.C2 && C3 == matrix.C3 && C4 == matrix.C4 && D1 == matrix.D1 && D2 == matrix.D2 && D3 == matrix.D3)
-        {
-            return D4 == matrix.D4;
-        }
-        return false;
+        return A1 == matrix.A1 && A2 == matrix.A2 && A3 == matrix.A3 && A4 == matrix.A4 && B1 == matrix.B1 && B2 == matrix.B2 && B3 == matrix.B3 && B4 == matrix.B4 && C1 == matrix.C1 && C2 == matrix.C2 && C3 == matrix.C3 && C4 == matrix.C4 && D1 == matrix.D1 && D2 == matrix.D2 && D3 == matrix.D3
+            ? D4 == matrix.D4
+            : false;
     }
 
     public override int GetHashCode()

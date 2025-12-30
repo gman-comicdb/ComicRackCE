@@ -11,7 +11,7 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 [Serializable]
 public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListProvider, IComicBookListProvider, ILiteComponent, IDisposable, IIdentity, IComicBookList
 {
-    private readonly SmartList<Guid> bookIds = new SmartList<Guid>();
+    private readonly SmartList<Guid> bookIds = new();
 
     public SmartList<Guid> BookIds => bookIds;
 
@@ -46,7 +46,7 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
 
     protected override IEnumerable<ComicBook> OnGetBooks()
     {
-        HashSet<ComicBook> hashSet = new HashSet<ComicBook>();
+        HashSet<ComicBook> hashSet = new();
         if (Library != null && Library.Books != null)
         {
             List<Guid> list = null;
@@ -58,20 +58,14 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
                 {
                     if (hashSet.Contains(comicBook))
                     {
-                        if (list2 == null)
-                        {
-                            list2 = new List<Guid>();
-                        }
+                        list2 ??= new List<Guid>();
                         list2.Add(bookId);
                     }
                     hashSet.Add(comicBook);
                 }
                 else
                 {
-                    if (list == null)
-                    {
-                        list = new List<Guid>();
-                    }
+                    list ??= new List<Guid>();
                     list.Add(bookId);
                 }
             }
@@ -154,7 +148,7 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
 
     public static ComicIdListItem CreateFromReadingList(ComicBookCollection library, IEnumerable<ComicReadingListItem> readingItems, IList<ComicBook> booksToAdd = null, Func<int, bool> progress = null)
     {
-        ComicIdListItem comicIdListItem = new ComicIdListItem();
+        ComicIdListItem comicIdListItem = new();
         int num = readingItems.Count();
         int num2 = 0;
         foreach (ComicReadingListItem crli in readingItems)

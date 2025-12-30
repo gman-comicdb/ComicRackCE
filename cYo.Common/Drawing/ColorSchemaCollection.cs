@@ -31,7 +31,7 @@ public class ColorSchemaCollection : List<ColorSchema>
     {
         try
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemaCollection));
+            XmlSerializer xmlSerializer = new(typeof(ColorSchemaCollection));
             using (StreamWriter textWriter = File.CreateText(file))
             {
                 xmlSerializer.Serialize(textWriter, this);

@@ -9,11 +9,7 @@ public class BookPageRetrievalCompletedEventArgs : EventArgs
 
     private readonly bool twoPage;
 
-    public Bitmap Bitmap
-    {
-        get;
-        set;
-    }
+    public Bitmap Bitmap { get; set; }
 
     public int Page => page;
 

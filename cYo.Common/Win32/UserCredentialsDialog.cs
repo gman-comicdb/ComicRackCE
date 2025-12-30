@@ -48,14 +48,7 @@ public class UserCredentialsDialog : CommonDialog
                 hwndParent = owner;
                 pszCaptionText = caption;
                 pszMessageText = message;
-                if (banner != null)
-                {
-                    hbmBanner = new Bitmap(banner, 320, 60).GetHbitmap();
-                }
-                else
-                {
-                    hbmBanner = IntPtr.Zero;
-                }
+                hbmBanner = banner != null ? new Bitmap(banner, 320, 60).GetHbitmap() : IntPtr.Zero;
             }
         }
 
@@ -108,10 +101,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public string User
     {
-        get
-        {
-            return user;
-        }
+        get => user;
         set
         {
             if (value != null && value.Length > 100)
@@ -124,10 +114,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public SecureString Password
     {
-        get
-        {
-            return password;
-        }
+        get => password;
         set
         {
             if (value != null && value.Length > 100)
@@ -140,10 +127,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public string Domain
     {
-        get
-        {
-            return domain;
-        }
+        get => domain;
         set
         {
             if (value != null && value.Length > 100)
@@ -156,10 +140,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public string Target
     {
-        get
-        {
-            return target;
-        }
+        get => target;
         set
         {
             if (value != null && value.Length > 100)
@@ -172,10 +153,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public string Message
     {
-        get
-        {
-            return message;
-        }
+        get => message;
         set
         {
             if (value != null && value.Length > 100)
@@ -188,10 +166,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public string Caption
     {
-        get
-        {
-            return caption;
-        }
+        get => caption;
         set
         {
             if (value != null && value.Length > 100)
@@ -204,10 +179,7 @@ public class UserCredentialsDialog : CommonDialog
 
     public Image Banner
     {
-        get
-        {
-            return banner;
-        }
+        get => banner;
         set
         {
             if (value != null)
@@ -227,26 +199,14 @@ public class UserCredentialsDialog : CommonDialog
 
     public bool SaveChecked
     {
-        get
-        {
-            return saveChecked;
-        }
-        set
-        {
-            saveChecked = value;
-        }
+        get => saveChecked;
+        set => saveChecked = value;
     }
 
     public UserCredentialsDialogFlags Flags
     {
-        get
-        {
-            return flags;
-        }
-        set
-        {
-            flags = value;
-        }
+        get => flags;
+        set => flags = value;
     }
 
     public UserCredentialsDialog(string target = null, string caption = null, string message = null, Image banner = null)
@@ -262,7 +222,7 @@ public class UserCredentialsDialog : CommonDialog
     {
         new UIPermission(UIPermissionWindow.SafeSubWindows).Demand();
         Win32Native.CredUIReturnCodes credUIReturnCodes = Win32Native.CredUIConfirmCredentialsW(target, confirm);
-        if (credUIReturnCodes != 0 && credUIReturnCodes != Win32Native.CredUIReturnCodes.ERROR_NOT_FOUND && credUIReturnCodes != Win32Native.CredUIReturnCodes.ERROR_INVALID_PARAMETER)
+        if (credUIReturnCodes is not 0 and not Win32Native.CredUIReturnCodes.ERROR_NOT_FOUND and not Win32Native.CredUIReturnCodes.ERROR_INVALID_PARAMETER)
         {
             throw new InvalidOperationException(TranslateReturnCode(credUIReturnCodes));
         }
@@ -287,9 +247,9 @@ public class UserCredentialsDialog : CommonDialog
         {
             throw new PlatformNotSupportedException("The Credential Management API requires Windows XP / Windows Server 2003 or later.");
         }
-        Win32Native.CredUIInfo creditUR = new Win32Native.CredUIInfo(hwndOwner, caption, message, banner);
-        StringBuilder stringBuilder = new StringBuilder(100);
-        StringBuilder stringBuilder2 = new StringBuilder(100);
+        Win32Native.CredUIInfo creditUR = new(hwndOwner, caption, message, banner);
+        StringBuilder stringBuilder = new(100);
+        StringBuilder stringBuilder2 = new(100);
         if (!string.IsNullOrEmpty(User))
         {
             if (!string.IsNullOrEmpty(Domain))
@@ -346,11 +306,8 @@ public class UserCredentialsDialog : CommonDialog
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        if (password != null)
-        {
-            password.Dispose();
-            password = null;
-        }
+        password?.Dispose();
+        password = null;
     }
 
     private static string TranslateReturnCode(Win32Native.CredUIReturnCodes result)
@@ -361,7 +318,7 @@ public class UserCredentialsDialog : CommonDialog
     private void LoadPasswordValue(StringBuilder password)
     {
         char[] array = new char[password.Length];
-        SecureString secureString = new SecureString();
+        SecureString secureString = new();
         try
         {
             password.CopyTo(0, array, 0, array.Length);
@@ -381,8 +338,8 @@ public class UserCredentialsDialog : CommonDialog
 
     private void LoadUserDomainValues(StringBuilder principalName)
     {
-        StringBuilder stringBuilder = new StringBuilder(100);
-        StringBuilder stringBuilder2 = new StringBuilder(100);
+        StringBuilder stringBuilder = new(100);
+        StringBuilder stringBuilder2 = new(100);
         if (Win32Native.CredUIParseUserNameW(principalName.ToString(), stringBuilder, 100, stringBuilder2, 100) == Win32Native.CredUIReturnCodes.NO_ERROR)
         {
             User = stringBuilder.ToString();

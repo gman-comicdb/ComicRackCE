@@ -4,8 +4,5 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IBookGrouper
 {
-    IGrouper<ComicBook> BookGrouper
-    {
-        get;
-    }
+    IGrouper<ComicBook> BookGrouper { get; }
 }

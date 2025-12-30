@@ -9,58 +9,23 @@ namespace cYo.Common.Windows.Forms;
 
 public interface IColumn : IBaseViewItem, INotifyPropertyChanged
 {
-    int Id
-    {
-        get;
-        set;
-    }
+    int Id { get; set; }
 
-    int FormatId
-    {
-        get;
-        set;
-    }
+    int FormatId { get; set; }
 
-    string[] FormatTexts
-    {
-        get;
-    }
+    string[] FormatTexts { get; }
 
-    bool Visible
-    {
-        get;
-        set;
-    }
+    bool Visible { get; set; }
 
-    int Width
-    {
-        get;
-        set;
-    }
+    int Width { get; set; }
 
-    DateTime LastTimeVisible
-    {
-        get;
-        set;
-    }
+    DateTime LastTimeVisible { get; set; }
 
-    IComparer<IViewableItem> ColumnSorter
-    {
-        get;
-        set;
-    }
+    IComparer<IViewableItem> ColumnSorter { get; set; }
 
-    IGrouper<IViewableItem> ColumnGrouper
-    {
-        get;
-        set;
-    }
+    IGrouper<IViewableItem> ColumnGrouper { get; set; }
 
-    StringAlignment Alignment
-    {
-        get;
-        set;
-    }
+    StringAlignment Alignment { get; set; }
 
     void DrawHeader(Graphics gr, Rectangle rc, HeaderState style);
 }

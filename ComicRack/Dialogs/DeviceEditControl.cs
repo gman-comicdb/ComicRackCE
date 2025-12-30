@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 using cYo.Common.Collections;
-using cYo.Common.ComponentModel;
 using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 using cYo.Common.Windows;
@@ -40,7 +38,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         get
         {
-            DeviceSyncSettings deviceSyncSettings = new DeviceSyncSettings
+            DeviceSyncSettings deviceSyncSettings = new()
             {
                 DeviceName = DeviceName,
                 DeviceKey = DeviceKey,
@@ -64,36 +62,22 @@ public partial class DeviceEditControl : UserControlEx
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string DeviceName
     {
-        get
-        {
-            return deviceName;
-        }
+        get => deviceName;
         set
         {
             if (!(deviceName == value))
             {
                 deviceName = value;
-                if (this.DeviceNameChanged != null)
-                {
-                    this.DeviceNameChanged(this, EventArgs.Empty);
-                }
+                DeviceNameChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public string DeviceKey
-    {
-        get;
-        set;
-    }
+    public string DeviceKey { get; set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public DeviceSyncSettings.SharedListSettings DefaultListSettings
-    {
-        get;
-        set;
-    }
+    public DeviceSyncSettings.SharedListSettings DefaultListSettings { get; set; }
 
     public bool CanPaste => Clipboard.ContainsData(DeviceSyncSettings.ClipboardFormat);
 
@@ -153,8 +137,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         try
         {
-            DeviceSyncSettings deviceSyncSettings = Clipboard.GetData(DeviceSyncSettings.ClipboardFormat) as DeviceSyncSettings;
-            if (deviceSyncSettings != null)
+            if (Clipboard.GetData(DeviceSyncSettings.ClipboardFormat) is DeviceSyncSettings deviceSyncSettings)
             {
                 UpdateTree(deviceSyncSettings);
                 SetEditor(tvSharedLists.SelectedNode);
@@ -238,7 +221,7 @@ public partial class DeviceEditControl : UserControlEx
         DeviceSyncSettings settings = Settings;
         ComicListItem cli = GetSelectedComicListItem();
         UpdateTree(settings, clear: true);
-        TreeNode treeNode = ((cli == null) ? null : tvSharedLists.Nodes.Find((TreeNode n) => GetSharedList(n) != null && GetComicListItem(n).Id == cli.Id));
+        TreeNode treeNode = (cli == null) ? null : tvSharedLists.Nodes.Find((TreeNode n) => GetSharedList(n) != null && GetComicListItem(n).Id == cli.Id);
         tvSharedLists.SelectedNode = treeNode;
         SetEditor(treeNode);
     }
@@ -255,7 +238,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         SetSelectedListProperty(delegate (DeviceSyncSettings.SharedListSettings l)
         {
-            bool onlyUnread = (chkKeepLastRead.Enabled = chkOnlyUnread.Checked);
+            bool onlyUnread = chkKeepLastRead.Enabled = chkOnlyUnread.Checked;
             l.OnlyUnread = onlyUnread;
         });
     }
@@ -279,7 +262,7 @@ public partial class DeviceEditControl : UserControlEx
     private void chkLimit_CheckedChanged(object sender, EventArgs e)
     {
         TextBox textBox = txLimit;
-        bool enabled = (cbLimitType.Enabled = chkLimit.Checked);
+        bool enabled = cbLimitType.Enabled = chkLimit.Checked;
         textBox.Enabled = enabled;
         SetSelectedListProperty(delegate (DeviceSyncSettings.SharedListSettings l)
         {
@@ -337,16 +320,13 @@ public partial class DeviceEditControl : UserControlEx
         tvSharedLists.EndUpdate();
         blockCheck = false;
         SetButtonStates();
-        if (library != null)
-        {
-            library.CommitComicListCacheChanges();
-        }
+        library?.CommitComicListCacheChanges();
     }
 
     private void SetButtonStates()
     {
         IEnumerable<TreeNode> source = tvSharedLists.AllNodes();
-        IEnumerable<TreeNode> source2 = ((tvSharedLists.SelectedNode == null) ? Enumerable.Empty<TreeNode>() : tvSharedLists.SelectedNode.Nodes.All().AddFirst(tvSharedLists.SelectedNode));
+        IEnumerable<TreeNode> source2 = (tvSharedLists.SelectedNode == null) ? [] : tvSharedLists.SelectedNode.Nodes.All().AddFirst(tvSharedLists.SelectedNode);
         btSelectAll.Enabled = source.Any((TreeNode n) => !n.Checked);
         btSelectNone.Enabled = source.Any((TreeNode n) => n.Checked);
         btSelectList.Enabled = source2.Any((TreeNode n) => !n.Checked);
@@ -359,7 +339,7 @@ public partial class DeviceEditControl : UserControlEx
     {
         bool flag = node != null;
         grpListOptions.Enabled = flag && node.Checked;
-        grpListOptions.Text = (flag ? node.Text : string.Empty);
+        grpListOptions.Text = flag ? node.Text : string.Empty;
         if (flag)
         {
             bool @checked = node.Checked;
@@ -370,10 +350,7 @@ public partial class DeviceEditControl : UserControlEx
                 sharedList = CreateDefaultSharedList(comicListItem.Id);
                 SetSharedList(node, sharedList);
             }
-            if (sharedList == null)
-            {
-                sharedList = CreateDefaultSharedList(Guid.Empty);
-            }
+            sharedList ??= CreateDefaultSharedList(Guid.Empty);
             blockListUpdate = true;
             chkOnlyUnread.Checked = sharedList.OnlyUnread;
             chkKeepLastRead.Checked = sharedList.KeepLastRead;
@@ -399,20 +376,16 @@ public partial class DeviceEditControl : UserControlEx
             TreeNode treeNode = tnc.Find((TreeNode n) => ((TagElement)n.Tag).Item == cli, all: false);
             if (flag || fillAll)
             {
-                if (treeNode == null)
-                {
-                    treeNode = tnc.Add(cli.Name);
-                }
+                treeNode ??= tnc.Add(cli.Name);
                 treeNode.ImageKey = cli.ImageKey;
                 treeNode.SelectedImageKey = cli.ImageKey;
                 treeNode.Tag = new TagElement
                 {
                     Item = cli,
-                    List = (flag ? new DeviceSyncSettings.SharedList(sharedList) : null)
+                    List = flag ? new DeviceSyncSettings.SharedList(sharedList) : null
                 };
             }
-            ComicListItemFolder comicListItemFolder = cli as ComicListItemFolder;
-            if (comicListItemFolder != null)
+            if (cli is ComicListItemFolder comicListItemFolder)
             {
                 num += FillListTree(flat ? tnc : treeNode.Nodes, settings, comicListItemFolder.Items, fillAll, flat);
             }
@@ -427,19 +400,14 @@ public partial class DeviceEditControl : UserControlEx
 
     private static DeviceSyncSettings.SharedList GetSharedList(TreeNode node)
     {
-        if (node == null)
-        {
-            return null;
-        }
-        return (node.Tag as TagElement)?.List;
+        return node == null ? null : ((node.Tag as TagElement)?.List);
     }
 
     private static void SetSharedList(TreeNode node, DeviceSyncSettings.SharedList list)
     {
         if (node != null)
         {
-            TagElement tagElement = node.Tag as TagElement;
-            if (tagElement != null)
+            if (node.Tag is TagElement tagElement)
             {
                 tagElement.List = list;
             }
@@ -448,11 +416,7 @@ public partial class DeviceEditControl : UserControlEx
 
     private static ComicListItem GetComicListItem(TreeNode node)
     {
-        if (node == null)
-        {
-            return null;
-        }
-        return (node.Tag as TagElement)?.Item;
+        return node == null ? null : ((node.Tag as TagElement)?.Item);
     }
 
     private ComicListItem GetSelectedComicListItem()

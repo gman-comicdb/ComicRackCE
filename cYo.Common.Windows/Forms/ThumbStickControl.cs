@@ -16,9 +16,9 @@ public class ThumbStickControl : Control
 
     private Image stickImagePressed;
 
-    private Size stickSize = new Size(6, 6);
+    private Size stickSize = new(6, 6);
 
-    private SizeF sensitivity = new SizeF(4f, 4f);
+    private SizeF sensitivity = new(4f, 4f);
 
     private float accel = 1f;
 
@@ -34,10 +34,7 @@ public class ThumbStickControl : Control
     [DefaultValue(null)]
     public Image StickImage
     {
-        get
-        {
-            return stickImage;
-        }
+        get => stickImage;
         set
         {
             if (stickImage != value)
@@ -55,10 +52,7 @@ public class ThumbStickControl : Control
     [DefaultValue(null)]
     public Image StickImagePressed
     {
-        get
-        {
-            return stickImagePressed;
-        }
+        get => stickImagePressed;
         set
         {
             if (stickImagePressed != value)
@@ -76,10 +70,7 @@ public class ThumbStickControl : Control
     [DefaultValue(typeof(Size), "6, 6")]
     public Size StickSize
     {
-        get
-        {
-            return stickSize;
-        }
+        get => stickSize;
         set
         {
             if (!(stickSize == value))
@@ -94,10 +85,7 @@ public class ThumbStickControl : Control
     [DefaultValue(typeof(SizeF), "4f, 4f")]
     public SizeF Sensitivity
     {
-        get
-        {
-            return sensitivity;
-        }
+        get => sensitivity;
         set
         {
             if (!(sensitivity == value))
@@ -111,10 +99,7 @@ public class ThumbStickControl : Control
     [DefaultValue(1f)]
     public float Acceleration
     {
-        get
-        {
-            return accel;
-        }
+        get => accel;
         set
         {
             if (accel != value)
@@ -128,37 +113,22 @@ public class ThumbStickControl : Control
     [DefaultValue(true)]
     public bool AutoScroll
     {
-        get
-        {
-            return autoScroll;
-        }
-        set
-        {
-            autoScroll = value;
-        }
+        get => autoScroll;
+        set => autoScroll = value;
     }
 
     [Category("Behavior")]
     [DefaultValue(20)]
     public int AutoScrollInterval
     {
-        get
-        {
-            return autoScrollInterval;
-        }
-        set
-        {
-            autoScrollInterval = value;
-        }
+        get => autoScrollInterval;
+        set => autoScrollInterval = value;
     }
 
     [Browsable(false)]
     public PointF Movement
     {
-        get
-        {
-            return movement;
-        }
+        get => movement;
         protected set
         {
             if (!(value == movement))
@@ -243,26 +213,20 @@ public class ThumbStickControl : Control
 
     protected virtual void OnMovementChanged()
     {
-        if (this.MovementChanged != null)
-        {
-            this.MovementChanged(this, EventArgs.Empty);
-        }
+        MovementChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnScroll()
     {
-        if (this.Scroll != null)
-        {
-            this.Scroll(this, EventArgs.Empty);
-        }
+        Scroll?.Invoke(this, EventArgs.Empty);
     }
 
     private void DrawStick(Graphics g, PointF movement)
     {
         Rectangle displayRectangle = DisplayRectangle;
         displayRectangle.Inflate(-StickSize.Width / 2, -StickSize.Height / 2);
-        PointF location = new PointF((float)displayRectangle.Left + (float)displayRectangle.Width / 2f + (float)(displayRectangle.Width - 1) / 2f * movement.X - (float)(StickSize.Width / 2), (float)displayRectangle.Top + (float)displayRectangle.Height / 2f + (float)(displayRectangle.Height - 1) / 2f * movement.Y - (float)(StickSize.Height / 2));
-        RectangleF rect = new RectangleF(location, stickSize);
+        PointF location = new((float)displayRectangle.Left + (float)displayRectangle.Width / 2f + (float)(displayRectangle.Width - 1) / 2f * movement.X - (float)(StickSize.Width / 2), (float)displayRectangle.Top + (float)displayRectangle.Height / 2f + (float)(displayRectangle.Height - 1) / 2f * movement.Y - (float)(StickSize.Height / 2));
+        RectangleF rect = new(location, stickSize);
         using (g.AntiAlias())
         {
             if (IsMouseDown)

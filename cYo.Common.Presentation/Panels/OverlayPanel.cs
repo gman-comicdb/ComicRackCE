@@ -18,7 +18,7 @@ public class OverlayPanel : DisposableObject
 {
     private Bitmap surface;
 
-    private readonly object surfaceLock = new object();
+    private readonly object surfaceLock = new();
 
     private volatile OverlayPanelCollection panels;
 
@@ -34,7 +34,7 @@ public class OverlayPanel : DisposableObject
 
     private bool ignoreParentMargin;
 
-    private Padding margin = new Padding(4);
+    private Padding margin = new(4);
 
     private volatile bool visible = true;
 
@@ -54,7 +54,7 @@ public class OverlayPanel : DisposableObject
 
     private Size size;
 
-    private readonly AnimatorCollection animators = new AnimatorCollection();
+    private readonly AnimatorCollection animators = new();
 
     private PanelState panelState;
 
@@ -66,7 +66,7 @@ public class OverlayPanel : DisposableObject
 
     private volatile OverlayPanel parent;
 
-    private readonly List<Rectangle> invalidatedBounds = new List<Rectangle>();
+    private readonly List<Rectangle> invalidatedBounds = new();
 
     private bool dirty;
 
@@ -85,34 +85,19 @@ public class OverlayPanel : DisposableObject
 
     public object Tag
     {
-        get
-        {
-            return tag;
-        }
-        set
-        {
-            tag = value;
-        }
+        get => tag;
+        set => tag = value;
     }
 
     public bool Enabled
     {
-        get
-        {
-            return enabled;
-        }
-        set
-        {
-            enabled = value;
-        }
+        get => enabled;
+        set => enabled = value;
     }
 
     public bool AutoAlign
     {
-        get
-        {
-            return alignmentEnabled;
-        }
+        get => alignmentEnabled;
         set
         {
             if (alignmentEnabled != value)
@@ -126,10 +111,7 @@ public class OverlayPanel : DisposableObject
 
     public ContentAlignment Alignment
     {
-        get
-        {
-            return alignment;
-        }
+        get => alignment;
         set
         {
             if (alignment != value)
@@ -166,10 +148,7 @@ public class OverlayPanel : DisposableObject
 
     public bool IgnoreParentMargin
     {
-        get
-        {
-            return ignoreParentMargin;
-        }
+        get => ignoreParentMargin;
         set
         {
             if (ignoreParentMargin != value)
@@ -183,10 +162,7 @@ public class OverlayPanel : DisposableObject
 
     public Padding Margin
     {
-        get
-        {
-            return margin;
-        }
+        get => margin;
         set
         {
             if (!(margin == value))
@@ -200,10 +176,7 @@ public class OverlayPanel : DisposableObject
 
     public bool Visible
     {
-        get
-        {
-            return visible;
-        }
+        get => visible;
         set
         {
             if (visible != value)
@@ -215,36 +188,17 @@ public class OverlayPanel : DisposableObject
         }
     }
 
-    public bool IsVisible
-    {
-        get
-        {
-            if (visible)
-            {
-                return opacity > 0.05f;
-            }
-            return false;
-        }
-    }
+    public bool IsVisible => visible ? opacity > 0.05f : false;
 
     public bool DestroyAfterCompletion
     {
-        get
-        {
-            return destroyAfterCompletion;
-        }
-        set
-        {
-            destroyAfterCompletion = value;
-        }
+        get => destroyAfterCompletion;
+        set => destroyAfterCompletion = value;
     }
 
     public float Opacity
     {
-        get
-        {
-            return opacity;
-        }
+        get => opacity;
         set
         {
             value = value.Clamp(0f, 1f);
@@ -258,10 +212,7 @@ public class OverlayPanel : DisposableObject
 
     public float Saturation
     {
-        get
-        {
-            return saturation;
-        }
+        get => saturation;
         set
         {
             if (saturation != value)
@@ -274,10 +225,7 @@ public class OverlayPanel : DisposableObject
 
     public float Contrast
     {
-        get
-        {
-            return contrast;
-        }
+        get => contrast;
         set
         {
             if (contrast != value)
@@ -290,10 +238,7 @@ public class OverlayPanel : DisposableObject
 
     public float Brightness
     {
-        get
-        {
-            return brightness;
-        }
+        get => brightness;
         set
         {
             if (brightness != value)
@@ -306,10 +251,7 @@ public class OverlayPanel : DisposableObject
 
     public float Scale
     {
-        get
-        {
-            return scale;
-        }
+        get => scale;
         set
         {
             if (scale != value)
@@ -382,7 +324,7 @@ public class OverlayPanel : DisposableObject
             {
                 if (surface != null && surface.Size != value && value.Width > 0 && value.Height > 0)
                 {
-                    Bitmap image = new Bitmap(value.Width, value.Height, PixelFormat.Format32bppArgb);
+                    Bitmap image = new(value.Width, value.Height, PixelFormat.Format32bppArgb);
                     using (Graphics graphics = Graphics.FromImage(image))
                     {
                         graphics.DrawImage(surface, new Rectangle(Point.Empty, value));
@@ -425,66 +367,39 @@ public class OverlayPanel : DisposableObject
         }
     }
 
-    public Rectangle ClientRectangle => new Rectangle(Point.Empty, Size);
+    public Rectangle ClientRectangle => new(Point.Empty, Size);
 
     public Rectangle DisplayRectangle => ClientRectangle.Pad(margin);
 
     public int X
     {
-        get
-        {
-            return Location.X;
-        }
-        set
-        {
-            Location = new Point(value, Y);
-        }
+        get => Location.X;
+        set => Location = new Point(value, Y);
     }
 
     public int Y
     {
-        get
-        {
-            return Location.Y;
-        }
-        set
-        {
-            Location = new Point(X, value);
-        }
+        get => Location.Y;
+        set => Location = new Point(X, value);
     }
 
     public int Width
     {
-        get
-        {
-            return Size.Width;
-        }
-        set
-        {
-            Size = new Size(value, Height);
-        }
+        get => Size.Width;
+        set => Size = new Size(value, Height);
     }
 
     public int Height
     {
-        get
-        {
-            return Size.Height;
-        }
-        set
-        {
-            Size = new Size(Width, value);
-        }
+        get => Size.Height;
+        set => Size = new Size(Width, value);
     }
 
     public AnimatorCollection Animators => animators;
 
     public PanelState PanelState
     {
-        get
-        {
-            return panelState;
-        }
+        get => panelState;
         set
         {
             if (panelState != value)
@@ -497,31 +412,11 @@ public class OverlayPanel : DisposableObject
 
     public HitTestType HitTestType
     {
-        get
-        {
-            return hitTestType;
-        }
-        set
-        {
-            hitTestType = value;
-        }
+        get => hitTestType;
+        set => hitTestType = value;
     }
 
-    public bool HasMouse
-    {
-        get
-        {
-            if (PanelState != 0)
-            {
-                return true;
-            }
-            if (panels != null)
-            {
-                return panels.Find((OverlayPanel x) => x.HasMouse) != null;
-            }
-            return false;
-        }
-    }
+    public bool HasMouse => PanelState != 0 ? true : panels != null ? panels.Find((OverlayPanel x) => x.HasMouse) != null : false;
 
     public Color BackgroundColor
     {
@@ -559,22 +454,14 @@ public class OverlayPanel : DisposableObject
             }
             return null;
         }
-        set
-        {
-            manager = value;
-        }
+
+        set => manager = value;
     }
 
     protected OverlayPanel Parent
     {
-        get
-        {
-            return parent;
-        }
-        set
-        {
-            parent = value;
-        }
+        get => parent;
+        set => parent = value;
     }
 
     public event EventHandler<PanelInvalidateEventArgs> PanelInvalidated;
@@ -669,10 +556,7 @@ public class OverlayPanel : DisposableObject
         {
             using (ItemMonitor.Lock(surfaceLock))
             {
-                if (surface != null)
-                {
-                    surface.Dispose();
-                }
+                surface?.Dispose();
                 surface = null;
             }
         }
@@ -687,7 +571,7 @@ public class OverlayPanel : DisposableObject
         }
         if (panels != null)
         {
-            Point pt2 = new Point(pt.X - X, pt.Y - Y);
+            Point pt2 = new(pt.X - X, pt.Y - Y);
             foreach (OverlayPanel item in panels.ToArray().Reverse())
             {
                 OverlayPanel overlayPanel = item.HitTest(pt2);
@@ -732,16 +616,13 @@ public class OverlayPanel : DisposableObject
     {
         using (ItemMonitor.Lock(surfaceLock))
         {
-            Bitmap bmp = ((surface == null || empty) ? new Bitmap(Width, Height, PixelFormat.Format32bppArgb) : (surface.Clone() as Bitmap));
-            PanelSurface panelSurface = new PanelSurface(bmp);
+            Bitmap bmp = (surface == null || empty) ? new Bitmap(Width, Height, PixelFormat.Format32bppArgb) : (surface.Clone() as Bitmap);
+            PanelSurface panelSurface = new(bmp);
             panelSurface.Disposed += delegate
             {
                 using (ItemMonitor.Lock(surfaceLock))
                 {
-                    if (surface != null)
-                    {
-                        surface.Dispose();
-                    }
+                    surface?.Dispose();
                     surface = bmp;
                 }
                 Size = bmp.Size;
@@ -811,13 +692,10 @@ public class OverlayPanel : DisposableObject
         {
             stillRunning |= a.Animate(this);
         }, copy: true);
-        if (panels != null)
-        {
-            panels.ForEach(delegate (OverlayPanel p)
+        panels?.ForEach(delegate (OverlayPanel p)
             {
                 stillRunning |= p.Animate();
             }, copy: true);
-        }
         return stillRunning;
     }
 
@@ -937,35 +815,23 @@ public class OverlayPanel : DisposableObject
 
     protected virtual void OnVisibleChanged()
     {
-        if (this.VisibleChanged != null)
-        {
-            this.VisibleChanged(this, EventArgs.Empty);
-        }
+        VisibleChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnLocationChanged()
     {
-        if (this.LocationChanged != null)
-        {
-            this.LocationChanged(this, EventArgs.Empty);
-        }
+        LocationChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnSizeChanged()
     {
-        if (this.SizeChanged != null)
-        {
-            this.SizeChanged(this, EventArgs.Empty);
-        }
+        SizeChanged?.Invoke(this, EventArgs.Empty);
         AlignPanels();
     }
 
     protected virtual void OnScaleChanged()
     {
-        if (this.ScaleChanged != null)
-        {
-            this.ScaleChanged(this, EventArgs.Empty);
-        }
+        ScaleChanged?.Invoke(this, EventArgs.Empty);
         AlignPanels();
     }
 
@@ -975,10 +841,7 @@ public class OverlayPanel : DisposableObject
         {
             InvalidatePanel(always: true);
         }
-        if (this.OpacityChanged != null)
-        {
-            this.OpacityChanged(this, EventArgs.Empty);
-        }
+        OpacityChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnContrastChanged()
@@ -987,10 +850,7 @@ public class OverlayPanel : DisposableObject
         {
             InvalidatePanel(always: true);
         }
-        if (this.ContrastChanged != null)
-        {
-            this.ContrastChanged(this, EventArgs.Empty);
-        }
+        ContrastChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnBrightnessChanged()
@@ -999,10 +859,7 @@ public class OverlayPanel : DisposableObject
         {
             InvalidatePanel(always: true);
         }
-        if (this.BrightnessChanged != null)
-        {
-            this.BrightnessChanged(this, EventArgs.Empty);
-        }
+        BrightnessChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnSaturationChanged()
@@ -1011,120 +868,78 @@ public class OverlayPanel : DisposableObject
         {
             InvalidatePanel(always: true);
         }
-        if (this.SaturationChanged != null)
-        {
-            this.SaturationChanged(this, EventArgs.Empty);
-        }
+        SaturationChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnAlignmentChanged()
     {
-        if (this.AlignmentChanged != null)
-        {
-            this.AlignmentChanged(this, EventArgs.Empty);
-        }
+        AlignmentChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnMarginChanged()
     {
-        if (this.MarginChanged != null)
-        {
-            this.MarginChanged(this, EventArgs.Empty);
-        }
+        MarginChanged?.Invoke(this, EventArgs.Empty);
         AlignPanels();
     }
 
     protected virtual void OnPanelStateChanged()
     {
-        if (this.PanelStateChanged != null)
-        {
-            this.PanelStateChanged(this, EventArgs.Empty);
-        }
+        PanelStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnMouseEnter(MouseEventArgs e)
     {
         PanelState = PanelState.Hot;
-        if (this.MouseEnter != null)
-        {
-            this.MouseEnter(this, e);
-        }
+        MouseEnter?.Invoke(this, e);
     }
 
     protected virtual void OnMouseLeave(MouseEventArgs e)
     {
         PanelState = PanelState.Normal;
-        if (this.MouseLeave != null)
-        {
-            this.MouseLeave(this, e);
-        }
+        MouseLeave?.Invoke(this, e);
     }
 
     protected virtual void OnMouseDown(MouseEventArgs e)
     {
         PanelState = PanelState.Selected;
-        if (this.MouseDown != null)
-        {
-            this.MouseDown(this, e);
-        }
+        MouseDown?.Invoke(this, e);
     }
 
     protected virtual void OnMouseUp(MouseEventArgs e)
     {
         PanelState = PanelState.Hot;
-        if (this.MouseUp != null)
-        {
-            this.MouseUp(this, e);
-        }
+        MouseUp?.Invoke(this, e);
     }
 
     protected virtual void OnMouseMove(MouseEventArgs e)
     {
-        if (this.MouseMove != null)
-        {
-            this.MouseMove(this, e);
-        }
+        MouseMove?.Invoke(this, e);
     }
 
     protected virtual void OnClick()
     {
-        if (this.Click != null)
-        {
-            this.Click(this, EventArgs.Empty);
-        }
+        Click?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnDoubleClick()
     {
-        if (this.DoubleClick != null)
-        {
-            this.DoubleClick(this, EventArgs.Empty);
-        }
+        DoubleClick?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnPaintBackground(PaintEventArgs e)
     {
-        if (this.PaintBackground != null)
-        {
-            this.PaintBackground(this, e);
-        }
+        PaintBackground?.Invoke(this, e);
         e.Graphics.Clear(BackgroundColor);
     }
 
     protected virtual void OnPaint(PaintEventArgs e)
     {
-        if (this.Paint != null)
-        {
-            this.Paint(this, e);
-        }
+        Paint?.Invoke(this, e);
     }
 
     protected virtual void OnDrawing()
     {
-        if (this.Drawing != null)
-        {
-            this.Drawing(this, EventArgs.Empty);
-        }
+        Drawing?.Invoke(this, EventArgs.Empty);
         while (dirty)
         {
             dirty = false;
@@ -1134,18 +949,12 @@ public class OverlayPanel : DisposableObject
 
     protected virtual void OnRenderSurface(PanelRenderEventArgs e)
     {
-        if (this.RenderSurface != null)
-        {
-            this.RenderSurface(this, e);
-        }
+        RenderSurface?.Invoke(this, e);
     }
 
     protected virtual void OnPanelInvalidated(PanelInvalidateEventArgs e)
     {
-        if (this.PanelInvalidated != null)
-        {
-            this.PanelInvalidated(this, e);
-        }
+        PanelInvalidated?.Invoke(this, e);
     }
 
     private void Animators_Changed(object sender, SmartListChangedEventArgs<Animator> e)
@@ -1258,7 +1067,7 @@ public class OverlayPanel : DisposableObject
                 }
                 invalidatedBounds.Clear();
             }
-            PaintEventArgs e = new PaintEventArgs(graphics, Rectangle.Round(graphics.ClipBounds));
+            PaintEventArgs e = new(graphics, Rectangle.Round(graphics.ClipBounds));
             OnPaintBackground(e);
             OnPaint(e);
         }

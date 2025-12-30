@@ -30,10 +30,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public int BorderWidth
     {
-        get
-        {
-            return borderWidth;
-        }
+        get => borderWidth;
         set
         {
             if (borderWidth != value)
@@ -46,10 +43,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public Color BorderColor
     {
-        get
-        {
-            return borderColor;
-        }
+        get => borderColor;
         set
         {
             if (!(borderColor == value))
@@ -62,10 +56,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public Color BackColor
     {
-        get
-        {
-            return backColor;
-        }
+        get => backColor;
         set
         {
             if (!(backColor == value))
@@ -78,10 +69,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public bool Mirror
     {
-        get
-        {
-            return mirror;
-        }
+        get => mirror;
         set
         {
             if (mirror != value)
@@ -94,10 +82,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public Color KnobColor
     {
-        get
-        {
-            return knobColor;
-        }
+        get => knobColor;
         set
         {
             if (!(knobColor == value))
@@ -110,10 +95,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public int Value
     {
-        get
-        {
-            return value;
-        }
+        get => value;
         set
         {
             value = value.Clamp(minimum, maximum);
@@ -128,10 +110,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public int Minimum
     {
-        get
-        {
-            return minimum;
-        }
+        get => minimum;
         set
         {
             if (minimum != value)
@@ -145,10 +124,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public int Maximum
     {
-        get
-        {
-            return maximum;
-        }
+        get => maximum;
         set
         {
             if (maximum != value)
@@ -162,10 +138,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public ScalableBitmap Background
     {
-        get
-        {
-            return background;
-        }
+        get => background;
         set
         {
             if (background != value)
@@ -178,10 +151,7 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     public ScalableBitmap Knob
     {
-        get
-        {
-            return knob;
-        }
+        get => knob;
         set
         {
             if (knob != value)
@@ -254,7 +224,7 @@ public class SimpleScrollbarPanel : OverlayPanel
         }
         else
         {
-            using (Pen pen = new Pen(borderColor, borderWidth))
+            using (Pen pen = new(borderColor, borderWidth))
             {
                 graphics.DrawRectangle(pen, rectangle);
             }
@@ -269,7 +239,7 @@ public class SimpleScrollbarPanel : OverlayPanel
             int num2 = clientRectangle.Height - 1;
             int num3 = knob.Bitmap.Width * num2 / knob.Bitmap.Height;
             int num4 = (value - minimum) * (clientRectangle.Width - num3) / num;
-            num4 = ((!Mirror) ? (clientRectangle.Left + num4) : (clientRectangle.Right - num4 - num3));
+            num4 = (!Mirror) ? (clientRectangle.Left + num4) : (clientRectangle.Right - num4 - num3);
             knob.Draw(gr, new Rectangle(num4, clientRectangle.Top, num3, num2));
         }
         else
@@ -286,33 +256,21 @@ public class SimpleScrollbarPanel : OverlayPanel
 
     protected virtual void OnValueChanged()
     {
-        if (this.ValueChanged != null)
-        {
-            this.ValueChanged(this, EventArgs.Empty);
-        }
+        ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnScroll()
     {
-        if (this.Scroll != null)
-        {
-            this.Scroll(this, EventArgs.Empty);
-        }
+        Scroll?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnMinimumChanged()
     {
-        if (this.MinimumChanged != null)
-        {
-            this.MinimumChanged(this, EventArgs.Empty);
-        }
+        MinimumChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnMaximumChanged()
     {
-        if (this.MaximumChanged != null)
-        {
-            this.MaximumChanged(this, EventArgs.Empty);
-        }
+        MaximumChanged?.Invoke(this, EventArgs.Empty);
     }
 }

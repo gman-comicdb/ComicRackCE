@@ -118,7 +118,7 @@ public static class FileUtility
 
     private static string NetMakeValidFilename(string name, char safe)
     {
-        StringBuilder stringBuilder = new StringBuilder(name);
+        StringBuilder stringBuilder = new(name);
         char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
         foreach (char oldChar in invalidFileNameChars)
         {
@@ -131,7 +131,7 @@ public static class FileUtility
     {
         try
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach (char c in name)
             {
                 int num = Native.PathGetCharType(c);
@@ -221,11 +221,7 @@ public static class FileUtility
         {
             int num = (int)(s.Length - s.Position);
             byte[] array = new byte[num];
-            if (s.Read(array, 0, num) == num)
-            {
-                return array;
-            }
-            return null;
+            return s.Read(array, 0, num) == num ? array : null;
         }
         catch
         {
@@ -289,7 +285,7 @@ public static class FileUtility
         }
         catch (Exception)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -298,7 +294,7 @@ public static class FileUtility
         while (true)
         {
             string text;
-            string line = (text = tr.ReadLine());
+            string line = text = tr.ReadLine();
             if (text != null)
             {
                 yield return line;
@@ -310,7 +306,7 @@ public static class FileUtility
 
     public static IEnumerable<string> ReadLines(this Stream s)
     {
-        using (StreamReader sw = new StreamReader(s))
+        using (StreamReader sw = new(s))
         {
             foreach (string item in sw.ReadLines())
             {

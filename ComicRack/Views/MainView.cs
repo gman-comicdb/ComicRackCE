@@ -40,7 +40,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     private ComicPagesView pagesView;
 
-    private readonly TabBar.TabBarItem tsbLibrary = new TabBar.TabBarItem("Library")
+    private readonly TabBar.TabBarItem tsbLibrary = new("Library")
     {
         Name = "tsbLibrary",
         Image = Resources.Library,
@@ -48,7 +48,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly TabBar.TabBarItem tsbFolders = new TabBar.TabBarItem("Folders")
+    private readonly TabBar.TabBarItem tsbFolders = new("Folders")
     {
         Name = "tsbFolders",
         Image = Resources.FileBrowser,
@@ -56,7 +56,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly TabBar.TabBarItem tsbPages = new TabBar.TabBarItem("Pages")
+    private readonly TabBar.TabBarItem tsbPages = new("Pages")
     {
         Name = "tsbPages",
         Image = Resources.ComicPage,
@@ -64,74 +64,39 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         AdjustWidth = false
     };
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
-    private readonly List<ComicBrowserForm> openBrowsers = new List<ComicBrowserForm>();
+    private readonly List<ComicBrowserForm> openBrowsers = new();
 
     private TabBar.TabBarItem lastBrowser;
 
     private Control comicViewer;
 
-    private readonly HashSet<string> connectedMachines = new HashSet<string>();
+    private readonly HashSet<string> connectedMachines = new();
 
     private readonly VisibilityAnimator tabStripVisibility;
 
-    public bool IsComicViewer
-    {
-        get
-        {
-            if (comicViewer != null)
-            {
-                return comicViewer.Visible;
-            }
-            return false;
-        }
-    }
+    public bool IsComicViewer => comicViewer != null ? comicViewer.Visible : false;
 
     private DockStyle ViewDock
     {
-        get
-        {
-            return base.Parent.Dock;
-        }
-        set
-        {
-            base.Parent.Dock = value;
-        }
+        get => base.Parent.Dock;
+        set => base.Parent.Dock = value;
     }
 
     public TabBar TabBar => tabStrip;
 
     public bool TabBarVisible
     {
-        get
-        {
-            return tabStripVisibility.Visible;
-        }
-        set
-        {
-            tabStripVisibility.Visible = value;
-        }
+        get => tabStripVisibility.Visible;
+        set => tabStripVisibility.Visible = value;
     }
 
-    public bool IsComicVisible
-    {
-        get
-        {
-            if (tabStrip.SelectedTab != null)
-            {
-                return tabStrip.SelectedTab.Tag is int;
-            }
-            return false;
-        }
-    }
+    public bool IsComicVisible => tabStrip.SelectedTab != null ? tabStrip.SelectedTab.Tag is int : false;
 
     public bool InfoPanelRight
     {
-        get
-        {
-            return this.FindActiveService<ISidebar>()?.InfoBrowserRight ?? false;
-        }
+        get => this.FindActiveService<ISidebar>()?.InfoBrowserRight ?? false;
         set
         {
             ISidebar sidebar = this.FindActiveService<ISidebar>();
@@ -335,7 +300,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         return from cev in tabStrip.Items.Select((TabBar.TabBarItem tb) => tb.Tag).OfType<ComicExplorerView>()
                select new
                {
-                   Client = (cev.Tag as ComicLibraryClient),
+                   Client = cev.Tag as ComicLibraryClient,
                    Library = cev.ComicBrowser.Library
                } into cev
                where cev.Client == null || includeRemote
@@ -353,11 +318,11 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         RemoveRemoteLibrary(client.ShareInformation.Uri);
         try
         {
-            RemoteConnectionView remoteConnectionView = new RemoteConnectionView(this, client, options);
-            TabBar.TabBarItem tabBarItem = new TabBar.TabBarItem(client.ShareInformation.Name)
+            RemoteConnectionView remoteConnectionView = new(this, client, options);
+            TabBar.TabBarItem tabBarItem = new(client.ShareInformation.Name)
             {
                 Tag = remoteConnectionView,
-                Image = (client.ShareInformation.IsProtected ? Resources.RemoteDatabaseLocked : Resources.RemoteDatabase),
+                Image = client.ShareInformation.IsProtected ? Resources.RemoteDatabaseLocked : Resources.RemoteDatabase,
                 CanClose = true,
                 ToolTipText = client.ShareInformation.Comment
             };
@@ -387,13 +352,11 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public void OnRefreshRemoteLists(object sender, EventArgs e)
     {
-        ComicListLibraryBrowser comicListLibraryBrowser = sender as ComicListLibraryBrowser;
-        if (comicListLibraryBrowser == null)
+        if (sender is not ComicListLibraryBrowser comicListLibraryBrowser)
         {
             return;
         }
-        ComicLibraryClient clc = comicListLibraryBrowser.Tag as ComicLibraryClient;
-        if (clc != null)
+        if (comicListLibraryBrowser.Tag is ComicLibraryClient clc)
         {
             ComicLibrary cl = null;
             AutomaticProgressDialog.Process(this, TR.Messages["RefreshServer", "Refreshing Server Library"], TR.Messages["GetServerLibraryText", "Retrieving the shared Library from the Server"], 1000, delegate
@@ -427,8 +390,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
                 }
                 continue;
             }
-            ComicExplorerView comicExplorerView = item.Tag as ComicExplorerView;
-            if (comicExplorerView != null && object.Equals(address, comicExplorerView.Tag))
+            if (item.Tag is ComicExplorerView comicExplorerView && object.Equals(address, comicExplorerView.Tag))
             {
                 Program.Settings.UpdateExplorerViewSetting(comicExplorerView.ComicBrowser.Library.Id, comicExplorerView.ViewSettings);
                 tabStrip.Items.Remove(item);
@@ -437,10 +399,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
                 {
                     RemoveList(l, null);
                 });
-                if (comicExplorerView.ComicBrowser.Library != null)
-                {
-                    comicExplorerView.ComicBrowser.Library.Dispose();
-                }
+                comicExplorerView.ComicBrowser.Library?.Dispose();
                 comicExplorerView.Dispose();
                 using (ItemMonitor.Lock(connectedMachines))
                 {
@@ -548,26 +507,17 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     protected virtual void OnTabChanged()
     {
-        if (this.TabChanged != null)
-        {
-            this.TabChanged(this, EventArgs.Empty);
-        }
+        TabChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnViewAdded()
     {
-        if (this.ViewAdded != null)
-        {
-            this.ViewAdded(this, EventArgs.Empty);
-        }
+        ViewAdded?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnViewRemoved()
     {
-        if (this.ViewRemoved != null)
-        {
-            this.ViewRemoved(this, EventArgs.Empty);
-        }
+        ViewRemoved?.Invoke(this, EventArgs.Empty);
     }
 
     public void SwitchDocking()
@@ -598,8 +548,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
         }
         foreach (TabBar.TabBarItem item in tabStrip.Items)
         {
-            Control control = item.Tag as Control;
-            if (control != null)
+            if (item.Tag is Control control)
             {
                 control.Visible = item == selectedTab;
             }
@@ -639,10 +588,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             if (!flag)
             {
                 lastBrowser = tabStripButton;
-                if (comicViewer != null)
-                {
-                    comicViewer.Hide();
-                }
+                comicViewer?.Hide();
             }
             tabStrip.SelectedTab = tabStripButton;
             return selectedTab == tabStripButton;
@@ -686,7 +632,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public ComicExplorerView AddExplorerView(ComicLibrary library, ComicListBrowser clb, TabBar.TabBarItem tsb, ComicExplorerViewSettings settings = null)
     {
-        ComicExplorerView ev = new ComicExplorerView
+        ComicExplorerView ev = new()
         {
             ComicListBrowser = clb
         };
@@ -742,7 +688,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public void AddListWindow(Image windowIcon, IComicBookListProvider bookList)
     {
-        ComicBrowserForm comicBrowserForm = new ComicBrowserForm
+        ComicBrowserForm comicBrowserForm = new()
         {
             Text = bookList.Name,
             ShowInTaskbar = false
@@ -764,8 +710,8 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             int number = NumberedString.MaxNumber(from tb in tabStrip.Items
                                                   where NumberedString.StripNumber(tb.Text) == name
                                                   select tb.Text);
-            TabBar.TabBarItem tsb = new TabBar.TabBarItem(NumberedString.Format(name, number));
-            ComicBrowserView comicBrowserView = new ComicBrowserView();
+            TabBar.TabBarItem tsb = new(NumberedString.Format(name, number));
+            ComicBrowserView comicBrowserView = new();
             Bitmap bitmap = tabImage.Clone() as Bitmap;
             bitmap.ToGrayScale();
             tsb.Image = bitmap;

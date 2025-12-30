@@ -11,7 +11,7 @@ internal static class Helpers
         Size glyphSize = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
         Point checkPosition = GetImageAlignmentPoint(checkBox.ClientRectangle, glyphSize, checkBox.CheckAlign);
 
-        Rectangle boxRect = new Rectangle(checkPosition, glyphSize);
+        Rectangle boxRect = new(checkPosition, glyphSize);
 
         if (checkBox.CheckAlign == System.Drawing.ContentAlignment.MiddleRight)
             boxRect.X -= 1;

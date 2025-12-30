@@ -7,11 +7,7 @@ public class ProgressStream : Stream
 {
     private readonly Stream baseStream;
 
-    public bool BaseStreamOwned
-    {
-        get;
-        set;
-    }
+    public bool BaseStreamOwned { get; set; }
 
     public Stream BaseStream => baseStream;
 
@@ -25,14 +21,8 @@ public class ProgressStream : Stream
 
     public override long Position
     {
-        get
-        {
-            return baseStream.Position;
-        }
-        set
-        {
-            baseStream.Position = value;
-        }
+        get => baseStream.Position;
+        set => baseStream.Position = value;
     }
 
     public event EventHandler<ProgressStreamReadEventArgs> DataRead;
@@ -81,11 +71,11 @@ public class ProgressStream : Stream
 
     protected virtual void OnDataRead(int count)
     {
-        if (this.DataRead != null)
+        if (DataRead != null)
         {
             try
             {
-                this.DataRead(this, new ProgressStreamReadEventArgs(count));
+                DataRead(this, new ProgressStreamReadEventArgs(count));
             }
             catch
             {

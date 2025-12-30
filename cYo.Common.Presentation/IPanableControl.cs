@@ -5,10 +5,7 @@ namespace cYo.Common.Presentation;
 
 public interface IPanableControl
 {
-    Point PanLocation
-    {
-        get;
-    }
+    Point PanLocation { get; }
 
     event EventHandler PanStart;
 

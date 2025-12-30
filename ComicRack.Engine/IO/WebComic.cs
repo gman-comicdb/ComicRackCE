@@ -24,77 +24,35 @@ public class WebComic
     {
         [XmlAttribute]
         [DefaultValue(0)]
-        public int PageWidth
-        {
-            get;
-            set;
-        }
+        public int PageWidth { get; set; }
 
         [XmlAttribute]
         [DefaultValue(0)]
-        public int PageHeight
-        {
-            get;
-            set;
-        }
+        public int PageHeight { get; set; }
 
         [XmlAttribute]
         [DefaultValue(1)]
-        public int Rows
-        {
-            get;
-            set;
-        }
+        public int Rows { get; set; }
 
         [XmlAttribute]
         [DefaultValue(1)]
-        public int Columns
-        {
-            get;
-            set;
-        }
+        public int Columns { get; set; }
 
         [XmlAttribute]
         [DefaultValue(0)]
-        public int BorderWidth
-        {
-            get;
-            set;
-        }
+        public int BorderWidth { get; set; }
 
         [XmlIgnore]
         [XmlAttribute]
-        public string BackgroundColor
-        {
-            get;
-            set;
-        }
+        public string BackgroundColor { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool RightToLeft
-        {
-            get;
-            set;
-        }
+        public bool RightToLeft { get; set; }
 
-        public Size PageSize => new Size(PageWidth, PageHeight);
+        public Size PageSize => new(PageWidth, PageHeight);
 
-        public bool IsEmpty
-        {
-            get
-            {
-                if (Columns >= 1 && Rows >= 1)
-                {
-                    if (Columns == 1 && Rows == 1 && BorderWidth == 0)
-                    {
-                        return PageSize.IsEmpty;
-                    }
-                    return false;
-                }
-                return true;
-            }
-        }
+        public bool IsEmpty => Columns >= 1 && Rows >= 1 ? Columns == 1 && Rows == 1 && BorderWidth == 0 ? PageSize.IsEmpty : false : true;
 
         public Color BackColor
         {
@@ -117,7 +75,7 @@ public class WebComic
 
         public PageCompositing()
         {
-            Rows = (Columns = 1);
+            Rows = Columns = 1;
         }
 
         public PageCompositing(PageCompositing pc)
@@ -143,50 +101,26 @@ public class WebComic
     {
         [XmlAttribute]
         [DefaultValue(int.MaxValue)]
-        public int MaximumMatches
-        {
-            get;
-            set;
-        }
+        public int MaximumMatches { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool AddOwn
-        {
-            get;
-            set;
-        }
+        public bool AddOwn { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool Reverse
-        {
-            get;
-            set;
-        }
+        public bool Reverse { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]
-        public bool Sort
-        {
-            get;
-            set;
-        }
+        public bool Sort { get; set; }
 
         [XmlAttribute]
         [DefaultValue(null)]
-        public string Cut
-        {
-            get;
-            set;
-        }
+        public string Cut { get; set; }
 
         [XmlText]
-        public string Pattern
-        {
-            get;
-            set;
-        }
+        public string Pattern { get; set; }
 
         public PagePart()
         {
@@ -203,56 +137,26 @@ public class WebComic
         private PagePartCollection parts;
 
         [XmlAttribute]
-        public string Url
-        {
-            get;
-            set;
-        }
+        public string Url { get; set; }
 
         [XmlAttribute]
         [DefaultValue(PageLinkType.Url)]
-        public PageLinkType Type
-        {
-            get;
-            set;
-        }
+        public PageLinkType Type { get; set; }
 
         [XmlArrayItem("Part")]
-        public PagePartCollection Parts => parts ?? (parts = new PagePartCollection());
+        public PagePartCollection Parts => parts ??= new PagePartCollection();
 
         [DefaultValue(null)]
-        public PageCompositing Compositing
-        {
-            get;
-            set;
-        }
+        public PageCompositing Compositing { get; set; }
 
         [XmlIgnore]
-        public int Left
-        {
-            get;
-            set;
-        }
+        public int Left { get; set; }
 
         [XmlIgnore]
-        public int Top
-        {
-            get;
-            set;
-        }
+        public int Top { get; set; }
 
         [XmlIgnore]
-        public bool PartSpecified
-        {
-            get
-            {
-                if (parts != null)
-                {
-                    return parts.Count > 0;
-                }
-                return false;
-            }
-        }
+        public bool PartSpecified => parts != null ? parts.Count > 0 : false;
     }
 
     public class PageLinkCollection : List<PageLink>
@@ -265,35 +169,15 @@ public class WebComic
 
     public class WebComicImage
     {
-        public Size PageSize
-        {
-            get;
-            set;
-        }
+        public Size PageSize { get; set; }
 
-        public int Rows
-        {
-            get;
-            set;
-        }
+        public int Rows { get; set; }
 
-        public int Columns
-        {
-            get;
-            set;
-        }
+        public int Columns { get; set; }
 
-        public List<PageLink> Urls
-        {
-            get;
-            private set;
-        }
+        public List<PageLink> Urls { get; private set; }
 
-        public PageCompositing Compositing
-        {
-            get;
-            set;
-        }
+        public PageCompositing Compositing { get; set; }
 
         public string Name => Path.GetFileName(Urls[0].Url);
 
@@ -316,50 +200,22 @@ public class WebComic
     private static Stream logStream;
 
     [DefaultValue(null)]
-    public ComicInfo Info
-    {
-        get;
-        set;
-    }
+    public ComicInfo Info { get; set; }
 
     [XmlArray("Variables")]
     [XmlArrayItem("Variable")]
-    public ValuePairCollection Variables => variables ?? (variables = new ValuePairCollection());
+    public ValuePairCollection Variables => variables ??= new ValuePairCollection();
 
     [XmlArrayItem("Image")]
-    public PageLinkCollection Images => images ?? (images = new PageLinkCollection());
+    public PageLinkCollection Images => images ??= new PageLinkCollection();
 
-    public PageCompositing Compositing
-    {
-        get;
-        set;
-    }
+    public PageCompositing Compositing { get; set; }
 
     [XmlIgnore]
-    public bool ImagesSpecified
-    {
-        get
-        {
-            if (images != null)
-            {
-                return images.Count > 0;
-            }
-            return false;
-        }
-    }
+    public bool ImagesSpecified => images != null ? images.Count > 0 : false;
 
     [XmlIgnore]
-    public bool VariablesSpecified
-    {
-        get
-        {
-            if (variables != null)
-            {
-                return variables.Count > 0;
-            }
-            return false;
-        }
-    }
+    public bool VariablesSpecified => variables != null ? variables.Count > 0 : false;
 
     static WebComic()
     {
@@ -374,17 +230,17 @@ public class WebComic
             {
                 return;
             }
-            string[] array = new string[2]
-            {
+            string[] array =
+            [
                 "http",
                 "https"
-            };
+            ];
             foreach (string text in array)
             {
-                UriParser uriParser = (UriParser)method.Invoke(null, new object[1]
-                {
+                UriParser uriParser = (UriParser)method.Invoke(null,
+                [
                     text
-                });
+                ]);
                 if (uriParser != null)
                 {
                     int num = (int)field.GetValue(uriParser);
@@ -407,7 +263,7 @@ public class WebComic
 
     public IEnumerable<WebComicImage> GetParsedImages(bool refresh)
     {
-        WebComicImage webComicImage = new WebComicImage
+        WebComicImage webComicImage = new()
         {
             Compositing = new PageCompositing(Compositing)
         };
@@ -428,8 +284,8 @@ public class WebComic
                     Compositing = new PageCompositing(Compositing)
                 };
                 int num3;
-                rh = (num3 = 0);
-                num = (num2 = num3);
+                rh = num3 = 0;
+                num = num2 = num3;
             }
             foreach (PageLink p in GetImages(pl, refresh))
             {
@@ -445,8 +301,8 @@ public class WebComic
                             Compositing = new PageCompositing(Compositing)
                         };
                         int num3;
-                        rh = (num3 = 0);
-                        num = (num2 = num3);
+                        rh = num3 = 0;
+                        num = num2 = num3;
                     }
                     continue;
                 }
@@ -495,7 +351,7 @@ public class WebComic
     {
         LogSeparator();
         Log("Parsing image: {0}", p.Url);
-        PagePartCollection parts = new PagePartCollection();
+        PagePartCollection parts = new();
         parts.AddRange(from ip in p.Url.Split('|')
                        select new PagePart
                        {
@@ -583,7 +439,7 @@ public class WebComic
         bool reverse = pagePart.Reverse;
         bool flag = pagePart.AddOwn && num > 1;
         bool sort = pagePart.Sort;
-        Uri uri = new Uri(url);
+        Uri uri = new(url);
         string headerBaseUri = GetHeaderBaseUri(pageText);
         IEnumerable<string> matches = (from m in MatchesRegex(pageText, pagePart)
                                        select MakeAbsolute(uri, m, headerBaseUri).ToString() into m
@@ -640,7 +496,7 @@ public class WebComic
         {
             t.WriteLine("Image Links: {0} [{1}]", imageLinks.Count(), imageLinks.ToListString(", "));
         });
-        Uri current = new Uri(startPage);
+        Uri current = new(startPage);
         bool pageRefresh = refresh;
         while (true)
         {
@@ -701,7 +557,7 @@ public class WebComic
             Match match = regex2.Match(text);
             if (!match.Success)
             {
-                return Enumerable.Empty<string>();
+                return [];
             }
             text = GetValue(match);
         }
@@ -714,11 +570,9 @@ public class WebComic
     {
         using (ItemMonitor.Lock(rxCache))
         {
-            if (rxCache.TryGetValue(pattern, out var value))
-            {
-                return value;
-            }
-            return rxCache[pattern] = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return rxCache.TryGetValue(pattern, out var value)
+                ? value
+                : (rxCache[pattern] = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled));
         }
     }
 
@@ -764,11 +618,7 @@ public class WebComic
     private static string GetHeaderBaseUri(string pageContent)
     {
         Match match = rxBaseMatcher.Match(pageContent);
-        if (!match.Success)
-        {
-            return null;
-        }
-        return match.Groups["base"].Value;
+        return !match.Success ? null : match.Groups["base"].Value;
     }
 
     private static string ReadText(string uri, bool refresh)
@@ -787,10 +637,7 @@ public class WebComic
             try
             {
                 string text2 = HttpAccess.ReadText(uri);
-                if (FileCache.Default != null)
-                {
-                    FileCache.Default.AddText(uri, text2);
-                }
+                FileCache.Default?.AddText(uri, text2);
                 return text2;
             }
             catch
@@ -823,7 +670,7 @@ public class WebComic
     {
         if (logStream != null && writeAction != null)
         {
-            using (StreamWriter obj = new StreamWriter(logStream))
+            using (StreamWriter obj = new(logStream))
             {
                 writeAction(obj);
             }

@@ -14,38 +14,18 @@ public abstract class PackedStorageProvider : StorageProvider
 {
     private class IndexedPageResult : IComparable<IndexedPageResult>
     {
-        public int Index
-        {
-            get;
-            set;
-        }
+        public int Index { get; set; }
 
-        public int Offset
-        {
-            get;
-            set;
-        }
+        public int Offset { get; set; }
 
-        public PageResult Page
-        {
-            get;
-            set;
-        }
+        public PageResult Page { get; set; }
 
-        public string OriginalName
-        {
-            get;
-            set;
-        }
+        public string OriginalName { get; set; }
 
         public int CompareTo(IndexedPageResult other)
         {
             int num = Index.CompareTo(other.Index);
-            if (num != 0)
-            {
-                return num;
-            }
-            return Offset.CompareTo(other.Offset);
+            return num != 0 ? num : Offset.CompareTo(other.Offset);
         }
     }
 
@@ -58,13 +38,13 @@ public abstract class PackedStorageProvider : StorageProvider
     protected override ComicInfo OnStore(IImageProvider provider, ComicInfo info, string target, StorageSetting setting)
     {
         OnCreateFile(target, setting);
-        List<IndexedPageResult> pages = new List<IndexedPageResult>();
+        List<IndexedPageResult> pages = new();
         try
         {
             int loopCount = 0;
             long totalPageMemory = 0L;
             Exception ce = null;
-            ParallelOptions parallelOptions = new ParallelOptions();
+            ParallelOptions parallelOptions = new();
             parallelOptions.MaxDegreeOfParallelism = EngineConfiguration.Default.ParallelConversions.Clamp(1, Environment.ProcessorCount);
             Parallel.For(0, provider.Count, parallelOptions, delegate (int n, ParallelLoopState ls)
             {
@@ -74,7 +54,7 @@ public abstract class PackedStorageProvider : StorageProvider
                     {
                         ComicPageInfo page = info.GetPage(n);
                         ProviderImageInfo imageInfo = provider.GetImageInfo(page.ImageIndex);
-                        string ext = ((imageInfo != null && !string.IsNullOrEmpty(imageInfo.Name)) ? Path.GetExtension(imageInfo.Name) : ".jpg");
+                        string ext = (imageInfo != null && !string.IsNullOrEmpty(imageInfo.Name)) ? Path.GetExtension(imageInfo.Name) : ".jpg";
                         int num2 = 0;
                         PageResult[] images = StorageProvider.GetImages(provider, page, ext, setting, info.Manga == MangaYesNo.YesAndRightToLeft, setting.CreateThumbnails, true);
                         foreach (PageResult pageResult in images)
@@ -118,10 +98,10 @@ public abstract class PackedStorageProvider : StorageProvider
                 throw ce;
             }
             int num = 0;
-            ComicInfo comicInfo = new ComicInfo(info);
+            ComicInfo comicInfo = new(info);
             comicInfo.Pages.Clear();
             pages.Sort();
-            HashSet<string> nameTable = new HashSet<string>();
+            HashSet<string> nameTable = new();
             foreach (IndexedPageResult item in pages)
             {
                 item.Page.Restore();

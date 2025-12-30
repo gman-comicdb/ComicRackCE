@@ -16,53 +16,26 @@ public class ImagePackage : DisposableObject, IImagePackage
 {
     private class ImageItem
     {
-        public IVirtualFolder Package
-        {
-            get;
-            set;
-        }
+        public IVirtualFolder Package { get; set; }
 
-        public string File
-        {
-            get;
-            set;
-        }
+        public string File { get; set; }
 
-        public Image Image
-        {
-            get;
-            set;
-        }
+        public Image Image { get; set; }
     }
 
     private const string MapFile = "map.ini";
 
     private readonly Dictionary<string, ImageItem> imageDict;
 
-    public bool EnableWidthCropping
-    {
-        get;
-        set;
-    }
+    public bool EnableWidthCropping { get; set; }
 
-    public bool EnableHeightCropping
-    {
-        get;
-        set;
-    }
+    public bool EnableHeightCropping { get; set; }
 
     public IEnumerable<string> Keys => imageDict.Keys;
 
     public ImagePackage(IVirtualFolder package = null, bool caseSensitive = false)
     {
-        if (caseSensitive)
-        {
-            imageDict = new Dictionary<string, ImageItem>();
-        }
-        else
-        {
-            imageDict = new Dictionary<string, ImageItem>(StringComparer.OrdinalIgnoreCase);
-        }
+        imageDict = caseSensitive ? new Dictionary<string, ImageItem>() : new Dictionary<string, ImageItem>(StringComparer.OrdinalIgnoreCase);
         if (package != null)
         {
             Add(package);
@@ -83,7 +56,7 @@ public class ImagePackage : DisposableObject, IImagePackage
 
     private void AddImage(IVirtualFolder package, string key, string value, Func<string, IEnumerable<string>> mapKeys)
     {
-        ImageItem value2 = new ImageItem
+        ImageItem value2 = new()
         {
             File = key,
             Package = package
@@ -100,15 +73,12 @@ public class ImagePackage : DisposableObject, IImagePackage
         {
             return;
         }
-        if (mapKeys == null)
-        {
-            mapKeys = (string s) => ListExtensions.AsEnumerable<string>(s);
-        }
+        mapKeys ??= (string s) => ListExtensions.AsEnumerable<string>(s);
         if (package.FileExists(MapFile))
         {
             using (Stream stream = package.OpenRead(MapFile))
             {
-                using (StreamReader tr = new StreamReader(stream))
+                using (StreamReader tr = new(stream))
                 {
                     foreach (KeyValuePair<string, string> value in IniFile.GetValues(tr))
                     {
@@ -141,11 +111,7 @@ public class ImagePackage : DisposableObject, IImagePackage
 
     public bool ImageLoaded(string key)
     {
-        if (imageDict.TryGetValue(key, out var value))
-        {
-            return value.Image != null;
-        }
-        return false;
+        return imageDict.TryGetValue(key, out var value) ? value.Image != null : false;
     }
 
     public Image GetImage(string key)

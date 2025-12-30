@@ -14,35 +14,17 @@ public class StacksConfig
     {
         private Guid topId = Guid.Empty;
 
-        public string Stack
-        {
-            get;
-            set;
-        }
+        public string Stack { get; set; }
 
         public Guid TopId
         {
-            get
-            {
-                return topId;
-            }
-            set
-            {
-                topId = value;
-            }
+            get => topId;
+            set => topId = value;
         }
 
-        public string ThumbnailKey
-        {
-            get;
-            set;
-        }
+        public string ThumbnailKey { get; set; }
 
-        public ItemViewConfig Config
-        {
-            get;
-            set;
-        }
+        public ItemViewConfig Config { get; set; }
 
         [XmlIgnore]
         public bool TopIdSpecified => topId != Guid.Empty;
@@ -73,7 +55,7 @@ public class StacksConfig
 
     private const int MaxConfigCount = 2048;
 
-    private readonly StackConfigItemCollection configs = new StackConfigItemCollection();
+    private readonly StackConfigItemCollection configs = new();
 
     public StackConfigItemCollection Configs => configs;
 
@@ -85,11 +67,7 @@ public class StacksConfig
     public bool IsTop(string stack, ComicBook cb)
     {
         StackConfigItem stackConfigItem = FindItem(stack);
-        if (stackConfigItem != null)
-        {
-            return stackConfigItem.TopId == cb.Id;
-        }
-        return false;
+        return stackConfigItem != null ? stackConfigItem.TopId == cb.Id : false;
     }
 
     public void SetStackTop(string stack, ComicBook cb)

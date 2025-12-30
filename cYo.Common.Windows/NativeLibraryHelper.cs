@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace cYo.Common.Windows;
 
 public class NativeLibraryHelper
 {
-    private static List<string> libraryNames = new List<string>();
+    private static List<string> libraryNames = new();
 
     public bool LibraryLoadStatus { get; set; } = false;
 

@@ -12,53 +12,29 @@ public struct Quaternion
 
     public float X
     {
-        get
-        {
-            return x;
-        }
-        set
-        {
-            x = value;
-        }
+        get => x;
+        set => x = value;
     }
 
     public float Y
     {
-        get
-        {
-            return y;
-        }
-        set
-        {
-            y = value;
-        }
+        get => y;
+        set => y = value;
     }
 
     public float Z
     {
-        get
-        {
-            return z;
-        }
-        set
-        {
-            z = value;
-        }
+        get => z;
+        set => z = value;
     }
 
     public float W
     {
-        get
-        {
-            return w;
-        }
-        set
-        {
-            w = value;
-        }
+        get => w;
+        set => w = value;
     }
 
-    public static Quaternion Zero => new Quaternion(0f, 0f, 0f, 0f);
+    public static Quaternion Zero => new(0f, 0f, 0f, 0f);
 
     public Matrix4 Matrix4
     {
@@ -89,7 +65,7 @@ public struct Quaternion
     {
         get
         {
-            Matrix3 result = default(Matrix3);
+            Matrix3 result = default;
             result.A1 = 1f - 2f * (y * y + z * z);
             result.A2 = 2f * (x * y + w * z);
             result.A3 = 2f * (x * z - w * y);
@@ -188,11 +164,7 @@ public struct Quaternion
     {
         float num = Numeric.Acos(q.w);
         float num2 = Numeric.Sin(num);
-        if (num2 > 0f)
-        {
-            return new Quaternion(num * q.X / num2, num * q.Y / num2, num * q.Z / num2, 0f);
-        }
-        return new Quaternion(q.X, q.Y, q.Z, 0f);
+        return num2 > 0f ? new Quaternion(num * q.X / num2, num * q.Y / num2, num * q.Z / num2, 0f) : new Quaternion(q.X, q.Y, q.Z, 0f);
     }
 
     public static Quaternion Exp(Quaternion q)
@@ -200,11 +172,7 @@ public struct Quaternion
         float num = Numeric.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
         float num2 = Numeric.Sin(num);
         float num3 = Numeric.Cos(num);
-        if (num > 0f)
-        {
-            return new Quaternion(num2 * q.x / num, num2 * q.y / num, num2 * q.z / num, num3);
-        }
-        return new Quaternion(q.x, q.y, q.z, num3);
+        return num > 0f ? new Quaternion(num2 * q.x / num, num2 * q.y / num, num2 * q.z / num, num3) : new Quaternion(q.x, q.y, q.z, num3);
     }
 
     public static Quaternion Lerp(Quaternion a, Quaternion b, float t)
@@ -279,11 +247,7 @@ public struct Quaternion
             return false;
         }
         Quaternion quaternion = (Quaternion)obj;
-        if (x == quaternion.x && y == quaternion.y && z == quaternion.z)
-        {
-            return w == quaternion.w;
-        }
-        return false;
+        return x == quaternion.x && y == quaternion.y && z == quaternion.z ? w == quaternion.w : false;
     }
 
     public override int GetHashCode()

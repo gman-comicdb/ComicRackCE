@@ -21,47 +21,19 @@ public static class StyledRenderer
 
     public class StyleDefinition
     {
-        public int AlphaHot
-        {
-            get;
-            private set;
-        }
+        public int AlphaHot { get; private set; }
 
-        public int AlphaSelected
-        {
-            get;
-            private set;
-        }
+        public int AlphaSelected { get; private set; }
 
-        public int AlphaSelectedHot
-        {
-            get;
-            private set;
-        }
+        public int AlphaSelectedHot { get; private set; }
 
-        public int Rounding
-        {
-            get;
-            private set;
-        }
+        public int Rounding { get; private set; }
 
-        public int FrameWidth
-        {
-            get;
-            private set;
-        }
+        public int FrameWidth { get; private set; }
 
-        public float BackAlpha
-        {
-            get;
-            private set;
-        }
+        public float BackAlpha { get; private set; }
 
-        public int BackGradient
-        {
-            get;
-            private set;
-        }
+        public int BackGradient { get; private set; }
 
         public StyleDefinition(int hot, int selected, int selectedHot, int rounding, int frameWidth, float backAlpha, int backGradient)
         {
@@ -87,7 +59,7 @@ public static class StyledRenderer
 
         public StyleDefinition Frame(int rounding, int width)
         {
-            StyleDefinition styleDefinition = new StyleDefinition(this);
+            StyleDefinition styleDefinition = new(this);
             if (rounding >= 0)
             {
                 styleDefinition.Rounding = rounding;
@@ -110,23 +82,13 @@ public static class StyledRenderer
 
     public static readonly Color VistaColor = Color.FromArgb(153, 222, 253);
 
-    public static readonly StyleDefinition Vista = new StyleDefinition(92, 164, 255, 2, 1, 0.5f, 64);
+    public static readonly StyleDefinition Vista = new(92, 164, 255, 2, 1, 0.5f, 64);
 
-    public static readonly StyleDefinition Windows8 = new StyleDefinition(92, 164, 255, 0, 1, 0.25f, 0);
+    public static readonly StyleDefinition Windows8 = new(92, 164, 255, 0, 1, 0.25f, 0);
 
-    private static readonly Lazy<int> version = new Lazy<int>(() => Environment.OSVersion.Version.Major * 100 + Environment.OSVersion.Version.Minor);
+    private static readonly Lazy<int> version = new(() => Environment.OSVersion.Version.Major * 100 + Environment.OSVersion.Version.Minor);
 
-    public static StyleDefinition Default
-    {
-        get
-        {
-            if (version.Value < 602)
-            {
-                return Vista;
-            }
-            return Windows8;
-        }
-    }
+    public static StyleDefinition Default => version.Value < 602 ? Vista : Windows8;
 
     public static void DrawRectangle(this Graphics gr, Rectangle rc, Color baseColor, int rounding, int frameWidth, int frameAlpha, int backAlphaStart, int backAlphaEnd)
     {
@@ -158,7 +120,7 @@ public static class StyledRenderer
             rc.Inflate(-num, -num);
             using (GraphicsPath path2 = rc.ConvertToPath(rounding, rounding))
             {
-                using (Pen pen = new Pen(color, frameWidth))
+                using (Pen pen = new(color, frameWidth))
                 {
                     gr.DrawPath(pen, path2);
                 }
@@ -168,40 +130,19 @@ public static class StyledRenderer
 
     public static AlphaStyle GetAlphaStyle(bool selected, bool hot, bool focused)
     {
-        if ((hot || focused) && selected)
-        {
-            return AlphaStyle.SelectedHot;
-        }
-        if (hot)
-        {
-            return AlphaStyle.Hot;
-        }
-        if (selected)
-        {
-            return AlphaStyle.Selected;
-        }
-        if (focused)
-        {
-            return AlphaStyle.Focused;
-        }
-        return AlphaStyle.None;
+        return (hot || focused) && selected
+            ? AlphaStyle.SelectedHot
+            : hot ? AlphaStyle.Hot : selected ? AlphaStyle.Selected : focused ? AlphaStyle.Focused : AlphaStyle.None;
     }
 
     public static Color GetSelectionColor(bool focused)
     {
-        if (!focused)
-        {
-            return ThemeColors.StyledRenderer.Selection;
-        }
-        return ThemeColors.StyledRenderer.SelectionFocused;
+        return !focused ? ThemeColors.StyledRenderer.Selection : ThemeColors.StyledRenderer.SelectionFocused;
     }
 
     public static void DrawStyledRectangle(this Graphics gr, Rectangle rc, int baseAlpha, Color baseColor, StyleDefinition style = null)
     {
-        if (style == null)
-        {
-            style = Default;
-        }
+        style ??= Default;
         int frameAlpha = Math.Abs(baseAlpha);
         int num = (int)((float)baseAlpha * style.BackAlpha);
         int backAlphaEnd = (num - style.BackGradient).Clamp(0, 255);
@@ -211,10 +152,7 @@ public static class StyledRenderer
     public static void DrawStyledRectangle(this Graphics gr, Rectangle rc, AlphaStyle state, Color baseColor, StyleDefinition style = null)
     {
         int baseAlpha = 0;
-        if (style == null)
-        {
-            style = Default;
-        }
+        style ??= Default;
         switch (state)
         {
             case AlphaStyle.Hot:

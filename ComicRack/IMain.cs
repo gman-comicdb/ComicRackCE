@@ -12,44 +12,19 @@ namespace cYo.Projects.ComicRack.Viewer;
 
 public interface IMain : IContainerControl
 {
-    Control Control
-    {
-        get;
-    }
+    Control Control { get; }
 
-    NavigatorManager OpenBooks
-    {
-        get;
-    }
+    NavigatorManager OpenBooks { get; }
 
-    ComicDisplay ComicDisplay
-    {
-        get;
-    }
+    ComicDisplay ComicDisplay { get; }
 
-    bool BrowserVisible
-    {
-        get;
-        set;
-    }
+    bool BrowserVisible { get; set; }
 
-    bool ReaderUndocked
-    {
-        get;
-        set;
-    }
+    bool ReaderUndocked { get; set; }
 
-    bool MinimalGui
-    {
-        get;
-        set;
-    }
+    bool MinimalGui { get; set; }
 
-    DockStyle BrowserDock
-    {
-        get;
-        set;
-    }
+    DockStyle BrowserDock { get; set; }
 
     void ConvertComic(IEnumerable<ComicBook> books, ExportSetting setting);
 

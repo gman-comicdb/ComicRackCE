@@ -12,10 +12,6 @@ public class SmartListSeriesLastNumberMatcher : ComicBookNumericMatcher
 {
     protected override float GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).LastNumber;
-        }
-        return 0f;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).LastNumber : 0f;
     }
 }

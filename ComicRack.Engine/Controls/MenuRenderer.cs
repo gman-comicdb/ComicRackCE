@@ -14,14 +14,8 @@ public class MenuRenderer : ThemeToolStripProRenderer
 
     public Image StarImage
     {
-        get
-        {
-            return starImage;
-        }
-        set
-        {
-            starImage = value;
-        }
+        get => starImage;
+        set => starImage = value;
     }
 
     public MenuRenderer(Image starImage, ProfessionalColorTable colorTable)

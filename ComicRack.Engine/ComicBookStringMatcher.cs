@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-using cYo.Common.Text;
-
 namespace cYo.Projects.ComicRack.Engine;
 
 [Serializable]
@@ -31,7 +29,7 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
 
     private static readonly string[] opList = ComicBookMatcher.TRMatcher.GetStrings("StringOperators", "is|contains|contains any of|contains all of|starts with|ends with|list contains|regular expression", '|');
 
-    private string[] parsedMatchValues = new string[0];
+    private string[] parsedMatchValues = [];
 
     private Regex rxList;
 
@@ -51,14 +49,8 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
     [DefaultValue(true)]
     public bool IgnoreCase
     {
-        get
-        {
-            return ignoreCase;
-        }
-        set
-        {
-            ignoreCase = value;
-        }
+        get => ignoreCase;
+        set => ignoreCase = value;
     }
 
     protected override bool MatchBook(ComicBook comicBook, string value)
@@ -67,8 +59,8 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
         {
             return false;
         }
-        StringComparison sc = (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-        value = value ?? string.Empty;
+        StringComparison sc = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        value ??= string.Empty;
         switch (MatchOperator)
         {
             case OperatorEquals://is
@@ -76,11 +68,7 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
             case OperatorContains://contains
                 {
                     string matchValue = GetMatchValue(comicBook);
-                    if (!string.IsNullOrEmpty(matchValue))
-                    {
-                        return value.IndexOf(matchValue, sc) != -1;
-                    }
-                    return true;
+                    return !string.IsNullOrEmpty(matchValue) ? value.IndexOf(matchValue, sc) != -1 : true;
                 }
             case OperatorContainsAny://contains any of
                 if (parsedMatchValues.Length != 0)
@@ -97,20 +85,12 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
             case OperatorStartsWith://starts with
                 {
                     string matchValue2 = GetMatchValue(comicBook);
-                    if (!string.IsNullOrEmpty(matchValue2))
-                    {
-                        return value.StartsWith(matchValue2, sc);
-                    }
-                    return true;
+                    return !string.IsNullOrEmpty(matchValue2) ? value.StartsWith(matchValue2, sc) : true;
                 }
             case OperatorEndsWith://ends with
                 {
                     string matchValue3 = GetMatchValue(comicBook);
-                    if (!string.IsNullOrEmpty(matchValue3))
-                    {
-                        return value.EndsWith(matchValue3, sc);
-                    }
-                    return true;
+                    return !string.IsNullOrEmpty(matchValue3) ? value.EndsWith(matchValue3, sc) : true;
                 }
             case OperatorListContains://list contains
                 if (rxList != null)

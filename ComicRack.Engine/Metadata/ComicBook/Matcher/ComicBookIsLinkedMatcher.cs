@@ -10,10 +10,6 @@ public class ComicBookIsLinkedMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (!comicBook.IsLinked)
-        {
-            return YesNo.No;
-        }
-        return YesNo.Yes;
+        return !comicBook.IsLinked ? YesNo.No : YesNo.Yes;
     }
 }

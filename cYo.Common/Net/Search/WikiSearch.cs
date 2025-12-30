@@ -11,7 +11,7 @@ public class WikiSearch : CachedSearch
 {
     private const string Wiki = "http://en.wikipedia.org";
 
-    private static readonly Regex rx = new Regex("\\\"(?<text>.*?)\\\"", RegexOptions.Compiled);
+    private static readonly Regex rx = new("\\\"(?<text>.*?)\\\"", RegexOptions.Compiled);
 
     private static readonly Image image = Resources.Wikipedia;
 

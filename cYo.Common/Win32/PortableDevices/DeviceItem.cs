@@ -4,23 +4,11 @@ namespace cYo.Common.Win32.PortableDevices;
 
 public abstract class DeviceItem
 {
-    public DeviceFolder Parent
-    {
-        get;
-        private set;
-    }
+    public DeviceFolder Parent { get; private set; }
 
-    public string Id
-    {
-        get;
-        private set;
-    }
+    public string Id { get; private set; }
 
-    public string Name
-    {
-        get;
-        private set;
-    }
+    public string Name { get; private set; }
 
     public Device Device
     {
@@ -32,7 +20,7 @@ public abstract class DeviceItem
     {
         get
         {
-            StringBuilder stringBuilder = new StringBuilder("\\" + Name);
+            StringBuilder stringBuilder = new("\\" + Name);
             for (DeviceFolder parent = Parent; parent != null; parent = parent.Parent)
             {
                 if (!parent.IsRoot)

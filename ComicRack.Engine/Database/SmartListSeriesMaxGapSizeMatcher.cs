@@ -10,10 +10,6 @@ public class SmartListSeriesMaxGapSizeMatcher : ComicBookNumericMatcher
 {
     protected override float GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).MaxGapSize;
-        }
-        return 0f;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).MaxGapSize : 0f;
     }
 }

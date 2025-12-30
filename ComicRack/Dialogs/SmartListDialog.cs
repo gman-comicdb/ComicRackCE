@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,7 +12,6 @@ using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
-using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Viewer.Properties;
@@ -26,23 +24,11 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
     {
         private const int ImageSpacing = 4;
 
-        public int Level
-        {
-            get;
-            set;
-        }
+        public int Level { get; set; }
 
-        public Guid Id
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
 
-        public Image Image
-        {
-            get;
-            set;
-        }
+        public Image Image { get; set; }
 
         public ReferenceItem(int level, string name, Guid id, Image image)
             : base(name)
@@ -58,12 +44,12 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
             bounds = bounds.Pad(Level * Image.Width, 0);
             gr.DrawImage(Image, Image.Size.Align(bounds, ContentAlignment.MiddleLeft));
             bounds = bounds.Pad(Image.Width + ImageSpacing, 0);
-            using (StringFormat format = new StringFormat(StringFormatFlags.NoWrap)
+            using (StringFormat format = new(StringFormatFlags.NoWrap)
             {
                 LineAlignment = StringAlignment.Center
             })
             {
-                using (SolidBrush brush = new SolidBrush(foreColor))
+                using (SolidBrush brush = new(foreColor))
                 {
                     gr.DrawString(base.Item, font, brush, bounds, format);
                 }
@@ -81,24 +67,13 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     private ComicSmartListItem smartComicList;
 
-    public ComicLibrary Library
-    {
-        get;
-        set;
-    }
+    public ComicLibrary Library { get; set; }
 
-    public Guid EditId
-    {
-        get;
-        set;
-    }
+    public Guid EditId { get; set; }
 
     public ComicSmartListItem SmartComicList
     {
-        get
-        {
-            return smartComicList;
-        }
+        get => smartComicList;
         set
         {
             matcherControls.SuspendLayout();
@@ -113,7 +88,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
                 smartComicList = value;
                 txtName.Text = smartComicList.Name;
                 txtNotes.Text = StringUtility.MakeEditBoxMultiline(smartComicList.Description);
-                cbMatchMode.SelectedIndex = ((smartComicList.MatcherMode != 0) ? 1 : 0);
+                cbMatchMode.SelectedIndex = (smartComicList.MatcherMode != 0) ? 1 : 0;
                 chkNotBaseList.Checked = smartComicList.NotInBaseList;
                 chkLimit.Checked = smartComicList.Limit;
                 cbLimitType.SelectedIndex = (int)smartComicList.LimitType;
@@ -121,7 +96,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
                 chkQuickOpen.Checked = smartComicList.QuickOpen;
                 chkShowNotes.Checked = !string.IsNullOrEmpty(txtNotes.Text) || chkLimit.Checked || chkQuickOpen.Checked;
                 Button button = btFilterReset;
-                bool visible = (labelFilterReset.Visible = smartComicList.ShouldSerializeFilteredIds() && chkShowNotes.Checked);
+                bool visible = labelFilterReset.Visible = smartComicList.ShouldSerializeFilteredIds() && chkShowNotes.Checked;
                 button.Visible = visible;
                 smartComicList.Matchers.Changed += Matchers_Changed;
                 matcherControls.Clear(withDispose: true);
@@ -139,60 +114,32 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     public bool EnableNavigation
     {
-        get
-        {
-            return btPrev.Visible;
-        }
+        get => btPrev.Visible;
         set
         {
             Button button = btPrev;
-            bool visible = (btNext.Visible = value);
+            bool visible = btNext.Visible = value;
             button.Visible = visible;
-            if (value)
-            {
-                btQuery.Left = btNext.Right + (btNext.Left - btPrev.Right);
-            }
-            else
-            {
-                btQuery.Left = btPrev.Left;
-            }
+            btQuery.Left = value ? btNext.Right + (btNext.Left - btPrev.Right) : btPrev.Left;
         }
     }
 
     public bool PreviousEnabled
     {
-        get
-        {
-            return btPrev.Enabled;
-        }
-        set
-        {
-            btPrev.Enabled = value;
-        }
+        get => btPrev.Enabled;
+        set => btPrev.Enabled = value;
     }
 
     public bool NextEnabled
     {
-        get
-        {
-            return btNext.Enabled;
-        }
-        set
-        {
-            btNext.Enabled = value;
-        }
+        get => btNext.Enabled;
+        set => btNext.Enabled = value;
     }
 
     public int DialogEditorOffset
     {
-        get
-        {
-            return -matcherControls.AutoScrollPosition.Y;
-        }
-        set
-        {
-            matcherControls.AutoScrollPosition = new Point(0, value);
-        }
+        get => -matcherControls.AutoScrollPosition.Y;
+        set => matcherControls.AutoScrollPosition = new Point(0, value);
     }
 
     public override UIComponent UIComponent => UIComponent.Content;
@@ -335,15 +282,15 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     private void cbMatchMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        SmartComicList.MatcherMode = ((cbMatchMode.SelectedIndex != 0) ? MatcherMode.Or : MatcherMode.And);
+        SmartComicList.MatcherMode = (cbMatchMode.SelectedIndex != 0) ? MatcherMode.Or : MatcherMode.And;
     }
 
     private void chkLimit_CheckedChanged(object sender, EventArgs e)
     {
         ComicSmartListItem comicSmartListItem = SmartComicList;
         TextBox textBox = txLimit;
-        bool flag = (cbLimitType.Enabled = chkLimit.Checked);
-        bool limit = (textBox.Enabled = flag);
+        bool flag = cbLimitType.Enabled = chkLimit.Checked;
+        bool limit = textBox.Enabled = flag;
         comicSmartListItem.Limit = limit;
     }
 
@@ -364,42 +311,24 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
     private void btApply_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btOK_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btPrev_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Previous != null)
-        {
-            this.Previous(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
+        Previous?.Invoke(this, EventArgs.Empty);
     }
 
     private void btNext_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Next != null)
-        {
-            this.Next(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
+        Next?.Invoke(this, EventArgs.Empty);
     }
 
     private void cbBaseList_SelectedIndexChanged(object sender, EventArgs e)
@@ -439,7 +368,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
     {
         SmartComicList.ClearFiltered();
         Button button = btFilterReset;
-        bool visible = (labelFilterReset.Visible = false);
+        bool visible = labelFilterReset.Visible = false;
         button.Visible = visible;
     }
 
@@ -450,14 +379,14 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
         TextBox textBox = txLimit;
         CheckBox checkBox2 = chkLimit;
         Label label = labelNotes;
-        bool flag2 = (txtNotes.Visible = show);
-        bool flag4 = (label.Visible = flag2);
-        bool flag6 = (checkBox2.Visible = flag4);
-        bool flag8 = (textBox.Visible = flag6);
-        bool visible = (comboBox.Visible = flag8);
+        bool flag2 = txtNotes.Visible = show;
+        bool flag4 = label.Visible = flag2;
+        bool flag6 = checkBox2.Visible = flag4;
+        bool flag8 = textBox.Visible = flag6;
+        bool visible = comboBox.Visible = flag8;
         checkBox.Visible = visible;
         Label label2 = labelFilterReset;
-        visible = (btFilterReset.Visible = SmartComicList.ShouldSerializeFilteredIds() && show);
+        visible = btFilterReset.Visible = SmartComicList.ShouldSerializeFilteredIds() && show;
         label2.Visible = visible;
     }
 
@@ -468,7 +397,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
 
         foreach (ComicListItem item in Library.ComicLists.GetItems<ComicListItem>())
         {
-            Guid guid = ((item is ComicLibraryListItem) ? Guid.Empty : item.Id);
+            Guid guid = (item is ComicLibraryListItem) ? Guid.Empty : item.Id;
             if (!item.RecursionTest(EditId))
             {
                 cbBaseList.Items.Add(new ReferenceItem(item.GetLevel(), item.Name, guid, baseImages.Images[item.ImageKey]));
@@ -487,7 +416,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
     private void AddMatcherControl(ComicBookMatcher icbm)
     {
         int width = cbBaseList.Right - matcherControls.Left;
-        Control control = ((icbm is ComicBookGroupMatcher) ? CreateGroupMatchPanel(icbm as ComicBookGroupMatcher, width) : CreateMatchPanel(icbm as ComicBookValueMatcher, width));
+        Control control = (icbm is ComicBookGroupMatcher) ? CreateGroupMatchPanel(icbm as ComicBookGroupMatcher, width) : CreateMatchPanel(icbm as ComicBookValueMatcher, width);
         matcherControls.Controls.Add(control);
         matcherControls.Controls.SetChildIndex(control, smartComicList.Matchers.IndexOf(icbm));
         matcherControls.AutoTabIndex();

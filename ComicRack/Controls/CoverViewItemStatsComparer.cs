@@ -6,7 +6,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class CoverViewItemStatsComparer<T> : CoverViewItemComparer where T : IComparer<ComicBookSeriesStatistics>, new()
 {
-    private readonly T comparer = new T();
+    private readonly T comparer = new();
 
     protected override int OnCompare(CoverViewItem x, CoverViewItem y)
     {

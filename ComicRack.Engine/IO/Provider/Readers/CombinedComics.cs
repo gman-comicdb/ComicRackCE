@@ -13,17 +13,9 @@ public static class CombinedComics
 {
     private class Provider
     {
-        public IImageProvider ImageProvider
-        {
-            get;
-            set;
-        }
+        public IImageProvider ImageProvider { get; set; }
 
-        public IImageKeyProvider KeyProvider
-        {
-            get;
-            set;
-        }
+        public IImageKeyProvider KeyProvider { get; set; }
     }
 
     private class CombinedImageProvider : DisposableObject, IImageProvider, IDisposable
@@ -32,11 +24,7 @@ public static class CombinedComics
 
         public IList<Provider> Providers => providers;
 
-        public IPagePool PagePool
-        {
-            get;
-            set;
-        }
+        public IPagePool PagePool { get; set; }
 
         public bool IsSlow => providers.Any((Provider p) => p.ImageProvider.IsSlow);
 
@@ -134,7 +122,7 @@ public static class CombinedComics
 
     public static IImageProvider OpenProvider(IEnumerable<ComicBook> books, IPagePool pool)
     {
-        CombinedImageProvider combinedImageProvider = new CombinedImageProvider();
+        CombinedImageProvider combinedImageProvider = new();
         foreach (ComicBook book in books)
         {
             if (book.IsDynamicSource)

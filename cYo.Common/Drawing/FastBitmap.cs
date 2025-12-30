@@ -54,7 +54,7 @@ public class FastBitmap : DisposableObject
     {
         if (bitmapData == null)
         {
-            Rectangle rect = new Rectangle(Point.Empty, bitmap.Size);
+            Rectangle rect = new(Point.Empty, bitmap.Size);
             width = rect.Width * sizeof(PixelData);
             if (width % 4 != 0)
             {

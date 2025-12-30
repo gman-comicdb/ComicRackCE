@@ -116,7 +116,7 @@ public static class ComicTextBuilder
         yield return new TextLine(6);
         if (flags.HasFlag(ComicTextElements.Summary))
         {
-            StringFormat format = new StringFormat
+            StringFormat format = new()
             {
                 Trimming = StringTrimming.EllipsisWord
             };
@@ -124,7 +124,7 @@ public static class ComicTextBuilder
         }
         if (flags.HasFlag(ComicTextElements.Notes))
         {
-            StringFormat format2 = new StringFormat
+            StringFormat format2 = new()
             {
                 Trimming = StringTrimming.EllipsisWord
             };
@@ -179,14 +179,9 @@ public static class ComicTextBuilder
         yield return new TextLine(string.Format(PageText, page + 1), GetCaptionFont(font), foreColor);
         yield return new TextLine(cpi.PageTypeAsText, GetSmallFont(font), foreColor);
         yield return new TextLine(10);
-        if (cpi.ImageFileSize != 0)
-        {
-            yield return new TextLine(StringUtility.Format(PageSizeText, cpi.ImageFileSizeAsText), GetSmallFont(font), foreColor);
-        }
-        else
-        {
-            yield return new TextLine(UnknownSizeText, GetSmallFont(font), foreColor);
-        }
+        yield return cpi.ImageFileSize != 0
+            ? new TextLine(StringUtility.Format(PageSizeText, cpi.ImageFileSizeAsText), GetSmallFont(font), foreColor)
+            : new TextLine(UnknownSizeText, GetSmallFont(font), foreColor);
         yield return new TextLine(StringUtility.Format(ResolutionText, cpi.ImageWidthAsText, cpi.ImageHeightAsText), GetSmallFont(font), foreColor);
         if (cpi.Rotation != 0)
         {

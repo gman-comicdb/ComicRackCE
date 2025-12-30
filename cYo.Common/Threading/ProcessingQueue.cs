@@ -23,11 +23,7 @@ public class ProcessingQueue<K> : DisposableObject
 
         private volatile ProgressState state;
 
-        public K Item
-        {
-            get;
-            private set;
-        }
+        public K Item { get; private set; }
 
         public object AsyncState => Item;
 
@@ -35,10 +31,7 @@ public class ProcessingQueue<K> : DisposableObject
         {
             get
             {
-                if (waitHandle == null)
-                {
-                    waitHandle = new ManualResetEvent(state == ProgressState.Completed);
-                }
+                waitHandle ??= new ManualResetEvent(state == ProgressState.Completed);
                 return waitHandle;
             }
         }
@@ -49,29 +42,13 @@ public class ProcessingQueue<K> : DisposableObject
 
         public ProgressState State => state;
 
-        public int ProgressPercentage
-        {
-            get;
-            set;
-        }
+        public int ProgressPercentage { get; set; }
 
-        public string ProgressMessage
-        {
-            get;
-            set;
-        }
+        public string ProgressMessage { get; set; }
 
-        public bool ProgressAvailable
-        {
-            get;
-            set;
-        }
+        public bool ProgressAvailable { get; set; }
 
-        public bool Abort
-        {
-            get;
-            set;
-        }
+        public bool Abort { get; set; }
 
         public QueueItem(K item, object callbackKey, AsyncCallback callback)
         {
@@ -86,10 +63,7 @@ public class ProcessingQueue<K> : DisposableObject
             {
                 return;
             }
-            if (additionalCallbacks == null)
-            {
-                additionalCallbacks = new Dictionary<object, AsyncCallback>();
-            }
+            additionalCallbacks ??= new Dictionary<object, AsyncCallback>();
             using (ItemMonitor.Lock(additionalCallbacks))
             {
                 if (!additionalCallbacks.ContainsKey(key))
@@ -119,10 +93,7 @@ public class ProcessingQueue<K> : DisposableObject
         public void SetCompleted()
         {
             state = ProgressState.Completed;
-            if (waitHandle != null)
-            {
-                waitHandle.Set();
-            }
+            waitHandle?.Set();
         }
 
         protected override void Dispose(bool disposing)
@@ -137,34 +108,22 @@ public class ProcessingQueue<K> : DisposableObject
 
     private class ProcessData
     {
-        public Thread Thread
-        {
-            get;
-            set;
-        }
+        public Thread Thread { get; set; }
 
-        public AutoResetEvent Event
-        {
-            get;
-            set;
-        }
+        public AutoResetEvent Event { get; set; }
 
-        public bool IsActive
-        {
-            get;
-            set;
-        }
+        public bool IsActive { get; set; }
     }
 
     private bool abort;
 
     private bool stop;
 
-    private readonly List<ProcessData> processThreads = new List<ProcessData>();
+    private readonly List<ProcessData> processThreads = new();
 
-    private readonly LinkedList<K> processQueue = new LinkedList<K>();
+    private readonly LinkedList<K> processQueue = new();
 
-    private readonly Dictionary<K, QueueItem> itemDict = new Dictionary<K, QueueItem>();
+    private readonly Dictionary<K, QueueItem> itemDict = new();
 
     private volatile ProcessingQueueAddMode defaultProcessingQueueAddMode;
 
@@ -172,10 +131,7 @@ public class ProcessingQueue<K> : DisposableObject
 
     public CultureInfo CurrentUICulture
     {
-        get
-        {
-            return processThreads[0].Thread.CurrentUICulture;
-        }
+        get => processThreads[0].Thread.CurrentUICulture;
         set
         {
             processThreads.ForEach(delegate (ProcessData pd)
@@ -187,10 +143,7 @@ public class ProcessingQueue<K> : DisposableObject
 
     public ThreadPriority Priority
     {
-        get
-        {
-            return processThreads[0].Thread.Priority;
-        }
+        get => processThreads[0].Thread.Priority;
         set
         {
             processThreads.ForEach(delegate (ProcessData pd)
@@ -202,22 +155,13 @@ public class ProcessingQueue<K> : DisposableObject
 
     public ProcessingQueueAddMode DefaultProcessingQueueAddMode
     {
-        get
-        {
-            return defaultProcessingQueueAddMode;
-        }
-        set
-        {
-            defaultProcessingQueueAddMode = value;
-        }
+        get => defaultProcessingQueueAddMode;
+        set => defaultProcessingQueueAddMode = value;
     }
 
     public int Size
     {
-        get
-        {
-            return size;
-        }
+        get => size;
         set
         {
             if (size != value)
@@ -272,15 +216,15 @@ public class ProcessingQueue<K> : DisposableObject
         Size = size;
         for (int i = 0; i < threadCount; i++)
         {
-            string name2 = ((threadCount < 2) ? name : $"{name} #{i + 1}");
-            ProcessData pd = new ProcessData
+            string name2 = (threadCount < 2) ? name : $"{name} #{i + 1}";
+            ProcessData pd = new()
             {
                 Event = new AutoResetEvent(initialState: false)
             };
-            Thread thread2 = (pd.Thread = ThreadUtility.CreateWorkerThread(name2, delegate
+            Thread thread2 = pd.Thread = ThreadUtility.CreateWorkerThread(name2, delegate
             {
                 ProcessThread(pd);
-            }, priority));
+            }, priority);
             Thread thread3 = thread2;
             processThreads.Add(pd);
             thread3.Start();
@@ -309,7 +253,7 @@ public class ProcessingQueue<K> : DisposableObject
                     if (abort)
                         return;
 
-                    K item = default(K);
+                    K item = default;
                     QueueItem queueItem = null;
                     using (ItemMonitor.Lock(processQueue))
                     {
@@ -365,7 +309,7 @@ public class ProcessingQueue<K> : DisposableObject
             itemDict.TryGetValue(item, out value);
             if (value == null)
             {
-                value = (itemDict[item] = new QueueItem(item, callbackKey, processCallback));
+                value = itemDict[item] = new QueueItem(item, callbackKey, processCallback);
                 switch (mode)
                 {
                     case ProcessingQueueAddMode.AddToBottom:

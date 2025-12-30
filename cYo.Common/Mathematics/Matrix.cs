@@ -11,7 +11,7 @@ public class Matrix
 
     private readonly int columns;
 
-    private static readonly Random random = new Random();
+    private static readonly Random random = new();
 
     internal double[][] Array => data;
 
@@ -45,14 +45,8 @@ public class Matrix
 
     public double this[int i, int j]
     {
-        get
-        {
-            return data[i][j];
-        }
-        set
-        {
-            data[i][j] = value;
-        }
+        get => data[i][j];
+        set => data[i][j] = value;
     }
 
     public double Norm1
@@ -174,7 +168,7 @@ public class Matrix
         {
             throw new ArgumentException();
         }
-        Matrix matrix = new Matrix(i1 - i0 + 1, j1 - j0 + 1);
+        Matrix matrix = new(i1 - i0 + 1, j1 - j0 + 1);
         double[][] array = matrix.Array;
         for (int k = i0; k <= i1; k++)
         {
@@ -192,7 +186,7 @@ public class Matrix
         {
             throw new ArgumentNullException();
         }
-        Matrix matrix = new Matrix(r.Length, c.Length);
+        Matrix matrix = new(r.Length, c.Length);
         double[][] array = matrix.Array;
         for (int i = 0; i < r.Length; i++)
         {
@@ -218,7 +212,7 @@ public class Matrix
         {
             throw new ArgumentException();
         }
-        Matrix matrix = new Matrix(i1 - i0 + 1, c.Length);
+        Matrix matrix = new(i1 - i0 + 1, c.Length);
         double[][] array = matrix.Array;
         for (int j = i0; j <= i1; j++)
         {
@@ -244,7 +238,7 @@ public class Matrix
         {
             throw new ArgumentException();
         }
-        Matrix matrix = new Matrix(r.Length, j1 - j0 + 1);
+        Matrix matrix = new(r.Length, j1 - j0 + 1);
         double[][] array = matrix.Array;
         for (int i = 0; i < r.Length; i++)
         {
@@ -262,7 +256,7 @@ public class Matrix
 
     public Matrix Clone()
     {
-        Matrix matrix = new Matrix(rows, columns);
+        Matrix matrix = new(rows, columns);
         double[][] array = matrix.Array;
         for (int i = 0; i < rows; i++)
         {
@@ -276,7 +270,7 @@ public class Matrix
 
     public Matrix Transpose()
     {
-        Matrix matrix = new Matrix(columns, rows);
+        Matrix matrix = new(columns, rows);
         double[][] array = matrix.Array;
         for (int i = 0; i < rows; i++)
         {
@@ -297,7 +291,7 @@ public class Matrix
         int num = a.Rows;
         int num2 = a.Columns;
         double[][] array = a.Array;
-        Matrix matrix = new Matrix(num, num2);
+        Matrix matrix = new(num, num2);
         double[][] array2 = matrix.Array;
         for (int i = 0; i < num; i++)
         {
@@ -331,7 +325,7 @@ public class Matrix
         {
             throw new ArgumentException("Matrix dimension do not match.");
         }
-        Matrix matrix = new Matrix(num, num2);
+        Matrix matrix = new(num, num2);
         double[][] array2 = matrix.Array;
         for (int i = 0; i < num; i++)
         {
@@ -361,7 +355,7 @@ public class Matrix
         {
             throw new ArgumentException("Matrix dimension do not match.");
         }
-        Matrix matrix = new Matrix(num, num2);
+        Matrix matrix = new(num, num2);
         double[][] array2 = matrix.Array;
         for (int i = 0; i < num; i++)
         {
@@ -387,7 +381,7 @@ public class Matrix
         int num = a.Rows;
         int num2 = a.Columns;
         double[][] array = a.Array;
-        Matrix matrix = new Matrix(num, num2);
+        Matrix matrix = new(num, num2);
         double[][] array2 = matrix.Array;
         for (int i = 0; i < num; i++)
         {
@@ -401,11 +395,7 @@ public class Matrix
 
     public static Matrix operator *(Matrix a, double s)
     {
-        if (a == null)
-        {
-            throw new ArgumentNullException();
-        }
-        return Multiply(a, s);
+        return a == null ? throw new ArgumentNullException() : Multiply(a, s);
     }
 
     public static Matrix Multiply(Matrix a, Matrix b)
@@ -421,7 +411,7 @@ public class Matrix
             throw new ArgumentException("Matrix dimensions are not valid.");
         }
         int num2 = b.Columns;
-        Matrix matrix = new Matrix(num, num2);
+        Matrix matrix = new(num, num2);
         double[][] array2 = matrix.Array;
         int num3 = a.columns;
         double[] array3 = new double[num3];
@@ -452,20 +442,14 @@ public class Matrix
 
     public Matrix Solve(Matrix rhs)
     {
-        if (rhs == null)
-        {
-            throw new ArgumentNullException();
-        }
-        if (rows != columns)
-        {
-            return new QrDecomposition(this).Solve(rhs);
-        }
-        return new LuDecomposition(this).Solve(rhs);
+        return rhs == null
+            ? throw new ArgumentNullException()
+            : rows != columns ? new QrDecomposition(this).Solve(rhs) : new LuDecomposition(this).Solve(rhs);
     }
 
     public static Matrix Random(int rows, int columns)
     {
-        Matrix matrix = new Matrix(rows, columns);
+        Matrix matrix = new(rows, columns);
         double[][] array = matrix.Array;
         for (int i = 0; i < rows; i++)
         {
@@ -479,13 +463,13 @@ public class Matrix
 
     public static Matrix Diagonal(int rows, int columns, double value)
     {
-        Matrix matrix = new Matrix(rows, columns);
+        Matrix matrix = new(rows, columns);
         double[][] array = matrix.Array;
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
             {
-                array[i][j] = ((i == j) ? value : 0.0);
+                array[i][j] = (i == j) ? value : 0.0;
             }
         }
         return matrix;
@@ -493,7 +477,7 @@ public class Matrix
 
     public string ToString(IFormatProvider provider)
     {
-        using (StringWriter stringWriter = new StringWriter(provider))
+        using (StringWriter stringWriter = new(provider))
         {
             for (int i = 0; i < rows; i++)
             {

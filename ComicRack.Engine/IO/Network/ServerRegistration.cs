@@ -1,12 +1,3 @@
-using System;
-using System.CodeDom.Compiler;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Threading;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.Xml.Serialization;
-
 namespace cYo.Projects.ComicRack.Engine.IO.Network;
 
 //[GeneratedCode("wsdl", "2.0.50727.3038")]

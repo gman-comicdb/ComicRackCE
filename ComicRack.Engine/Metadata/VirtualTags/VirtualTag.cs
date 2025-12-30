@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace cYo.Projects.ComicRack.Engine;
@@ -50,22 +46,15 @@ public class VirtualTag : IVirtualTag
 
     public override bool Equals(object obj)
     {
-        VirtualTag vtag = obj as VirtualTag;
-        if (vtag != null)
-        {
-            return Equals(vtag);
-        }
-        return false;
+        return obj is VirtualTag vtag ? Equals(vtag) : false;
     }
 
     public bool Equals(VirtualTag vtag)
     {
-        if (vtag != null)
-        {
-            return vtag.ID == ID && vtag.Name == Name && vtag.Description == Description
-                && vtag.CaptionFormat == CaptionFormat && vtag.IsEnabled == IsEnabled && vtag.IsDefault == IsDefault;
-        }
-        return false;
+        return vtag != null
+            ? vtag.ID == ID && vtag.Name == Name && vtag.Description == Description
+                && vtag.CaptionFormat == CaptionFormat && vtag.IsEnabled == IsEnabled && vtag.IsDefault == IsDefault
+            : false;
     }
 
     public override int GetHashCode()
@@ -74,12 +63,12 @@ public class VirtualTag : IVirtualTag
             return 0;
 
         int hash = 17;
-        hash = hash * 23 + this.ID.GetHashCode();
-        hash = hash * 23 + this.Name?.GetHashCode() ?? 0;
-        hash = hash * 23 + this.Description?.GetHashCode() ?? 0;
-        hash = hash * 23 + this.CaptionFormat?.GetHashCode() ?? 0;
-        hash = hash * 23 + this.IsEnabled.GetHashCode();
-        hash = hash * 23 + this.IsDefault.GetHashCode();
+        hash = hash * 23 + ID.GetHashCode();
+        hash = hash * 23 + Name?.GetHashCode() ?? 0;
+        hash = hash * 23 + Description?.GetHashCode() ?? 0;
+        hash = hash * 23 + CaptionFormat?.GetHashCode() ?? 0;
+        hash = hash * 23 + IsEnabled.GetHashCode();
+        hash = hash * 23 + IsDefault.GetHashCode();
         return hash;
     }
 }

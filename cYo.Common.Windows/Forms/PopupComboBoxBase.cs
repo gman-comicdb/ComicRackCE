@@ -70,19 +70,13 @@ public class PopupComboBoxBase : ComboBox
     private static void SuspendMenuMode()
     {
         MethodInfo methodInfo = SuspendMenuModeMethodInfo;
-        if (methodInfo != null)
-        {
-            methodInfo.Invoke(null, null);
-        }
+        methodInfo?.Invoke(null, null);
     }
 
     private static void ResumeMenuMode()
     {
         MethodInfo methodInfo = ResumeMenuModeMethodInfo;
-        if (methodInfo != null)
-        {
-            methodInfo.Invoke(null, null);
-        }
+        methodInfo?.Invoke(null, null);
     }
 
     protected override void OnDropDown(EventArgs e)

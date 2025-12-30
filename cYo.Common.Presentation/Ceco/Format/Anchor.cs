@@ -5,11 +5,7 @@ namespace cYo.Common.Presentation.Ceco.Format;
 
 public class Anchor : Span
 {
-    public string HRef
-    {
-        get;
-        set;
-    }
+    public string HRef { get; set; }
 
     public Anchor()
     {

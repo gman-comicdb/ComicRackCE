@@ -20,26 +20,18 @@ public static class Password
 
     public static byte[] CreateByteHash(byte[] text)
     {
-        if (text.Length == 0)
-        {
-            return new byte[0];
-        }
-        return algorithm.ComputeHash(text);
+        return text.Length == 0 ? [] : algorithm.ComputeHash(text);
     }
 
     public static bool Verify(string text, string hashValue)
     {
-        if (!string.IsNullOrEmpty(hashValue))
-        {
-            return hashValue.Equals(CreateHash(text));
-        }
-        return false;
+        return !string.IsNullOrEmpty(hashValue) ? hashValue.Equals(CreateHash(text)) : false;
     }
 
     public static string Create(int len)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        Random random = new Random();
+        StringBuilder stringBuilder = new();
+        Random random = new();
         for (int i = 0; i < len; i++)
         {
             int num = random.Next(60);

@@ -40,7 +40,7 @@ public class BatteryStatus : OverlayPanel
                 return;
             }
             Rectangle rectangle = base.ClientRectangle.Pad(0, 0, 1, 1);
-            Color color = (((double)percent < 0.15) ? Color.Red : Color.Green);
+            Color color = ((double)percent < 0.15) ? Color.Red : Color.Green;
             graphics.DrawRectangle(Pens.White, rectangle);
             rectangle = rectangle.Pad(1, 1);
             rectangle.Width = rectangle.Width * percent / 100;

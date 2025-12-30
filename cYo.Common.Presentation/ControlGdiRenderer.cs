@@ -7,11 +7,7 @@ namespace cYo.Common.Presentation;
 
 public class ControlGdiRenderer : BitmapGdiRenderer, IControlRenderer, IBitmapRenderer, IDisposable
 {
-    public Control Control
-    {
-        get;
-        private set;
-    }
+    public Control Control { get; private set; }
 
     public Size Size => Control.Size;
 
@@ -47,9 +43,6 @@ public class ControlGdiRenderer : BitmapGdiRenderer, IControlRenderer, IBitmapRe
 
     protected virtual void OnPaint()
     {
-        if (this.Paint != null)
-        {
-            this.Paint(this, EventArgs.Empty);
-        }
+        Paint?.Invoke(this, EventArgs.Empty);
     }
 }

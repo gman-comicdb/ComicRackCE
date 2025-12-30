@@ -8,15 +8,9 @@ namespace cYo.Projects.ComicRack.Engine.IO.Cache;
 
 public interface IPagePool
 {
-    bool IsWorking
-    {
-        get;
-    }
+    bool IsWorking { get; }
 
-    int MaximumMemoryItems
-    {
-        get;
-    }
+    int MaximumMemoryItems { get; }
 
     event EventHandler<CacheItemEventArgs<ImageKey, PageImage>> PageCached;
 

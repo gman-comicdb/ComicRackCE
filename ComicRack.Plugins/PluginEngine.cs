@@ -12,11 +12,11 @@ namespace cYo.Projects.ComicRack.Plugins;
 
 public class PluginEngine
 {
-    private readonly PluginInitializer[] initializers = new PluginInitializer[2]
-    {
+    private readonly PluginInitializer[] initializers =
+    [
         new XmlPluginInitializer(),
         new PythonPluginInitializer()
-    };
+    ];
 
     public const string ScriptTypeCreateBookList = "CreateBookList";
 
@@ -74,7 +74,7 @@ public class PluginEngine
 
     public const string ScriptDescThumbOverlay = "Custom Book Thumbnail Overlays";
 
-    public static readonly Dictionary<string, string> ValidHooks = new Dictionary<string, string>
+    public static readonly Dictionary<string, string> ValidHooks = new()
     {
         {
             ScriptTypeCreateBookList,
@@ -146,16 +146,13 @@ public class PluginEngine
         }
     };
 
-    private readonly CommandCollection commands = new CommandCollection();
+    private readonly CommandCollection commands = new();
 
     private CommandCollection Commands => commands;
 
     public string CommandStates
     {
-        get
-        {
-            return Commands.Select((Command cmd) => (cmd.Enabled ? "+" : "-") + cmd.Key).ToListString(",");
-        }
+        get => Commands.Select((Command cmd) => (cmd.Enabled ? "+" : "-") + cmd.Key).ToListString(",");
         set
         {
             value.FromListString(',').SafeForEach(delegate (string s)
@@ -177,7 +174,7 @@ public class PluginEngine
 
     public void Initialize(IPluginEnvironment env, string path)
     {
-        List<Command> list = new List<Command>();
+        List<Command> list = new();
         string[] hooks = ValidHooks.Keys.ToArray();
         foreach (string file in FileUtility.GetFiles(path, SearchOption.AllDirectories))
         {
@@ -235,10 +232,8 @@ public class PluginEngine
     {
         string text = hook.Split(',').TrimStrings().RemoveEmpty()
             .FirstOrDefault();
-        if (string.IsNullOrEmpty(text) || !ValidHooks.TryGetValue(text, out var value))
-        {
-            return string.Empty;
-        }
-        return TR.Load("PluginEngine")[value.ReplaceAny("/ ", string.Empty), value];
+        return string.IsNullOrEmpty(text) || !ValidHooks.TryGetValue(text, out var value)
+            ? string.Empty
+            : TR.Load("PluginEngine")[value.ReplaceAny("/ ", string.Empty), value];
     }
 }

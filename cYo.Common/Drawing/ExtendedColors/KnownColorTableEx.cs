@@ -175,10 +175,7 @@ public class KnownColorTableEx
 
     public int GetColor(KnownColor knownColor)
     {
-        if (!KnownColors.Contains(knownColor))
-            throw new ArgumentException();
-
-        return _colorTable[(int)knownColor];
+        return !KnownColors.Contains(knownColor) ? throw new ArgumentException() : _colorTable[(int)knownColor];
     }
 
     public IReadOnlyDictionary<int, int> Save() => KnownColors.Cast<int>().ToDictionary(i => i, i => _colorTable[i]);
@@ -315,9 +312,6 @@ public static class CollectionExtensions
 
     public static TVal TryGet<TKey, TVal>(this IReadOnlyDictionary<TKey, TVal> dict, TKey key, TVal defaultValue)
     {
-        if (key == null || !dict.TryGetValue(key, out var val))
-            return defaultValue;
-
-        return val;
+        return key == null || !dict.TryGetValue(key, out var val) ? defaultValue : val;
     }
 }

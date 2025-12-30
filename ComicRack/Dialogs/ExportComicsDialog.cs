@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,7 +15,6 @@ using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Controls;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -24,18 +22,15 @@ public partial class ExportComicsDialog : FormEx
 {
     private readonly EnumMenuUtility enumUtil;
 
-    private ExportSettingCollection defaultPresets = new ExportSettingCollection();
+    private ExportSettingCollection defaultPresets = new();
 
-    private ExportSettingCollection userPresets = new ExportSettingCollection();
+    private ExportSettingCollection userPresets = new();
 
     private static List<bool> expandedStates;
 
     public ExportSettingCollection DefaultPresets
     {
-        get
-        {
-            return defaultPresets;
-        }
+        get => defaultPresets;
         set
         {
             defaultPresets = value;
@@ -45,10 +40,7 @@ public partial class ExportComicsDialog : FormEx
 
     public ExportSettingCollection UserPresets
     {
-        get
-        {
-            return userPresets;
-        }
+        get => userPresets;
         set
         {
             userPresets = value;
@@ -61,17 +53,13 @@ public partial class ExportComicsDialog : FormEx
         get
         {
             object selectedItem = cbComicFormat.SelectedItem;
-            if (!(selectedItem is string))
-            {
-                return ((FileFormat)selectedItem).Id;
-            }
-            return 0;
+            return selectedItem is not string ? ((FileFormat)selectedItem).Id : 0;
         }
         set
         {
             foreach (object item in cbComicFormat.Items)
             {
-                int num = ((!(item is string)) ? ((FileFormat)item).Id : 0);
+                int num = (item is not string) ? ((FileFormat)item).Id : 0;
                 if (num == value)
                 {
                     cbComicFormat.SelectedItem = item;
@@ -82,11 +70,7 @@ public partial class ExportComicsDialog : FormEx
         }
     }
 
-    public string SettingName
-    {
-        get;
-        set;
-    }
+    public string SettingName { get; set; }
 
     public ExportSetting Setting
     {
@@ -127,7 +111,7 @@ public partial class ExportComicsDialog : FormEx
         {
             SettingName = value.Name;
             cbExport.SelectedIndex = (int)value.Target;
-            txFolder.Text = (string.IsNullOrEmpty(value.TargetFolder) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : value.TargetFolder);
+            txFolder.Text = string.IsNullOrEmpty(value.TargetFolder) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : value.TargetFolder;
             chkDeleteOriginal.Checked = value.DeleteOriginal;
             chkAddNewToLibrary.Checked = value.AddToLibrary;
             chkOverwrite.Checked = value.Overwrite;
@@ -164,7 +148,7 @@ public partial class ExportComicsDialog : FormEx
     {
         LocalizeUtility.UpdateRightToLeft(this);
         InitializeComponent();
-        if (Environment.Is64BitProcess) this.cbPageFormat.Items.AddRange(new object[] { "HEIF", "AVIF" });
+        if (Environment.Is64BitProcess) cbPageFormat.Items.AddRange(["HEIF", "AVIF"]);
         LocalizeUtility.Localize(this, null);
         foreach (ComboBox control in this.GetControls<ComboBox>())
         {
@@ -198,14 +182,14 @@ public partial class ExportComicsDialog : FormEx
         btChooseFolder.Enabled = setting.Target == ExportTarget.NewFolder;
         CheckBox checkBox = chkOverwrite;
         CheckBox checkBox2 = chkDeleteOriginal;
-        bool flag2 = (chkAddNewToLibrary.Enabled = setting.Target != ExportTarget.ReplaceSource);
-        bool enabled = (checkBox2.Enabled = flag2);
+        bool flag2 = chkAddNewToLibrary.Enabled = setting.Target != ExportTarget.ReplaceSource;
+        bool enabled = checkBox2.Enabled = flag2;
         checkBox.Enabled = enabled;
         txCustomStartIndex.Enabled = setting.Naming == ExportNaming.Custom;
-        txCustomName.Enabled = setting.Naming == ExportNaming.Custom || setting.Naming == ExportNaming.Caption;
-        tbQuality.Enabled = setting.PageType == StoragePageType.Jpeg || setting.PageType == StoragePageType.Webp || setting.PageType == StoragePageType.Heif || setting.PageType == StoragePageType.Avif;
-        txWidth.Enabled = setting.PageResize != StoragePageResize.Height && setting.PageResize != StoragePageResize.Original;
-        txHeight.Enabled = setting.PageResize != StoragePageResize.Width && setting.PageResize != StoragePageResize.Original;
+        txCustomName.Enabled = setting.Naming is ExportNaming.Custom or ExportNaming.Caption;
+        tbQuality.Enabled = setting.PageType is StoragePageType.Jpeg or StoragePageType.Webp or StoragePageType.Heif or StoragePageType.Avif;
+        txWidth.Enabled = setting.PageResize is not StoragePageResize.Height and not StoragePageResize.Original;
+        txHeight.Enabled = setting.PageResize is not StoragePageResize.Width and not StoragePageResize.Original;
         chkDontEnlarge.Enabled = setting.PageResize != StoragePageResize.Original;
         btRemovePreset.Enabled = tvPresets.SelectedNode != null && tvPresets.SelectedNode.Parent != null && (bool)tvPresets.SelectedNode.Parent.Tag;
         grpCustomProcessing.Enabled = setting.ImageProcessingSource == ExportImageProcessingSource.Custom;
@@ -228,7 +212,7 @@ public partial class ExportComicsDialog : FormEx
 
     private void btAddPreset_Click(object sender, EventArgs e)
     {
-        string itemValue = (string.IsNullOrEmpty(Setting.Name) ? ExportSetting.DefaultName : Setting.Name);
+        string itemValue = string.IsNullOrEmpty(Setting.Name) ? ExportSetting.DefaultName : Setting.Name;
         string name = SelectItemDialog.GetName(this, TR.Load(base.Name)["AddConvertPreset", "Add Export Preset"], itemValue);
         if (!string.IsNullOrEmpty(name))
         {
@@ -251,8 +235,7 @@ public partial class ExportComicsDialog : FormEx
 
     private void tvPresets_AfterSelect(object sender, TreeViewEventArgs e)
     {
-        ExportSetting exportSetting = tvPresets.SelectedNode.Tag as ExportSetting;
-        if (exportSetting != null)
+        if (tvPresets.SelectedNode.Tag is ExportSetting exportSetting)
         {
             Setting = exportSetting;
         }
@@ -260,7 +243,7 @@ public partial class ExportComicsDialog : FormEx
 
     private void btChooseFolder_Click(object sender, EventArgs e)
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = TR.Load(base.Name)["SelectExportFolder", "Please select the Export Folder"];
             folderBrowserDialog.SelectedPath = txFolder.Text;
@@ -277,9 +260,9 @@ public partial class ExportComicsDialog : FormEx
         TrackBarLite trackBarLite = tbSaturation;
         TrackBarLite trackBarLite2 = tbBrightness;
         TrackBarLite trackBarLite3 = tbContrast;
-        int num2 = (tbGamma.Value = 0);
-        int num4 = (trackBarLite3.Value = num2);
-        int num7 = (trackBarLite.Value = (trackBarLite2.Value = num4));
+        int num2 = tbGamma.Value = 0;
+        int num4 = trackBarLite3.Value = num2;
+        int num7 = trackBarLite.Value = trackBarLite2.Value = num4;
         tbSharpening.Value = 0;
     }
 
@@ -292,14 +275,7 @@ public partial class ExportComicsDialog : FormEx
     private void cbNamingTemplate_SelectedIndexChanged(object sender, EventArgs e)
     {
         int selectedIndex = cbNamingTemplate.SelectedIndex;
-        if (selectedIndex != 1)
-        {
-            txCustomName.Text = string.Empty;
-        }
-        else
-        {
-            txCustomName.Text = EngineConfiguration.Default.ComicExportFileNameFormat;
-        }
+        txCustomName.Text = selectedIndex != 1 ? string.Empty : EngineConfiguration.Default.ComicExportFileNameFormat;
     }
 
     private void BuildPresetsList()
@@ -327,7 +303,7 @@ public partial class ExportComicsDialog : FormEx
 
     public static ExportSetting Show(IWin32Window parent, ExportSettingCollection defaultPresets, ExportSettingCollection userPresets, ExportSetting setting)
     {
-        using (ExportComicsDialog exportComicsDialog = new ExportComicsDialog())
+        using (ExportComicsDialog exportComicsDialog = new())
         {
             exportComicsDialog.DefaultPresets = defaultPresets;
             exportComicsDialog.UserPresets = userPresets;
@@ -340,7 +316,7 @@ public partial class ExportComicsDialog : FormEx
                     x.Collapsed = expandedStates[i++];
                 });
             }
-            ExportSetting result = ((exportComicsDialog.ShowDialog(parent) == DialogResult.OK) ? exportComicsDialog.Setting : null);
+            ExportSetting result = (exportComicsDialog.ShowDialog(parent) == DialogResult.OK) ? exportComicsDialog.Setting : null;
             expandedStates = new List<bool>();
             exportComicsDialog.ForEachControl(delegate (CollapsibleGroupBox x)
             {

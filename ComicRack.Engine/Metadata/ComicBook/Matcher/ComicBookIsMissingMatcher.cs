@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.IO;
 
 namespace cYo.Projects.ComicRack.Engine;
 
@@ -11,9 +10,6 @@ public class ComicBookIsMissingMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (comicBook.IsLinked && comicBook.FileIsMissing)
-            return YesNo.Yes;
-
-        return YesNo.No;
+        return comicBook.IsLinked && comicBook.FileIsMissing ? YesNo.Yes : YesNo.No;
     }
 }

@@ -2,11 +2,7 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IFilteredComicBookList
 {
-    bool ShowFiltered
-    {
-        get;
-        set;
-    }
+    bool ShowFiltered { get; set; }
 
     bool IsFiltered(ComicBook ci);
 

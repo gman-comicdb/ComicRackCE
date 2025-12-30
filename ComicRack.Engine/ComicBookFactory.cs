@@ -12,11 +12,7 @@ public class ComicBookFactory
     [NonSerialized]
     private ComicBookCollection temporaryBooks;
 
-    public ComicBookCollection Storage
-    {
-        get;
-        private set;
-    }
+    public ComicBookCollection Storage { get; private set; }
 
     [XmlIgnore]
     public ComicBookCollection TemporaryBooks
@@ -32,11 +28,7 @@ public class ComicBookFactory
         }
     }
 
-    public bool TemporaryBookListDirty
-    {
-        get;
-        set;
-    }
+    public bool TemporaryBookListDirty { get; set; }
 
     [field: NonSerialized]
     public event EventHandler<ContainerBookChangedEventArgs> TemporaryBookChanged;
@@ -55,7 +47,7 @@ public class ComicBookFactory
         ComicBook comicBook;
         if (file.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
         {
-            Guid id = new Guid(file.Substring(3));
+            Guid id = new(file.Substring(3));
             comicBook = Storage.FindItemById(id);
             if (comicBook == null)
             {
@@ -77,7 +69,7 @@ public class ComicBookFactory
         }
         comicBook = RefreshComicBookInfo(options, TemporaryBooks[file]);
         bool flag = comicBook != null;
-        comicBook = comicBook ?? ComicBook.Create(file, options);
+        comicBook ??= ComicBook.Create(file, options);
         switch (addOptions)
         {
             case CreateBookOption.AddToStorage:
@@ -123,10 +115,7 @@ public class ComicBookFactory
 
     private void OnTemporaryBookChanged(object sender, BookChangedEventArgs e)
     {
-        if (this.TemporaryBookChanged != null)
-        {
-            this.TemporaryBookChanged(this, new ContainerBookChangedEventArgs((ComicBook)sender, e));
-        }
+        TemporaryBookChanged?.Invoke(this, new ContainerBookChangedEventArgs((ComicBook)sender, e));
     }
 
     private void OnTemporaryBooksChanged(object sender, SmartListChangedEventArgs<ComicBook> e)

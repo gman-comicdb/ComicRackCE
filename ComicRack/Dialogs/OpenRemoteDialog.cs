@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using cYo.Common.Drawing;
 using cYo.Common.Localize;
 using cYo.Common.Text;
 using cYo.Common.Threading;
@@ -25,10 +23,7 @@ public partial class OpenRemoteDialog : FormEx
 
     public bool ShowPublic
     {
-        get
-        {
-            return showPublic;
-        }
+        get => showPublic;
         set
         {
             showPublic = value;
@@ -37,15 +32,11 @@ public partial class OpenRemoteDialog : FormEx
                 FillServers();
             }
             panelList.Visible = showPublic;
-            btPublic.Text = (showPublic ? TR.Load(base.Name)["RefreshList", "Refresh List"] : TR.Load(base.Name)["ShowList", "Show List"]);
+            btPublic.Text = showPublic ? TR.Load(base.Name)["RefreshList", "Refresh List"] : TR.Load(base.Name)["ShowList", "Show List"];
         }
     }
 
-    private RemoteShareItem CurrentItem
-    {
-        get;
-        set;
-    }
+    private RemoteShareItem CurrentItem { get; set; }
 
     public OpenRemoteDialog()
     {
@@ -99,14 +90,7 @@ public partial class OpenRemoteDialog : FormEx
 
     private void cbServer_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (cbServer.SelectedIndex == -1)
-        {
-            CurrentItem = null;
-        }
-        else
-        {
-            CurrentItem = cbServer.SelectedItem as RemoteShareItem;
-        }
+        CurrentItem = cbServer.SelectedIndex == -1 ? null : cbServer.SelectedItem as RemoteShareItem;
     }
 
     private void cbServer_TextUpdate(object sender, EventArgs e)
@@ -192,7 +176,7 @@ public partial class OpenRemoteDialog : FormEx
 
     public static RemoteShareItem GetShare(IWin32Window parent, RemoteShareItem share, IEnumerable<RemoteShareItem> list, bool showPublic)
     {
-        using (OpenRemoteDialog openRemoteDialog = new OpenRemoteDialog())
+        using (OpenRemoteDialog openRemoteDialog = new())
         {
             openRemoteDialog.cbServer.Items.AddRange(list.ToArray());
             if (share != null)

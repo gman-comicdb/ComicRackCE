@@ -11,7 +11,7 @@ public class ValuesStore
 {
     private static readonly IEqualityComparer<string> keyEquality = StringComparer.OrdinalIgnoreCase;
 
-    private readonly Dictionary<string, string> lookup = new Dictionary<string, string>(keyEquality);
+    private readonly Dictionary<string, string> lookup = new(keyEquality);
 
     public ValuesStore(string store)
     {
@@ -27,11 +27,7 @@ public class ValuesStore
 
     public string Get(string key)
     {
-        if (!lookup.TryGetValue(key, out var value))
-        {
-            return null;
-        }
-        return value;
+        return !lookup.TryGetValue(key, out var value) ? null : value;
     }
 
     public ValuesStore Add(string key, string value)
@@ -66,7 +62,7 @@ public class ValuesStore
         {
             return string.Empty;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         foreach (string item in lookup.Keys.OrderBy((string s) => s))
         {
             if (item.Length != 0)
@@ -92,14 +88,12 @@ public class ValuesStore
 
     public static IEnumerable<StringPair> GetValues(string store)
     {
-        if (store == null)
-        {
-            return Enumerable.Empty<StringPair>();
-        }
-        return from l in store.Split(',')
+        return store == null
+            ? []
+            : (from l in store.Split(',')
                select l.Split('=') into kvp
                where kvp.Length == 2
-               select new StringPair(Decode(kvp[0]), Decode(kvp[1]));
+               select new StringPair(Decode(kvp[0]), Decode(kvp[1])));
     }
 
     public static string GetValue(string store, string key)

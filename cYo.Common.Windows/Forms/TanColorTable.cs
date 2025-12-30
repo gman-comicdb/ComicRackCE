@@ -46,7 +46,7 @@ public class TanColorTable : ProfessionalColorTable
                 colorScheme = VisualStyleInformation.ColorScheme;
                 if (VisualStyleInformation.IsEnabledByUser)
                 {
-                    StringBuilder stringBuilder = new StringBuilder(512);
+                    StringBuilder stringBuilder = new(512);
                     GetCurrentThemeName(stringBuilder, stringBuilder.Capacity, null, 0, null, 0);
                     string path = stringBuilder.ToString();
                     isLunaTheme = string.Equals(lunaFileName, Path.GetFileName(path), StringComparison.InvariantCultureIgnoreCase);
@@ -110,173 +110,33 @@ public class TanColorTable : ProfessionalColorTable
 
     private Dictionary<KnownColors, Color> tanRGB;
 
-    public override Color ButtonCheckedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonCheckedGradientBegin);
-            }
-            return base.ButtonCheckedGradientBegin;
-        }
-    }
+    public override Color ButtonCheckedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonCheckedGradientBegin) : base.ButtonCheckedGradientBegin;
 
-    public override Color ButtonCheckedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonCheckedGradientEnd);
-            }
-            return base.ButtonCheckedGradientEnd;
-        }
-    }
+    public override Color ButtonCheckedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonCheckedGradientEnd) : base.ButtonCheckedGradientEnd;
 
-    public override Color ButtonCheckedGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonCheckedGradientMiddle);
-            }
-            return base.ButtonCheckedGradientMiddle;
-        }
-    }
+    public override Color ButtonCheckedGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonCheckedGradientMiddle) : base.ButtonCheckedGradientMiddle;
 
-    public override Color ButtonPressedBorder
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonPressedBorder);
-            }
-            return base.ButtonPressedBorder;
-        }
-    }
+    public override Color ButtonPressedBorder => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonPressedBorder) : base.ButtonPressedBorder;
 
-    public override Color ButtonPressedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonPressedGradientBegin);
-            }
-            return base.ButtonPressedGradientBegin;
-        }
-    }
+    public override Color ButtonPressedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonPressedGradientBegin) : base.ButtonPressedGradientBegin;
 
-    public override Color ButtonPressedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonPressedGradientEnd);
-            }
-            return base.ButtonPressedGradientEnd;
-        }
-    }
+    public override Color ButtonPressedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonPressedGradientEnd) : base.ButtonPressedGradientEnd;
 
-    public override Color ButtonPressedGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonPressedGradientMiddle);
-            }
-            return base.ButtonPressedGradientMiddle;
-        }
-    }
+    public override Color ButtonPressedGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonPressedGradientMiddle) : base.ButtonPressedGradientMiddle;
 
-    public override Color ButtonSelectedBorder
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonPressedBorder);
-            }
-            return base.ButtonSelectedBorder;
-        }
-    }
+    public override Color ButtonSelectedBorder => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonPressedBorder) : base.ButtonSelectedBorder;
 
-    public override Color ButtonSelectedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonSelectedGradientBegin);
-            }
-            return base.ButtonSelectedGradientBegin;
-        }
-    }
+    public override Color ButtonSelectedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonSelectedGradientBegin) : base.ButtonSelectedGradientBegin;
 
-    public override Color ButtonSelectedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonSelectedGradientEnd);
-            }
-            return base.ButtonSelectedGradientEnd;
-        }
-    }
+    public override Color ButtonSelectedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonSelectedGradientEnd) : base.ButtonSelectedGradientEnd;
 
-    public override Color ButtonSelectedGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonSelectedGradientMiddle);
-            }
-            return base.ButtonSelectedGradientMiddle;
-        }
-    }
+    public override Color ButtonSelectedGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonSelectedGradientMiddle) : base.ButtonSelectedGradientMiddle;
 
-    public override Color CheckBackground
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.CheckBackground);
-            }
-            return base.CheckBackground;
-        }
-    }
+    public override Color CheckBackground => !UseBaseColorTable ? FromKnownColor(KnownColors.CheckBackground) : base.CheckBackground;
 
-    public override Color CheckPressedBackground
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.CheckBackgroundMouseOver);
-            }
-            return base.CheckPressedBackground;
-        }
-    }
+    public override Color CheckPressedBackground => !UseBaseColorTable ? FromKnownColor(KnownColors.CheckBackgroundMouseOver) : base.CheckPressedBackground;
 
-    public override Color CheckSelectedBackground
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.CheckBackgroundMouseOver);
-            }
-            return base.CheckSelectedBackground;
-        }
-    }
+    public override Color CheckSelectedBackground => !UseBaseColorTable ? FromKnownColor(KnownColors.CheckBackgroundMouseOver) : base.CheckSelectedBackground;
 
     internal static string ColorScheme => DisplayInformation.ColorScheme;
 
@@ -293,365 +153,65 @@ public class TanColorTable : ProfessionalColorTable
         }
     }
 
-    public override Color GripDark
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.GripDark);
-            }
-            return base.GripDark;
-        }
-    }
+    public override Color GripDark => !UseBaseColorTable ? FromKnownColor(KnownColors.GripDark) : base.GripDark;
 
-    public override Color GripLight
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.GripLight);
-            }
-            return base.GripLight;
-        }
-    }
+    public override Color GripLight => !UseBaseColorTable ? FromKnownColor(KnownColors.GripLight) : base.GripLight;
 
-    public override Color ImageMarginGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientBegin);
-            }
-            return base.ImageMarginGradientBegin;
-        }
-    }
+    public override Color ImageMarginGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientBegin) : base.ImageMarginGradientBegin;
 
-    public override Color ImageMarginGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientEnd);
-            }
-            return base.ImageMarginGradientEnd;
-        }
-    }
+    public override Color ImageMarginGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientEnd) : base.ImageMarginGradientEnd;
 
-    public override Color ImageMarginGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientMiddle);
-            }
-            return base.ImageMarginGradientMiddle;
-        }
-    }
+    public override Color ImageMarginGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientMiddle) : base.ImageMarginGradientMiddle;
 
-    public override Color ImageMarginRevealedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginRevealedGradientBegin);
-            }
-            return base.ImageMarginRevealedGradientBegin;
-        }
-    }
+    public override Color ImageMarginRevealedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginRevealedGradientBegin) : base.ImageMarginRevealedGradientBegin;
 
-    public override Color ImageMarginRevealedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginRevealedGradientEnd);
-            }
-            return base.ImageMarginRevealedGradientEnd;
-        }
-    }
+    public override Color ImageMarginRevealedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginRevealedGradientEnd) : base.ImageMarginRevealedGradientEnd;
 
-    public override Color ImageMarginRevealedGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle);
-            }
-            return base.ImageMarginRevealedGradientMiddle;
-        }
-    }
+    public override Color ImageMarginRevealedGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle) : base.ImageMarginRevealedGradientMiddle;
 
-    public override Color MenuBorder
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuBorder);
-            }
-            return base.MenuItemBorder;
-        }
-    }
+    public override Color MenuBorder => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuBorder) : base.MenuItemBorder;
 
-    public override Color MenuItemBorder
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuItemBorder);
-            }
-            return base.MenuItemBorder;
-        }
-    }
+    public override Color MenuItemBorder => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuItemBorder) : base.MenuItemBorder;
 
-    public override Color MenuItemPressedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuItemPressedGradientBegin);
-            }
-            return base.MenuItemPressedGradientBegin;
-        }
-    }
+    public override Color MenuItemPressedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuItemPressedGradientBegin) : base.MenuItemPressedGradientBegin;
 
-    public override Color MenuItemPressedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuItemPressedGradientEnd);
-            }
-            return base.MenuItemPressedGradientEnd;
-        }
-    }
+    public override Color MenuItemPressedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuItemPressedGradientEnd) : base.MenuItemPressedGradientEnd;
 
-    public override Color MenuItemPressedGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle);
-            }
-            return base.MenuItemPressedGradientMiddle;
-        }
-    }
+    public override Color MenuItemPressedGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginRevealedGradientMiddle) : base.MenuItemPressedGradientMiddle;
 
-    public override Color MenuItemSelected
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuItemSelected);
-            }
-            return base.MenuItemSelected;
-        }
-    }
+    public override Color MenuItemSelected => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuItemSelected) : base.MenuItemSelected;
 
-    public override Color MenuItemSelectedGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonSelectedGradientBegin);
-            }
-            return base.MenuItemSelectedGradientBegin;
-        }
-    }
+    public override Color MenuItemSelectedGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonSelectedGradientBegin) : base.MenuItemSelectedGradientBegin;
 
-    public override Color MenuItemSelectedGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ButtonSelectedGradientEnd);
-            }
-            return base.MenuItemSelectedGradientEnd;
-        }
-    }
+    public override Color MenuItemSelectedGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ButtonSelectedGradientEnd) : base.MenuItemSelectedGradientEnd;
 
-    public override Color MenuStripGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuStripGradientBegin);
-            }
-            return base.MenuStripGradientBegin;
-        }
-    }
+    public override Color MenuStripGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuStripGradientBegin) : base.MenuStripGradientBegin;
 
-    public override Color MenuStripGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuStripGradientEnd);
-            }
-            return base.MenuStripGradientEnd;
-        }
-    }
+    public override Color MenuStripGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuStripGradientEnd) : base.MenuStripGradientEnd;
 
-    public override Color OverflowButtonGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.OverflowButtonGradientBegin);
-            }
-            return base.OverflowButtonGradientBegin;
-        }
-    }
+    public override Color OverflowButtonGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.OverflowButtonGradientBegin) : base.OverflowButtonGradientBegin;
 
-    public override Color OverflowButtonGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.OverflowButtonGradientEnd);
-            }
-            return base.OverflowButtonGradientEnd;
-        }
-    }
+    public override Color OverflowButtonGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.OverflowButtonGradientEnd) : base.OverflowButtonGradientEnd;
 
-    public override Color OverflowButtonGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.OverflowButtonGradientMiddle);
-            }
-            return base.OverflowButtonGradientMiddle;
-        }
-    }
+    public override Color OverflowButtonGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.OverflowButtonGradientMiddle) : base.OverflowButtonGradientMiddle;
 
-    public override Color RaftingContainerGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuStripGradientBegin);
-            }
-            return base.RaftingContainerGradientBegin;
-        }
-    }
+    public override Color RaftingContainerGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuStripGradientBegin) : base.RaftingContainerGradientBegin;
 
-    public override Color RaftingContainerGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.MenuStripGradientEnd);
-            }
-            return base.RaftingContainerGradientEnd;
-        }
-    }
+    public override Color RaftingContainerGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.MenuStripGradientEnd) : base.RaftingContainerGradientEnd;
 
-    public override Color SeparatorDark
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.SeparatorDark);
-            }
-            return base.SeparatorDark;
-        }
-    }
+    public override Color SeparatorDark => !UseBaseColorTable ? FromKnownColor(KnownColors.SeparatorDark) : base.SeparatorDark;
 
-    public override Color SeparatorLight
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.SeparatorLight);
-            }
-            return base.SeparatorLight;
-        }
-    }
+    public override Color SeparatorLight => !UseBaseColorTable ? FromKnownColor(KnownColors.SeparatorLight) : base.SeparatorLight;
 
-    public override Color ToolStripBorder
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ToolStripBorder);
-            }
-            return base.ToolStripBorder;
-        }
-    }
+    public override Color ToolStripBorder => !UseBaseColorTable ? FromKnownColor(KnownColors.ToolStripBorder) : base.ToolStripBorder;
 
-    public override Color ToolStripDropDownBackground
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ToolStripDropDownBackground);
-            }
-            return base.ToolStripDropDownBackground;
-        }
-    }
+    public override Color ToolStripDropDownBackground => !UseBaseColorTable ? FromKnownColor(KnownColors.ToolStripDropDownBackground) : base.ToolStripDropDownBackground;
 
-    public override Color ToolStripGradientBegin
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientBegin);
-            }
-            return base.ToolStripGradientBegin;
-        }
-    }
+    public override Color ToolStripGradientBegin => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientBegin) : base.ToolStripGradientBegin;
 
-    public override Color ToolStripGradientEnd
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientEnd);
-            }
-            return base.ToolStripGradientEnd;
-        }
-    }
+    public override Color ToolStripGradientEnd => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientEnd) : base.ToolStripGradientEnd;
 
-    public override Color ToolStripGradientMiddle
-    {
-        get
-        {
-            if (!UseBaseColorTable)
-            {
-                return FromKnownColor(KnownColors.ImageMarginGradientMiddle);
-            }
-            return base.ToolStripGradientMiddle;
-        }
-    }
+    public override Color ToolStripGradientMiddle => !UseBaseColorTable ? FromKnownColor(KnownColors.ImageMarginGradientMiddle) : base.ToolStripGradientMiddle;
 
     private bool UseBaseColorTable
     {

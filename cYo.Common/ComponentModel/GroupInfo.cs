@@ -20,23 +20,11 @@ public class GroupInfo : IGroupInfo, IComparable<IGroupInfo>
 
     private static readonly string[] sizeGroups = TRGroup.GetStrings("SizeGroups", "Empty|Very Small|Small|Medium|Big|Huge", '|');
 
-    public object Key
-    {
-        get;
-        set;
-    }
+    public object Key { get; set; }
 
-    public int Index
-    {
-        get;
-        set;
-    }
+    public int Index { get; set; }
 
-    public string Caption
-    {
-        get;
-        set;
-    }
+    public string Caption { get; set; }
 
     public GroupInfo(object key, string caption, int index = -1)
     {
@@ -145,7 +133,7 @@ public class GroupInfo : IGroupInfo, IComparable<IGroupInfo>
         {
             return string.Empty;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         string[] array = text.Split(StringUtility.CommonSeparators);
         foreach (string text2 in array)
         {
@@ -165,14 +153,12 @@ public class GroupInfo : IGroupInfo, IComparable<IGroupInfo>
 
     public static IEnumerable<IGroupInfo> GetCompressedNameGroups(string text)
     {
-        if (!text.Contains(","))
-        {
-            return new IGroupInfo[1]
+        return !text.Contains(",")
+            ? (new IGroupInfo[1]
             {
                 GetCompressedNameGroup(text)
-            };
-        }
-        return text.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(GetCompressedNameGroup);
+            })
+            : text.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(GetCompressedNameGroup);
     }
 
     public static IGroupInfo GetAlphabetGroup(string text, bool articleAware)
@@ -184,7 +170,7 @@ public class GroupInfo : IGroupInfo, IComparable<IGroupInfo>
         }
         else
         {
-            int index = (articleAware ? text.IndexAfterArticle() : 0);
+            int index = articleAware ? text.IndexAfterArticle() : 0;
             char c = char.ToUpper(text[index]).Normalize();
             if (char.IsDigit(c))
             {
@@ -208,44 +194,26 @@ public class GroupInfo : IGroupInfo, IComparable<IGroupInfo>
         {
             return new GroupInfo(sizeGroups[0], 0);
         }
-        if (size < 1048576)
-        {
-            return new GroupInfo(sizeGroups[1], 1);
-        }
-        if (size < 10485760)
-        {
-            return new GroupInfo(sizeGroups[2], 2);
-        }
-        if (size < 52428800)
-        {
-            return new GroupInfo(sizeGroups[3], 3);
-        }
-        if (size < 104857600)
-        {
-            return new GroupInfo(sizeGroups[4], 4);
-        }
-        return new GroupInfo(sizeGroups[5], 5);
+        return size < 1048576
+            ? new GroupInfo(sizeGroups[1], 1)
+            : size < 10485760
+            ? new GroupInfo(sizeGroups[2], 2)
+            : size < 52428800
+            ? new GroupInfo(sizeGroups[3], 3)
+            : size < 104857600 ? new GroupInfo(sizeGroups[4], 4) : new GroupInfo(sizeGroups[5], 5);
     }
 
     public static int Compare(IGroupInfo x, IGroupInfo y)
     {
-        if (x == null && y == null)
-        {
-            return 0;
-        }
-        if (x == null)
-        {
-            return -1;
-        }
-        if (y == null)
-        {
-            return 1;
-        }
-        if (x.Index == y.Index)
-        {
-            return ExtendedStringComparer.Compare(x.Caption, y.Caption, ExtendedStringComparison.IgnoreArticles);
-        }
-        return x.Index.CompareTo(y.Index);
+        return x == null && y == null
+            ? 0
+            : x == null
+            ? -1
+            : y == null
+            ? 1
+            : x.Index == y.Index
+            ? ExtendedStringComparer.Compare(x.Caption, y.Caption, ExtendedStringComparison.IgnoreArticles)
+            : x.Index.CompareTo(y.Index);
     }
 
     public int CompareTo(IGroupInfo other)

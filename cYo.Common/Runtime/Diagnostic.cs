@@ -24,7 +24,7 @@ public static class Diagnostic
     public static void StartWatchDog(BarkEventHandler bark, int lockTestTimeSeconds = 0)
     {
         ThreadUtility.AddActiveThread(Thread.CurrentThread);
-        CrashWatchDog crashWatchDog = new CrashWatchDog
+        CrashWatchDog crashWatchDog = new()
         {
             LockTestTime = TimeSpan.FromSeconds(lockTestTimeSeconds)
         };

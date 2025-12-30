@@ -22,14 +22,12 @@ public class ScanItemFileOrFolder : ScanItem
 
     public override IEnumerable<string> GetScanFiles()
     {
-        if (File.Exists(fileOrFolder))
-        {
-            return new string[1]
+        return File.Exists(fileOrFolder)
+            ? (new string[1]
             {
                 fileOrFolder
-            };
-        }
-        return FileUtility.GetFiles(fileOrFolder, all ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, ValidateFolder);
+            })
+            : FileUtility.GetFiles(fileOrFolder, all ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, ValidateFolder);
     }
 
     public override string ToString()
@@ -44,10 +42,8 @@ public class ScanItemFileOrFolder : ScanItem
             return FileUtility.FileFolderAction.Default;
         }
         string text = Path.Combine(path, "comicrackscanner.ini");
-        if (!File.Exists(text))
-        {
-            return FileUtility.FileFolderAction.Default;
-        }
-        return IniFile.GetValue(text, "options", FileUtility.FileFolderAction.Default);
+        return !File.Exists(text)
+            ? FileUtility.FileFolderAction.Default
+            : IniFile.GetValue(text, "options", FileUtility.FileFolderAction.Default);
     }
 }

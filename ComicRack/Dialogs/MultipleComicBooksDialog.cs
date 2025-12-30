@@ -1,10 +1,7 @@
 #define TRACE
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -18,10 +15,8 @@ using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Viewer.Config;
 using cYo.Projects.ComicRack.Viewer.Controls;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -44,11 +39,11 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private readonly IEnumerable<ComicBook> books;
 
-    private readonly List<TextBox> listFields = new List<TextBox>();
+    private readonly List<TextBox> listFields = new();
 
-    private readonly List<TextBox> customFields = new List<TextBox>();
+    private readonly List<TextBox> customFields = new();
 
-    private readonly Dictionary<Control, HashSet<string>> oldLists = new Dictionary<Control, HashSet<string>>();
+    private readonly Dictionary<Control, HashSet<string>> oldLists = new();
 
     public MultipleComicBooksDialog(IEnumerable<ComicBook> books)
     {
@@ -93,7 +88,7 @@ public partial class MultipleComicBooksDialog : FormEx
         cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList((ComicBook cb) => cb.LanguageISO).Cast<string>().Distinct();
         this.books = books.ToArray();
         Text = StringUtility.Format(Text, books.Count());
-        labelOpenedTime.Visible = (dtpOpenedTime.Visible = (dtpOpenedTime.Enabled = (labelPagesAsTextSimple.Visible = (txPagesAsTextSimple.Visible = (txPagesAsTextSimple.Enabled = !books.Any((ComicBook cb) => cb.IsLinked))))));
+        labelOpenedTime.Visible = dtpOpenedTime.Visible = dtpOpenedTime.Enabled = labelPagesAsTextSimple.Visible = txPagesAsTextSimple.Visible = txPagesAsTextSimple.Enabled = !books.Any((ComicBook cb) => cb.IsLinked);
         txCommunityRating.Enabled = txRating.Enabled = cbEnableProposed.Enabled = cbSeriesComplete.Enabled = books.All((ComicBook cb) => cb.IsInContainer);
         SpinButton.AddUpDown(txVolume);
         SpinButton.AddUpDown(txCount, 1, 0);
@@ -228,7 +223,7 @@ public partial class MultipleComicBooksDialog : FormEx
         SetGrayText(cbFormat, "ProposedFormat");
         grpCatalog.Visible = !flag || !Program.Settings.CatalogOnlyForFileless;
         Label label = labelScanInformation;
-        bool visible = (txScanInformation.Visible = flag);
+        bool visible = txScanInformation.Visible = flag;
         label.Visible = visible;
         SetText(cbBookStore, "BookStore", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookStore, sort: true));
         SetText(cbBookOwner, "BookOwner", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookOwner, sort: true));
@@ -251,7 +246,7 @@ public partial class MultipleComicBooksDialog : FormEx
             string key = customField.Tag.ToString();
             SetText(customField, "{" + key + "}", delegate
             {
-                AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+                AutoCompleteStringCollection autoCompleteStringCollection = new();
                 autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany((ComicBook cb) => cb.GetCustomValues())
                                                        where p.Key.Equals(key, StringComparison.OrdinalIgnoreCase)
                                                        select p.Value).ToArray());
@@ -263,7 +258,7 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private void Store()
     {
-        List<StoreInfo> list = new List<StoreInfo>();
+        List<StoreInfo> list = new();
         foreach (CheckBox control2 in this.GetControls<CheckBox>())
         {
             if (control2.CheckState == CheckState.Unchecked)
@@ -277,12 +272,12 @@ public partial class MultipleComicBooksDialog : FormEx
             }
             string text = control.Text;
             string text2 = control.Tag as string;
-            PropertyInfo propertyInfo = (text2.StartsWith("{") ? null : typeof(ComicBook).GetProperty(text2));
-            StoreInfo storeInfo = new StoreInfo
+            PropertyInfo propertyInfo = text2.StartsWith("{") ? null : typeof(ComicBook).GetProperty(text2);
+            StoreInfo storeInfo = new()
             {
                 PropertyName = text2,
                 PropertyInfo = propertyInfo,
-                ListMode = (control2.CheckState == CheckState.Indeterminate)
+                ListMode = control2.CheckState == CheckState.Indeterminate
             };
             if (propertyInfo == null)
             {
@@ -387,7 +382,7 @@ public partial class MultipleComicBooksDialog : FormEx
 
     private CheckBox MakeCheckBox(Control c)
     {
-        CheckBox checkBox = new CheckBox();
+        CheckBox checkBox = new();
         c.Parent.Controls.Add(checkBox);
         checkBox.AutoSize = true;
         checkBox.Visible = true;
@@ -398,8 +393,7 @@ public partial class MultipleComicBooksDialog : FormEx
         checkBox.Top = c.Top + (c.Height - checkBox.Height) / 2;
         c.Left += checkBox.Width + 2;
         c.Width -= checkBox.Width + 2;
-        Label label = base.Controls[c.Name.Replace("tx", "label").Replace("cb", "label")] as Label;
-        if (label != null)
+        if (base.Controls[c.Name.Replace("tx", "label").Replace("cb", "label")] is Label label)
         {
             label.Left = c.Left;
         }
@@ -486,7 +480,7 @@ public partial class MultipleComicBooksDialog : FormEx
                 flag &= text == stringPropertyValue;
             }
             HashSet<string> hashSet2 = stringPropertyValue.ListStringToSet(',');
-            hashSet = ((hashSet != null) ? new HashSet<string>(hashSet.Intersect(hashSet2)) : hashSet2);
+            hashSet = (hashSet != null) ? new HashSet<string>(hashSet.Intersect(hashSet2)) : hashSet2;
         }
         c.Text = hashSet.ToListString(", ");
         oldLists[c] = hashSet;
@@ -498,10 +492,10 @@ public partial class MultipleComicBooksDialog : FormEx
         bool flag = propName.StartsWith("{");
         bool flag2 = true;
         object obj = null;
-        PropertyInfo propertyInfo = (flag ? null : typeof(ComicBook).GetProperty(propName));
+        PropertyInfo propertyInfo = flag ? null : typeof(ComicBook).GetProperty(propName);
         foreach (ComicBook book in books)
         {
-            object obj2 = ((propertyInfo == null) ? book.GetStringPropertyValue(propName) : propertyInfo.GetValue(book, null));
+            object obj2 = (propertyInfo == null) ? book.GetStringPropertyValue(propName) : propertyInfo.GetValue(book, null);
             if (obj == null)
             {
                 obj = obj2;
@@ -532,9 +526,8 @@ public partial class MultipleComicBooksDialog : FormEx
                 {
                     EditControlUtility.SetText(c, (MangaYesNo)obj);
                 }
-                else if (obj is int)
+                else if (obj is int num)
                 {
-                    int num = (int)obj;
                     if (num != -1)
                     {
                         c.Text = num.ToString();
@@ -566,8 +559,7 @@ public partial class MultipleComicBooksDialog : FormEx
     private void SetText(TextBox textBox, string propName, Func<AutoCompleteStringCollection> autoCompletePredicate)
     {
         SetText(textBox, propName);
-        IDelayedAutoCompleteList delayedAutoCompleteList = textBox as IDelayedAutoCompleteList;
-        if (delayedAutoCompleteList != null)
+        if (textBox is IDelayedAutoCompleteList delayedAutoCompleteList)
         {
             if (autoCompletePredicate != null)
             {
@@ -592,7 +584,7 @@ public partial class MultipleComicBooksDialog : FormEx
         {
             Func<IEnumerable<string>> allItems = delegate
             {
-                HashSet<string> hashSet = new HashSet<string>
+                HashSet<string> hashSet = new()
                 {
                     string.Empty
                 };

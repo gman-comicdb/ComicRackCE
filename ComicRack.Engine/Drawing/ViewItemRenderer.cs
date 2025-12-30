@@ -11,37 +11,21 @@ public abstract class ViewItemRenderer : ThumbRenderer
 
     private Color foreColor = SystemColors.WindowText;
 
-    private readonly List<TextLine> textLines = new List<TextLine>();
+    private readonly List<TextLine> textLines = new();
 
     public Color BackColor
     {
-        get
-        {
-            return backColor;
-        }
-        set
-        {
-            backColor = value;
-        }
+        get => backColor;
+        set => backColor = value;
     }
 
     public Color ForeColor
     {
-        get
-        {
-            return foreColor;
-        }
-        set
-        {
-            foreColor = value;
-        }
+        get => foreColor;
+        set => foreColor = value;
     }
 
-    public Size Border
-    {
-        get;
-        set;
-    }
+    public Size Border { get; set; }
 
     public List<TextLine> TextLines => textLines;
 

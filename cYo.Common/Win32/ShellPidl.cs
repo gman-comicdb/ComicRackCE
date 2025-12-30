@@ -569,12 +569,7 @@ public class ShellPidl : DisposableObject, IComparable, ICloneable
 
     public override bool Equals(object obj)
     {
-        ShellPidl shellPidl = obj as ShellPidl;
-        if (shellPidl == null)
-        {
-            return false;
-        }
-        return DesktopFolder.CompareIDs(NativeMethods.SHCIDS.SHCIDS_CANONICALONLY, myPidl, shellPidl.myPidl) == 0;
+        return obj is not ShellPidl shellPidl ? false : DesktopFolder.CompareIDs(NativeMethods.SHCIDS.SHCIDS_CANONICALONLY, myPidl, shellPidl.myPidl) == 0;
     }
 
     public override int GetHashCode()
@@ -658,7 +653,7 @@ public class ShellPidl : DisposableObject, IComparable, ICloneable
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
     public List<ShellPidl> GetAncestors()
     {
-        List<ShellPidl> list = new List<ShellPidl>();
+        List<ShellPidl> list = new();
         if (myPidl == IntPtr.Zero)
         {
             return list;
@@ -681,8 +676,8 @@ public class ShellPidl : DisposableObject, IComparable, ICloneable
         {
             sHGFI |= NativeMethods.SHGFI.SHGFI_OPENICON;
         }
-        sHGFI = (((iconType & ShellIconType.Large) != 0) ? (sHGFI | NativeMethods.SHGFI.SHGFI_LARGEICON) : (sHGFI | NativeMethods.SHGFI.SHGFI_SMALLICON));
-        NativeMethods.SHFILEINFO psfi = default(NativeMethods.SHFILEINFO);
+        sHGFI = ((iconType & ShellIconType.Large) != 0) ? (sHGFI | NativeMethods.SHGFI.SHGFI_LARGEICON) : (sHGFI | NativeMethods.SHGFI.SHGFI_SMALLICON);
+        NativeMethods.SHFILEINFO psfi = default;
         try
         {
             NativeMethods.SHGetFileInfo(myPidl, 0u, ref psfi, Marshal.SizeOf((object)psfi), sHGFI);
@@ -698,7 +693,7 @@ public class ShellPidl : DisposableObject, IComparable, ICloneable
     private void InitializeObject()
     {
         bool flag = attributes == (NativeMethods.SFGAO)0u;
-        NativeMethods.SHFILEINFO psfi = default(NativeMethods.SHFILEINFO);
+        NativeMethods.SHFILEINFO psfi = default;
         NativeMethods.SHGetFileInfo(myPidl, 0u, ref psfi, Marshal.SizeOf((object)psfi), NativeMethods.SHGFI.SHGFI_DISPLAYNAME | NativeMethods.SHGFI.SHGFI_SYSICONINDEX | NativeMethods.SHGFI.SHGFI_SMALLICON | NativeMethods.SHGFI.SHGFI_PIDL | (flag ? NativeMethods.SHGFI.SHGFI_ATTRIBUTES : NativeMethods.SHGFI.SHGFI_LARGEICON) | NativeMethods.SHGFI.SHGFI_TYPENAME);
         displayName = psfi.szDisplayName;
         typeName = psfi.szTypeName;
@@ -707,75 +702,48 @@ public class ShellPidl : DisposableObject, IComparable, ICloneable
         {
             attributes = (NativeMethods.SFGAO)psfi.dwAttributes;
         }
-        StringBuilder stringBuilder = new StringBuilder(260);
+        StringBuilder stringBuilder = new(260);
         NativeMethods.SHGetPathFromIDList(myPidl, stringBuilder);
         physicalPath = stringBuilder.ToString();
     }
 
     private static NativeMethods.CSIDL SpecialFolderToCSIDL(Environment.SpecialFolder sf)
     {
-        switch (sf)
+        return sf switch
         {
-            case Environment.SpecialFolder.ApplicationData:
-                return NativeMethods.CSIDL.CSIDL_APPDATA;
-            case Environment.SpecialFolder.CommonApplicationData:
-                return NativeMethods.CSIDL.CSIDL_COMMON_APPDATA;
-            case Environment.SpecialFolder.CommonProgramFiles:
-                return NativeMethods.CSIDL.CSIDL_COMMON_PROGRAMS;
-            case Environment.SpecialFolder.Cookies:
-                return NativeMethods.CSIDL.CSIDL_COOKIES;
-            case Environment.SpecialFolder.DesktopDirectory:
-                return NativeMethods.CSIDL.CSIDL_DESKTOPDIRECTORY;
-            case Environment.SpecialFolder.Favorites:
-                return NativeMethods.CSIDL.CSIDL_FAVORITES;
-            case Environment.SpecialFolder.History:
-                return NativeMethods.CSIDL.CSIDL_HISTORY;
-            case Environment.SpecialFolder.InternetCache:
-                return NativeMethods.CSIDL.CSIDL_INTERNET_CACHE;
-            case Environment.SpecialFolder.LocalApplicationData:
-                return NativeMethods.CSIDL.CSIDL_LOCAL_APPDATA;
-            case Environment.SpecialFolder.MyComputer:
-                return NativeMethods.CSIDL.CSIDL_DRIVES;
-            case Environment.SpecialFolder.MyMusic:
-                return NativeMethods.CSIDL.CSIDL_MYMUSIC;
-            case Environment.SpecialFolder.MyPictures:
-                return NativeMethods.CSIDL.CSIDL_MYPICTURES;
-            case Environment.SpecialFolder.Personal:
-                return NativeMethods.CSIDL.CSIDL_PERSONAL;
-            case Environment.SpecialFolder.ProgramFiles:
-                return NativeMethods.CSIDL.CSIDL_PROGRAM_FILES;
-            case Environment.SpecialFolder.Programs:
-                return NativeMethods.CSIDL.CSIDL_PROGRAMS;
-            case Environment.SpecialFolder.Recent:
-                return NativeMethods.CSIDL.CSIDL_RECENT;
-            case Environment.SpecialFolder.SendTo:
-                return NativeMethods.CSIDL.CSIDL_SENDTO;
-            case Environment.SpecialFolder.StartMenu:
-                return NativeMethods.CSIDL.CSIDL_STARTMENU;
-            case Environment.SpecialFolder.Startup:
-                return NativeMethods.CSIDL.CSIDL_STARTUP;
-            case Environment.SpecialFolder.System:
-                return NativeMethods.CSIDL.CSIDL_SYSTEM;
-            case Environment.SpecialFolder.Templates:
-                return NativeMethods.CSIDL.CSIDL_TEMPLATES;
-            default:
-                return NativeMethods.CSIDL.CSIDL_DESKTOP;
-        }
+            Environment.SpecialFolder.ApplicationData => NativeMethods.CSIDL.CSIDL_APPDATA,
+            Environment.SpecialFolder.CommonApplicationData => NativeMethods.CSIDL.CSIDL_COMMON_APPDATA,
+            Environment.SpecialFolder.CommonProgramFiles => NativeMethods.CSIDL.CSIDL_COMMON_PROGRAMS,
+            Environment.SpecialFolder.Cookies => NativeMethods.CSIDL.CSIDL_COOKIES,
+            Environment.SpecialFolder.DesktopDirectory => NativeMethods.CSIDL.CSIDL_DESKTOPDIRECTORY,
+            Environment.SpecialFolder.Favorites => NativeMethods.CSIDL.CSIDL_FAVORITES,
+            Environment.SpecialFolder.History => NativeMethods.CSIDL.CSIDL_HISTORY,
+            Environment.SpecialFolder.InternetCache => NativeMethods.CSIDL.CSIDL_INTERNET_CACHE,
+            Environment.SpecialFolder.LocalApplicationData => NativeMethods.CSIDL.CSIDL_LOCAL_APPDATA,
+            Environment.SpecialFolder.MyComputer => NativeMethods.CSIDL.CSIDL_DRIVES,
+            Environment.SpecialFolder.MyMusic => NativeMethods.CSIDL.CSIDL_MYMUSIC,
+            Environment.SpecialFolder.MyPictures => NativeMethods.CSIDL.CSIDL_MYPICTURES,
+            Environment.SpecialFolder.Personal => NativeMethods.CSIDL.CSIDL_PERSONAL,
+            Environment.SpecialFolder.ProgramFiles => NativeMethods.CSIDL.CSIDL_PROGRAM_FILES,
+            Environment.SpecialFolder.Programs => NativeMethods.CSIDL.CSIDL_PROGRAMS,
+            Environment.SpecialFolder.Recent => NativeMethods.CSIDL.CSIDL_RECENT,
+            Environment.SpecialFolder.SendTo => NativeMethods.CSIDL.CSIDL_SENDTO,
+            Environment.SpecialFolder.StartMenu => NativeMethods.CSIDL.CSIDL_STARTMENU,
+            Environment.SpecialFolder.Startup => NativeMethods.CSIDL.CSIDL_STARTUP,
+            Environment.SpecialFolder.System => NativeMethods.CSIDL.CSIDL_SYSTEM,
+            Environment.SpecialFolder.Templates => NativeMethods.CSIDL.CSIDL_TEMPLATES,
+            _ => NativeMethods.CSIDL.CSIDL_DESKTOP,
+        };
     }
 
     public int CompareTo(object obj)
     {
-        ShellPidl shellPidl = obj as ShellPidl;
-        if (shellPidl == null)
-        {
-            return 0;
-        }
-        return DesktopFolder.CompareIDs(NativeMethods.SHCIDS.SHCIDS_CANONICALONLY, shellPidl.Pidl, myPidl);
+        return obj is not ShellPidl shellPidl ? 0 : DesktopFolder.CompareIDs(NativeMethods.SHCIDS.SHCIDS_CANONICALONLY, shellPidl.Pidl, myPidl);
     }
 
     public object Clone()
     {
-        ShellPidl shellPidl = new ShellPidl();
+        ShellPidl shellPidl = new();
         shellPidl.myPidl = NativeMethods.ILClone(myPidl);
         shellPidl.displayName = displayName;
         shellPidl.typeName = typeName;

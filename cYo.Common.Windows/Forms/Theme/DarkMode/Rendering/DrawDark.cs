@@ -37,22 +37,22 @@ internal static class DrawDark
 
         if (checkBox.CheckState == CheckState.Checked)
         {
-            checkMark = new Point[6] {
-                new Point(boxRect.Left + 3, boxRect.Top + (boxRect.Height/2) + 2),
-                new Point(boxRect.Left + boxRect.Width / 2 -1, boxRect.Bottom - 3),
-                new Point(boxRect.Right - 3, boxRect.Top + 5),
-                new Point(boxRect.Right - 3, boxRect.Top + 4),
-                new Point(boxRect.Left + boxRect.Width / 2 - 1, boxRect.Bottom - 4),
-                new Point(boxRect.Left + 3, boxRect.Top + (boxRect.Height / 2) + 1),
-            };
+            checkMark = [
+                new(boxRect.Left + 3, boxRect.Top + (boxRect.Height/2) + 2),
+                new(boxRect.Left + boxRect.Width / 2 -1, boxRect.Bottom - 3),
+                new(boxRect.Right - 3, boxRect.Top + 5),
+                new(boxRect.Right - 3, boxRect.Top + 4),
+                new(boxRect.Left + boxRect.Width / 2 - 1, boxRect.Bottom - 4),
+                new(boxRect.Left + 3, boxRect.Top + (boxRect.Height / 2) + 1),
+            ];
         }
         else
         {
             // CheckState.Indeterminate
-            checkMark = new Point[2] {
-                new Point(boxRect.Left + 4, boxRect.Top + (boxRect.Height/2) + 1),
-                new Point(boxRect.Right - 4, boxRect.Top + (boxRect.Height/2) + 1)
-            };
+            checkMark = [
+                new(boxRect.Left + 4, boxRect.Top + (boxRect.Height/2) + 1),
+                new(boxRect.Right - 4, boxRect.Top + (boxRect.Height/2) + 1)
+            ];
         }
 
         g.DrawPolygon(checkBox.Enabled ? SystemPens.ControlLight : SystemPens.GrayText, checkMark);

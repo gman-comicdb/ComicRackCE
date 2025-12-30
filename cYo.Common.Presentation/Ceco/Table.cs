@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace cYo.Common.Presentation.Ceco;
@@ -14,26 +15,14 @@ public class Table : Block
 
         public int ColumSpan
         {
-            get
-            {
-                return columnSpan;
-            }
-            set
-            {
-                columnSpan = value;
-            }
+            get => columnSpan;
+            set => columnSpan = value;
         }
 
         public int RowSpan
         {
-            get
-            {
-                return rowSpan;
-            }
-            set
-            {
-                rowSpan = value;
-            }
+            get => rowSpan;
+            set => rowSpan = value;
         }
 
         public void RecalcVAlign()
@@ -62,14 +51,8 @@ public class Table : Block
 
         public override HorizontalAlignment Align
         {
-            get
-            {
-                return align;
-            }
-            set
-            {
-                align = value;
-            }
+            get => align;
+            set => align = value;
         }
 
         public Row()
@@ -88,57 +71,35 @@ public class Table : Block
 
     private int cellPadding = 1;
 
-    public override FlowBreak FlowBreak
-    {
-        get
-        {
-            if (Align != 0 && Align != HorizontalAlignment.Center)
-            {
-                return FlowBreak.None;
-            }
-            return FlowBreak.BreakLine | FlowBreak.After;
-        }
-    }
+    public override FlowBreak FlowBreak => Align is not 0 and not HorizontalAlignment.Center ? FlowBreak.None : FlowBreak.BreakLine | FlowBreak.After;
 
     public int CellSpacing
     {
-        get
-        {
-            return cellSpacing;
-        }
-        set
-        {
-            cellSpacing = value;
-        }
+        get => cellSpacing;
+        set => cellSpacing = value;
     }
 
     public int CellPadding
     {
-        get
-        {
-            return cellPadding;
-        }
-        set
-        {
-            cellPadding = value;
-        }
+        get => cellPadding;
+        set => cellPadding = value;
     }
 
     protected override void CoreMeasure(Graphics gr, int maxWidth, LayoutType tbl)
     {
-        int num = ((base.Border >= 0) ? base.Border : 0);
-        int num2 = ((num > 0) ? 1 : 0);
+        int num = (base.Border >= 0) ? base.Border : 0;
+        int num2 = (num > 0) ? 1 : 0;
         int num3 = base.BlockWidth.GetSize(maxWidth) - 2 * num;
         int num4 = 0;
         int num5 = 0;
         int num6 = cellPadding + num2;
         int[] array = new int[MaxTableSize];
         Cell[,] array2 = new Cell[MaxTableSize, MaxTableSize];
-        foreach (Row inline in base.Inlines)
+        foreach (Row inline in Inlines.Cast<Row>())
         {
             int i = 0;
             int num7 = 0;
-            foreach (Cell inline2 in inline.Inlines)
+            foreach (Cell inline2 in inline.Inlines.Cast<Cell>())
             {
                 for (; array[i] > 0; i++)
                 {
@@ -173,12 +134,12 @@ public class Table : Block
                 Cell cell2 = array2[l, k];
                 if (cell2 != null && cell2.ColumSpan == 1)
                 {
-                    int num9 = (cell2.BlockWidth.IsFixed ? (cell2.Width - 2 * num6) : cell2.Width);
+                    int num9 = cell2.BlockWidth.IsFixed ? (cell2.Width - 2 * num6) : cell2.Width;
                     if (num9 < cell2.MinimumWidth)
                     {
                         num9 = cell2.MinimumWidth;
                     }
-                    int val = (cell2.BlockWidth.IsFixed ? num9 : cell2.MinimumWidth);
+                    int val = cell2.BlockWidth.IsFixed ? num9 : cell2.MinimumWidth;
                     array3[l] = Math.Max(array3[l], num9);
                     array4[l] = Math.Max(array4[l], val);
                 }
@@ -219,7 +180,7 @@ public class Table : Block
                     cell4.Width = num14;
                     if (cell4.RowSpan == 1)
                     {
-                        int num15 = ((cell4.BlockHeight != 0) ? (cell4.Height - 2 * num6) : cell4.Height);
+                        int num15 = (cell4.BlockHeight != 0) ? (cell4.Height - 2 * num6) : cell4.Height;
                         if (num15 < 0)
                         {
                             num15 = 0;
@@ -227,7 +188,7 @@ public class Table : Block
                         array5[num11] = Math.Max(array5[num11], num15);
                     }
                 }
-                num12 += array3[num13] + (2 * num6 + cellSpacing);
+                num12 += array3[num13] + 2 * num6 + cellSpacing;
             }
         }
         for (int num16 = 0; num16 < num5; num16++)
@@ -268,8 +229,8 @@ public class Table : Block
     {
         base.Draw(gr, location);
         Rectangle bounds = base.Bounds;
-        int num = ((base.Border >= 0) ? base.Border : 0);
-        int num2 = ((num > 0) ? 1 : 0);
+        int num = (base.Border >= 0) ? base.Border : 0;
+        int num2 = (num > 0) ? 1 : 0;
         bounds.Offset(location);
         if (!BackColor.IsEmpty && BackColor != Color.Transparent)
         {
@@ -282,9 +243,9 @@ public class Table : Block
         {
             ControlPaint.DrawBorder3D(gr, bounds, Border3DStyle.RaisedOuter);
         }
-        foreach (Row inline in base.Inlines)
+        foreach (Row inline in Inlines.Cast<Row>())
         {
-            foreach (Cell inline2 in inline.Inlines)
+            foreach (Cell inline2 in inline.Inlines.Cast<Cell>())
             {
                 Rectangle bounds2 = inline2.Bounds;
                 bounds2.Inflate(cellPadding, cellPadding);

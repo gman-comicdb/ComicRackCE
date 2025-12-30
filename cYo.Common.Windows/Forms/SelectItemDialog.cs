@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,42 +11,22 @@ public partial class SelectItemDialog : FormEx
 
     private string textValue;
 
-    private readonly List<string> selectionItems = new List<string>();
+    private readonly List<string> selectionItems = new();
 
-    public string CheckOptionText
-    {
-        get;
-        set;
-    }
+    public string CheckOptionText { get; set; }
 
-    public bool DefaultCheckResult
-    {
-        get;
-        set;
-    }
+    public bool DefaultCheckResult { get; set; }
 
     public string TextCaption
     {
-        get
-        {
-            return itemCaption;
-        }
-        set
-        {
-            itemCaption = value;
-        }
+        get => itemCaption;
+        set => itemCaption = value;
     }
 
     public string TextValue
     {
-        get
-        {
-            return textValue;
-        }
-        set
-        {
-            textValue = value;
-        }
+        get => textValue;
+        set => textValue = value;
     }
 
     public List<string> SelectionItems => selectionItems;
@@ -104,7 +82,7 @@ public partial class SelectItemDialog : FormEx
 
     public static string GetName<T>(IWin32Window parent, string caption, string itemValue, IEnumerable<T> list, string itemCaption = null)
     {
-        using (SelectItemDialog selectItemDialog = new SelectItemDialog())
+        using (SelectItemDialog selectItemDialog = new())
         {
             selectItemDialog.Text = caption;
             selectItemDialog.TextValue = itemValue;

@@ -15,34 +15,16 @@ public class BitmapGdiRenderer : IBitmapRenderer
 
     private float opacity = 1f;
 
-    public Graphics Graphics
-    {
-        get;
-        set;
-    }
+    public Graphics Graphics { get; set; }
 
-    public InterpolationMode LowQualityInterpolation
-    {
-        get;
-        set;
-    }
+    public InterpolationMode LowQualityInterpolation { get; set; }
 
-    public bool HighQuality
-    {
-        get;
-        set;
-    }
+    public bool HighQuality { get; set; }
 
     public Matrix Transform
     {
-        get
-        {
-            return Graphics.Transform;
-        }
-        set
-        {
-            Graphics.Transform = value;
-        }
+        get => Graphics.Transform;
+        set => Graphics.Transform = value;
     }
 
     public bool IsHardware => false;
@@ -51,38 +33,20 @@ public class BitmapGdiRenderer : IBitmapRenderer
 
     public float Opacity
     {
-        get
-        {
-            return opacity;
-        }
-        set
-        {
-            opacity = value;
-        }
+        get => opacity;
+        set => opacity = value;
     }
 
     public CompositingMode CompositingMode
     {
-        get
-        {
-            return Graphics.CompositingMode;
-        }
-        set
-        {
-            Graphics.CompositingMode = value;
-        }
+        get => Graphics.CompositingMode;
+        set => Graphics.CompositingMode = value;
     }
 
     public RectangleF Clip
     {
-        get
-        {
-            return Graphics.ClipBounds;
-        }
-        set
-        {
-            Graphics.SetClip(value);
-        }
+        get => Graphics.ClipBounds;
+        set => Graphics.SetClip(value);
     }
 
     public BitmapGdiRenderer(Graphics graphics, bool highQuality = false)
@@ -128,7 +92,7 @@ public class BitmapGdiRenderer : IBitmapRenderer
 
     public void DrawLine(IEnumerable<PointF> points, Color color, float width)
     {
-        using (Pen pen = new Pen(color, width))
+        using (Pen pen = new(color, width))
         {
             bool flag = true;
             PointF pointF = PointF.Empty;
@@ -180,10 +144,7 @@ public class BitmapGdiRenderer : IBitmapRenderer
         {
             return false;
         }
-        if (graphicsStack == null)
-        {
-            graphicsStack = new Stack<Graphics>();
-        }
+        graphicsStack ??= new Stack<Graphics>();
         graphicsStack.Push(Graphics);
         Graphics = gr;
         return true;
@@ -193,7 +154,7 @@ public class BitmapGdiRenderer : IBitmapRenderer
     {
         if (!fixedGraphics)
         {
-            Graphics = ((graphicsStack != null) ? graphicsStack.Pop() : null);
+            Graphics = (graphicsStack?.Pop());
         }
     }
 
@@ -201,15 +162,15 @@ public class BitmapGdiRenderer : IBitmapRenderer
     {
         try
         {
-            RectangleF src = new RectangleF(rs.X, rs.Y, rs.Width * blur, rs.Height * blur);
-            RectangleF destRect = new RectangleF(PointF.Empty, src.Size);
+            RectangleF src = new(rs.X, rs.Y, rs.Width * blur, rs.Height * blur);
+            RectangleF destRect = new(PointF.Empty, src.Size);
             if (destRect.Width < 8f || destRect.Height < 8f)
             {
                 return;
             }
             using (Graphics.SaveState())
             {
-                using (Bitmap image2 = new Bitmap((int)destRect.Width, (int)destRect.Height))
+                using (Bitmap image2 = new((int)destRect.Width, (int)destRect.Height))
                 {
                     using (Graphics graphics = Graphics.FromImage(image2))
                     {

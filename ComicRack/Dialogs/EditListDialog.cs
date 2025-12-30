@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,7 +8,6 @@ using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
 using cYo.Projects.ComicRack.Engine.Database;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -34,7 +32,7 @@ public partial class EditListDialog : FormEx
 
     public static bool Edit(IWin32Window parent, ComicListItem item)
     {
-        using (EditListDialog editListDialog = new EditListDialog())
+        using (EditListDialog editListDialog = new())
         {
             ComicListItemFolder comicListItemFolder = item as ComicListItemFolder;
             ShareableComicListItem shareableComicListItem = item as ShareableComicListItem;
@@ -59,7 +57,7 @@ public partial class EditListDialog : FormEx
                 editListDialog.panelBooks.Visible = false;
             }
             CheckBox checkBox = editListDialog.chkShowNotes;
-            bool @checked = (editListDialog.panelNotes.Visible = !string.IsNullOrEmpty(editListDialog.txtNotes.Text) || editListDialog.chkQuickOpen.Checked);
+            bool @checked = editListDialog.panelNotes.Visible = !string.IsNullOrEmpty(editListDialog.txtNotes.Text) || editListDialog.chkQuickOpen.Checked;
             checkBox.Checked = @checked;
             if (editListDialog.ShowDialog(parent) == DialogResult.Cancel)
             {

@@ -27,45 +27,23 @@ public class Animator
 
     public int Delay
     {
-        get
-        {
-            return delay;
-        }
-        set
-        {
-            delay = value;
-        }
+        get => delay;
+        set => delay = value;
     }
 
     public int Time => time;
 
     public int Span
     {
-        get
-        {
-            return span;
-        }
-        set
-        {
-            span = value;
-        }
+        get => span;
+        set => span = value;
     }
 
     public bool HasBeenStarted => startTime != 0;
 
     public bool IsRunning => isRunning;
 
-    public bool IsCompleted
-    {
-        get
-        {
-            if (HasBeenStarted)
-            {
-                return time >= span;
-            }
-            return false;
-        }
-    }
+    public bool IsCompleted => HasBeenStarted ? time >= span : false;
 
     public float AnimationValue => animationValue;
 
@@ -73,26 +51,14 @@ public class Animator
 
     public AnimationValueHandler AnimationValueGenerator
     {
-        get
-        {
-            return animationValueGenerator;
-        }
-        set
-        {
-            animationValueGenerator = value;
-        }
+        get => animationValueGenerator;
+        set => animationValueGenerator = value;
     }
 
     public AnimationHandler AnimationHandler
     {
-        get
-        {
-            return animationHandler;
-        }
-        set
-        {
-            animationHandler = value;
-        }
+        get => animationHandler;
+        set => animationHandler = value;
     }
 
     public static long Now => Machine.Ticks;
@@ -128,27 +94,17 @@ public class Animator
 
     protected virtual float GetAnimationValue()
     {
-        if (animationValueGenerator == null)
-        {
-            return 1f;
-        }
-        return animationValueGenerator(Time, Span);
+        return animationValueGenerator == null ? 1f : animationValueGenerator(Time, Span);
     }
 
     protected virtual void OnAnimate(OverlayPanel panel)
     {
-        if (animationHandler != null)
-        {
-            animationHandler(panel, AnimationValue, AnimationValue - LastAnimationValue);
-        }
+        animationHandler?.Invoke(panel, AnimationValue, AnimationValue - LastAnimationValue);
     }
 
     protected virtual void OnStarted()
     {
-        if (this.Started != null)
-        {
-            this.Started(this, EventArgs.Empty);
-        }
+        Started?.Invoke(this, EventArgs.Empty);
     }
 
     public static float Constant1(int time, int span)
@@ -164,11 +120,7 @@ public class Animator
     public static float SinusRise(int time, int span)
     {
         float num = (float)time / (float)span;
-        if (num <= 0f || num >= 1f)
-        {
-            return num;
-        }
-        return (float)Math.Sin((double)num * Math.PI / 2.0);
+        return num is <= 0f or >= 1f ? num : (float)Math.Sin((double)num * Math.PI / 2.0);
     }
 
     public static float LinearDrop(int time, int span)

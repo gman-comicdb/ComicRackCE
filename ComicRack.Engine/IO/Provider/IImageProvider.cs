@@ -5,20 +5,11 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider;
 
 public interface IImageProvider : IDisposable
 {
-    bool IsSlow
-    {
-        get;
-    }
+    bool IsSlow { get; }
 
-    string Source
-    {
-        get;
-    }
+    string Source { get; }
 
-    int Count
-    {
-        get;
-    }
+    int Count { get; }
 
     Bitmap GetImage(int index);
 

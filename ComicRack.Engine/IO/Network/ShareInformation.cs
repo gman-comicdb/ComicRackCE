@@ -2,41 +2,17 @@ namespace cYo.Projects.ComicRack.Engine.IO.Network;
 
 public class ShareInformation
 {
-    public string Id
-    {
-        get;
-        set;
-    }
+    public string Id { get; set; }
 
-    public string Uri
-    {
-        get;
-        set;
-    }
+    public string Uri { get; set; }
 
-    public string Name
-    {
-        get;
-        set;
-    }
+    public string Name { get; set; }
 
-    public string Comment
-    {
-        get;
-        set;
-    }
+    public string Comment { get; set; }
 
-    public ServerOptions Options
-    {
-        get;
-        set;
-    }
+    public ServerOptions Options { get; set; }
 
-    public bool IsLocal
-    {
-        get;
-        set;
-    }
+    public bool IsLocal { get; set; }
 
     public bool IsProtected => (Options & ServerOptions.ShareNeedsPassword) != 0;
 

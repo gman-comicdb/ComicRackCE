@@ -19,13 +19,13 @@ public class DatabaseManager : DisposableObject
 
     private ComicDatabase database;
 
-    private ManualResetEvent databaseInitialized = new ManualResetEvent(initialState: false);
+    private ManualResetEvent databaseInitialized = new(initialState: false);
 
     private ComicBookFactory comicBookFactory;
 
     private int backgroundSaveInteral;
 
-    private readonly ProcessingQueue<ComicDatabase> saveDatabaseQueue = new ProcessingQueue<ComicDatabase>("Save Database Queue", ThreadPriority.Lowest);
+    private readonly ProcessingQueue<ComicDatabase> saveDatabaseQueue = new("Save Database Queue", ThreadPriority.Lowest);
 
     public ComicDatabase Database
     {
@@ -33,10 +33,7 @@ public class DatabaseManager : DisposableObject
         {
             if (databaseInitialized != null)
             {
-                if (this.FirstDatabaseAccess != null)
-                {
-                    this.FirstDatabaseAccess(this, EventArgs.Empty);
-                }
+                FirstDatabaseAccess?.Invoke(this, EventArgs.Empty);
                 databaseInitialized.WaitOne();
                 databaseInitialized.Close();
                 databaseInitialized = null;
@@ -45,26 +42,15 @@ public class DatabaseManager : DisposableObject
         }
     }
 
-    public ComicBookFactory BookFactory => comicBookFactory ?? (comicBookFactory = new ComicBookFactory(Database.Books));
+    public ComicBookFactory BookFactory => comicBookFactory ??= new ComicBookFactory(Database.Books);
 
-    public string OpenMessage
-    {
-        get;
-        private set;
-    }
+    public string OpenMessage { get; private set; }
 
-    public string DatabaseFile
-    {
-        get;
-        private set;
-    }
+    public string DatabaseFile { get; private set; }
 
     public int BackgroundSaveInterval
     {
-        get
-        {
-            return backgroundSaveInteral;
-        }
+        get => backgroundSaveInteral;
         set
         {
             if (value == backgroundSaveInteral)
@@ -72,10 +58,7 @@ public class DatabaseManager : DisposableObject
                 return;
             }
             backgroundSaveInteral = value;
-            if (timer != null)
-            {
-                timer.Dispose();
-            }
+            timer?.Dispose();
             timer = null;
             if (backgroundSaveInteral > 0)
             {
@@ -87,11 +70,7 @@ public class DatabaseManager : DisposableObject
         }
     }
 
-    public bool InitialConnectionError
-    {
-        get;
-        set;
-    }
+    public bool InitialConnectionError { get; set; }
 
     public event EventHandler FirstDatabaseAccess;
 
@@ -108,10 +87,7 @@ public class DatabaseManager : DisposableObject
     {
         if (disposing)
         {
-            if (timer != null)
-            {
-                timer.Dispose();
-            }
+            timer?.Dispose();
             Save();
             saveDatabaseQueue.Dispose();
             Database.Dispose();

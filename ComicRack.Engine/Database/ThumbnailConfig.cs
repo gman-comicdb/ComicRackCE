@@ -10,26 +10,18 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 [Serializable]
 public class ThumbnailConfig : ICloneable
 {
-    private readonly List<int> captionIds = new List<int>();
+    private readonly List<int> captionIds = new();
 
     [XmlAttribute]
     [DefaultValue(false)]
-    public bool HideCaptions
-    {
-        get;
-        set;
-    }
+    public bool HideCaptions { get; set; }
 
     [XmlArray("Lines")]
     [XmlArrayItem("Id")]
     public List<int> CaptionIds => captionIds;
 
     [DefaultValue(ComicTextElements.DefaultFileComic)]
-    public ComicTextElements TextElements
-    {
-        get;
-        set;
-    }
+    public ComicTextElements TextElements { get; set; }
 
     public ThumbnailConfig()
     {

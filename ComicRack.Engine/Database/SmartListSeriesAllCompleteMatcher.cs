@@ -10,10 +10,6 @@ public class SmartListSeriesAllCompleteMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).AllComplete;
-        }
-        return YesNo.Unknown;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).AllComplete : YesNo.Unknown;
     }
 }

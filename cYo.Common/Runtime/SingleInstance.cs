@@ -56,7 +56,7 @@ public class SingleInstance : ISingleInstance
         }
         try
         {
-            ChannelFactory<ISingleInstance> channelFactory = new ChannelFactory<ISingleInstance>(new NetNamedPipeBinding(), text + "/SI");
+            ChannelFactory<ISingleInstance> channelFactory = new(new NetNamedPipeBinding(), text + "/SI");
             ISingleInstance singleInstance = channelFactory.CreateChannel();
             singleInstance.InvokeLast(args);
         }
@@ -67,17 +67,11 @@ public class SingleInstance : ISingleInstance
 
     public void InvokeLast(string[] args)
     {
-        if (StartLast != null)
-        {
-            StartLast(args);
-        }
+        StartLast?.Invoke(args);
     }
 
     public void InvokeNew(string[] args)
     {
-        if (StartNew != null)
-        {
-            StartNew(args);
-        }
+        StartNew?.Invoke(args);
     }
 }

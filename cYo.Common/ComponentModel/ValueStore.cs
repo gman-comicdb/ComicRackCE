@@ -16,11 +16,7 @@ public class ValueStore<T> : IValueStore<T>
 
     public T GetValue()
     {
-        if (getCall == null)
-        {
-            throw new NotImplementedException();
-        }
-        return getCall();
+        return getCall == null ? throw new NotImplementedException() : getCall();
     }
 
     public void SetValue(T value)

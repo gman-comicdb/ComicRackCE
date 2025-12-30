@@ -11,16 +11,13 @@ public class XHtmlControlRenderer : Component
 {
     private Control control;
 
-    private readonly BodyBlock body = new BodyBlock();
+    private readonly BodyBlock body = new();
 
     private Inline hotItem;
 
     public Control Control
     {
-        get
-        {
-            return control;
-        }
+        get => control;
         set
         {
             if (control != value)
@@ -120,20 +117,10 @@ public class XHtmlControlRenderer : Component
         Point location = e.Location;
         location.Offset(-control.DisplayRectangle.Location.X, -control.DisplayRectangle.Location.Y);
         Inline hitItem = body.GetHitItem(Point.Empty, location);
-        if (hitItem == null || hitItem.MouseCursor == null)
-        {
-            Cursor.Current = control.Cursor;
-        }
-        else
-        {
-            Cursor.Current = hitItem.MouseCursor;
-        }
+        Cursor.Current = hitItem == null || hitItem.MouseCursor == null ? control.Cursor : hitItem.MouseCursor;
         if (hotItem != hitItem)
         {
-            if (hotItem != null)
-            {
-                hotItem.MouseLeave();
-            }
+            hotItem?.MouseLeave();
             hitItem?.MouseEnter();
             hotItem = hitItem;
         }

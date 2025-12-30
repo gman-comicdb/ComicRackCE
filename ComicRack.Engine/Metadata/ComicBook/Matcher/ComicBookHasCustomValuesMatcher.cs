@@ -11,10 +11,6 @@ public class ComicBookHasCustomValuesMatcher : ComicBookYesNoMatcher
 {
     protected override YesNo GetValue(ComicBook comicBook)
     {
-        if (!comicBook.GetCustomValues().Any())
-        {
-            return YesNo.No;
-        }
-        return YesNo.Yes;
+        return !comicBook.GetCustomValues().Any() ? YesNo.No : YesNo.Yes;
     }
 }

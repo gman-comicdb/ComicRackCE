@@ -13,23 +13,11 @@ public static class IdleProcess
 {
     private class IdleKey
     {
-        public Control Form
-        {
-            get;
-            set;
-        }
+        public Control Form { get; set; }
 
-        public object Key
-        {
-            get;
-            set;
-        }
+        public object Key { get; set; }
 
-        public Func<Control, bool> Action
-        {
-            get;
-            set;
-        }
+        public Func<Control, bool> Action { get; set; }
 
         public override int GetHashCode()
         {
@@ -39,15 +27,9 @@ public static class IdleProcess
         public override bool Equals(object obj)
         {
             IdleKey idleKey = obj as IdleKey;
-            if (!object.Equals(idleKey.Form, Form))
-            {
-                return false;
-            }
-            if (idleKey.Key != null || Key != null)
-            {
-                return object.Equals(idleKey.Key, Key);
-            }
-            return object.Equals(idleKey.Action, Action);
+            return !object.Equals(idleKey.Form, Form)
+                ? false
+                : idleKey.Key != null || Key != null ? object.Equals(idleKey.Key, Key) : object.Equals(idleKey.Action, Action);
         }
     }
 
@@ -81,11 +63,7 @@ public static class IdleProcess
 
     public static bool ShouldProcess(Form f)
     {
-        if (f != null && f.Visible)
-        {
-            return f.WindowState != FormWindowState.Minimized;
-        }
-        return false;
+        return f != null && f.Visible ? f.WindowState != FormWindowState.Minimized : false;
     }
 
     public static void RaiseIdle()
@@ -102,7 +80,7 @@ public static class IdleProcess
         }
         using (ItemMonitor.Lock(idleKeys))
         {
-            IdleKey item = new IdleKey
+            IdleKey item = new()
             {
                 Form = form,
                 Action = action,
@@ -180,7 +158,7 @@ public static class IdleProcess
         {
             return false;
         }
-        CancelEventArgs cancelEventArgs = new CancelEventArgs();
+        CancelEventArgs cancelEventArgs = new();
         IdleProcess.CancelIdle(null, cancelEventArgs);
         return cancelEventArgs.Cancel;
     }

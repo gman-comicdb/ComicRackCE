@@ -79,10 +79,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(typeof(Size), "0, 0")]
     public Size DockSize
     {
-        get
-        {
-            return dockSize;
-        }
+        get => dockSize;
         set
         {
             if (!(dockSize == value))
@@ -96,10 +93,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(false)]
     public bool AutoGripPosition
     {
-        get
-        {
-            return autoGripPosition;
-        }
+        get => autoGripPosition;
         set
         {
             if (autoGripPosition != value)
@@ -113,23 +107,14 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(true)]
     public bool ForceLayout
     {
-        get
-        {
-            return forceLayout;
-        }
-        set
-        {
-            forceLayout = value;
-        }
+        get => forceLayout;
+        set => forceLayout = value;
     }
 
     [DefaultValue(6)]
     public int GripWidth
     {
-        get
-        {
-            return gripWidth;
-        }
+        get => gripWidth;
         set
         {
             if (gripWidth != value)
@@ -143,10 +128,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(GripPosition.Top)]
     public GripPosition Grip
     {
-        get
-        {
-            return grip;
-        }
+        get => grip;
         set
         {
             if (grip != value)
@@ -157,38 +139,15 @@ public class SizableContainer : ScrollableControl
         }
     }
 
-    public bool IsVertical
-    {
-        get
-        {
-            if (Grip != GripPosition.Right)
-            {
-                return Grip == GripPosition.Left;
-            }
-            return true;
-        }
-    }
+    public bool IsVertical => Grip != GripPosition.Right ? Grip == GripPosition.Left : true;
 
-    public bool IsHorizontal
-    {
-        get
-        {
-            if (Grip != GripPosition.Top)
-            {
-                return Grip == GripPosition.Bottom;
-            }
-            return true;
-        }
-    }
+    public bool IsHorizontal => Grip != GripPosition.Top ? Grip == GripPosition.Bottom : true;
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool Expanded
     {
-        get
-        {
-            return expanded;
-        }
+        get => expanded;
         set
         {
             if (shieldExpanded)
@@ -223,24 +182,15 @@ public class SizableContainer : ScrollableControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool Collapsed
     {
-        get
-        {
-            return !Expanded;
-        }
-        set
-        {
-            Expanded = !value;
-        }
+        get => !Expanded;
+        set => Expanded = !value;
     }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int ExpandedWidth
     {
-        get
-        {
-            return expandedWidth;
-        }
+        get => expandedWidth;
         set
         {
             if (expandedWidth != value)
@@ -257,10 +207,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(true)]
     public bool KeepGripVisible
     {
-        get
-        {
-            return keepHandleVisible;
-        }
+        get => keepHandleVisible;
         set
         {
             if (keepHandleVisible != value)
@@ -275,26 +222,15 @@ public class SizableContainer : ScrollableControl
     }
 
     [DefaultValue(true)]
-    public bool AnimateExpand
-    {
-        get;
-        set;
-    }
+    public bool AnimateExpand { get; set; }
 
     [DefaultValue(100)]
-    public int SlideTime
-    {
-        get;
-        set;
-    }
+    public int SlideTime { get; set; }
 
     [DefaultValue(typeof(Color), "ControlLight")]
     public Color HotColor
     {
-        get
-        {
-            return hotColor;
-        }
+        get => hotColor;
         set
         {
             if (!(hotColor == value) && State == GripState.Hoovered)
@@ -307,10 +243,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(typeof(Color), "Highlight")]
     public Color PressedColor
     {
-        get
-        {
-            return pressedColor;
-        }
+        get => pressedColor;
         set
         {
             if (!(pressedColor == value))
@@ -327,10 +260,7 @@ public class SizableContainer : ScrollableControl
     [DefaultValue(ExtendedBorderStyle.None)]
     public ExtendedBorderStyle BorderStyle
     {
-        get
-        {
-            return borderStyle;
-        }
+        get => borderStyle;
         set
         {
             if (borderStyle != value)
@@ -371,28 +301,20 @@ public class SizableContainer : ScrollableControl
         get
         {
             Rectangle clientRectangle = base.ClientRectangle;
-            switch (grip)
+            return grip switch
             {
-                default:
-                    return clientRectangle;
-                case GripPosition.Top:
-                    return new Rectangle(clientRectangle.Left, clientRectangle.Top, clientRectangle.Width, gripWidth);
-                case GripPosition.Left:
-                    return new Rectangle(clientRectangle.Left, clientRectangle.Top, gripWidth, clientRectangle.Height);
-                case GripPosition.Right:
-                    return new Rectangle(clientRectangle.Width - gripWidth, clientRectangle.Top, gripWidth, clientRectangle.Height);
-                case GripPosition.Bottom:
-                    return new Rectangle(clientRectangle.Left, clientRectangle.Height - gripWidth, clientRectangle.Width, gripWidth);
-            }
+                GripPosition.Top => new Rectangle(clientRectangle.Left, clientRectangle.Top, clientRectangle.Width, gripWidth),
+                GripPosition.Left => new Rectangle(clientRectangle.Left, clientRectangle.Top, gripWidth, clientRectangle.Height),
+                GripPosition.Right => new Rectangle(clientRectangle.Width - gripWidth, clientRectangle.Top, gripWidth, clientRectangle.Height),
+                GripPosition.Bottom => new Rectangle(clientRectangle.Left, clientRectangle.Height - gripWidth, clientRectangle.Width, gripWidth),
+                _ => clientRectangle,
+            };
         }
     }
 
     private GripState State
     {
-        get
-        {
-            return handleState;
-        }
+        get => handleState;
         set
         {
             if (handleState != value)
@@ -407,10 +329,10 @@ public class SizableContainer : ScrollableControl
                         mousePressLocation = Cursor.Position;
                         mousePressBounds = base.Bounds;
                         mousePressWidth = ExpandedWidth;
-                        Cursor = (IsVertical ? Cursors.VSplit : Cursors.HSplit);
+                        Cursor = IsVertical ? Cursors.VSplit : Cursors.HSplit;
                         break;
                     case GripState.Hoovered:
-                        Cursor = (IsVertical ? Cursors.VSplit : Cursors.HSplit);
+                        Cursor = IsVertical ? Cursors.VSplit : Cursors.HSplit;
                         break;
                 }
                 Invalidate(GripRectangle);
@@ -513,7 +435,7 @@ public class SizableContainer : ScrollableControl
         base.OnMouseEnter(e);
         if (!inAnimation)
         {
-            State = (HitTest() ? GripState.Hoovered : GripState.None);
+            State = HitTest() ? GripState.Hoovered : GripState.None;
         }
     }
 
@@ -535,30 +457,19 @@ public class SizableContainer : ScrollableControl
         }
         if (State != GripState.Pressed)
         {
-            State = (HitTest(e.Location) ? GripState.Hoovered : GripState.None);
+            State = HitTest(e.Location) ? GripState.Hoovered : GripState.None;
             return;
         }
         Point position = Cursor.Position;
         Point point = mousePressLocation;
-        int num;
-        switch (Grip)
+        var num = Grip switch
         {
-            case GripPosition.Top:
-                num = mousePressBounds.Height - (position.Y - point.Y);
-                break;
-            case GripPosition.Left:
-                num = mousePressBounds.Width - (position.X - point.X);
-                break;
-            case GripPosition.Right:
-                num = mousePressBounds.Width + (position.X - point.X);
-                break;
-            case GripPosition.Bottom:
-                num = mousePressBounds.Height + (position.Y - point.Y);
-                break;
-            default:
-                num = 0;
-                break;
-        }
+            GripPosition.Top => mousePressBounds.Height - (position.Y - point.Y),
+            GripPosition.Left => mousePressBounds.Width - (position.X - point.X),
+            GripPosition.Right => mousePressBounds.Width + (position.X - point.X),
+            GripPosition.Bottom => mousePressBounds.Height + (position.Y - point.Y),
+            _ => 0,
+        };
         if (num < 0)
         {
             num = 0;
@@ -582,7 +493,7 @@ public class SizableContainer : ScrollableControl
         base.OnMouseUp(e);
         if (!inAnimation && (e.Button & MouseButtons.Left) != 0)
         {
-            State = (HitTest(e.Location) ? GripState.Hoovered : GripState.None);
+            State = HitTest(e.Location) ? GripState.Hoovered : GripState.None;
             if (Math.Abs(Cursor.Position.X - mousePressLocation.X) < 4 && Math.Abs(Cursor.Position.Y - mousePressLocation.Y) < 4)
             {
                 Expanded = !Expanded;
@@ -613,7 +524,7 @@ public class SizableContainer : ScrollableControl
         base.OnResize(e);
         if (!shieldExpanded && expanded && !base.DesignMode)
         {
-            expandedWidth = (IsVertical ? base.Width : base.Height);
+            expandedWidth = IsVertical ? base.Width : base.Height;
         }
     }
 
@@ -641,18 +552,12 @@ public class SizableContainer : ScrollableControl
     protected virtual void OnPaintGrip(PaintEventArgs e)
     {
         DrawGrip(e.Graphics, gripImage, GripRectangle);
-        if (this.PaintGrip != null)
-        {
-            this.PaintGrip(this, e);
-        }
+        PaintGrip?.Invoke(this, e);
     }
 
     protected virtual void OnExpandedChanged()
     {
-        if (this.ExpandedChanged != null)
-        {
-            this.ExpandedChanged(this, EventArgs.Empty);
-        }
+        ExpandedChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetExpandedWidthInternal(int value)
@@ -792,7 +697,7 @@ public class SizableContainer : ScrollableControl
             long ticks = Machine.Ticks;
             if (base.Controls.Count == 1)
             {
-                base.Controls[0].MinimumSize = ((num2 < 0) ? base.Controls[0].Size : GetExpandedBounds(end).Size);
+                base.Controls[0].MinimumSize = (num2 < 0) ? base.Controls[0].Size : GetExpandedBounds(end).Size;
             }
             while (num != end)
             {
@@ -835,24 +740,14 @@ public class SizableContainer : ScrollableControl
     {
         if (autoGripPosition)
         {
-            switch (Dock)
+            Grip = Dock switch
             {
-                case DockStyle.Bottom:
-                    Grip = GripPosition.Top;
-                    break;
-                case DockStyle.Left:
-                    Grip = GripPosition.Right;
-                    break;
-                case DockStyle.Right:
-                    Grip = GripPosition.Left;
-                    break;
-                case DockStyle.Top:
-                    Grip = GripPosition.Bottom;
-                    break;
-                default:
-                    Grip = GripPosition.None;
-                    break;
-            }
+                DockStyle.Bottom => GripPosition.Top,
+                DockStyle.Left => GripPosition.Right,
+                DockStyle.Right => GripPosition.Left,
+                DockStyle.Top => GripPosition.Bottom,
+                _ => GripPosition.None,
+            };
         }
     }
 

@@ -16,27 +16,15 @@ public class XHtmlLabel : Control
     [Browsable(true)]
     public override bool AutoSize
     {
-        get
-        {
-            return base.AutoSize;
-        }
-        set
-        {
-            base.AutoSize = value;
-        }
+        get => base.AutoSize;
+        set => base.AutoSize = value;
     }
 
     [DefaultValue(typeof(Color), "Transparent")]
     public override Color BackColor
     {
-        get
-        {
-            return base.BackColor;
-        }
-        set
-        {
-            base.BackColor = value;
-        }
+        get => base.BackColor;
+        set => base.BackColor = value;
     }
 
     [Category("Appearance")]
@@ -44,10 +32,7 @@ public class XHtmlLabel : Control
     [DefaultValue(ContentAlignment.MiddleLeft)]
     public ContentAlignment TextAlign
     {
-        get
-        {
-            return textAlign;
-        }
+        get => textAlign;
         set
         {
             if (textAlign != value)
@@ -64,10 +49,7 @@ public class XHtmlLabel : Control
     [DefaultValue(typeof(Size), "0,0")]
     public Size TextMargin
     {
-        get
-        {
-            return textMargin;
-        }
+        get => textMargin;
         set
         {
             if (!(textMargin == value))
@@ -95,19 +77,13 @@ public class XHtmlLabel : Control
 
     protected virtual void OnTextMarginChanged()
     {
-        if (this.TextMarginChanged != null)
-        {
-            this.TextMarginChanged(this, EventArgs.Empty);
-        }
+        TextMarginChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnTextAlignChanged()
     {
         renderer.Body.SetAlign(textAlign);
-        if (this.TextAlignChanged != null)
-        {
-            this.TextAlignChanged(this, EventArgs.Empty);
-        }
+        TextAlignChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void Recalculate()

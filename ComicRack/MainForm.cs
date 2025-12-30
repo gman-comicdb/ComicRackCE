@@ -92,7 +92,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     {
                         using (Brush brush = new SolidBrush(Color.FromArgb(128, SystemColors.InfoText)))
                         {
-                            using (StringFormat format = new StringFormat
+                            using (StringFormat format = new()
                             {
                                 Alignment = StringAlignment.Far,
                                 LineAlignment = StringAlignment.Far
@@ -126,11 +126,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
         public bool IsValid()
         {
-            if (books != null)
-            {
-                return !books.IsEmpty();
-            }
-            return false;
+            return books != null ? !books.IsEmpty() : false;
         }
 
         public void SetRating(float rating)
@@ -138,10 +134,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             if (IsValid())
             {
                 Program.Database.Undo.SetMarker(TR.Messages["UndoRating", "Change Rating"]);
-                books.ForEach((ComicBook cb) =>
-                {
-                    cb.Rating = rating;
-                });
+                books.ForEach((ComicBook cb) => cb.Rating = rating);
             }
         }
 
@@ -177,28 +170,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         private IEditPage editor;
 
-        public bool IsValid
-        {
-            get
-            {
-                if (editor != null)
-                {
-                    return editor.IsValid;
-                }
-                return false;
-            }
-        }
+        public bool IsValid => editor != null ? editor.IsValid : false;
 
         public ComicPageType PageType
         {
-            get
-            {
-                if (!IsValid)
-                {
-                    return ComicPageType.Story;
-                }
-                return editor.PageType;
-            }
+            get => !IsValid ? ComicPageType.Story : editor.PageType;
             set
             {
                 if (IsValid)
@@ -210,14 +186,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
         public ImageRotation Rotation
         {
-            get
-            {
-                if (!IsValid)
-                {
-                    return ImageRotation.None;
-                }
-                return editor.Rotation;
-            }
+            get => !IsValid ? ImageRotation.None : editor.Rotation;
             set
             {
                 if (IsValid)
@@ -237,40 +206,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         private IEditBookmark editor;
 
-        public bool CanBookmark
-        {
-            get
-            {
-                if (editor != null)
-                {
-                    return editor.CanBookmark;
-                }
-                return false;
-            }
-        }
+        public bool CanBookmark => editor != null ? editor.CanBookmark : false;
 
-        public string BookmarkProposal
-        {
-            get
-            {
-                if (!CanBookmark)
-                {
-                    return string.Empty;
-                }
-                return editor.BookmarkProposal;
-            }
-        }
+        public string BookmarkProposal => !CanBookmark ? string.Empty : editor.BookmarkProposal;
 
         public string Bookmark
         {
-            get
-            {
-                if (!CanBookmark)
-                {
-                    return string.Empty;
-                }
-                return editor.Bookmark;
-            }
+            get => !CanBookmark ? string.Empty : editor.Bookmark;
             set
             {
                 if (CanBookmark)
@@ -291,11 +233,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         public const int WM_ACTIVATEAPP = 0x001C;
     }
 
-    private readonly CommandMapper commands = new CommandMapper();
+    private readonly CommandMapper commands = new();
 
-    private readonly ToolStripThumbSize thumbSize = new ToolStripThumbSize();
+    private readonly ToolStripThumbSize thumbSize = new();
 
-    private string[] recentFiles = new string[0];
+    private string[] recentFiles = [];
 
     private readonly VisibilityAnimator mainMenuStripVisibility;
 
@@ -311,7 +253,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private EnumMenuUtility pageRotationEditMenu;
 
-    private readonly KeyboardShortcuts mainKeys = new KeyboardShortcuts();
+    private readonly KeyboardShortcuts mainKeys = new();
 
     private bool menuDown;
 
@@ -321,7 +263,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private bool menuClose;
 
-    private ComicBook[] lastRandomList = new ComicBook[0];
+    private ComicBook[] lastRandomList = [];
 
     private List<ComicBook> randomSelectedComics;
 
@@ -416,10 +358,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         get
         {
-            if (comicDisplay == null)
-            {
-                comicDisplay = CreateComicDisplay();
-            }
+            comicDisplay ??= CreateComicDisplay();
             return comicDisplay;
         }
     }
@@ -427,10 +366,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(false)]
     public bool AutoHideMainMenu
     {
-        get
-        {
-            return autoHideMainMenu;
-        }
+        get => autoHideMainMenu;
         set
         {
             if (autoHideMainMenu != value)
@@ -444,10 +380,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(true)]
     public bool ShowMainMenuNoComicOpen
     {
-        get
-        {
-            return showMainMenuNoComicOpen;
-        }
+        get => showMainMenuNoComicOpen;
         set
         {
             if (showMainMenuNoComicOpen != value)
@@ -459,18 +392,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     }
 
     [Browsable(false)]
-    public bool IsInitialized
-    {
-        get;
-        private set;
-    }
+    public bool IsInitialized { get; private set; }
 
     public bool ReaderUndocked
     {
-        get
-        {
-            return readerForm != null;
-        }
+        get => readerForm != null;
         set
         {
             if (value == ReaderUndocked)
@@ -523,14 +449,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rectangle UndockedReaderBounds
     {
-        get
-        {
-            if (!ReaderUndocked)
-            {
-                return undockedReaderBounds;
-            }
-            return readerForm.SafeBounds;
-        }
+        get => !ReaderUndocked ? undockedReaderBounds : readerForm.SafeBounds;
         set
         {
             if (ReaderUndocked)
@@ -548,14 +467,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public FormWindowState UndockedReaderState
     {
-        get
-        {
-            if (!ReaderUndocked)
-            {
-                return undockedReaderState;
-            }
-            return readerForm.WindowState;
-        }
+        get => !ReaderUndocked ? undockedReaderState : readerForm.WindowState;
         set
         {
             if (ReaderUndocked)
@@ -573,10 +485,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rectangle ScriptOutputBounds
     {
-        get
-        {
-            return ScriptConsole?.SafeBounds ?? Rectangle.Empty;
-        }
+        get => ScriptConsole?.SafeBounds ?? Rectangle.Empty;
         set
         {
             if (ScriptConsole != null)
@@ -595,10 +504,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private bool MainToolStripVisible
     {
-        get
-        {
-            return fileTabs.Controls.Contains(mainToolStrip);
-        }
+        get => fileTabs.Controls.Contains(mainToolStrip);
         set
         {
             bool mainToolStripVisible = MainToolStripVisible;
@@ -625,48 +531,21 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public DockStyle ViewDock
     {
-        get
-        {
-            return mainViewContainer.Dock;
-        }
-        set
-        {
-            mainViewContainer.Dock = value;
-        }
+        get => mainViewContainer.Dock;
+        set => mainViewContainer.Dock = value;
     }
 
-    public Rectangle SafeBounds
-    {
-        get;
-        set;
-    }
+    public Rectangle SafeBounds { get; set; }
 
     public bool MinimizedToTray => notifyIcon.Visible;
 
     public Control Control => this;
 
-    public bool IsComicVisible
-    {
-        get
-        {
-            if (!ReaderUndocked && BrowserDock == DockStyle.Fill)
-            {
-                return mainView.IsComicVisible;
-            }
-            return true;
-        }
-    }
+    public bool IsComicVisible => !ReaderUndocked && BrowserDock == DockStyle.Fill ? mainView.IsComicVisible : true;
 
     public bool BrowserVisible
     {
-        get
-        {
-            if (!ReaderUndocked && BrowserDock != DockStyle.Fill)
-            {
-                return mainViewContainer.Expanded;
-            }
-            return savedBrowserVisible;
-        }
+        get => !ReaderUndocked && BrowserDock != DockStyle.Fill ? mainViewContainer.Expanded : savedBrowserVisible;
         set
         {
             if (!ReaderUndocked && BrowserDock != DockStyle.Fill)
@@ -681,14 +560,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public DockStyle BrowserDock
     {
-        get
-        {
-            if (!ReaderUndocked)
-            {
-                return mainViewContainer.Dock;
-            }
-            return savedBrowserDockStyle;
-        }
+        get => !ReaderUndocked ? mainViewContainer.Dock : savedBrowserDockStyle;
         set
         {
             if (ReaderUndocked)
@@ -709,10 +581,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     [DefaultValue(false)]
     public bool MinimalGui
     {
-        get
-        {
-            return minimalGui;
-        }
+        get => minimalGui;
         set
         {
             if (minimalGui != value)
@@ -723,10 +592,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    public static ScriptOutputForm ScriptConsole
-    {
-        get => Program.ScriptConsole != null ? Program.ScriptConsole : null;
-    }
+    public static ScriptOutputForm ScriptConsole => Program.ScriptConsole ?? null;
 
     public IEnumerable<string> LibraryPaths => Program.Settings.ScriptingLibraries.Replace("\n", "").Replace("\r", "").Split(';', StringSplitOptions.RemoveEmptyEntries);
 
@@ -768,13 +634,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         components.Add(commands);
         tbZoom.Width = 60;
         fileTabs.Visible = false;
-        DropDownHost<MagnifySetupControl> dropDownHost = new DropDownHost<MagnifySetupControl>();
-        ComicDisplay.MagnifierOpacity = (dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque);
-        ComicDisplay.MagnifierSize = (dropDownHost.Control.MagnifySize = Program.Settings.MagnifySize);
-        ComicDisplay.MagnifierZoom = (dropDownHost.Control.MagnifyZoom = Program.Settings.MagnifyZoom);
-        ComicDisplay.MagnifierStyle = (dropDownHost.Control.MagnifyStyle = Program.Settings.MagnifyStyle);
-        ComicDisplay.AutoMagnifier = (dropDownHost.Control.AutoMagnifier = Program.Settings.AutoMagnifier);
-        ComicDisplay.AutoHideMagnifier = (dropDownHost.Control.AutoHideMagnifier = Program.Settings.AutoHideMagnifier);
+        DropDownHost<MagnifySetupControl> dropDownHost = new();
+        ComicDisplay.MagnifierOpacity = dropDownHost.Control.MagnifyOpaque = Program.Settings.MagnifyOpaque;
+        ComicDisplay.MagnifierSize = dropDownHost.Control.MagnifySize = Program.Settings.MagnifySize;
+        ComicDisplay.MagnifierZoom = dropDownHost.Control.MagnifyZoom = Program.Settings.MagnifyZoom;
+        ComicDisplay.MagnifierStyle = dropDownHost.Control.MagnifyStyle = Program.Settings.MagnifyStyle;
+        ComicDisplay.AutoMagnifier = dropDownHost.Control.AutoMagnifier = Program.Settings.AutoMagnifier;
+        ComicDisplay.AutoHideMagnifier = dropDownHost.Control.AutoHideMagnifier = Program.Settings.AutoHideMagnifier;
         dropDownHost.Control.ValuesChanged += MagnifySetupChanged;
         tbMagnify.DropDown = dropDownHost;
         mainMenuStripVisibility = new VisibilityAnimator(components, mainMenuStrip);
@@ -798,13 +664,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 sc.PreCompile();
                 CoverViewItem.DrawCustomThumbnailOverlay += (ComicBook comic, Graphics graphics, Rectangle bounds, int flags) =>
                 {
-                    sc.Invoke(new object[4]
-                    {
+                    sc.Invoke(
+                    [
                         comic,
                         graphics,
                         bounds,
                         flags
-                    }, catchErrors: true);
+                    ], catchErrors: true);
                 };
             }
         }
@@ -826,7 +692,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.SetInfoOverlays(InfoOverlays.CurrentPageShowsName, Program.Settings.CurrentPageShowsName);
         ComicDisplay.HideCursorFullScreen = Program.Settings.HideCursorFullScreen;
         ComicDisplay.AutoScrolling = Program.Settings.AutoScrolling;
-        ComicDisplay.PageWallTicks = (Program.Settings.PageChangeDelay ? 300 : 0);
+        ComicDisplay.PageWallTicks = Program.Settings.PageChangeDelay ? 300 : 0;
         ComicDisplay.ScrollingDoesBrowse = Program.Settings.ScrollingDoesBrowse;
         ComicDisplay.ResetZoomOnPageChange = Program.Settings.ResetZoomOnPageChange;
         ComicDisplay.ZoomInOutOnPageChange = Program.Settings.ZoomInOutOnPageChange;
@@ -848,8 +714,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ShowMainMenuNoComicOpen = Program.Settings.ShowMainMenuNoComicOpen;
         quickOpenView.ThumbnailSize = Program.Settings.QuickOpenThumbnailSize;
         ComicBookNavigator.TrackCurrentPage = Program.Settings.TrackCurrentPage;
-        tsCurrentPage.Image = (ComicBookNavigator.TrackCurrentPage ? null : Resources.Locked);
-        CoverViewItem.ThumbnailSizing = (Program.Settings.CoverThumbnailsSameSize ? CoverThumbnailSizing.Fit : CoverThumbnailSizing.None);
+        tsCurrentPage.Image = ComicBookNavigator.TrackCurrentPage ? null : Resources.Locked;
+        CoverViewItem.ThumbnailSizing = Program.Settings.CoverThumbnailsSameSize ? CoverThumbnailSizing.Fit : CoverThumbnailSizing.None;
         ComicBook.NewBooksChecked = Program.Settings.NewBooksChecked;
         DeviceSyncFactory.SetExtraWifiDeviceAddresses(EngineConfiguration.Default.ExtraWifiDeviceAddresses + "," + Program.Settings.ExtraWifiDeviceAddresses);
     }
@@ -999,7 +865,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             GetPageEditor().PageType = (ComicPageType)pageTypeEditMenu.Value;
         };
-        Dictionary<int, Image> images = new Dictionary<int, Image>
+        Dictionary<int, Image> images = new()
         {
             {
                 0,
@@ -1035,10 +901,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         RatingControl.InsertRatingControl(contextRating2, contextRating2.Items.Count - 2, Resources.StarYellow, GetRatingEditor);
         contextRating.Renderer = new MenuRenderer(Resources.StarYellow);
         contextRating2.Renderer = new MenuRenderer(Resources.StarYellow);
-        IdleProcess.CancelIdle += (object a, CancelEventArgs b) =>
-        {
-            b.Cancel = !IdleProcess.ShouldProcess(this) && !IdleProcess.ShouldProcess(readerForm);
-        };
+        IdleProcess.CancelIdle += (object a, CancelEventArgs b) => b.Cancel = !IdleProcess.ShouldProcess(this) && !IdleProcess.ShouldProcess(readerForm);
         Program.StartupProgress(TR.Messages["LoadComic", "Opening Files"], 90);
         Refresh();
         foreach (string commandLineFile in Program.CommandLineFiles)
@@ -1050,7 +913,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         if (books.OpenCount == 0 && Program.Settings.OpenLastFile)
         {
-            List<string> files = new List<string>(Program.Settings.LastOpenFiles);
+            List<string> files = new(Program.Settings.LastOpenFiles);
             books.Open(files, OpenComicOptions.NoIncreaseOpenedCount | OpenComicOptions.AppendNewSlots);
         }
         if (Program.Settings.ShowQuickManual)
@@ -1157,11 +1020,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         Program.Settings.ReaderKeyboardMapping.Clear();
         Program.Settings.ReaderKeyboardMapping.AddRange(ComicDisplay.KeyboardMap.GetKeyMapping());
         Program.NetworkManager.BroadcastStop();
-        if (readerForm != null)
-        {
-            readerForm.Dispose();
-            readerForm = null;
-        }
+        readerForm?.Dispose();
+        readerForm = null;
     }
 
     private void ConstraintMainView(bool always)
@@ -1278,14 +1138,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         commands.Add(ComicDisplay.DisplayLastPageRead, () => ComicDisplay.Book != null && ComicDisplay.Book.CurrentPage != ComicDisplay.Book.Comic.LastPageRead, miLastPageRead, tbLastPageRead, cmLastPageRead);
         commands.Add(OpenBooks.PreviousSlot, () => OpenBooks.Slots.Count > 1, miPrevTab);
         commands.Add(OpenBooks.NextSlot, () => OpenBooks.Slots.Count > 1, miNextTab);
-        commands.AddService(this, (ILibraryBrowser s) =>
-        {
-            s.BrowseNext();
-        }, (ILibraryBrowser s) => s.CanBrowseNext(), miNextList);
-        commands.AddService(this, (ILibraryBrowser s) =>
-        {
-            s.BrowsePrevious();
-        }, (ILibraryBrowser s) => s.CanBrowsePrevious(), miPreviousList);
+        commands.AddService(this, (ILibraryBrowser s) => s.BrowseNext(), (ILibraryBrowser s) => s.CanBrowseNext(), miNextList);
+        commands.AddService(this, (ILibraryBrowser s) => s.BrowsePrevious(), (ILibraryBrowser s) => s.CanBrowsePrevious(), miPreviousList);
         commands.Add(delegate
         {
             Program.Settings.AutoScrolling = !Program.Settings.AutoScrolling;
@@ -1332,13 +1186,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         commands.Add(ComicDisplay.ToggleFitOnlyIfOversized, true, () => ComicDisplay.ImageFitOnlyIfOversized, miOnlyFitOversized, tbOnlyFitOversized, cmOnlyFitOversized);
         commands.Add(delegate
         {
-            ComicDisplay.ImageZoom = Numeric.Select(ComicDisplay.ImageZoom, new float[4]
-            {
+            ComicDisplay.ImageZoom = Numeric.Select(ComicDisplay.ImageZoom,
+            [
                 1f,
                 1.25f,
                 1.5f,
                 2f
-            }, wrap: true);
+            ], wrap: true);
         }, tbZoom);
         commands.Add(delegate
         {
@@ -1437,10 +1291,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         commands.Add(ToggleSmallPreview, CheckSidebarAvailable, CheckSmallPreviewEnabled, miSmallPreview);
         commands.Add(ToggleSearchBrowser, CheckSearchAvailable, CheckSearchBrowserEnabled, miSearchBrowser);
         commands.Add(ToggleInfoPanel, CheckInfoPanelAvailable, CheckInfoPanelEnabled, miInfoPanel);
-        commands.AddService(this, (IRefreshDisplay c) =>
-        {
-            c.RefreshDisplay();
-        }, miViewRefresh);
+        commands.AddService(this, (IRefreshDisplay c) => c.RefreshDisplay(), miViewRefresh);
         commands.Add(delegate
         {
             GetRatingEditor().SetRating(0f);
@@ -1525,47 +1376,47 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miNextFromList.Image, "NextComic", group, "Next Book", (Action)delegate
         {
             OpenNextComic();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.N
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miPrevFromList.Image, "PrevComic", group, "Previous Book", (Action)delegate
         {
             OpenPrevComic();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.P
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miRandomFromList.Image, "RandomComic", group, "Random Book", (Action)delegate
         {
             OpenRandomComic();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.L
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miToggleBrowser.Image, "ShowBrowser", group, "Show Browser", ToggleBrowserFromReader, CommandKey.MouseLeft, CommandKey.Escape));
         group = "Browse";
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miFirstPage.Image, "MoveToFirstPage", group, "First Page", ComicDisplay.DisplayFirstPage, CommandKey.Home | CommandKey.Ctrl, CommandKey.GestureDouble1));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miPrevPage.Image, "MoveToPreviousPage", group, "Previous Page", (Action)delegate
         {
             ComicDisplay.DisplayPreviousPage(ComicDisplay.PagingMode.Double);
-        }, new CommandKey[4]
-        {
+        },
+        [
             CommandKey.PageUp,
             CommandKey.Left | CommandKey.Alt,
             CommandKey.Gesture1,
             CommandKey.FlickRight
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miNextPage.Image, "MoveToNextPage", group, "Next Page", (Action)delegate
         {
             ComicDisplay.DisplayNextPage(ComicDisplay.PagingMode.Double);
-        }, new CommandKey[4]
-        {
+        },
+        [
             CommandKey.PageDown,
             CommandKey.Right | CommandKey.Alt,
             CommandKey.Gesture3,
             CommandKey.FlickLeft
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miLastPage.Image, "MoveToLastPage", group, "Last Page", ComicDisplay.DisplayLastPage, CommandKey.End | CommandKey.Ctrl, CommandKey.GestureDouble3));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miPrevBookmark.Image, "MoveToPrevBookmark", group, "Previous Bookmark", ComicDisplay.DisplayPreviousBookmarkedPage, CommandKey.PageUp | CommandKey.Ctrl));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miNextBookmark.Image, "MoveToNextBookmark", group, "Next Bookmark", ComicDisplay.DisplayNextBookmarkedPage, CommandKey.PageDown | CommandKey.Ctrl));
@@ -1608,10 +1459,10 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miAutoScroll.Image, "ToggleAutoScrolling", group, "Toggle Auto Scrolling", (Action)delegate
         {
             Program.Settings.AutoScrolling = !Program.Settings.AutoScrolling;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.S
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("DoublePageAutoScroll", group, "Double Page Auto Scroll", delegate
         {
             ComicDisplay.TwoPageNavigation = !ComicDisplay.TwoPageNavigation;
@@ -1628,11 +1479,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miMagnify.Image, "ToggleMagnify", group, "Toggle Magnifier", (Action)delegate
         {
             ComicDisplay.MagnifierVisible = !ComicDisplay.MagnifierVisible;
-        }, new CommandKey[2]
-        {
+        },
+        [
             CommandKey.M,
             CommandKey.TouchPressAndTap
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("ToggleMenu", group, "Toggle Menu", delegate
         {
             MinimalGui = !MinimalGui;
@@ -1648,98 +1499,98 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miSinglePage.Image, "SinglePage", group, "Single Page", (Action)delegate
         {
             ComicDisplay.PageLayout = PageLayoutMode.Single;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.D7
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miTwoPages.Image, "TwoPages", group, "Two Pages", (Action)delegate
         {
             ComicDisplay.PageLayout = PageLayoutMode.Double;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.D8
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miTwoPagesAdaptive.Image, "TwoPagesAdaptive", group, "Two Pages (adaptive)", (Action)delegate
         {
             ComicDisplay.PageLayout = PageLayoutMode.DoubleAdaptive;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.D9
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miRightToLeft.Image, "RightToLeft", group, "Right to Left", (Action)delegate
         {
             ComicDisplay.RightToLeftReading = !ComicDisplay.RightToLeftReading;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.D0
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miOnlyFitOversized.Image, "OnlyFitIfOversized", group, "Only Fit if oversized", ComicDisplay.ToggleFitOnlyIfOversized, CommandKey.O));
         group = "ZoomAndRotate";
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miRotateRight.Image, "RotateC", group, "Rotate Right", (Action)delegate
         {
             ComicDisplay.ImageRotation = ComicDisplay.ImageRotation.RotateRight();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.R
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miRotateLeft.Image, "RotateCC", group, "Rotate Left", (Action)delegate
         {
             ComicDisplay.ImageRotation = ComicDisplay.ImageRotation.RotateLeft();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.R | CommandKey.Shift
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miAutoRotate.Image, "AutoRotate", group, "Autorotate Double Pages", (Action)delegate
         {
             ComicDisplay.ImageAutoRotate = !ComicDisplay.ImageAutoRotate;
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.A
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miZoomIn.Image, "ZoomIn", group, "Zoom In", (Action)delegate
         {
             ComicDisplay.ImageZoom = (ComicDisplay.ImageZoom + 0.1f).Clamp(1f, 8f);
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.MouseWheelUp | CommandKey.Ctrl
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miZoomOut.Image, "ZoomOut", group, "Zoom Out", (Action)delegate
         {
             ComicDisplay.ImageZoom = (ComicDisplay.ImageZoom - 0.1f).Clamp(1f, 8f);
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.MouseWheelDown | CommandKey.Ctrl
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miZoomIn.Image, "StepZoomIn", group, "Step Zoom In", (Action)delegate
         {
             ComicDisplay.ImageZoom = (ComicDisplay.ImageZoom + Program.ExtendedSettings.KeyboardZoomStepping).Clamp(1f, 4f);
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.Z
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miZoomOut.Image, "StepZoomOut", group, "Step Zoom Out", (Action)delegate
         {
             ComicDisplay.ImageZoom = (ComicDisplay.ImageZoom - Program.ExtendedSettings.KeyboardZoomStepping).Clamp(1f, 4f);
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.Z | CommandKey.Shift
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miToggleZoom.Image, "ToggleZoom", group, "Toggle Zoom", ToggleZoom, CommandKey.TouchDoubleTap));
         group = "Edit";
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand((Image)Resources.Rotate90Permanent, "PageRotateC", group, "Rotate Page Right", (Action)delegate
         {
             GetPageEditor().Rotation = GetPageEditor().Rotation.RotateRight();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.Y
-        }));
+        ]));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand((Image)Resources.Rotate270Permanent, "PageRotateCC", group, "Rotate Page Left", (Action)delegate
         {
             GetPageEditor().Rotation = GetPageEditor().Rotation.RotateLeft();
-        }, new CommandKey[1]
-        {
+        },
+        [
             CommandKey.Y | CommandKey.Shift
-        }));
+        ]));
         group = "Other";
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("Exit", group, "Exit", ControlExit, CommandKey.Q));
         Program.DefaultKeyboardMapping = ComicDisplay.KeyboardMap.GetKeyMapping().ToArray();
@@ -1815,7 +1666,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     private void BookDragEnter(object sender, DragEventArgs e)
     {
         string[] array = (string[])e.Data.GetData(DataFormats.FileDrop);
-        e.Effect = ((array != null && array.Length == 1) ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = (array != null && array.Length == 1) ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void BookDragDrop(object sender, DragEventArgs e)
@@ -1826,7 +1677,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public ComicBook AddNewBook(bool showDialog = true)
     {
-        ComicBook comicBook = new ComicBook
+        ComicBook comicBook = new()
         {
             AddedTime = DateTime.Now
         };
@@ -1886,7 +1737,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void AddFolderToLibrary()
     {
-        using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        using (FolderBrowserDialog folderBrowserDialog = new())
         {
             folderBrowserDialog.Description = TR.Messages["AddFolderLibrary", "Books in this Folder and all sub Folders will be added to the library."];
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -1904,26 +1755,17 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void UpdateComics()
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) =>
-        {
-            Program.QueueManager.AddBookToFileUpdate(cb, alwaysWrite: true);
-        });
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => Program.QueueManager.AddBookToFileUpdate(cb, alwaysWrite: true));
     }
 
     public static void GenerateFrontCoverCache()
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) =>
-        {
-            Program.ImagePool.GenerateFrontCoverThumbnail(cb);
-        });
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => Program.ImagePool.GenerateFrontCoverThumbnail(cb));
     }
 
     public void UpdateWebComics(bool refresh = false)
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) =>
-        {
-            UpdateWebComic(cb, refresh);
-        });
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => UpdateWebComic(cb, refresh));
     }
 
     public void UpdateWebComics()
@@ -2020,7 +1862,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         if (bookList.Count() > 1 && bookList.All((ComicBook cb) => cb.EditMode.CanEditProperties()))
         {
             Program.Database.Undo.SetMarker(TR.Messages["UndoEditMultipleComics", "Edit multiple Books"]);
-            using (MultipleComicBooksDialog multipleComicBooksDialog = new MultipleComicBooksDialog(bookList))
+            using (MultipleComicBooksDialog multipleComicBooksDialog = new(bookList))
             {
                 multipleComicBooksDialog.ShowDialog(this);
             }
@@ -2122,7 +1964,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void ExportImage(string name, Image image)
     {
-        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+        using (SaveFileDialog saveFileDialog = new())
         {
             saveFileDialog.Title = LocalizeUtility.GetText(this, "SavePageTitle", "Save Page as");
             saveFileDialog.Filter = TR.Load("FileFilter")["PageImageSave", "JPEG Image|*.jpg|Windows Bitmap Image|*.bmp|PNG Image|*.png|GIF Image|*.gif|TIFF Image|*.tif"];
@@ -2165,11 +2007,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private static string AddExtension(string file, string ext)
     {
-        if (!Path.HasExtension(file))
-        {
-            return file + ext;
-        }
-        return file;
+        return !Path.HasExtension(file) ? file + ext : file;
     }
 
     private void ControlExit()
@@ -2205,7 +2043,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void ShowPreferences(string autoInstallplugin = null)
     {
-        KeyboardShortcuts keyboardMap = new KeyboardShortcuts(ComicDisplay.KeyboardMap);
+        KeyboardShortcuts keyboardMap = new(ComicDisplay.KeyboardMap);
         if (PreferencesDialog.Show(Form.ActiveForm ?? this, keyboardMap, ScriptUtility.Scripts, autoInstallplugin))
         {
             ComicDisplay.KeyboardMap = keyboardMap;
@@ -2253,7 +2091,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void ShowAboutDialog()
     {
-        using (Splash splash = new Splash())
+        using (Splash splash = new())
         {
             splash.Fade = true;
             splash.Location = splash.Bounds.Align(Screen.FromPoint(base.Location).Bounds, ContentAlignment.MiddleCenter).Location;
@@ -2357,14 +2195,14 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         if (!flag)
         {
             exportSetting.DeleteOriginal = false;
-            if (exportSetting.Target == ExportTarget.ReplaceSource || exportSetting.Target == ExportTarget.SameAsSource)
+            if (exportSetting.Target is ExportTarget.ReplaceSource or ExportTarget.SameAsSource)
             {
                 if (exportSetting.Target == ExportTarget.ReplaceSource)
                 {
                     exportSetting.AddToLibrary = true;
                 }
                 exportSetting.Target = ExportTarget.NewFolder;
-                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+                using (FolderBrowserDialog folderBrowserDialog = new())
                 {
                     folderBrowserDialog.Description = TR.Messages["SelectLocalFolder", "Select a local folder to store the remote Books"];
                     folderBrowserDialog.ShowNewFolderButton = true;
@@ -2397,7 +2235,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         int num = 0;
         foreach (ComicBook book in books)
         {
-            ExportSetting exportSetting3 = ((exportSetting.Target == ExportTarget.Ask) ? FileSaveDialog(book, exportSetting) : exportSetting);
+            ExportSetting exportSetting3 = (exportSetting.Target == ExportTarget.Ask) ? FileSaveDialog(book, exportSetting) : exportSetting;
             if (exportSetting3 == null)
             {
                 break;
@@ -2408,7 +2246,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private ExportSetting FileSaveDialog(ComicBook cb, ExportSetting cs)
     {
-        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+        using (SaveFileDialog saveFileDialog = new())
         {
             FileFormat fileFormat = cs.GetFileFormat(cb);
             saveFileDialog.Title = TR.Messages["ExportComicTitle", "Export Book to"];
@@ -2456,7 +2294,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void EditWorkspaceDisplaySettings()
     {
-        DisplayWorkspace ws = new DisplayWorkspace();
+        DisplayWorkspace ws = new();
         StoreWorkspace(ws);
         ComicDisplaySettingsDialog.Show(this, ComicDisplay.IsHardwareRenderer, ws, delegate
         {
@@ -2466,15 +2304,11 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private DisplayWorkspace CreateNewWorkspace()
     {
-        DisplayWorkspace displayWorkspace = new DisplayWorkspace();
+        DisplayWorkspace displayWorkspace = new();
         StoreWorkspace(displayWorkspace);
         displayWorkspace.Name = lastWorkspaceName ?? TR.Default["Workspace", "Workspace"];
         displayWorkspace.Type = lastWorkspaceType;
-        if (SaveWorkspaceDialog.Show(this, displayWorkspace))
-        {
-            return displayWorkspace;
-        }
-        return null;
+        return SaveWorkspaceDialog.Show(this, displayWorkspace) ? displayWorkspace : null;
     }
 
     private void SaveWorkspace()
@@ -2499,10 +2333,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         if (Program.Settings.Workspaces.Count != 0)
         {
-            IList<DisplayWorkspace> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Default["Workspaces"], Program.Settings.Workspaces, CreateNewWorkspace, null, (DisplayWorkspace w) =>
-            {
-                SetWorkspace(w, remember: true);
-            });
+            IList<DisplayWorkspace> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Default["Workspaces"], Program.Settings.Workspaces, CreateNewWorkspace, null, (DisplayWorkspace w) => SetWorkspace(w, remember: true));
             if (list != null)
             {
                 Program.Settings.Workspaces.Clear();
@@ -2538,7 +2369,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         foreach (DisplayWorkspace workspace in Program.Settings.Workspaces)
         {
             DisplayWorkspace itemWs = workspace;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(FormUtility.FixAmpersand(workspace.Name), null, delegate
+            ToolStripMenuItem toolStripMenuItem = new(FormUtility.FixAmpersand(workspace.Name), null, delegate
             {
                 SetWorkspace(CloneUtility.Clone(itemWs), remember: true);
             });
@@ -2558,7 +2389,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         SuspendLayout();
         bool enableAnimation = SizableContainer.EnableAnimation;
-        VisibilityAnimator.EnableAnimation = (SizableContainer.EnableAnimation = false);
+        VisibilityAnimator.EnableAnimation = SizableContainer.EnableAnimation = false;
         try
         {
             if (remember)
@@ -2603,7 +2434,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         finally
         {
             ResumeLayout();
-            VisibilityAnimator.EnableAnimation = (SizableContainer.EnableAnimation = enableAnimation);
+            VisibilityAnimator.EnableAnimation = SizableContainer.EnableAnimation = enableAnimation;
         }
     }
 
@@ -2779,14 +2610,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return null;
         }
         string name = SelectItemDialog.GetName(this, TR.Messages["SaveListLayout", "Save List Layout"], TR.Default["Layout", "Layout"], Program.Settings.ListConfigurations);
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return new ListConfiguration(name)
-        {
-            Config = comicBrowser.ListConfig
-        };
+        return string.IsNullOrEmpty(name)
+            ? null
+            : new ListConfiguration(name)
+            {
+                Config = comicBrowser.ListConfig
+            };
     }
 
     public void SaveListLayout()
@@ -2809,13 +2638,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         if (Program.Settings.ListConfigurations.Count != 0)
         {
-            IList<ListConfiguration> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Messages["ListLayouts", "List Layouts"], Program.Settings.ListConfigurations, CreateListLayout, null, (ListConfiguration elc) =>
-            {
-                SetListLayout(elc.Config);
-            }, (ListConfiguration elc) =>
-            {
-                SetListLayoutToAll(elc.Config);
-            });
+            IList<ListConfiguration> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Messages["ListLayouts", "List Layouts"], Program.Settings.ListConfigurations, CreateListLayout, null, (ListConfiguration elc) => SetListLayout(elc.Config), (ListConfiguration elc) => SetListLayoutToAll(elc.Config));
             if (list != null)
             {
                 Program.Settings.ListConfigurations.Clear();
@@ -2838,7 +2661,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         foreach (ListConfiguration listConfiguration in Program.Settings.ListConfigurations)
         {
             ListConfiguration itemCfg = listConfiguration;
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(StringUtility.Format(tR["SetLayoutMenu", "Set '{0}' Layout"], FormUtility.FixAmpersand(listConfiguration.Name)), null, delegate
+            ToolStripMenuItem toolStripMenuItem = new(StringUtility.Format(tR["SetLayoutMenu", "Set '{0}' Layout"], FormUtility.FixAmpersand(listConfiguration.Name)), null, delegate
             {
                 SetListLayout(itemCfg.Config);
             });
@@ -2868,10 +2691,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         int num = 0;
         foreach (ToolStripMenuItem dropDownItem in miOpenRecent.DropDownItems)
         {
-            if (dropDownItem.Image != null)
-            {
-                dropDownItem.Image.Dispose();
-            }
+            dropDownItem.Image?.Dispose();
         }
         FormUtility.SafeToolStripClear(miOpenRecent.DropDownItems);
         string[] array = recentFiles;
@@ -2886,7 +2706,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             {
                 try
                 {
-                    ToolStripMenuItem value = new ToolStripMenuItem(text2, (itemLock != null && itemLock.Item != null) ? itemLock.Item.Bitmap.Resize(16, 16) : null, OnOpenRecent);
+                    ToolStripMenuItem value = new(text2, (itemLock != null && itemLock.Item != null) ? itemLock.Item.Bitmap.Resize(16, 16) : null, OnOpenRecent);
                     miOpenRecent.DropDownItems.Add(value);
                 }
                 catch (Exception)
@@ -2942,15 +2762,15 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             FormUtility.SafeToolStripClear(miOpenNow.DropDownItems);
             FormUtility.SafeToolStripClear(cmComics.DropDownItems, cmComics.DropDownItems.IndexOf(cmComicsSep) + 1);
             mainView.ClearFileTabs();
-            Bitmap thumb = default(Bitmap);
+            Bitmap thumb = default;
             for (int i = 0; i < OpenBooks.Slots.Count; i++)
             {
                 string text = FormUtility.FixAmpersand(OpenBooks.GetSlotCaption(i));
                 ComicBookNavigator nav = OpenBooks.Slots[i];
                 string text2 = text;
                 string text3 = null;
-                KeysConverter keysConverter = new KeysConverter();
-                ToolStripMenuItem tmi = new ToolStripMenuItem(text);
+                KeysConverter keysConverter = new();
+                ToolStripMenuItem tmi = new(text);
                 tmi.Click += OpenBooks_Clicked;
                 tmi.Tag = i;
                 if (i < 12)
@@ -2960,7 +2780,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     text2 = text2 + "\r\n(" + text3 + ")";
                 }
                 miOpenNow.DropDownItems.Add(tmi);
-                ToolStripMenuItem tmi2 = new ToolStripMenuItem(text);
+                ToolStripMenuItem tmi2 = new(text);
                 tmi2.Click += OpenBooks_Clicked;
                 tmi2.Tag = i;
                 tmi2.ShortcutKeys = tmi.ShortcutKeys;
@@ -2989,7 +2809,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                     CanClose = true,
                     ToolTipText = text2,
                     ContextMenu = tabContextMenu,
-                    Visible = (ViewDock == DockStyle.Fill)
+                    Visible = ViewDock == DockStyle.Fill
                 };
                 if (nav == null)
                 {
@@ -3027,7 +2847,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 });
             }
             string text4 = miAddTab.Text.Replace("&", string.Empty);
-            TabBar.TabBarItem tabBarItem = new TabBar.TabBarItem(text4)
+            TabBar.TabBarItem tabBarItem = new(text4)
             {
                 Tag = -1,
                 Image = addTabImage,
@@ -3050,7 +2870,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 AdjustWidth = false,
                 ShowText = false,
                 ToolTipText = text4,
-                Visible = (ViewDock == DockStyle.Fill)
+                Visible = ViewDock == DockStyle.Fill
             };
             tabBarItem.Click += delegate
             {
@@ -3088,13 +2908,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void OpenBooks_Clicked(object sender, EventArgs e)
     {
-        object obj = ((sender is ToolStripItem) ? ((ToolStripItem)sender).Tag : ((TabBar.TabBarItem)sender).Tag);
+        object obj = (sender is ToolStripItem item) ? item.Tag : ((TabBar.TabBarItem)sender).Tag;
         OpenBooks.CurrentSlot = (int)obj;
     }
 
     private void OpenBooks_Selected(object sender, CancelEventArgs e)
     {
-        object obj = ((sender is ToolStripItem) ? ((ToolStripItem)sender).Tag : ((TabBar.TabBarItem)sender).Tag);
+        object obj = (sender is ToolStripItem item) ? item.Tag : ((TabBar.TabBarItem)sender).Tag;
         OpenBooks.CurrentSlot = (int)obj;
     }
 
@@ -3334,8 +3154,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         bool flag = ComicDisplay == null || ComicDisplay.Book == null || ComicDisplay.Book.Comic.EditMode.IsLocalComic();
         ToolStripSeparator toolStripSeparator = sepBeforeRevealInBrowser;
         ToolStripMenuItem toolStripMenuItem = cmRevealInExplorer;
-        bool flag3 = (cmCopyPath.Visible = flag);
-        bool visible = (toolStripMenuItem.Visible = flag3);
+        bool flag3 = cmCopyPath.Visible = flag;
+        bool visible = toolStripMenuItem.Visible = flag3;
         toolStripSeparator.Visible = visible;
     }
 
@@ -3383,7 +3203,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         tbZoom.Text = $"{(int)(ComicDisplay.ImageZoom * 100f)}%";
         tbRotate.Text = TR.Translate(ComicDisplay.ImageRotation);
-        tbRotate.Image = (ComicDisplay.ImageAutoRotate ? miAutoRotate.Image : miRotateRight.Image);
+        tbRotate.Image = ComicDisplay.ImageAutoRotate ? miAutoRotate.Image : miRotateRight.Image;
     }
 
     private void viewer_FirstPageReached(object sender, EventArgs e)
@@ -3473,7 +3293,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             }
             IEditPage pageEditor = GetPageEditor();
             EnumMenuUtility enumMenuUtility = pageTypeContextMenu;
-            bool enabled = (pageRotationContextMenu.Enabled = pageEditor.IsValid);
+            bool enabled = pageRotationContextMenu.Enabled = pageEditor.IsValid;
             enumMenuUtility.Enabled = enabled;
             pageTypeContextMenu.Value = (int)pageEditor.PageType;
             pageRotationContextMenu.Value = (int)pageEditor.Rotation;
@@ -3496,20 +3316,14 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             bool flag = ComicDisplay != null && ComicDisplay.Book != null;
             IEditPage pageEditor = GetPageEditor();
             EnumMenuUtility enumMenuUtility = pageTypeEditMenu;
-            bool enabled = (pageRotationEditMenu.Enabled = pageEditor.IsValid);
+            bool enabled = pageRotationEditMenu.Enabled = pageEditor.IsValid;
             enumMenuUtility.Enabled = enabled;
             pageTypeEditMenu.Value = (int)pageEditor.PageType;
             pageRotationEditMenu.Value = (int)pageEditor.Rotation;
-            if (miUndo.Tag == null)
-            {
-                miUndo.Tag = miUndo.Text;
-            }
+            miUndo.Tag ??= miUndo.Text;
             string undoLabel = Program.Database.Undo.UndoLabel;
             miUndo.Text = (string)miUndo.Tag + (string.IsNullOrEmpty(undoLabel) ? string.Empty : (": " + undoLabel));
-            if (miRedo.Tag == null)
-            {
-                miRedo.Tag = miRedo.Text;
-            }
+            miRedo.Tag ??= miRedo.Text;
             string text = Program.Database.Undo.RedoEntries.FirstOrDefault();
             miRedo.Text = (string)miRedo.Tag + (string.IsNullOrEmpty(text) ? string.Empty : (": " + text));
         }
@@ -3585,7 +3399,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             mainView.TabBar.TopPadding = 6;
             mainView.TabBar.BottomPadding = 0;
             VisibilityAnimator visibilityAnimator = statusStripVisibility;
-            bool visible = (MainToolStripVisible = true);
+            bool visible = MainToolStripVisible = true;
             visibilityAnimator.Visible = visible;
             enableAutoHideMenu = false;
             mainView.TabBarVisible = true;
@@ -3600,12 +3414,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 MainToolStripVisible = false;
                 bool flag4 = flag || !mainView.IsComicViewer || (ShowMainMenuNoComicOpen && !flag2);
                 VisibilityAnimator visibilityAnimator2 = statusStripVisibility;
-                bool visible = (mainView.TabBarVisible = flag4);
+                bool visible = mainView.TabBarVisible = flag4;
                 visibilityAnimator2.Visible = visible;
                 mainMenuStripVisibility.Visible = flag4 && (!AutoHideMainMenu || (ShowMainMenuNoComicOpen && !flag2));
                 enableAutoHideMenu = !mainMenuStripVisibility.Visible && flag;
-                mainView.TabBar.TopPadding = (mainMenuStripVisibility.Visible ? 2 : 6);
-                mainView.TabBar.BottomPadding = (mainView.IsComicViewer ? 4 : 0);
+                mainView.TabBar.TopPadding = mainMenuStripVisibility.Visible ? 2 : 6;
+                mainView.TabBar.BottomPadding = mainView.IsComicViewer ? 4 : 0;
             }
             else
             {
@@ -3613,15 +3427,15 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 MainToolStripVisible = true;
                 bool flag6 = flag || (ShowMainMenuNoComicOpen && !flag2);
                 VisibilityAnimator visibilityAnimator3 = statusStripVisibility;
-                bool visible = (fileTabsVisibility.Visible = flag6);
+                bool visible = fileTabsVisibility.Visible = flag6;
                 visibilityAnimator3.Visible = visible;
                 mainMenuStripVisibility.Visible = flag6 && (!AutoHideMainMenu || (ShowMainMenuNoComicOpen && !flag2));
                 enableAutoHideMenu = !mainMenuStripVisibility.Visible && flag;
-                fileTabs.TopPadding = (mainMenuStripVisibility.Visible ? 2 : 6);
+                fileTabs.TopPadding = mainMenuStripVisibility.Visible ? 2 : 6;
                 fileTabs.BottomPadding = 2;
                 mainView.TabBarVisible = true;
-                mainView.TabBar.TopPadding = ((mainViewContainer.Dock != DockStyle.Bottom) ? fileTabs.TopPadding : 0);
-                mainView.TabBar.BottomPadding = ((mainViewContainer.Dock != DockStyle.Bottom) ? fileTabs.BottomPadding : 0);
+                mainView.TabBar.TopPadding = (mainViewContainer.Dock != DockStyle.Bottom) ? fileTabs.TopPadding : 0;
+                mainView.TabBar.BottomPadding = (mainViewContainer.Dock != DockStyle.Bottom) ? fileTabs.BottomPadding : 0;
             }
         }
         fileTabs.PerformLayout();
@@ -3713,7 +3527,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 {
                     continue;
                 }
-                ToolStripMenuItem value = new ToolStripMenuItem(string.Format("{0} ({1} {2})", FormUtility.FixAmpersand(cpi.Info.Bookmark), TR.Default["Page", "Page"], cpi.Page + 1), null, delegate
+                ToolStripMenuItem value = new(string.Format("{0} ({1} {2})", FormUtility.FixAmpersand(cpi.Info.Bookmark), TR.Default["Page", "Page"], cpi.Page + 1), null, delegate
                 {
                     try
                     {
@@ -3725,7 +3539,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 })
                 {
                     Tag = "bm",
-                    Enabled = (cpi.Page != currentPage)
+                    Enabled = cpi.Page != currentPage
                 };
                 items.Insert(num2++, value);
                 if (toolStripItem != null)
@@ -3752,7 +3566,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         Program.ImagePool.Thumbs.MemoryCache.Trim();
         Program.ImagePool.Pages.MemoryCache.Trim();
-        int val = ((Program.ExtendedSettings.LimitMemory == 0) ? Settings.UnlimitedSystemMemory : Program.ExtendedSettings.LimitMemory);
+        int val = (Program.ExtendedSettings.LimitMemory == 0) ? Settings.UnlimitedSystemMemory : Program.ExtendedSettings.LimitMemory;
         val = Math.Min(val, Program.Settings.MaximumMemoryMB);
         if (val == Settings.UnlimitedSystemMemory)
         {
@@ -3804,37 +3618,28 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private static string TotalPageInformation(ComicBookNavigator nav)
     {
-        if (nav == null)
-        {
-            return NotAvailable;
-        }
-        if (nav.IsIndexRetrievalCompleted || nav.IndexPagesRetrieved == nav.Comic.PageCount)
-        {
-            return nav.Comic.PagesAsText;
-        }
-        return $"{nav.Comic.PagesAsText} ({nav.IndexPagesRetrieved})";
+        return nav == null
+            ? NotAvailable
+            : nav.IsIndexRetrievalCompleted || nav.IndexPagesRetrieved == nav.Comic.PageCount
+            ? nav.Comic.PagesAsText
+            : $"{nav.Comic.PagesAsText} ({nav.IndexPagesRetrieved})";
     }
 
     private void OnUpdateGui()
     {
         UpdateQuickList();
         miOpenRecent.Enabled = recentFiles.Length != 0;
-        string text = ((ComicDisplay.Book == null) ? null : ComicDisplay.Book.Caption.Ellipsis(60, "..."));
-        tsBook.Text = (string.IsNullOrEmpty(text) ? None : text);
+        string text = ComicDisplay.Book?.Caption.Ellipsis(60, "...");
+        tsBook.Text = string.IsNullOrEmpty(text) ? None : text;
         if (readerForm != null && !MinimizedToTray)
         {
             readerForm.Visible = books.OpenCount > 0;
             readerForm.Text = tsBook.Text;
         }
-        if (ComicDisplay.Book == null || string.IsNullOrEmpty(text))
-        {
-            Text = Application.ProductName;
-        }
-        else
-        {
-            Text = Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? text : ComicDisplay.Book.Comic.FileName);
-        }
-        tsCurrentPage.Text = ((ComicDisplay.Book == null) ? NotAvailable : (ComicDisplay.Book.CurrentPage + 1).ToString());
+        Text = ComicDisplay.Book == null || string.IsNullOrEmpty(text)
+            ? Application.ProductName
+            : Application.ProductName + " - " + (ComicDisplay.Book.Comic.IsInContainer ? text : ComicDisplay.Book.Comic.FileName);
+        tsCurrentPage.Text = (ComicDisplay.Book == null) ? NotAvailable : (ComicDisplay.Book.CurrentPage + 1).ToString();
         tsPageCount.Text = TotalPageInformation(ComicDisplay.Book);
         IComicBrowser comicBrowser = mainView.FindActiveService<IComicBrowser>();
         tsText.Text = FormUtility.FixAmpersand((comicBrowser != null) ? comicBrowser.SelectionInfo : string.Empty);
@@ -3842,8 +3647,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         tbPageLayout.Image = GetLayoutImage();
         ToolStripMenuItem toolStripMenuItem = miMagnify;
         ToolStripMenuItem toolStripMenuItem2 = cmMagnify;
-        Image image2 = (tbMagnify.Image = (ComicDisplay.MagnifierVisible ? zoomImage : zoomClearImage));
-        Image image5 = (toolStripMenuItem.Image = (toolStripMenuItem2.Image = image2));
+        Image image2 = tbMagnify.Image = ComicDisplay.MagnifierVisible ? zoomImage : zoomClearImage;
+        Image image5 = toolStripMenuItem.Image = toolStripMenuItem2.Image = image2;
         ItemSizeInfo itemSizeInfo = this.FindActiveService<IItemSize>()?.GetItemSize();
         thumbSize.Visible = mainViewContainer.Expanded && itemSizeInfo != null;
         if (itemSizeInfo != null)
@@ -3851,7 +3656,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             thumbSize.SetSlider(itemSizeInfo.Minimum, itemSizeInfo.Maximum, itemSizeInfo.Value);
         }
         ToolStripMenuItem toolStripMenuItem3 = miSynchronizeDevices;
-        bool visible = (tsSynchronizeDevices.Visible = Program.Settings.Devices.Count > 0);
+        bool visible = tsSynchronizeDevices.Visible = Program.Settings.Devices.Count > 0;
         toolStripMenuItem3.Visible = visible;
         ToolStripMenuItem toolStripMenuItem4 = readMenu;
         ToolStripSplitButton toolStripSplitButton = tbPrevPage;
@@ -3862,29 +3667,29 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ToolStripSplitButton toolStripSplitButton5 = tbZoom;
         ToolStripSplitButton toolStripSplitButton6 = tbRotate;
         ToolStripSeparator toolStripSeparator2 = toolStripSeparator7;
-        bool flag3 = (tbMagnify.Visible = IsComicVisible || ComicDisplay.Book != null);
-        bool flag5 = (toolStripSeparator2.Visible = flag3);
-        bool flag7 = (toolStripSplitButton6.Visible = flag5);
-        bool flag9 = (toolStripSplitButton5.Visible = flag7);
-        bool flag11 = (toolStripSplitButton4.Visible = flag9);
-        bool flag13 = (toolStripSplitButton3.Visible = flag11);
-        bool flag15 = (toolStripSeparator.Visible = flag13);
-        bool flag17 = (toolStripSplitButton2.Visible = flag15);
-        visible = (toolStripSplitButton.Visible = flag17);
+        bool flag3 = tbMagnify.Visible = IsComicVisible || ComicDisplay.Book != null;
+        bool flag5 = toolStripSeparator2.Visible = flag3;
+        bool flag7 = toolStripSplitButton6.Visible = flag5;
+        bool flag9 = toolStripSplitButton5.Visible = flag7;
+        bool flag11 = toolStripSplitButton4.Visible = flag9;
+        bool flag13 = toolStripSplitButton3.Visible = flag11;
+        bool flag15 = toolStripSeparator.Visible = flag13;
+        bool flag17 = toolStripSplitButton2.Visible = flag15;
+        visible = toolStripSplitButton.Visible = flag17;
         toolStripMenuItem4.Visible = visible;
     }
 
     private void UpdateActivityTimerTick(object sender, EventArgs e)
     {
-        ToolStripStatusLabel[] array = new ToolStripStatusLabel[6]
-        {
+        ToolStripStatusLabel[] array =
+        [
             tsReadInfoActivity,
             tsWriteInfoActivity,
             tsScanActivity,
             tsExportActivity,
             tsDeviceSyncActivity,
             tsBackupActivity
-        };
+        ];
         int num = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
         tsScanActivity.Visible = Program.Scanner.IsScanning;
         tsWriteInfoActivity.Visible = Program.QueueManager.IsInComicFileUpdate;
@@ -3897,7 +3702,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         tsExportActivity.Visible = isInComicConversion || count > 0;
         if (tsExportActivity.Visible)
         {
-            Image image = ((count <= 0) ? exportAnimation : ((pendingComicConversions == 0) ? exportError : exportErrorAnimation));
+            Image image = (count <= 0) ? exportAnimation : ((pendingComicConversions == 0) ? exportError : exportErrorAnimation);
             tsExportActivity.Image = image;
             string text = StringUtility.Format(ExportingComics, pendingComicConversions);
             if (count > 0)
@@ -3913,7 +3718,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         tsDeviceSyncActivity.Visible = isInDeviceSync || count2 > 0;
         if (tsDeviceSyncActivity.Visible)
         {
-            Image image2 = ((count2 <= 0) ? deviceSyncAnimation : ((pendingDeviceSyncs == 0) ? deviceSyncError : deviceSyncErrorAnimation));
+            Image image2 = (count2 <= 0) ? deviceSyncAnimation : ((pendingDeviceSyncs == 0) ? deviceSyncError : deviceSyncErrorAnimation);
             tsDeviceSyncActivity.Image = image2;
             string text2 = StringUtility.Format(DeviceSyncing, pendingDeviceSyncs);
             if (count > 0)
@@ -3928,7 +3733,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             image3 = updatePages;
         }
-        tsCurrentPage.Image = (Program.Settings.TrackCurrentPage ? null : trackPagesLockedImage);
+        tsCurrentPage.Image = Program.Settings.TrackCurrentPage ? null : trackPagesLockedImage;
         tsPageCount.Image = image3;
         int num2 = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
         if (num2 != num)
@@ -3947,14 +3752,14 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         if (tsServerActivity.Visible)
         {
             tsServerActivity.ToolTipText = string.Format(TR.Messages["ServerActivity", "{0} Server(s) running"], Program.NetworkManager.RunningServers.Count);
-            tsServerActivity.Image = (Program.NetworkManager.RecentServerActivity() ? greenLight : grayLight);
+            tsServerActivity.Image = Program.NetworkManager.RecentServerActivity() ? greenLight : grayLight;
         }
         bool flag = Program.Database != null && Program.Database.ComicStorage != null;
         tsDataSourceState.Visible = flag;
         if (flag)
         {
-            tsDataSourceState.Image = (Program.Database.ComicStorage.IsConnected ? datasourceConnected : datasourceDisconnected);
-            tsDataSourceState.ToolTipText = (Program.Database.ComicStorage.IsConnected ? TR.Messages["DataSourceConnected", "Connected to data source"] : TR.Messages["DataSourceDisconnected", "Disconnected from data source!"]);
+            tsDataSourceState.Image = Program.Database.ComicStorage.IsConnected ? datasourceConnected : datasourceDisconnected;
+            tsDataSourceState.ToolTipText = Program.Database.ComicStorage.IsConnected ? TR.Messages["DataSourceConnected", "Connected to data source"] : TR.Messages["DataSourceDisconnected", "Disconnected from data source!"];
         }
     }
 
@@ -4102,11 +3907,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             mainView.ShowLibrary(library);
         }
-        if (!libraryBrowser.SelectList(list.Id))
-        {
-            return false;
-        }
-        return this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false;
+        return !libraryBrowser.SelectList(list.Id) ? false : this.FindActiveService<IComicBrowser>()?.SelectComic(cb) ?? false;
     }
 
     void IApplication.Restart()
@@ -4132,15 +3933,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public int AskQuestion(string question, string buttonText, string optionText)
     {
-        switch (QuestionDialog.AskQuestion(this, question, buttonText, optionText))
+        return QuestionDialog.AskQuestion(this, question, buttonText, optionText) switch
         {
-            default:
-                return 0;
-            case QuestionResult.Ok:
-                return 1;
-            case QuestionResult.OkWithOption:
-                return 2;
-        }
+            QuestionResult.Ok => 1,
+            QuestionResult.OkWithOption => 2,
+            _ => 0,
+        };
     }
 
     public Bitmap GetComicPage(ComicBook cb, int page)
@@ -4149,11 +3947,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             using (IItemLock<PageImage> itemLock = Program.ImagePool.GetPage(cb.GetPageKey(page, BitmapAdjustment.Empty), cb))
             {
-                if (itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null)
-                {
-                    return null;
-                }
-                return itemLock.Item.Bitmap.Clone() as Bitmap;
+                return itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null ? null : itemLock.Item.Bitmap.Clone() as Bitmap;
             }
         }
         catch
@@ -4168,11 +3962,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             using (IItemLock<ThumbnailImage> itemLock = Program.ImagePool.GetThumbnail(cb.GetThumbnailKey(page), cb))
             {
-                if (itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null)
-                {
-                    return null;
-                }
-                return itemLock.Item.Bitmap.Clone() as Bitmap;
+                return itemLock == null || itemLock.Item == null || itemLock.Item.Bitmap == null ? null : itemLock.Item.Bitmap.Clone() as Bitmap;
             }
         }
         catch
@@ -4260,7 +4050,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void ShowComicInfo(IEnumerable<ComicBook> books)
     {
-        books = (books ?? Enumerable.Empty<ComicBook>()).Where((ComicBook cb) => cb.EditMode.CanEditProperties());
+        books = (books ?? []).Where((ComicBook cb) => cb.EditMode.CanEditProperties());
         if (books.IsEmpty())
         {
             return;
@@ -4268,7 +4058,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         if (books.Count() > 1)
         {
             Program.Database.Undo.SetMarker(TR.Messages["UndoEditMultipleComics", "Edit multiple Books"]);
-            using (MultipleComicBooksDialog multipleComicBooksDialog = new MultipleComicBooksDialog(books))
+            using (MultipleComicBooksDialog multipleComicBooksDialog = new(books))
             {
                 multipleComicBooksDialog.ShowDialog(this);
             }
@@ -4282,7 +4072,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private ComicDisplay CreateComicDisplay()
     {
-        ComicDisplayControl pageDisplay = new ComicDisplayControl
+        ComicDisplayControl pageDisplay = new()
         {
             AllowDrop = true,
             Dock = DockStyle.Fill,
@@ -4314,7 +4104,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         readerContainer.Controls.Add(pageDisplay);
         readerContainer.Controls.SetChildIndex(pageDisplay, 0);
         readerContainer.Controls.SetChildIndex(quickOpenView, 0);
-        ComicDisplay comicDisplay = new ComicDisplay(pageDisplay);
+        ComicDisplay comicDisplay = new(pageDisplay);
         FormUtility.ServiceTranslation[pageDisplay] = comicDisplay;
         return comicDisplay;
     }
@@ -4399,7 +4189,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                                              select cli.Clone() as ShareableComicListItem).ToList();
         if (list.Count == 0 || !Program.ExtendedSettings.ReplaceDefaultListsInQuickOpen)
         {
-            defaultQuickOpenLists = defaultQuickOpenLists ?? new ShareableComicListItem[3]
+            defaultQuickOpenLists ??= new ShareableComicListItem[3]
             {
                 ComicLibrary.DefaultReadingList(Program.Database),
                 ComicLibrary.DefaultRecentlyReadList(Program.Database),
@@ -4413,12 +4203,12 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             int num = 0;
             foreach (ShareableComicListItem item in list)
             {
-                HashSet<ComicBook> list2 = new HashSet<ComicBook>(ComicBook.GuidEquality);
+                HashSet<ComicBook> list2 = new(ComicBook.GuidEquality);
                 using (IEnumerator<ComicLibrary> enumerator2 = mainView.GetLibraries(Program.ExtendedSettings.RemoteLibrariesInQuickOpen, Program.ExtendedSettings.OnlyLocalRemoteLibrariesInQuickOpen).GetEnumerator())
                 {
                     while (enumerator2.MoveNext())
                     {
-                        ComicLibrary comicLibrary = (item.Library = enumerator2.Current);
+                        ComicLibrary comicLibrary = item.Library = enumerator2.Current;
                         list2.AddRange(item.GetBooks());
                     }
                 }
@@ -4452,7 +4242,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         if (!alwaysCheck && (GitVersion.IsDirty || doNotCheckForUpdate))
             return;
 
-        GithubAPI gh = new GithubAPI();
+        GithubAPI gh = new();
         await gh.ExecuteAsync();
         bool isUpdateAvailable = gh.IsUpdateAvailable;
 

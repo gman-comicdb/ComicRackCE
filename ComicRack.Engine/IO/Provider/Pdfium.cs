@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 using PDFiumSharp;
 using PDFiumSharp.Enums;
@@ -19,7 +14,7 @@ public static class Pdfium
     {
         BitmapFormats pdfFormat = GetBitmapFormat(image);
         BitmapData bitmapdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
-        PDFiumBitmap pdfBitmap = new PDFiumBitmap(image.Width, image.Height, pdfFormat, bitmapdata.Scan0, bitmapdata.Stride);
+        PDFiumBitmap pdfBitmap = new(image.Width, image.Height, pdfFormat, bitmapdata.Scan0, bitmapdata.Stride);
         image.UnlockBits(bitmapdata);
         return pdfBitmap;
     }
@@ -44,7 +39,7 @@ public static class Pdfium
 
         BitmapFormats format = GetBitmapFormat(renderTarget);
         BitmapData data = renderTarget.LockBits(new Rectangle(0, 0, renderTarget.Width, renderTarget.Height), ImageLockMode.ReadWrite, renderTarget.PixelFormat);
-        using (PDFiumBitmap tmp = new PDFiumBitmap(renderTarget.Width, renderTarget.Height, format, data.Scan0, data.Stride))
+        using (PDFiumBitmap tmp = new(renderTarget.Width, renderTarget.Height, format, data.Scan0, data.Stride))
         {
             FPDF_COLOR background = page.HasTransparency ? 0x00FFFFFF : 0xFFFFFFFF;
             tmp.FillRectangle(0, 0, tmp.Width, tmp.Height, background);
@@ -68,17 +63,12 @@ public static class Pdfium
 
     static BitmapFormats GetBitmapFormat(Bitmap bitmap)
     {
-        switch (bitmap.PixelFormat)
+        return bitmap.PixelFormat switch
         {
-            case PixelFormat.Format24bppRgb:
-                return BitmapFormats.BGR;
-            case PixelFormat.Format32bppPArgb:
-            case PixelFormat.Format32bppArgb:
-                return BitmapFormats.BGRA;
-            case PixelFormat.Format32bppRgb:
-                return BitmapFormats.BGRx;
-            default:
-                throw new NotSupportedException($"Pixel format {bitmap.PixelFormat} is not supported.");
-        }
+            PixelFormat.Format24bppRgb => BitmapFormats.BGR,
+            PixelFormat.Format32bppPArgb or PixelFormat.Format32bppArgb => BitmapFormats.BGRA,
+            PixelFormat.Format32bppRgb => BitmapFormats.BGRx,
+            _ => throw new NotSupportedException($"Pixel format {bitmap.PixelFormat} is not supported."),
+        };
     }
 }

@@ -26,10 +26,6 @@ public class ComicBookCustomValuesMatcher : ComicBookStringMatcher
     protected override string GetValue(ComicBook comicBook)
     {
         string matchValue = GetMatchValue2(comicBook);
-        if (matchValue == null)
-        {
-            return null;
-        }
-        return comicBook.GetCustomValue(matchValue);
+        return matchValue == null ? null : comicBook.GetCustomValue(matchValue);
     }
 }

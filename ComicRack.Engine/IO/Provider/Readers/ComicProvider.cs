@@ -9,8 +9,8 @@ namespace cYo.Projects.ComicRack.Engine.IO.Provider.Readers;
 
 public abstract class ComicProvider : ImageProvider, IInfoStorage
 {
-    private static readonly string[] supportedTypes = new string[]
-    {
+    private static readonly string[] supportedTypes =
+    [
         "jpg",
         "jpeg",
         "jif",
@@ -28,35 +28,25 @@ public abstract class ComicProvider : ImageProvider, IInfoStorage
         "jp2",
         "j2k",
 			//"jxl",
-		};
+		];
 
     public bool UpdateEnabled => GetType().GetAttributes<FileFormatAttribute>().FirstOrDefault((FileFormatAttribute f) => f.Format.Supports(base.Source))?.EnableUpdate ?? false;
 
     private bool disableNtfs = false;
     protected bool DisableNtfs
     {
-        get
-        {
-            if (disableNtfs)
-                return true;
-
-            return EngineConfiguration.Default.DisableNTFS;
-        }
+        get => disableNtfs ? true : EngineConfiguration.Default.DisableNTFS;
 
         set => disableNtfs = value;
     }
 
-    protected bool DisableSidecar
-    {
-        get;
-        set;
-    }
+    protected bool DisableSidecar { get; set; }
 
     public ComicInfo LoadInfo(InfoLoadingMethod method)
     {
         using (LockSource(readOnly: true))
         {
-            ComicInfo comicInfo = (DisableNtfs ? null : NtfsInfoStorage.LoadInfo(base.Source));
+            ComicInfo comicInfo = DisableNtfs ? null : NtfsInfoStorage.LoadInfo(base.Source);
             if (comicInfo == null && !DisableSidecar)
             {
                 comicInfo = ComicInfo.LoadFromSidecar(base.Source);
@@ -112,7 +102,7 @@ public abstract class ComicProvider : ImageProvider, IInfoStorage
 
     private static bool IsImageThumbnailFolder(string file)
     {
-        string[] ignore = { ".DS_Store\\", "__MACOSX\\" };
+        string[] ignore = [".DS_Store\\", "__MACOSX\\"];
         return ignore.Any(item => file.Contains(item));
     }
 

@@ -18,23 +18,11 @@ public class ListViewEx : ListView
 
     public class MouseReorderEventArgs : CancelEventArgs
     {
-        public ListViewItem Item
-        {
-            get;
-            private set;
-        }
+        public ListViewItem Item { get; private set; }
 
-        public int FromIndex
-        {
-            get;
-            private set;
-        }
+        public int FromIndex { get; private set; }
 
-        public int ToIndex
-        {
-            get;
-            private set;
-        }
+        public int ToIndex { get; private set; }
 
         public MouseReorderEventArgs(ListViewItem item, int from, int to)
         {
@@ -57,19 +45,12 @@ public class ListViewEx : ListView
     private int insertLineAfter = -1;
 
     [DefaultValue(false)]
-    public bool EnableMouseReorder
-    {
-        get;
-        set;
-    }
+    public bool EnableMouseReorder { get; set; }
 
     [DefaultValue(typeof(Color), "Black")]
     public Color InsertLineColor
     {
-        get
-        {
-            return insertLineColor;
-        }
+        get => insertLineColor;
         set
         {
             if (!(insertLineColor == value))
@@ -87,10 +68,7 @@ public class ListViewEx : ListView
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int InsertLineBefore
     {
-        get
-        {
-            return insertLineBefore;
-        }
+        get => insertLineBefore;
         set
         {
             if (insertLineBefore != value)
@@ -105,10 +83,7 @@ public class ListViewEx : ListView
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int InsertLineAfter
     {
-        get
-        {
-            return insertLineAfter;
-        }
+        get => insertLineAfter;
         set
         {
             if (insertLineAfter != value)
@@ -126,7 +101,7 @@ public class ListViewEx : ListView
     protected override void WndProc(ref Message m)
     {
         base.WndProc(ref m);
-        if (m.Msg == Native.WM_HSCROLL || m.Msg == Native.WM_VSCROLL)
+        if (m.Msg is Native.WM_HSCROLL or Native.WM_VSCROLL)
         {
             OnScroll();
         }
@@ -230,7 +205,7 @@ public class ListViewEx : ListView
             }
             if (num >= 0 && dragItem.Index != num)
             {
-                MouseReorderEventArgs mouseReorderEventArgs = new MouseReorderEventArgs(dragItem, dragItem.Index, num);
+                MouseReorderEventArgs mouseReorderEventArgs = new(dragItem, dragItem.Index, num);
                 OnMouseReorder(mouseReorderEventArgs);
                 if (!mouseReorderEventArgs.Cancel)
                 {
@@ -238,7 +213,7 @@ public class ListViewEx : ListView
                     base.Items.Insert(num, dragItem);
                 }
             }
-            int num4 = (InsertLineAfter = (InsertLineBefore = -1));
+            int num4 = InsertLineAfter = InsertLineBefore = -1;
         }
         finally
         {
@@ -249,18 +224,12 @@ public class ListViewEx : ListView
 
     protected virtual void OnScroll()
     {
-        if (this.Scroll != null)
-        {
-            this.Scroll(this, EventArgs.Empty);
-        }
+        Scroll?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnMouseReorder(MouseReorderEventArgs e)
     {
-        if (this.MouseReorder != null)
-        {
-            this.MouseReorder(this, e);
-        }
+        MouseReorder?.Invoke(this, e);
     }
 
     private void scrollTimer_Tick(object sender, EventArgs e)
@@ -269,7 +238,7 @@ public class ListViewEx : ListView
         if (base.Items.Count != 0)
         {
             int index = base.TopItem.Index;
-            index = ((point.Y >= base.Height / 2) ? (index + 1) : (index - 1));
+            index = (point.Y >= base.Height / 2) ? (index + 1) : (index - 1);
             if (index >= 0 && index < base.Items.Count)
             {
                 base.TopItem = base.Items[index];
@@ -309,23 +278,23 @@ public class ListViewEx : ListView
     {
         using (Graphics graphics = CreateGraphics())
         {
-            using (Pen pen = new Pen(InsertLineColor))
+            using (Pen pen = new(InsertLineColor))
             {
                 using (Brush brush = new SolidBrush(InsertLineColor))
                 {
                     graphics.DrawLine(pen, x1, y, x2 - 1, y);
-                    Point[] points = new Point[3]
-                    {
-                        new Point(x1, y - 4),
-                        new Point(x1 + 7, y),
-                        new Point(x1, y + 4)
-                    };
-                    Point[] points2 = new Point[3]
-                    {
-                        new Point(x2, y - 4),
-                        new Point(x2 - 8, y),
-                        new Point(x2, y + 4)
-                    };
+                    Point[] points =
+                    [
+                        new(x1, y - 4),
+                        new(x1 + 7, y),
+                        new(x1, y + 4)
+                    ];
+                    Point[] points2 =
+                    [
+                        new(x2, y - 4),
+                        new(x2 - 8, y),
+                        new(x2, y + 4)
+                    ];
                     graphics.FillPolygon(brush, points);
                     graphics.FillPolygon(brush, points2);
                 }

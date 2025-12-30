@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -12,31 +11,15 @@ public class ServiceAddress
 {
     private static string wanIp;
 
-    private static Regex rxUrlSplit = new Regex("^(?<host>[^:/]+)(:(?<port>\\d+))?(/(?<path>.*))?");
+    private static Regex rxUrlSplit = new("^(?<host>[^:/]+)(:(?<port>\\d+))?(/(?<path>.*))?");
 
-    public string Host
-    {
-        get;
-        set;
-    }
+    public string Host { get; set; }
 
-    public string Port
-    {
-        get;
-        set;
-    }
+    public string Port { get; set; }
 
-    public string Service
-    {
-        get;
-        set;
-    }
+    public string Service { get; set; }
 
-    public bool IsValid
-    {
-        get;
-        private set;
-    }
+    public bool IsValid { get; private set; }
 
     public ServiceAddress(IPAddress address)
     {
@@ -100,11 +83,7 @@ public class ServiceAddress
         {
             wanIp = string.Empty;
         }
-        if (!string.IsNullOrEmpty(wanIp))
-        {
-            return wanIp;
-        }
-        return null;
+        return !string.IsNullOrEmpty(wanIp) ? wanIp : null;
     }
 
     public static string CompletePortAndPath(string host, string newPort, string newPath)
@@ -138,7 +117,7 @@ public class ServiceAddress
         Match match = rxUrlSplit.Match(address ?? string.Empty);
         if (!match.Success)
         {
-            host = (port = (path = null));
+            host = port = path = null;
             return false;
         }
         host = match.Groups["host"].Value.Trim();
@@ -151,7 +130,7 @@ public class ServiceAddress
     {
         try
         {
-            ServiceAddress serviceAddress = new ServiceAddress(address);
+            ServiceAddress serviceAddress = new(address);
             return Dns.GetHostAddresses(serviceAddress.Host).All((IPAddress ip) => ip.IsPrivate());
         }
         catch (Exception)

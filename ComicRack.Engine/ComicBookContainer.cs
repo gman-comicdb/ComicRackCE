@@ -11,7 +11,7 @@ namespace cYo.Projects.ComicRack.Engine;
 [Serializable]
 public class ComicBookContainer : NamedIdComponent, IEditableComicBookListProvider, IComicBookListProvider, ILiteComponent, IDisposable, IIdentity, IComicBookList
 {
-    private ComicBookCollection books = new ComicBookCollection();
+    private ComicBookCollection books = new();
 
     [NonSerialized]
     private volatile ComicsEditModes editMode = ComicsEditModes.Default;
@@ -22,14 +22,8 @@ public class ComicBookContainer : NamedIdComponent, IEditableComicBookListProvid
     [XmlIgnore]
     public ComicsEditModes EditMode
     {
-        get
-        {
-            return editMode;
-        }
-        set
-        {
-            editMode = value;
-        }
+        get => editMode;
+        set => editMode = value;
     }
 
     public virtual bool IsLibrary => false;
@@ -37,10 +31,7 @@ public class ComicBookContainer : NamedIdComponent, IEditableComicBookListProvid
     [XmlIgnore]
     public int BookCount
     {
-        get
-        {
-            return books.Count;
-        }
+        get => books.Count;
         set
         {
         }
@@ -105,18 +96,12 @@ public class ComicBookContainer : NamedIdComponent, IEditableComicBookListProvid
 
     protected virtual void OnBookChanged(ContainerBookChangedEventArgs e)
     {
-        if (this.BookChanged != null)
-        {
-            this.BookChanged(this, e);
-        }
+        BookChanged?.Invoke(this, e);
     }
 
     protected virtual void OnBookListChanged()
     {
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnBookAdded(ComicBook book)

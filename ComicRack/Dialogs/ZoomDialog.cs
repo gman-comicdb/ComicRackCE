@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 using cYo.Common.Mathematics;
@@ -12,10 +10,7 @@ public partial class ZoomDialog : FormEx
 {
     public float Zoom
     {
-        get
-        {
-            return (float)(numPercentage.Value / 100m);
-        }
+        get => (float)(numPercentage.Value / 100m);
         set
         {
             numPercentage.Value = (int)(value * 100f).Clamp((float)numPercentage.Minimum, (float)numPercentage.Maximum);
@@ -32,14 +27,10 @@ public partial class ZoomDialog : FormEx
 
     public static float Show(IWin32Window parent, float zoom)
     {
-        using (ZoomDialog zoomDialog = new ZoomDialog())
+        using (ZoomDialog zoomDialog = new())
         {
             zoomDialog.Zoom = zoom;
-            if (zoomDialog.ShowDialog(parent) == DialogResult.OK)
-            {
-                return zoomDialog.Zoom;
-            }
-            return zoom;
+            return zoomDialog.ShowDialog(parent) == DialogResult.OK ? zoomDialog.Zoom : zoom;
         }
     }
 

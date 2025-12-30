@@ -39,7 +39,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
 
     private string description = string.Empty;
 
-    private DisplayListConfig displayListConfig = new DisplayListConfig();
+    private DisplayListConfig displayListConfig = new();
 
     [NonSerialized]
     private ComicLibrary registeredLibrary;
@@ -67,32 +67,29 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
 
     private volatile bool notifyShield;
 
-    private static readonly string[] defaultDependentProperties = new string[3]
-    {
+    private static readonly string[] defaultDependentProperties =
+    [
         "AddedTime",
         "LastPageRead",
         "PageCount"
-    };
+    ];
 
     [NonSerialized]
     private IAsyncResult updateResult;
 
     [NonSerialized]
-    private readonly ThreadLocal<bool> recurseShield = new ThreadLocal<bool>();
+    private readonly ThreadLocal<bool> recurseShield = new();
 
     [NonSerialized]
     private Dictionary<ComicBookSeriesStatistics.Key, ComicBookSeriesStatistics> seriesStats;
 
     [NonSerialized]
-    private object seriesStatsLock = new object();
+    private object seriesStatsLock = new();
 
     [XmlIgnore]
     public virtual ComicLibrary Library
     {
-        get
-        {
-            return library;
-        }
+        get => library;
         set
         {
             if (library != value)
@@ -106,10 +103,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     [XmlIgnore]
     public ComicListItemFolder Parent
     {
-        get
-        {
-            return parent;
-        }
+        get => parent;
         set
         {
             if (value != parent)
@@ -125,10 +119,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     [DefaultValue(false)]
     public virtual bool Favorite
     {
-        get
-        {
-            return favorite;
-        }
+        get => favorite;
         set
         {
             if (value != favorite)
@@ -142,10 +133,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     [DefaultValue(0)]
     public virtual int BookCount
     {
-        get
-        {
-            return bookCount;
-        }
+        get => bookCount;
         set
         {
             if (bookCount != value)
@@ -159,10 +147,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     [DefaultValue(0)]
     public virtual int NewBookCount
     {
-        get
-        {
-            return newBookCount;
-        }
+        get => newBookCount;
         set
         {
             if (newBookCount != value)
@@ -174,19 +159,12 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     }
 
     [DefaultValue(typeof(DateTime), "01.01.0001")]
-    public DateTime NewBookCountDate
-    {
-        get;
-        set;
-    }
+    public DateTime NewBookCountDate { get; set; }
 
     [DefaultValue(0)]
     public virtual int UnreadBookCount
     {
-        get
-        {
-            return unreadBookCount;
-        }
+        get => unreadBookCount;
         set
         {
             if (unreadBookCount != value)
@@ -200,10 +178,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     [DefaultValue("")]
     public string Description
     {
-        get
-        {
-            return description;
-        }
+        get => description;
         set
         {
             if (!(description == value))
@@ -215,63 +190,19 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
     }
 
     [DefaultValue(null)]
-    public string CacheStorage
-    {
-        get;
-        set;
-    }
+    public string CacheStorage { get; set; }
 
     public DisplayListConfig Display
     {
-        get
-        {
-            return displayListConfig;
-        }
-        set
-        {
-            displayListConfig = value;
-        }
+        get => displayListConfig;
+        set => displayListConfig = value;
     }
 
-    public virtual bool CacheEnabled
-    {
-        get
-        {
-            if (Library != null && Library.IsLoaded)
-            {
-                return ComicLibrary.IsQueryCacheEnabled;
-            }
-            return false;
-        }
-    }
+    public virtual bool CacheEnabled => Library != null && Library.IsLoaded ? ComicLibrary.IsQueryCacheEnabled : false;
 
-    public virtual bool PendingCacheUpdate
-    {
-        get
-        {
-            if (CacheEnabled)
-            {
-                if (booksCache != null || CacheStorage != null)
-                {
-                    return pendingCacheUpdate;
-                }
-                return true;
-            }
-            return false;
-        }
-    }
+    public virtual bool PendingCacheUpdate => CacheEnabled ? booksCache != null || CacheStorage != null ? pendingCacheUpdate : true : false;
 
-    public virtual bool PendingCacheRetrieval
-    {
-        get
-        {
-            if (CacheEnabled && CacheStorage != null)
-            {
-                return pendingCacheRetrieval;
-            }
-            return false;
-        }
-    }
+    public virtual bool PendingCacheRetrieval => CacheEnabled && CacheStorage != null ? pendingCacheRetrieval : false;
 
     public virtual bool OptimizedCacheUpdateDisabled => false;
 
@@ -311,23 +242,13 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
 
     public virtual bool Filter(string filter)
     {
-        if (filter != null)
-        {
-            return (base.Name ?? string.Empty).IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) != -1;
-        }
-        return false;
+        return filter != null ? (base.Name ?? string.Empty).IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) != -1 : false;
     }
 
     protected virtual void OnChanged(ComicListItemChangedEventArgs e)
     {
-        if (Library != null)
-        {
-            Library.NotifyComicListChanged(e.Item, e.Change);
-        }
-        if (this.Changed != null)
-        {
-            this.Changed(this, e);
-        }
+        Library?.NotifyComicListChanged(e.Item, e.Change);
+        Changed?.Invoke(this, e);
     }
 
     protected void OnChanged(ComicListItemChange changeType, ComicListItem item = null)
@@ -350,7 +271,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
                 return InvokeGetBooks();
             }
             CommitCache(block: true);
-            return (booksCache == null) ? Enumerable.Empty<ComicBook>() : booksCache.Lock();
+            return (booksCache == null) ? [] : booksCache.Lock();
         }
         catch (Exception)
         {
@@ -366,10 +287,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
 
     protected virtual void OnBookListChanged()
     {
-        if (this.BookListChanged != null)
-        {
-            this.BookListChanged(this, EventArgs.Empty);
-        }
+        BookListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void NotifyCacheRetrieval()
@@ -407,14 +325,8 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         pendingCacheItems = null;
         CacheStorage = null;
         pendingCacheUpdate = true;
-        if (Parent != null)
-        {
-            Parent.ResetCache();
-        }
-        if (Library != null)
-        {
-            Library.NotifyComicListCacheReset(this);
-        }
+        Parent?.ResetCache();
+        Library?.NotifyComicListCacheReset(this);
         if (rebuildNow)
         {
             CommitCache(block: false);
@@ -424,8 +336,8 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
 
     public void ResetCacheWithStatistics(bool rebuildNow = false)
     {
-        int num2 = (NewBookCount = 0);
-        int num5 = (BookCount = (UnreadBookCount = num2));
+        int num2 = NewBookCount = 0;
+        int num5 = BookCount = UnreadBookCount = num2;
         NewBookCountDate = DateTime.MinValue;
         ResetCache(rebuildNow);
     }
@@ -439,7 +351,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
             {
                 return;
             }
-            HashSet<ComicBook> hashSet = new HashSet<ComicBook>();
+            HashSet<ComicBook> hashSet = new();
             string cacheStorage = CacheStorage;
             CacheStorage = null;
             using (ItemMonitor.Lock(hashSet))
@@ -456,7 +368,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
                     string[] array = cacheStorage.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
                     foreach (string g in array)
                     {
-                        Guid id = new Guid(g);
+                        Guid id = new(g);
                         ComicBook comicBook = Library.Books[id];
                         if (comicBook != null)
                         {
@@ -507,10 +419,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         bool flag = false;
         using (ItemMonitor.Lock(pendingCacheItems))
         {
-            if (pendingCacheItems == null)
-            {
-                pendingCacheItems = new Dictionary<ComicBook, PendingCacheAction>();
-            }
+            pendingCacheItems ??= new Dictionary<ComicBook, PendingCacheAction>();
             if (!pendingCacheItems.TryGetValue(cb, out var value) || value != action)
             {
                 pendingCacheItems[cb] = action;
@@ -519,14 +428,8 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         }
         if (flag)
         {
-            if (Parent != null)
-            {
-                Parent.InvalidateCache(cb, action);
-            }
-            if (Library != null)
-            {
-                Library.NotifyComicListCacheUpdate(this, cb, action);
-            }
+            Parent?.InvalidateCache(cb, action);
+            Library?.NotifyComicListCacheUpdate(this, cb, action);
         }
         return flag;
     }
@@ -549,7 +452,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         {
             RunUpdate(block || !ComicLibrary.BackgroundQueryCacheUpdate, delegate
             {
-                HashSet<ComicBook> hashSet3 = new HashSet<ComicBook>(InvokeGetBooks());
+                HashSet<ComicBook> hashSet3 = new(InvokeGetBooks());
                 InitializeBookCounters(hashSet3);
                 booksCache = hashSet3;
                 pendingCacheItems = null;
@@ -574,10 +477,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
                     {
                         if (hashSet.Remove(item))
                         {
-                            if (hashSet2 == null)
-                            {
-                                hashSet2 = new HashSet<ComicBook>();
-                            }
+                            hashSet2 ??= new HashSet<ComicBook>();
                             hashSet2.Add(item);
                             if (newBooksCache != null && newBooksCache.Contains(item))
                             {
@@ -598,8 +498,8 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
                 }
             }
             BookCount = hashSet.Count;
-            NewBookCount = ((newBooksCache != null) ? newBooksCache.Count : 0);
-            UnreadBookCount = ((unreadBooksCache != null) ? unreadBooksCache.Count : 0);
+            NewBookCount = (newBooksCache != null) ? newBooksCache.Count : 0;
+            UnreadBookCount = (unreadBooksCache != null) ? unreadBooksCache.Count : 0;
             dictionary.Clear();
         }
         catch (Exception)
@@ -652,7 +552,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
             CacheStorage = "Custom";
             return;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         foreach (ComicBook item in booksCache)
         {
             if (stringBuilder.Length != 0)
@@ -683,13 +583,13 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
             now = DateTime.Now;
             using (ItemMonitor.Lock(this))
             {
-                newBooksCache = (unreadBooksCache = null);
+                newBooksCache = unreadBooksCache = null;
                 booksCache.ForEach(CreateBookCacheStatus);
                 BookCount = booksCache.Count;
             }
-            NewBookCount = ((newBooksCache != null) ? newBooksCache.Count : 0);
+            NewBookCount = (newBooksCache != null) ? newBooksCache.Count : 0;
             NewBookCountDate = DateTime.UtcNow;
-            UnreadBookCount = ((unreadBooksCache != null) ? unreadBooksCache.Count : 0);
+            UnreadBookCount = (unreadBooksCache != null) ? unreadBooksCache.Count : 0;
         }
     }
 
@@ -701,18 +601,12 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         }
         if ((now - cb.AddedTime).TotalDays < (double)EngineConfiguration.Default.IsRecentInDays)
         {
-            if (newBooksCache == null)
-            {
-                newBooksCache = new HashSet<ComicBook>();
-            }
+            newBooksCache ??= new HashSet<ComicBook>();
             newBooksCache.Add(cb);
         }
         else
         {
-            if (unreadBooksCache == null)
-            {
-                unreadBooksCache = new HashSet<ComicBook>();
-            }
+            unreadBooksCache ??= new HashSet<ComicBook>();
             unreadBooksCache.Add(cb);
         }
     }
@@ -773,12 +667,10 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         try
         {
             recurseShield.Value = true;
-            ComicListItemFolder comicListItemFolder = this as ComicListItemFolder;
-            if (comicListItemFolder != null && comicListItemFolder.Items.Any((ComicListItem cli) => cli.RecursionTest(listId)))
+            if (this is ComicListItemFolder comicListItemFolder && comicListItemFolder.Items.Any((ComicListItem cli) => cli.RecursionTest(listId)))
                 result = true;
 
-            ComicSmartListItem comicSmartListItem = this as ComicSmartListItem;
-            if (comicSmartListItem != null)
+            if (this is ComicSmartListItem comicSmartListItem)
             {
                 ComicListItem baseList = comicSmartListItem.GetBaseList(withTest: false);
                 if (baseList != null && baseList.RecursionTest(listId))
@@ -812,7 +704,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         }
         using (ItemMonitor.Lock(seriesStatsLock))
         {
-            seriesStats = seriesStats ?? ComicBookSeriesStatistics.Create(Library.GetBooks());
+            seriesStats ??= ComicBookSeriesStatistics.Create(Library.GetBooks());
             return seriesStats[new ComicBookSeriesStatistics.Key(book)];
         }
     }

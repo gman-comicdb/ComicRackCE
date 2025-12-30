@@ -8,14 +8,11 @@ public class ComicBookGroupBlackAndWhite : SingleComicGrouper
 
     public override IGroupInfo GetGroup(ComicBook item)
     {
-        switch (item.BlackAndWhite)
+        return item.BlackAndWhite switch
         {
-            case YesNo.Yes:
-                return new GroupInfo(captions[0], 0);
-            case YesNo.No:
-                return new GroupInfo(captions[1], 1);
-            default:
-                return new GroupInfo(captions[2], 2);
-        }
+            YesNo.Yes => new GroupInfo(captions[0], 0),
+            YesNo.No => new GroupInfo(captions[1], 1),
+            _ => new GroupInfo(captions[2], 2),
+        };
     }
 }

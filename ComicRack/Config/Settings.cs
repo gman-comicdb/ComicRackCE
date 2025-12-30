@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Cryptography;
 using cYo.Common.Drawing;
 using cYo.Common.Mathematics;
 using cYo.Common.Threading;
@@ -56,17 +52,9 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public class RemoteViewConfig : IIdentity, IDisplayListConfig
     {
         [XmlAttribute]
-        public Guid Id
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
 
-        public DisplayListConfig Display
-        {
-            get;
-            set;
-        }
+        public DisplayListConfig Display { get; set; }
 
         public RemoteViewConfig()
         {
@@ -82,18 +70,10 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public class RemoteExplorerViewSettings : IIdentity
     {
         [XmlAttribute]
-        public Guid Id
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
 
         [DefaultValue(null)]
-        public ComicExplorerViewSettings Settings
-        {
-            get;
-            set;
-        }
+        public ComicExplorerViewSettings Settings { get; set; }
 
         public RemoteExplorerViewSettings()
         {
@@ -128,13 +108,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public const int UnlimitedSystemMemory = 4096;
 
-    private List<ListConfiguration> listConfigurations = new List<ListConfiguration>();
+    private List<ListConfiguration> listConfigurations = new();
 
-    private List<ExternalProgram> externalPrograms = new List<ExternalProgram>();
+    private List<ExternalProgram> externalPrograms = new();
 
-    private DisplayWorkspace currentWorkspace = new DisplayWorkspace();
+    private DisplayWorkspace currentWorkspace = new();
 
-    private readonly List<DisplayWorkspace> workspaces = new List<DisplayWorkspace>();
+    private readonly List<DisplayWorkspace> workspaces = new();
 
     private string pasteProperties = "Series";
 
@@ -150,17 +130,17 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private int lastExportPageFilterIndex = 1;
 
-    private readonly SmartList<string> favoriteFolders = new SmartList<string>();
+    private readonly SmartList<string> favoriteFolders = new();
 
-    private readonly MruList<RemoteShareItem> remoteShares = new MruList<RemoteShareItem>();
+    private readonly MruList<RemoteShareItem> remoteShares = new();
 
-    private readonly SmartList<ComicLibraryServerConfig> shares = new SmartList<ComicLibraryServerConfig>();
+    private readonly SmartList<ComicLibraryServerConfig> shares = new();
 
     private bool lookForShared = true;
 
     private bool autoConnectShares = true;
 
-    private readonly SmartList<PasswordCacheEntry> passwordCache = new SmartList<PasswordCacheEntry>();
+    private readonly SmartList<PasswordCacheEntry> passwordCache = new();
 
     private string extraWifiDeviceAddresses = string.Empty;
 
@@ -170,7 +150,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private BitmapAdjustment globalColorAdjustment = BitmapAdjustment.Empty;
 
-    private Size magnifySize = new Size(300, 200);
+    private Size magnifySize = new(300, 200);
 
     private float magnifyOpaque = 1f;
 
@@ -192,7 +172,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private float mouseWheelSpeed = 2f;
 
-    private readonly List<StringPair> readerKeyboardMapping = new List<StringPair>();
+    private readonly List<StringPair> readerKeyboardMapping = new();
 
     private string ignoredCoverImages;
 
@@ -220,7 +200,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private bool newsStartup = true;
 
-    private readonly List<string> lastOpenFiles = new List<string>();
+    private readonly List<string> lastOpenFiles = new();
 
     private bool openLastPage = true;
 
@@ -338,180 +318,108 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     private bool overwriteAssociations;
 
-    private readonly List<RemoteViewConfig> remoteViewConfigList = new List<RemoteViewConfig>();
+    private readonly List<RemoteViewConfig> remoteViewConfigList = new();
 
-    private readonly List<RemoteExplorerViewSettings> remoteExplorerViewSettingsList = new List<RemoteExplorerViewSettings>();
+    private readonly List<RemoteExplorerViewSettings> remoteExplorerViewSettingsList = new();
 
-    private readonly List<string> quickSearchList = new List<string>();
+    private readonly List<string> quickSearchList = new();
 
-    private readonly List<string> libraryQuickSearchList = new List<string>();
+    private readonly List<string> libraryQuickSearchList = new();
 
-    private readonly MruList<string> keyboardLayouts = new MruList<string>();
+    private readonly MruList<string> keyboardLayouts = new();
 
-    private readonly MruList<string> thumbnailFiles = new MruList<string>();
+    private readonly MruList<string> thumbnailFiles = new();
 
-    private readonly ExportSettingCollection exportUserPresets = new ExportSettingCollection();
+    private readonly ExportSettingCollection exportUserPresets = new();
 
-    private readonly SmartList<DeviceSyncSettings> devices = new SmartList<DeviceSyncSettings>();
+    private readonly SmartList<DeviceSyncSettings> devices = new();
 
     public List<ListConfiguration> ListConfigurations
     {
-        get
-        {
-            return listConfigurations;
-        }
-        set
-        {
-            listConfigurations = value;
-        }
+        get => listConfigurations;
+        set => listConfigurations = value;
     }
 
     public List<ExternalProgram> ExternalPrograms
     {
-        get
-        {
-            return externalPrograms;
-        }
-        set
-        {
-            externalPrograms = value;
-        }
+        get => externalPrograms;
+        set => externalPrograms = value;
     }
 
     public DisplayWorkspace CurrentWorkspace
     {
-        get
-        {
-            return currentWorkspace;
-        }
-        set
-        {
-            currentWorkspace = value;
-        }
+        get => currentWorkspace;
+        set => currentWorkspace = value;
     }
 
     public List<DisplayWorkspace> Workspaces => workspaces;
 
     [Browsable(false)]
     [DefaultValue(0)]
-    public int RunCount
-    {
-        get;
-        set;
-    }
+    public int RunCount { get; set; }
 
     [Browsable(false)]
     [DefaultValue("")]
     public string PasteProperties
     {
-        get
-        {
-            return pasteProperties;
-        }
-        set
-        {
-            pasteProperties = value;
-        }
+        get => pasteProperties;
+        set => pasteProperties = value;
     }
 
     [Browsable(false)]
     [DefaultValue(null)]
-    public string SelectedBrowser
-    {
-        get;
-        set;
-    }
+    public string SelectedBrowser { get; set; }
 
     [DefaultValue(ComicPageType.All)]
     [Browsable(false)]
     public ComicPageType PageFilter
     {
-        get
-        {
-            return pageFilter;
-        }
-        set
-        {
-            pageFilter = value;
-        }
+        get => pageFilter;
+        set => pageFilter = value;
     }
 
     [Browsable(false)]
     [DefaultValue("")]
     public string LastExplorerFolder
     {
-        get
-        {
-            return lastExplorerFolder;
-        }
-        set
-        {
-            lastExplorerFolder = value;
-        }
+        get => lastExplorerFolder;
+        set => lastExplorerFolder = value;
     }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool ExplorerIncludeSubFolders
-    {
-        get;
-        set;
-    }
+    public bool ExplorerIncludeSubFolders { get; set; }
 
     [Browsable(false)]
     [DefaultValue("")]
     public Guid LastLibraryItem
     {
-        get
-        {
-            return lastLibraryItem;
-        }
-        set
-        {
-            lastLibraryItem = value;
-        }
+        get => lastLibraryItem;
+        set => lastLibraryItem = value;
     }
 
     [Browsable(false)]
     [DefaultValue(-1)]
     public int LastOpenFilterIndex
     {
-        get
-        {
-            return lastOpenFilterIndex;
-        }
-        set
-        {
-            lastOpenFilterIndex = value;
-        }
+        get => lastOpenFilterIndex;
+        set => lastOpenFilterIndex = value;
     }
 
     [Browsable(false)]
     [DefaultValue(1)]
     public int LastSaveFilterIndex
     {
-        get
-        {
-            return lastSaveFilterIndex;
-        }
-        set
-        {
-            lastSaveFilterIndex = value;
-        }
+        get => lastSaveFilterIndex;
+        set => lastSaveFilterIndex = value;
     }
 
     [Browsable(false)]
     [DefaultValue(1)]
     public int LastExportPageFilterIndex
     {
-        get
-        {
-            return lastExportPageFilterIndex;
-        }
-        set
-        {
-            lastExportPageFilterIndex = value;
-        }
+        get => lastExportPageFilterIndex;
+        set => lastExportPageFilterIndex = value;
     }
 
     [Browsable(false)]
@@ -523,76 +431,40 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     [Browsable(false)]
     [DefaultValue(null)]
-    public string PluginsStates
-    {
-        get;
-        set;
-    }
+    public string PluginsStates { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool MoveFilesToRecycleBin
-    {
-        get;
-        set;
-    }
+    public bool MoveFilesToRecycleBin { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool AlsoRemoveFromLibrary
-    {
-        get;
-        set;
-    }
+    public bool AlsoRemoveFromLibrary { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool AlsoRemoveFromLibraryFiltered
-    {
-        get;
-        set;
-    }
+    public bool AlsoRemoveFromLibraryFiltered { get; set; }
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool RemoveFilesfromDatabase
-    {
-        get;
-        set;
-    }
+    public bool RemoveFilesfromDatabase { get; set; }
 
     [Browsable(false)]
     [DefaultValue(TabLayouts.None)]
-    public TabLayouts TabLayouts
-    {
-        get;
-        set;
-    }
+    public TabLayouts TabLayouts { get; set; }
 
     [DefaultValue(128)]
-    public int QuickOpenThumbnailSize
-    {
-        get;
-        set;
-    }
+    public int QuickOpenThumbnailSize { get; set; }
 
     public SmartList<ComicLibraryServerConfig> Shares => shares;
 
     public bool IsSharing => shares.Any((ComicLibraryServerConfig sc) => sc.IsValidShare);
 
     [DefaultValue("")]
-    public string ExternalServerAddress
-    {
-        get;
-        set;
-    }
+    public string ExternalServerAddress { get; set; }
 
     [DefaultValue("")]
-    public string PrivateListingPassword
-    {
-        get;
-        set;
-    }
+    public string PrivateListingPassword { get; set; }
 
     [Category("Network")]
     [Description("Look for locally shared comic libraries on the network")]
@@ -600,16 +472,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool LookForShared
     {
-        get
-        {
-            return lookForShared;
-        }
+        get => lookForShared;
         set
         {
             if (lookForShared != value)
             {
                 lookForShared = value;
-                FireEvent(this.LookForSharedChanged);
+                FireEvent(LookForSharedChanged);
             }
         }
     }
@@ -620,16 +489,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool AutoConnectShares
     {
-        get
-        {
-            return autoConnectShares;
-        }
+        get => autoConnectShares;
         set
         {
             if (autoConnectShares != value)
             {
                 autoConnectShares = value;
-                FireEvent(this.AutoConnectSharesChanged);
+                FireEvent(AutoConnectSharesChanged);
             }
         }
     }
@@ -642,16 +508,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue("")]
     public string ExtraWifiDeviceAddresses
     {
-        get
-        {
-            return extraWifiDeviceAddresses;
-        }
+        get => extraWifiDeviceAddresses;
         set
         {
             if (!(extraWifiDeviceAddresses == value))
             {
                 extraWifiDeviceAddresses = value;
-                FireEvent(this.ExtraWirelessIpAddressesChanged);
+                FireEvent(ExtraWirelessIpAddressesChanged);
             }
         }
     }
@@ -662,16 +525,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [XmlElement("PageImageOptions")]
     public ImageDisplayOptions PageImageDisplayOptions
     {
-        get
-        {
-            return pageImageDisplayOptions;
-        }
+        get => pageImageDisplayOptions;
         set
         {
             if (pageImageDisplayOptions != value)
             {
                 pageImageDisplayOptions = value;
-                FireEvent(this.PageImageDisplayOptionsChanged);
+                FireEvent(PageImageDisplayOptionsChanged);
             }
         }
     }
@@ -681,16 +541,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(100)]
     public int OverlayScaling
     {
-        get
-        {
-            return overlayScaling;
-        }
+        get => overlayScaling;
         set
         {
             if (overlayScaling != value)
             {
                 overlayScaling = value;
-                FireEvent(this.OverlayScalingChanged);
+                FireEvent(OverlayScalingChanged);
             }
         }
     }
@@ -715,17 +572,14 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
                 }
                 globalColorAdjustment = value;
             }
-            FireEvent(this.ColorAdjustmentChanged);
+            FireEvent(ColorAdjustmentChanged);
         }
     }
 
     [DefaultValue(typeof(Size), "300, 200")]
     public Size MagnifySize
     {
-        get
-        {
-            return magnifySize;
-        }
+        get => magnifySize;
         set
         {
             using (ItemMonitor.Lock(this))
@@ -736,23 +590,20 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
                 }
                 magnifySize = value;
             }
-            FireEvent(this.MagnifySizeChanged);
+            FireEvent(MagnifySizeChanged);
         }
     }
 
     [DefaultValue(1f)]
     public float MagnifyOpaque
     {
-        get
-        {
-            return magnifyOpaque;
-        }
+        get => magnifyOpaque;
         set
         {
             if (magnifyOpaque != value)
             {
                 magnifyOpaque = value;
-                FireEvent(this.MagnifyOpaqueChanged);
+                FireEvent(MagnifyOpaqueChanged);
             }
         }
     }
@@ -760,16 +611,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(2f)]
     public float MagnifyZoom
     {
-        get
-        {
-            return magnifyZoom;
-        }
+        get => magnifyZoom;
         set
         {
             if (magnifyZoom != value)
             {
                 magnifyZoom = value;
-                FireEvent(this.MagnifyZoomChanged);
+                FireEvent(MagnifyZoomChanged);
             }
         }
     }
@@ -777,16 +625,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(MagnifierStyle.Glass)]
     public MagnifierStyle MagnifyStyle
     {
-        get
-        {
-            return magnifyStyle;
-        }
+        get => magnifyStyle;
         set
         {
             if (magnifyStyle != value)
             {
                 magnifyStyle = value;
-                FireEvent(this.MagnifyStyleChanged);
+                FireEvent(MagnifyStyleChanged);
             }
         }
     }
@@ -794,16 +639,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool AutoMagnifier
     {
-        get
-        {
-            return autoMagnifiery;
-        }
+        get => autoMagnifiery;
         set
         {
             if (autoMagnifiery != value)
             {
                 autoMagnifiery = value;
-                FireEvent(this.AutoMagnifierChanged);
+                FireEvent(AutoMagnifierChanged);
             }
         }
     }
@@ -812,16 +654,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool HardwareAcceleration
     {
-        get
-        {
-            return hardwareAcceleration;
-        }
+        get => hardwareAcceleration;
         set
         {
             if (hardwareAcceleration != value)
             {
                 hardwareAcceleration = value;
-                FireEvent(this.HardwareAccelerationChanged);
+                FireEvent(HardwareAccelerationChanged);
             }
         }
     }
@@ -830,16 +669,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool DisplayChangeAnimation
     {
-        get
-        {
-            return displayChangeAnimation;
-        }
+        get => displayChangeAnimation;
         set
         {
             if (displayChangeAnimation != value)
             {
                 displayChangeAnimation = value;
-                FireEvent(this.DisplayChangeAnimationChanged);
+                FireEvent(DisplayChangeAnimationChanged);
             }
         }
     }
@@ -848,16 +684,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool FlowingMouseScrolling
     {
-        get
-        {
-            return flowingMouseScrolling;
-        }
+        get => flowingMouseScrolling;
         set
         {
             if (flowingMouseScrolling != value)
             {
                 flowingMouseScrolling = value;
-                FireEvent(this.FlowingMouseScrollingChanged);
+                FireEvent(FlowingMouseScrollingChanged);
             }
         }
     }
@@ -866,16 +699,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool SoftwareFiltering
     {
-        get
-        {
-            return softwareFiltering;
-        }
+        get => softwareFiltering;
         set
         {
             if (softwareFiltering != value)
             {
                 softwareFiltering = value;
-                FireEvent(this.SoftwareFilteringChanged);
+                FireEvent(SoftwareFilteringChanged);
             }
         }
     }
@@ -884,16 +714,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool HardwareFiltering
     {
-        get
-        {
-            return hardwareFiltering;
-        }
+        get => hardwareFiltering;
         set
         {
             if (hardwareFiltering != value)
             {
                 hardwareFiltering = value;
-                FireEvent(this.HardwareFilteringChanged);
+                FireEvent(HardwareFilteringChanged);
             }
         }
     }
@@ -903,16 +730,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(2f)]
     public float MouseWheelSpeed
     {
-        get
-        {
-            return mouseWheelSpeed;
-        }
+        get => mouseWheelSpeed;
         set
         {
             if (mouseWheelSpeed != value)
             {
                 mouseWheelSpeed = value;
-                FireEvent(this.MouseWheelSpeedChanged);
+                FireEvent(MouseWheelSpeedChanged);
             }
         }
     }
@@ -928,16 +752,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(null)]
     public string IgnoredCoverImages
     {
-        get
-        {
-            return ignoredCoverImages;
-        }
+        get => ignoredCoverImages;
         set
         {
             if (!(ignoredCoverImages == value))
             {
                 ignoredCoverImages = value;
-                FireEvent(this.IgnoredCoverImagesChanged);
+                FireEvent(IgnoredCoverImagesChanged);
             }
         }
     }
@@ -948,16 +769,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool AutoScrolling
     {
-        get
-        {
-            return autoScrolling;
-        }
+        get => autoScrolling;
         set
         {
             if (autoScrolling != value)
             {
                 autoScrolling = value;
-                FireEvent(this.AutoScrollingChanged);
+                FireEvent(AutoScrollingChanged);
             }
         }
     }
@@ -967,14 +785,8 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(HiddenMessageBoxes.None)]
     public HiddenMessageBoxes HiddenMessageBoxes
     {
-        get
-        {
-            return hiddenMessageBoxes;
-        }
-        set
-        {
-            hiddenMessageBoxes = value;
-        }
+        get => hiddenMessageBoxes;
+        set => hiddenMessageBoxes = value;
     }
 
     [Category("Behavior")]
@@ -983,16 +795,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool UpdateComicFiles
     {
-        get
-        {
-            return updateComicFiles;
-        }
+        get => updateComicFiles;
         set
         {
             if (updateComicFiles != value)
             {
                 updateComicFiles = value;
-                FireEvent(this.UpdateComicFilesChanged);
+                FireEvent(UpdateComicFilesChanged);
             }
         }
     }
@@ -1003,16 +812,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool AutoUpdateComicsFiles
     {
-        get
-        {
-            return autoUpdateComicsFiles;
-        }
+        get => autoUpdateComicsFiles;
         set
         {
             if (autoUpdateComicsFiles != value)
             {
                 autoUpdateComicsFiles = value;
-                FireEvent(this.AutoUpdateComicFilesChanged);
+                FireEvent(AutoUpdateComicFilesChanged);
             }
         }
     }
@@ -1020,16 +826,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(DefaultHelpSystem)]
     public string HelpSystem
     {
-        get
-        {
-            return helpSystem;
-        }
+        get => helpSystem;
         set
         {
             if (!(helpSystem == value))
             {
                 helpSystem = value;
-                FireEvent(this.HelpSystemChanged);
+                FireEvent(HelpSystemChanged);
             }
         }
     }
@@ -1040,16 +843,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool Scripting
     {
-        get
-        {
-            return scripting;
-        }
+        get => scripting;
         set
         {
             if (scripting != value)
             {
                 scripting = value;
-                FireEvent(this.ScriptingChanged);
+                FireEvent(ScriptingChanged);
             }
         }
     }
@@ -1059,42 +859,32 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue("")]
     public string ScriptingLibraries
     {
-        get
-        {
-            return scriptingLibraries;
-        }
+        get => scriptingLibraries;
         set
         {
             if (!(scriptingLibraries == value))
             {
                 scriptingLibraries = value;
-                FireEvent(this.ScriptingLibrariesChanged);
+                FireEvent(ScriptingLibrariesChanged);
             }
         }
     }
 
     [DefaultValue(false)]
-    public bool HideSampleScripts
-    {
-        get;
-        set;
-    }
+    public bool HideSampleScripts { get; set; }
 
     [Category("Starting ComicRack")]
     [Description("Show Splash Screen")]
     [DefaultValue(true)]
     public bool ShowSplash
     {
-        get
-        {
-            return showSplash;
-        }
+        get => showSplash;
         set
         {
             if (showSplash != value)
             {
                 showSplash = value;
-                FireEvent(this.ShowSplashChanged);
+                FireEvent(ShowSplashChanged);
             }
         }
     }
@@ -1104,16 +894,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool OpenLastFile
     {
-        get
-        {
-            return openLastFile;
-        }
+        get => openLastFile;
         set
         {
             if (openLastFile != value)
             {
                 openLastFile = value;
-                FireEvent(this.OpenLastFileChanged);
+                FireEvent(OpenLastFileChanged);
             }
         }
     }
@@ -1123,16 +910,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool ScanStartup
     {
-        get
-        {
-            return scanStartup;
-        }
+        get => scanStartup;
         set
         {
             if (scanStartup != value)
             {
                 scanStartup = value;
-                FireEvent(this.ScanStartupChanged);
+                FireEvent(ScanStartupChanged);
             }
         }
     }
@@ -1142,16 +926,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool UpdateWebComicsStartup
     {
-        get
-        {
-            return updateWebComicsStartup;
-        }
+        get => updateWebComicsStartup;
         set
         {
             if (updateWebComicsStartup != value)
             {
                 updateWebComicsStartup = value;
-                FireEvent(this.CheckWebComicsStartupChanged);
+                FireEvent(CheckWebComicsStartupChanged);
             }
         }
     }
@@ -1161,16 +942,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool NewsStartup
     {
-        get
-        {
-            return newsStartup;
-        }
+        get => newsStartup;
         set
         {
             if (newsStartup != value)
             {
                 newsStartup = value;
-                FireEvent(this.NewsStartupChanged);
+                FireEvent(NewsStartupChanged);
             }
         }
     }
@@ -1180,27 +958,20 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public List<string> LastOpenFiles => lastOpenFiles;
 
     [DefaultValue(true)]
-    public bool ShowQuickManual
-    {
-        get;
-        set;
-    }
+    public bool ShowQuickManual { get; set; }
 
     [Category("Opening a Book")]
     [Description("Open the Book at the page where it was closed")]
     [DefaultValue(true)]
     public bool OpenLastPage
     {
-        get
-        {
-            return openLastPage;
-        }
+        get => openLastPage;
         set
         {
             if (openLastPage != value)
             {
                 openLastPage = value;
-                FireEvent(this.OpenLastPageChanged);
+                FireEvent(OpenLastPageChanged);
             }
         }
     }
@@ -1210,16 +981,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool CloseBrowserOnOpen
     {
-        get
-        {
-            return closeBrowserOnOpen;
-        }
+        get => closeBrowserOnOpen;
         set
         {
             if (closeBrowserOnOpen != value)
             {
                 closeBrowserOnOpen = value;
-                FireEvent(this.CloseBrowserOnOpenChanged);
+                FireEvent(CloseBrowserOnOpenChanged);
             }
         }
     }
@@ -1229,16 +997,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool AddToLibraryOnOpen
     {
-        get
-        {
-            return addToLibraryOnOpen;
-        }
+        get => addToLibraryOnOpen;
         set
         {
             if (addToLibraryOnOpen != value)
             {
                 addToLibraryOnOpen = value;
-                FireEvent(this.AddToLibraryOnOpenChanged);
+                FireEvent(AddToLibraryOnOpenChanged);
             }
         }
     }
@@ -1248,16 +1013,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool OpenInNewTab
     {
-        get
-        {
-            return openInNewTab;
-        }
+        get => openInNewTab;
         set
         {
             if (openInNewTab != value)
             {
                 openInNewTab = value;
-                FireEvent(this.OpenInNewTabChanged);
+                FireEvent(OpenInNewTabChanged);
             }
         }
     }
@@ -1267,16 +1029,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool HideCursorFullScreen
     {
-        get
-        {
-            return hideCursorFullScreen;
-        }
+        get => hideCursorFullScreen;
         set
         {
             if (hideCursorFullScreen != value)
             {
                 hideCursorFullScreen = value;
-                FireEvent(this.HideCursorFullScreenChanged);
+                FireEvent(HideCursorFullScreenChanged);
             }
         }
     }
@@ -1286,16 +1045,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool AutoNavigateComics
     {
-        get
-        {
-            return autoNavigateComics;
-        }
+        get => autoNavigateComics;
         set
         {
             if (autoNavigateComics != value)
             {
                 autoNavigateComics = value;
-                FireEvent(this.AutoNavigateComicsChanged);
+                FireEvent(AutoNavigateComicsChanged);
             }
         }
     }
@@ -1304,16 +1060,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowCurrentPageOverlay
     {
-        get
-        {
-            return showCurrentPageOverlay;
-        }
+        get => showCurrentPageOverlay;
         set
         {
             if (showCurrentPageOverlay != value)
             {
                 showCurrentPageOverlay = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1322,16 +1075,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowVisiblePagePartOverlay
     {
-        get
-        {
-            return showVisiblePagePartOverlay;
-        }
+        get => showVisiblePagePartOverlay;
         set
         {
             if (showVisiblePagePartOverlay != value)
             {
                 showVisiblePagePartOverlay = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1340,16 +1090,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowStatusOverlay
     {
-        get
-        {
-            return showStatusOverlay;
-        }
+        get => showStatusOverlay;
         set
         {
             if (showStatusOverlay != value)
             {
                 showStatusOverlay = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1358,16 +1105,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowNavigationOverlay
     {
-        get
-        {
-            return showNavigationOverlay;
-        }
+        get => showNavigationOverlay;
         set
         {
             if (showNavigationOverlay != value)
             {
                 showNavigationOverlay = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1376,16 +1120,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool NavigationOverlayOnTop
     {
-        get
-        {
-            return navigationOverlayOnTop;
-        }
+        get => navigationOverlayOnTop;
         set
         {
             if (navigationOverlayOnTop != value)
             {
                 navigationOverlayOnTop = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1394,16 +1135,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool CurrentPageShowsName
     {
-        get
-        {
-            return currentPageShowsName;
-        }
+        get => currentPageShowsName;
         set
         {
             if (currentPageShowsName != value)
             {
                 currentPageShowsName = value;
-                FireEvent(this.ShowOverlaysChanged);
+                FireEvent(ShowOverlaysChanged);
             }
         }
     }
@@ -1412,16 +1150,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool AutoHideMagnifier
     {
-        get
-        {
-            return autoHideMagnifier;
-        }
+        get => autoHideMagnifier;
         set
         {
             if (autoHideMagnifier != value)
             {
                 autoHideMagnifier = value;
-                FireEvent(this.AutoHideMagnifierChanged);
+                FireEvent(AutoHideMagnifierChanged);
             }
         }
     }
@@ -1431,16 +1166,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool PageChangeDelay
     {
-        get
-        {
-            return pageChangeDelay;
-        }
+        get => pageChangeDelay;
         set
         {
             if (pageChangeDelay != value)
             {
                 pageChangeDelay = value;
-                FireEvent(this.PageChangeDelayChanged);
+                FireEvent(PageChangeDelayChanged);
             }
         }
     }
@@ -1450,16 +1182,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ScrollingDoesBrowse
     {
-        get
-        {
-            return scrollingDoesBrowse;
-        }
+        get => scrollingDoesBrowse;
         set
         {
             if (scrollingDoesBrowse != value)
             {
                 scrollingDoesBrowse = value;
-                FireEvent(this.ScrollingDoesBrowseChanged);
+                FireEvent(ScrollingDoesBrowseChanged);
             }
         }
     }
@@ -1469,16 +1198,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool ResetZoomOnPageChange
     {
-        get
-        {
-            return resetZoomOnPageChange;
-        }
+        get => resetZoomOnPageChange;
         set
         {
             if (resetZoomOnPageChange != value)
             {
                 resetZoomOnPageChange = value;
-                FireEvent(this.ResetZoomOnPageChangeChanged);
+                FireEvent(ResetZoomOnPageChangeChanged);
             }
         }
     }
@@ -1488,16 +1214,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ZoomInOutOnPageChange
     {
-        get
-        {
-            return zoomInOutOnPageChange;
-        }
+        get => zoomInOutOnPageChange;
         set
         {
             if (zoomInOutOnPageChange != value)
             {
                 zoomInOutOnPageChange = value;
-                FireEvent(this.ZoomInOutOnPageChangeChanged);
+                FireEvent(ZoomInOutOnPageChangeChanged);
             }
         }
     }
@@ -1506,16 +1229,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool SmoothScrolling
     {
-        get
-        {
-            return smoothScrolling;
-        }
+        get => smoothScrolling;
         set
         {
             if (smoothScrolling != value)
             {
                 smoothScrolling = value;
-                FireEvent(this.SmoothScrollingChanged);
+                FireEvent(SmoothScrollingChanged);
             }
         }
     }
@@ -1525,16 +1245,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool BlendWhilePaging
     {
-        get
-        {
-            return blendWhilePaging;
-        }
+        get => blendWhilePaging;
         set
         {
             if (blendWhilePaging != value)
             {
                 blendWhilePaging = value;
-                FireEvent(this.BlendWhilePagingChanged);
+                FireEvent(BlendWhilePagingChanged);
             }
         }
     }
@@ -1542,16 +1259,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool TrackCurrentPage
     {
-        get
-        {
-            return trackCurrentPage;
-        }
+        get => trackCurrentPage;
         set
         {
             if (trackCurrentPage != value)
             {
                 trackCurrentPage = value;
-                FireEvent(this.TrackCurrentPageChanged);
+                FireEvent(TrackCurrentPageChanged);
             }
         }
     }
@@ -1560,16 +1274,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public RightToLeftReadingMode RightToLeftReadingMode
     {
-        get
-        {
-            return rightToLeftReadingMode;
-        }
+        get => rightToLeftReadingMode;
         set
         {
             if (rightToLeftReadingMode != value)
             {
                 rightToLeftReadingMode = value;
-                FireEvent(this.RightToLeftReadingModeChanged);
+                FireEvent(RightToLeftReadingModeChanged);
             }
         }
     }
@@ -1579,14 +1290,8 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool TrueRightToLeftReading
     {
-        get
-        {
-            return RightToLeftReadingMode == RightToLeftReadingMode.FlipParts;
-        }
-        set
-        {
-            RightToLeftReadingMode = ((!value) ? RightToLeftReadingMode.FlipPages : RightToLeftReadingMode.FlipParts);
-        }
+        get => RightToLeftReadingMode == RightToLeftReadingMode.FlipParts;
+        set => RightToLeftReadingMode = (!value) ? RightToLeftReadingMode.FlipPages : RightToLeftReadingMode.FlipParts;
     }
 
     [Category("Right to Left")]
@@ -1594,16 +1299,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool LeftRightMovementReversed
     {
-        get
-        {
-            return leftRightMovementReversed;
-        }
+        get => leftRightMovementReversed;
         set
         {
             if (leftRightMovementReversed != value)
             {
                 leftRightMovementReversed = value;
-                FireEvent(this.LeftRightMovementReversedChanged);
+                FireEvent(LeftRightMovementReversedChanged);
             }
         }
     }
@@ -1613,16 +1315,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool ShowToolTips
     {
-        get
-        {
-            return showToolTips;
-        }
+        get => showToolTips;
         set
         {
             if (showToolTips != value)
             {
                 showToolTips = value;
-                FireEvent(this.ShowToolTipsChanged);
+                FireEvent(ShowToolTipsChanged);
             }
         }
     }
@@ -1632,16 +1331,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowSearchLinks
     {
-        get
-        {
-            return showSearchLinks;
-        }
+        get => showSearchLinks;
         set
         {
             if (showSearchLinks != value)
             {
                 showSearchLinks = value;
-                FireEvent(this.ShowSearchLinksChanged);
+                FireEvent(ShowSearchLinksChanged);
             }
         }
     }
@@ -1651,16 +1347,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool FadeInThumbnails
     {
-        get
-        {
-            return fadeInThumbnails;
-        }
+        get => fadeInThumbnails;
         set
         {
             if (fadeInThumbnails != value)
             {
                 fadeInThumbnails = value;
-                FireEvent(this.FadeInThumbnailsChanged);
+                FireEvent(FadeInThumbnailsChanged);
             }
         }
     }
@@ -1670,16 +1363,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool DogEarThumbnails
     {
-        get
-        {
-            return dogEarThumbnails;
-        }
+        get => dogEarThumbnails;
         set
         {
             if (dogEarThumbnails != value)
             {
                 dogEarThumbnails = value;
-                FireEvent(this.DogEarThumbnailsChanged);
+                FireEvent(DogEarThumbnailsChanged);
             }
         }
     }
@@ -1689,16 +1379,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool NumericRatingThumbnails
     {
-        get
-        {
-            return numericRatingThumbnails;
-        }
+        get => numericRatingThumbnails;
         set
         {
             if (numericRatingThumbnails != value)
             {
                 numericRatingThumbnails = value;
-                FireEvent(this.NumericRatingThumbnailsChanged);
+                FireEvent(NumericRatingThumbnailsChanged);
             }
         }
     }
@@ -1708,16 +1395,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool LocalQuickSearch
     {
-        get
-        {
-            return localQuickSearch;
-        }
+        get => localQuickSearch;
         set
         {
             if (localQuickSearch != value)
             {
                 localQuickSearch = value;
-                FireEvent(this.LocalQuickSearchChanged);
+                FireEvent(LocalQuickSearchChanged);
             }
         }
     }
@@ -1727,16 +1411,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool CoverThumbnailsSameSize
     {
-        get
-        {
-            return coverThumbnailsSameSize;
-        }
+        get => coverThumbnailsSameSize;
         set
         {
             if (coverThumbnailsSameSize != value)
             {
                 coverThumbnailsSameSize = value;
-                FireEvent(this.CoverThumbnailsSameSizeChanged);
+                FireEvent(CoverThumbnailsSameSizeChanged);
             }
         }
     }
@@ -1746,16 +1427,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool CommonListStackLayout
     {
-        get
-        {
-            return commonListStackLayout;
-        }
+        get => commonListStackLayout;
         set
         {
             if (commonListStackLayout != value)
             {
                 commonListStackLayout = value;
-                FireEvent(this.CommonListStackLayoutChanged);
+                FireEvent(CommonListStackLayoutChanged);
             }
         }
     }
@@ -1765,16 +1443,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool ShowQuickOpen
     {
-        get
-        {
-            return showQuickOpen;
-        }
+        get => showQuickOpen;
         set
         {
             if (showQuickOpen != value)
             {
                 showQuickOpen = value;
-                FireEvent(this.ShowQuickOpenChanged);
+                FireEvent(ShowQuickOpenChanged);
             }
         }
     }
@@ -1784,16 +1459,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool CatalogOnlyForFileless
     {
-        get
-        {
-            return catalogOnlyForFileless;
-        }
+        get => catalogOnlyForFileless;
         set
         {
             if (catalogOnlyForFileless != value)
             {
                 catalogOnlyForFileless = value;
-                FireEvent(this.CatalogOnlyForFilelessChanged);
+                FireEvent(CatalogOnlyForFilelessChanged);
             }
         }
     }
@@ -1803,16 +1475,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool ShowCustomBookFields
     {
-        get
-        {
-            return showCustomBookFields;
-        }
+        get => showCustomBookFields;
         set
         {
             if (showCustomBookFields != value)
             {
                 showCustomBookFields = value;
-                FireEvent(this.ShowCustomBookFieldsChanged);
+                FireEvent(ShowCustomBookFieldsChanged);
             }
         }
     }
@@ -1822,16 +1491,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool MinimizeToTray
     {
-        get
-        {
-            return minimizeToTray;
-        }
+        get => minimizeToTray;
         set
         {
             if (minimizeToTray != value)
             {
                 minimizeToTray = value;
-                FireEvent(this.MinimizeToTrayChanged);
+                FireEvent(MinimizeToTrayChanged);
             }
         }
     }
@@ -1841,16 +1507,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool CloseMinimizesToTray
     {
-        get
-        {
-            return closeMinimizeToTray;
-        }
+        get => closeMinimizeToTray;
         set
         {
             if (closeMinimizeToTray != value)
             {
                 closeMinimizeToTray = value;
-                FireEvent(this.CloseMinimizesToTrayChanged);
+                FireEvent(CloseMinimizesToTrayChanged);
             }
         }
     }
@@ -1860,16 +1523,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool AutoMinimalGui
     {
-        get
-        {
-            return autoMinimalGui;
-        }
+        get => autoMinimalGui;
         set
         {
             if (autoMinimalGui != value)
             {
                 autoMinimalGui = value;
-                FireEvent(this.AutoMinimalGuiChanged);
+                FireEvent(AutoMinimalGuiChanged);
             }
         }
     }
@@ -1879,16 +1539,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(true)]
     public bool AnimatePanels
     {
-        get
-        {
-            return animatePanels;
-        }
+        get => animatePanels;
         set
         {
             if (animatePanels != value)
             {
                 animatePanels = value;
-                FireEvent(this.AnimatePanelsChanged);
+                FireEvent(AnimatePanelsChanged);
             }
         }
     }
@@ -1898,16 +1555,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool AlwaysDisplayBrowserDockingGrip
     {
-        get
-        {
-            return alwaysDisplayBrowserDockingGrip;
-        }
+        get => alwaysDisplayBrowserDockingGrip;
         set
         {
             if (alwaysDisplayBrowserDockingGrip != value)
             {
                 alwaysDisplayBrowserDockingGrip = value;
-                FireEvent(this.AlwaysDisplayBrowserDockingGripChanged);
+                FireEvent(AlwaysDisplayBrowserDockingGripChanged);
             }
         }
     }
@@ -1917,16 +1571,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool DisableDragDrop
     {
-        get
-        {
-            return disableDragDrop;
-        }
+        get => disableDragDrop;
         set
         {
             if (disableDragDrop != value)
             {
                 disableDragDrop = value;
-                FireEvent(this.DisableDragDropChanged);
+                FireEvent(DisableDragDropChanged);
             }
         }
     }
@@ -1935,16 +1586,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool AutoHideMainMenu
     {
-        get
-        {
-            return autoHideMainMenu;
-        }
+        get => autoHideMainMenu;
         set
         {
             if (autoHideMainMenu != value)
             {
                 autoHideMainMenu = value;
-                FireEvent(this.AutoHideMainMenuChanged);
+                FireEvent(AutoHideMainMenuChanged);
             }
         }
     }
@@ -1955,16 +1603,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(true)]
     public bool ShowMainMenuNoComicOpen
     {
-        get
-        {
-            return showMainMenuNoComicOpen;
-        }
+        get => showMainMenuNoComicOpen;
         set
         {
             if (showMainMenuNoComicOpen != value)
             {
                 showMainMenuNoComicOpen = value;
-                FireEvent(this.ShowMainMenuNoComicOpenChanged);
+                FireEvent(ShowMainMenuNoComicOpenChanged);
             }
         }
     }
@@ -1975,16 +1620,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(true)]
     public bool InformationCover3D
     {
-        get
-        {
-            return informationCover3D;
-        }
+        get => informationCover3D;
         set
         {
             if (informationCover3D != value)
             {
                 informationCover3D = value;
-                FireEvent(this.InformationCover3DChanged);
+                FireEvent(InformationCover3DChanged);
             }
         }
     }
@@ -1994,16 +1636,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool DisplayLibraryGauges
     {
-        get
-        {
-            return displayLibraryGauges;
-        }
+        get => displayLibraryGauges;
         set
         {
             if (displayLibraryGauges != value)
             {
                 displayLibraryGauges = value;
-                FireEvent(this.DisplayLibraryGaugesChanged);
+                FireEvent(DisplayLibraryGaugesChanged);
             }
         }
     }
@@ -2014,16 +1653,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(true)]
     public LibraryGauges LibraryGaugesFormat
     {
-        get
-        {
-            return libraryGaugesFormat;
-        }
+        get => libraryGaugesFormat;
         set
         {
             if (libraryGaugesFormat != value)
             {
                 libraryGaugesFormat = value;
-                FireEvent(this.DisplayLibraryGaugesChanged);
+                FireEvent(DisplayLibraryGaugesChanged);
             }
         }
     }
@@ -2034,16 +1670,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(true)]
     public bool NewBooksChecked
     {
-        get
-        {
-            return newBooksChecked;
-        }
+        get => newBooksChecked;
         set
         {
             if (newBooksChecked != value)
             {
                 newBooksChecked = value;
-                FireEvent(this.NewBooksCheckedChanged);
+                FireEvent(NewBooksCheckedChanged);
             }
         }
     }
@@ -2054,16 +1687,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool ThumbCacheEnabled
     {
-        get
-        {
-            return thumbCacheEnabled;
-        }
+        get => thumbCacheEnabled;
         set
         {
             if (thumbCacheEnabled != value)
             {
                 thumbCacheEnabled = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2074,16 +1704,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public int ThumbCacheSizeMB
     {
-        get
-        {
-            return thumbCacheSizeMB;
-        }
+        get => thumbCacheSizeMB;
         set
         {
             if (thumbCacheSizeMB != value)
             {
                 thumbCacheSizeMB = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2094,16 +1721,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool PageCacheEnabled
     {
-        get
-        {
-            return pageCacheEnabled;
-        }
+        get => pageCacheEnabled;
         set
         {
             if (pageCacheEnabled != value)
             {
                 pageCacheEnabled = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2114,16 +1738,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public int PageCacheSizeMB
     {
-        get
-        {
-            return pageCacheSizeMB;
-        }
+        get => pageCacheSizeMB;
         set
         {
             if (pageCacheSizeMB != value)
             {
                 pageCacheSizeMB = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2134,16 +1755,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool InternetCacheEnabled
     {
-        get
-        {
-            return internetCacheEnabled;
-        }
+        get => internetCacheEnabled;
         set
         {
             if (internetCacheEnabled != value)
             {
                 internetCacheEnabled = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2154,16 +1772,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public int InternetCacheSizeMB
     {
-        get
-        {
-            return internetCacheSizeMB;
-        }
+        get => internetCacheSizeMB;
         set
         {
             if (internetCacheSizeMB != value)
             {
                 internetCacheSizeMB = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2174,17 +1789,14 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public int MemoryThumbCacheSizeMB
     {
-        get
-        {
-            return memoryThumbCacheSizeMB;
-        }
+        get => memoryThumbCacheSizeMB;
         set
         {
             value = value.Clamp(MinimumMemoryThumbnailCacheMB, MaximumMemoryThumbnailCacheMB);
             if (memoryThumbCacheSizeMB != value)
             {
                 memoryThumbCacheSizeMB = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2195,17 +1807,14 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public int MemoryPageCacheCount
     {
-        get
-        {
-            return memoryPageCacheCount;
-        }
+        get => memoryPageCacheCount;
         set
         {
             value = value.Clamp(MinimumMemoryPageCacheCount, MaximumMemoryPageCacheCount);
             if (memoryPageCacheCount != value)
             {
                 memoryPageCacheCount = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2215,16 +1824,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool MemoryThumbCacheOptimized
     {
-        get
-        {
-            return memoryThumbCacheOptimized;
-        }
+        get => memoryThumbCacheOptimized;
         set
         {
             if (memoryThumbCacheOptimized != value)
             {
                 memoryThumbCacheOptimized = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
@@ -2234,41 +1840,31 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [Browsable(false)]
     public bool MemoryPageCacheOptimized
     {
-        get
-        {
-            return memoryPageCacheOptimized;
-        }
+        get => memoryPageCacheOptimized;
         set
         {
             if (memoryPageCacheOptimized != value)
             {
                 memoryPageCacheOptimized = value;
-                FireEvent(this.CacheSettingsChanged);
+                FireEvent(CacheSettingsChanged);
             }
         }
     }
 
     [DefaultValue(UnlimitedSystemMemory)]
     [Browsable(false)]
-    public int MaximumMemoryMB
-    {
-        get;
-        set;
-    }
+    public int MaximumMemoryMB { get; set; }
 
     [DefaultValue(false)]
     public bool RemoveMissingFilesOnFullScan
     {
-        get
-        {
-            return removeMissingFilesOnFullScan;
-        }
+        get => removeMissingFilesOnFullScan;
         set
         {
             if (removeMissingFilesOnFullScan != value)
             {
                 removeMissingFilesOnFullScan = value;
-                FireEvent(this.ScanOptionsChanged);
+                FireEvent(ScanOptionsChanged);
             }
         }
     }
@@ -2276,16 +1872,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool DontAddRemoveFiles
     {
-        get
-        {
-            return dontAddRemoveFiles;
-        }
+        get => dontAddRemoveFiles;
         set
         {
             if (dontAddRemoveFiles != value)
             {
                 dontAddRemoveFiles = value;
-                FireEvent(this.ScanOptionsChanged);
+                FireEvent(ScanOptionsChanged);
             }
         }
     }
@@ -2293,16 +1886,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     [DefaultValue(false)]
     public bool OverwriteAssociations
     {
-        get
-        {
-            return overwriteAssociations;
-        }
+        get => overwriteAssociations;
         set
         {
             if (overwriteAssociations != value)
             {
                 overwriteAssociations = value;
-                FireEvent(this.OverwriteAssociationsChanged);
+                FireEvent(OverwriteAssociationsChanged);
             }
         }
     }
@@ -2312,20 +1902,12 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public List<RemoteExplorerViewSettings> RemoteExplorerViewSettingsList => remoteExplorerViewSettingsList;
 
     [DefaultValue(null)]
-    public string CultureName
-    {
-        get;
-        set;
-    }
+    public string CultureName { get; set; }
 
     [Category("Import & Export")]
     [Description("Exported Book Lists contain filenames")]
     [DefaultValue(false)]
-    public bool ExportedListsContainFilenames
-    {
-        get;
-        set;
-    }
+    public bool ExportedListsContainFilenames { get; set; }
 
     public List<string> QuickSearchList => quickSearchList;
 
@@ -2336,70 +1918,38 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public MruList<string> ThumbnailFiles => thumbnailFiles;
 
     [DefaultValue(null)]
-    public ExportSetting CurrentExportSetting
-    {
-        get;
-        set;
-    }
+    public ExportSetting CurrentExportSetting { get; set; }
 
     public ExportSettingCollection ExportUserPresets => exportUserPresets;
 
     public SmartList<DeviceSyncSettings> Devices => devices;
 
     [DefaultValue(null)]
-    public string UserEmail
-    {
-        get;
-        set;
-    }
+    public string UserEmail { get; set; }
 
     [DefaultValue(null)]
     [XmlElement("VK")]
-    public string ValidationKey
-    {
-        get;
-        set;
-    }
+    public string ValidationKey { get; set; }
 
     [DefaultValue(typeof(DateTime), "01.01.0001")]
-    public DateTime ValidationDate
-    {
-        get;
-        set;
-    }
+    public DateTime ValidationDate { get; set; }
 
     [DefaultValue(null)]
-    public string DonationShown
-    {
-        get;
-        set;
-    }
+    public string DonationShown { get; set; }
 
-    public string OpenRemoteFilter
-    {
-        get;
-        set;
-    }
+    public string OpenRemoteFilter { get; set; }
 
-    public string OpenRemotePassword
-    {
-        get;
-        set;
-    }
+    public string OpenRemotePassword { get; set; }
 
     [Category("Reading")]
     [Description("Show Quick Review Dialog after finishing Book")]
     [DefaultValue(false)]
-    public bool AutoShowQuickReview
-    {
-        get;
-        set;
-    }
+    public bool AutoShowQuickReview { get; set; }
 
-    private List<VirtualTag> virtualTags = new List<VirtualTag>();
+    private List<VirtualTag> virtualTags = new();
     public List<VirtualTag> VirtualTags => virtualTags;
 
-    private BackupManagerOptions backupManager = new BackupManagerOptions();
+    private BackupManagerOptions backupManager = new();
     public BackupManagerOptions BackupManager
     {
         get => backupManager;
@@ -2408,7 +1958,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
             if (backupManager != value)
             {
                 backupManager = value;
-                FireEvent(this.BackupManagerChanged);
+                FireEvent(BackupManagerChanged);
             }
         }
     }
@@ -2644,11 +2194,9 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public DisplayWorkspace GetWorkspace(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return workspaces.FirstOrDefault((DisplayWorkspace ws) => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
+        return string.IsNullOrEmpty(name)
+            ? null
+            : workspaces.FirstOrDefault((DisplayWorkspace ws) => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
     }
 
     public void AddPasswordToCache(string remote, string password)
@@ -2669,11 +2217,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     {
         int hash = remote.GetHashCode();
         PasswordCacheEntry passwordCacheEntry = passwordCache.Find((PasswordCacheEntry e) => e.RemoteId == hash);
-        if (passwordCacheEntry == null)
-        {
-            return string.Empty;
-        }
-        return passwordCacheEntry.Password;
+        return passwordCacheEntry == null ? string.Empty : passwordCacheEntry.Password;
     }
 
     public DisplayListConfig GetRemoteViewConfig(Guid id, DisplayListConfig defaultConfig)
@@ -2714,10 +2258,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     private void FireEvent(EventHandler eh)
     {
         eh?.Invoke(this, EventArgs.Empty);
-        if (this.SettingsChanged != null)
-        {
-            this.SettingsChanged(this, EventArgs.Empty);
-        }
+        SettingsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Fix()

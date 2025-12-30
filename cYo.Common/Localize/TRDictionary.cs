@@ -20,22 +20,12 @@ public class TRDictionary : Dictionary<string, TR>
 
     private static TRInfo defaultInfo;
 
-    public CultureInfo DefaultCulture
-    {
-        get;
-        set;
-    }
+    public CultureInfo DefaultCulture { get; set; }
 
     public IVirtualFolder ResourceFolder
     {
-        get
-        {
-            return resourceFolder;
-        }
-        set
-        {
-            resourceFolder = value;
-        }
+        get => resourceFolder;
+        set => resourceFolder = value;
     }
 
     public TRInfo Info
@@ -46,10 +36,7 @@ public class TRDictionary : Dictionary<string, TR>
             {
                 CultureInfo cultureInfo = DefaultCulture ?? CultureInfo.CurrentUICulture;
                 defaultInfo = GetLanguageInfo(cultureInfo);
-                if (defaultInfo == null)
-                {
-                    defaultInfo = new TRInfo(cultureInfo.Name);
-                }
+                defaultInfo ??= new TRInfo(cultureInfo.Name);
             }
             return defaultInfo;
         }
@@ -106,7 +93,7 @@ public class TRDictionary : Dictionary<string, TR>
 
     public HashSet<TREntry> CreateSet()
     {
-        HashSet<TREntry> hashSet = new HashSet<TREntry>();
+        HashSet<TREntry> hashSet = new();
         foreach (TR value in base.Values)
         {
             hashSet.AddRange(value.Texts);
@@ -175,11 +162,7 @@ public class TRDictionary : Dictionary<string, TR>
                 }
             }
         }
-        if (num != 0)
-        {
-            return 100f * (float)num2 / (float)num;
-        }
-        return 100f;
+        return num != 0 ? 100f * (float)num2 / (float)num : 100f;
     }
 
     public TR Load(string name, CultureInfo culture)

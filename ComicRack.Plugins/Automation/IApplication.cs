@@ -7,10 +7,7 @@ namespace cYo.Projects.ComicRack.Plugins.Automation;
 
 public interface IApplication
 {
-    string ProductVersion
-    {
-        get;
-    }
+    string ProductVersion { get; }
 
     void Restart();
 

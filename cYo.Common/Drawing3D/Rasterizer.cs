@@ -42,7 +42,7 @@ public static class Rasterizer
 
         public float A2;
 
-        public static readonly Span Empty = new Span(0, 0);
+        public static readonly Span Empty = new(0, 0);
 
         public Span(int x1, int x2, float z1, float z2, float u1, float u2, float v1, float v2, float r1, float r2, float g1, float g2, float b1, float b2, float a1, float a2)
         {
@@ -113,7 +113,7 @@ public static class Rasterizer
         float num7 = (b7 - a7) / num;
         for (float num8 = a; num8 <= b; num8 += 1f)
         {
-            Point pt = (flag ? new Point((int)Math.Round(a2), (int)Math.Round(num8)) : new Point((int)Math.Round(num8), (int)Math.Round(a2)));
+            Point pt = flag ? new Point((int)Math.Round(a2), (int)Math.Round(num8)) : new Point((int)Math.Round(num8), (int)Math.Round(a2));
             fb.SetColor(pt, new ColorF(a3, a4, a5, a6));
             a2 += num2;
             a3 += num3;
@@ -163,7 +163,7 @@ public static class Rasterizer
             float a = array[j].A2;
             if (num4 < 0)
             {
-                float num13 = (float)(-num4) / (float)(num5 - num4);
+                float num13 = (float)-num4 / (float)(num5 - num4);
                 num6 += (z - num6) * num13;
                 num7 += (u - num7) * num13;
                 num8 += (v4 - num8) * num13;
@@ -187,7 +187,7 @@ public static class Rasterizer
             }
             for (int k = num4; k <= num5; k++)
             {
-                ColorF color = new ColorF(num12, num9, num10, num11);
+                ColorF color = new(num12, num9, num10, num11);
                 if (texture != null)
                 {
                     color *= (ColorF)texture.GetColor((int)(num7 / num6), (int)(num8 / num6));
@@ -216,8 +216,8 @@ public static class Rasterizer
         {
             return;
         }
-        Vertex a = new Vertex(v1);
-        Vertex b = new Vertex(v2);
+        Vertex a = new(v1);
+        Vertex b = new(v2);
         if (v1.Y > v2.Y)
         {
             CloneUtility.Swap(ref a, ref b);
@@ -257,14 +257,14 @@ public static class Rasterizer
         float num19 = (b.A - num11) / num3;
         if (num < 0)
         {
-            num4 += num12 * (float)(-num);
-            num7 += num13 * (float)(-num);
-            num5 += num15 * (float)(-num);
-            num6 += num14 * (float)(-num);
-            num8 += num16 * (float)(-num);
-            num9 += num17 * (float)(-num);
-            num10 += num18 * (float)(-num);
-            num11 += num19 * (float)(-num);
+            num4 += num12 * (float)-num;
+            num7 += num13 * (float)-num;
+            num5 += num15 * (float)-num;
+            num6 += num14 * (float)-num;
+            num8 += num16 * (float)-num;
+            num9 += num17 * (float)-num;
+            num10 += num18 * (float)-num;
+            num11 += num19 * (float)-num;
             num = 0;
         }
         num -= yBase;

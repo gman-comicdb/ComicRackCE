@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace cYo.Projects.ComicRack.Engine;
+﻿namespace cYo.Projects.ComicRack.Engine;
 
 public interface IVirtualTag
 {

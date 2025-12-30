@@ -26,10 +26,6 @@ public static class ComponentExtensions
 
     public static T GetData<T>(this WeakReference<T> obj) where T : class
     {
-        if (!obj.TryGetTarget(out var target))
-        {
-            return null;
-        }
-        return target;
+        return !obj.TryGetTarget(out var target) ? null : target;
     }
 }

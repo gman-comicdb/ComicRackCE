@@ -159,7 +159,7 @@ public partial class ProfessionalColorTableEx : ProfessionalColorTable
 
     public override Color ImageMarginGradientMiddle => FromKnownColor(KnownColors.msocbvcrCBGradVertMiddle);
 
-    public override Color ImageMarginGradientEnd => (_usingSystemColors) ? SystemColorsEx.Control : FromKnownColor(KnownColors.msocbvcrCBGradVertEnd);
+    public override Color ImageMarginGradientEnd => _usingSystemColors ? SystemColorsEx.Control : FromKnownColor(KnownColors.msocbvcrCBGradVertEnd);
 
     public override Color ImageMarginRevealedGradientBegin => FromKnownColor(KnownColors.msocbvcrCBGradMenuIconBkgdDroppedBegin);
 
@@ -404,7 +404,7 @@ public partial class ProfessionalColorTableEx : ProfessionalColorTable
             rgbTable[KnownColors.msocbvcrCBSplitterLine] = GetAlphaBlendedColorHighRes(null, buttonShadow, window, 70);
         }
 
-        rgbTable[KnownColors.msocbvcrCBCtlBkgdSelected] = (lowResolution) ? SystemColorsEx.ControlLight : highlight;
+        rgbTable[KnownColors.msocbvcrCBCtlBkgdSelected] = lowResolution ? SystemColorsEx.ControlLight : highlight;
 
         rgbTable[KnownColors.msocbvcrCBBdrOuterDocked] = buttonFace;
         rgbTable[KnownColors.msocbvcrCBBdrOuterDocked] = buttonShadow;

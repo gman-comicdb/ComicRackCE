@@ -27,41 +27,17 @@ public class DefaultLists
 
     private Func<IEnumerable<ComicBook>> getBooks;
 
-    public string[] DefaultGenres
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultGenres { get; private set; }
 
-    public string[] DefaultFormats
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultFormats { get; private set; }
 
-    public string[] DefaultAgeRatings
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultAgeRatings { get; private set; }
 
-    public string[] DefaultBookAges
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookAges { get; private set; }
 
-    public string[] DefaultBookConditions
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookConditions { get; private set; }
 
-    public string[] DefaultBookCollectionStatus
-    {
-        get;
-        private set;
-    }
+    public string[] DefaultBookCollectionStatus { get; private set; }
 
     public DefaultLists(Func<IEnumerable<ComicBook>> getBooks, IEnumerable<string> initPaths)
     {
@@ -80,7 +56,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetComicFieldList(Func<ComicBook, string> autoCompleteHandler, bool sort = false)
     {
-        AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+        AutoCompleteStringCollection autoCompleteStringCollection = new();
         foreach (ComicBook item in getBooks())
         {
             autoCompleteStringCollection.Add(autoCompleteHandler(item));
@@ -171,7 +147,7 @@ public class DefaultLists
 
     private static IEnumerable<string> LoadDefaultTextList(IEnumerable<string> files, string section)
     {
-        List<string> list = new List<string>();
+        List<string> list = new();
         foreach (string file in files)
         {
             try

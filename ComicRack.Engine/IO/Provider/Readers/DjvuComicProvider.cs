@@ -18,7 +18,7 @@ public class DjvuComicProvider : ComicProvider, IValidateProvider
 {
     private static readonly string ListExe = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources\\djvm.exe");
 
-    private static readonly Regex rxList = new Regex("(?<size>\\d+)\\s+PAGE\\s+#(?<page>\\d+)\\s+(?<name>.*)\\r", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex rxList = new("(?<size>\\d+)\\s+PAGE\\s+#(?<page>\\d+)\\s+(?<name>.*)\\r", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private ProviderImageInfo[] pages;
 
@@ -71,10 +71,7 @@ public class DjvuComicProvider : ComicProvider, IValidateProvider
     {
         using (ItemMonitor.Lock(this))
         {
-            if (pages == null)
-            {
-                pages = ReadPages().ToArray();
-            }
+            pages ??= ReadPages().ToArray();
             return pages;
         }
     }

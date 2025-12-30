@@ -12,17 +12,7 @@ public struct RangeF
 
     public float End => Start + Length;
 
-    public bool IsEmpty
-    {
-        get
-        {
-            if (Start == 0f)
-            {
-                return Length == 0f;
-            }
-            return false;
-        }
-    }
+    public bool IsEmpty => Start == 0f ? Length == 0f : false;
 
     public RangeF(float start = 0f, float length = 0f)
     {

@@ -27,11 +27,7 @@ public static class PropertyCaller
         public override bool Equals(object obj)
         {
             Key key = (Key)obj;
-            if (Name == key.Name && Class == key.Class)
-            {
-                return Return == key.Return;
-            }
-            return false;
+            return Name == key.Name && Class == key.Class ? Return == key.Return : false;
         }
 
         public override int GetHashCode()
@@ -40,13 +36,13 @@ public static class PropertyCaller
         }
     }
 
-    private static readonly SimpleCache<Key, Delegate> dynamicGets = new SimpleCache<Key, Delegate>();
+    private static readonly SimpleCache<Key, Delegate> dynamicGets = new();
 
-    private static readonly SimpleCache<Key, Delegate> dynamicSets = new SimpleCache<Key, Delegate>();
+    private static readonly SimpleCache<Key, Delegate> dynamicSets = new();
 
     public static Func<T, K> CreateGetMethod<T, K>(PropertyInfo pi) where T : class
     {
-        Key key = new Key(pi.Name, typeof(T), typeof(K));
+        Key key = new(pi.Name, typeof(T), typeof(K));
         using (ItemMonitor.Lock(dynamicGets))
         {
             return (Func<T, K>)dynamicGets.Get(key, delegate
@@ -95,11 +91,7 @@ public static class PropertyCaller
     private static Delegate CreatePropertyDelegate<T, K, J>(Type propertyType, MethodInfo getMethod)
     {
         Func<T, J> fd = (Func<T, J>)Delegate.CreateDelegate(typeof(Func<T, J>), getMethod);
-        if (propertyType == typeof(K))
-        {
-            return fd;
-        }
-        return (Func<T, K>)((T v) => (K)Convert.ChangeType(fd(v), typeof(K)));
+        return propertyType == typeof(K) ? fd : (Func<T, K>)((T v) => (K)Convert.ChangeType(fd(v), typeof(K)));
     }
 
     public static Func<T, K> CreateGetMethod<T, K>(string name) where T : class
@@ -109,7 +101,7 @@ public static class PropertyCaller
 
     public static Action<T, K> CreateSetMethod<T, K>(PropertyInfo pi) where T : class
     {
-        Key key = new Key(pi.Name, typeof(T), typeof(K));
+        Key key = new(pi.Name, typeof(T), typeof(K));
         using (ItemMonitor.Lock(dynamicSets))
         {
             return (Action<T, K>)dynamicSets.Get(key, delegate

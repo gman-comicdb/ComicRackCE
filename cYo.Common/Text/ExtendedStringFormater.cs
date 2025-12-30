@@ -40,16 +40,12 @@ public static class ExtendedStringFormater
 
     private static object GetValue(IDictionary<string, object> values, string key)
     {
-        if (!values.TryGetValue(key, out var value))
-        {
-            return null;
-        }
-        return value;
+        return !values.TryGetValue(key, out var value) ? null : value;
     }
 
     private static string Format(string format, Func<string, object> getValue, out bool success, bool escapeComma = false)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         success = true;
         for (int i = 0; i < format.Length; i++)
         {
@@ -101,15 +97,15 @@ public static class ExtendedStringFormater
     {
         string name = string.Empty;
         success = false;
-        string[] param = Array.Empty<string>();
+        string[] param = [];
 
         string result = string.Empty;
-        Regex regex = new Regex(@"(?<function>[^<]+?)<(?<params>.+)$");
+        Regex regex = new(@"(?<function>[^<]+?)<(?<params>.+)$");
         name = regex.Match(value).Groups["function"].Value.ToLower();
         string paramsValue = regex.Match(value).Groups["params"]?.Value;
 
         param = string.IsNullOrEmpty(paramsValue)
-            ? Array.Empty<string>()  // Return an empty array if null or empty
+            ? []  // Return an empty array if null or empty
             : Regex.Split(paramsValue, @"(?<!\\),")
                 .Select(x => x.Trim().Replace(@"\,", ",")) // Remove escaping backslash
                 .ToArray();
@@ -157,7 +153,7 @@ public static class ExtendedStringFormater
         int num2 = 0;
         int num3 = 0;
         bool flag = openChar == closeChar;
-        charToEscape ??= Array.Empty<char>();
+        charToEscape ??= [];
         while (index < text.Length)
         {
             char c = text[index];

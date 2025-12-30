@@ -48,7 +48,7 @@ public class ComicPageInfoCollection : List<ComicPageInfo>
         {
             return;
         }
-        HashSet<int> hashSet = new HashSet<int>();
+        HashSet<int> hashSet = new();
         using (ItemMonitor.Lock(this))
         {
             for (int i = 0; i < base.Count; i++)

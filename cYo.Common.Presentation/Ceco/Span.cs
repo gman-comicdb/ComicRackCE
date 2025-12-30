@@ -46,7 +46,7 @@ public class Span : Inline
 
     public IList<Inline> GetSubItems(bool includeOwn)
     {
-        List<Inline> list = new List<Inline>();
+        List<Inline> list = new();
         if (includeOwn)
         {
             list.Add(this);

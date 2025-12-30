@@ -20,31 +20,20 @@ public static class BitmapExtensions
     {
         try
         {
-            if (bmp == null || size.IsEmpty())
-            {
-                return null;
-            }
-            if (bmp.Size.IsEmpty())
-            {
-                return bmp;
-            }
-            switch (resampling)
-            {
-                case BitmapResampling.FastAndUgly:
-                    return ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.NearestNeighbor);
-                case BitmapResampling.FastBilinear:
-                    return ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.Bilinear);
-                case BitmapResampling.FastBicubic:
-                    return ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.Bicubic);
-                case BitmapResampling.BilinearHQ:
-                    return ImageProcessing.ResizeBiliniearHQ(bmp, size.Width, size.Height, format);
-                case BitmapResampling.GdiPlus:
-                    return ImageProcessing.ResizeGdi(bmp, size.Width, size.Height, format);
-                case BitmapResampling.GdiPlusHQ:
-                    return ImageProcessing.ResizeGdi(bmp, size.Width, size.Height, format, highQuality: true);
-                default:
-                    throw new ArgumentOutOfRangeException("resampling");
-            }
+            return bmp == null || size.IsEmpty()
+                ? null
+                : bmp.Size.IsEmpty()
+                ? bmp
+                : resampling switch
+                {
+                    BitmapResampling.FastAndUgly => ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.NearestNeighbor),
+                    BitmapResampling.FastBilinear => ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.Bilinear),
+                    BitmapResampling.FastBicubic => ImageProcessing.ResizeFast(bmp, size.Width, size.Height, format, ResizeFastInterpolation.Bicubic),
+                    BitmapResampling.BilinearHQ => ImageProcessing.ResizeBiliniearHQ(bmp, size.Width, size.Height, format),
+                    BitmapResampling.GdiPlus => ImageProcessing.ResizeGdi(bmp, size.Width, size.Height, format),
+                    BitmapResampling.GdiPlusHQ => ImageProcessing.ResizeGdi(bmp, size.Width, size.Height, format, highQuality: true),
+                    _ => throw new ArgumentOutOfRangeException("resampling"),
+                };
         }
         catch
         {
@@ -59,15 +48,7 @@ public static class BitmapExtensions
 
     public static Bitmap Scale(this Bitmap bmp, Size size, BitmapResampling resampling = BitmapResampling.BilinearHQ, PixelFormat format = PixelFormat.Format32bppArgb)
     {
-        if (bmp == null)
-        {
-            return null;
-        }
-        if (bmp.Size.IsEmpty())
-        {
-            return bmp;
-        }
-        return bmp.Resize(bmp.Size.ToRectangle(size).Size, resampling, format);
+        return bmp == null ? null : bmp.Size.IsEmpty() ? bmp : bmp.Resize(bmp.Size.ToRectangle(size).Size, resampling, format);
     }
 
     public static Bitmap Scale(this Bitmap bmp, int width, int height)
@@ -119,7 +100,7 @@ public static class BitmapExtensions
             image.Save(ms, imageFormat);
             return;
         }
-        using (EncoderParameters encoderParameters = new EncoderParameters(num))
+        using (EncoderParameters encoderParameters = new(num))
         {
             ImageCodecInfo encoderInfo = GetEncoderInfo(imageFormat);
             if (quality >= 0)
@@ -136,7 +117,7 @@ public static class BitmapExtensions
 
     public static byte[] ImageToJpegBytes(this Image image, int quality = -1)
     {
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             image.SaveJpeg(memoryStream, quality);
             return memoryStream.ToArray();
@@ -145,7 +126,7 @@ public static class BitmapExtensions
 
     public static byte[] ImageToBytes(this Image image, ImageFormat imageFormat, int colorDepth = -1, int quality = -1)
     {
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (MemoryStream memoryStream = new())
         {
             image.SaveImage(memoryStream, imageFormat, colorDepth, quality);
             return memoryStream.ToArray();
@@ -154,9 +135,9 @@ public static class BitmapExtensions
 
     public static Bitmap LoadIcon(Stream stream, Color backColor)
     {
-        using (Icon icon = new Icon(stream, 1024, 1024))
+        using (Icon icon = new(stream, 1024, 1024))
         {
-            Bitmap bitmap = new Bitmap(icon.Width, icon.Height, PixelFormat.Format32bppArgb);
+            Bitmap bitmap = new(icon.Width, icon.Height, PixelFormat.Format32bppArgb);
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 graphics.Clear(backColor);
@@ -184,11 +165,9 @@ public static class BitmapExtensions
             {
                 pixelFormat = bitmap?.PixelFormat ?? PixelFormat.Format32bppArgb;
             }
-            if (alwaysCreateCopy || bitmap == null || bitmap.PixelFormat != pixelFormat)
-            {
-                return bitmap.CreateCopy(pixelFormat, alwaysTrueCopy: true);
-            }
-            return bitmap;
+            return alwaysCreateCopy || bitmap == null || bitmap.PixelFormat != pixelFormat
+                ? bitmap.CreateCopy(pixelFormat, alwaysTrueCopy: true)
+                : bitmap;
         }
         catch
         {
@@ -206,19 +185,11 @@ public static class BitmapExtensions
         try
         {
             Bitmap bitmap = Image.FromStream(s, useEmbeddedColorManagement: false, validateImageData: false) as Bitmap;
-            if (bitmap == null)
-            {
-                return bitmap;
-            }
-            if (bitmap.Width == 0 || bitmap.Height == 0)
-            {
-                throw new IOException();
-            }
-            return bitmap;
+            return bitmap == null ? bitmap : bitmap.Width == 0 || bitmap.Height == 0 ? throw new IOException() : bitmap;
         }
         catch (Exception)
         {
-            MemoryStream memoryStream = new MemoryStream();
+            MemoryStream memoryStream = new();
             s.Position = 0L;
             if (!JpegFile.RemoveExif(s, memoryStream))
             {
@@ -288,11 +259,7 @@ public static class BitmapExtensions
 
     public static Bitmap Clone(this Bitmap bmp, PixelFormat format, bool alwaysClone = false)
     {
-        if (bmp == null || (bmp.PixelFormat == format && !alwaysClone))
-        {
-            return bmp;
-        }
-        return bmp.Clone(bmp.Size.ToRectangle(), format);
+        return bmp == null || (bmp.PixelFormat == format && !alwaysClone) ? bmp : bmp.Clone(bmp.Size.ToRectangle(), format);
     }
 
     public static Bitmap ToOptimized(this Bitmap bmp, bool disposeOriginal = true)
@@ -318,14 +285,13 @@ public static class BitmapExtensions
             {
                 format = image.PixelFormat;
             }
-            Bitmap bitmap2 = image as Bitmap;
-            if (bitmap2 != null)
+            if (image is Bitmap bitmap2)
             {
                 if (!alwaysTrueCopy && image.Size == clip.Size && image.PixelFormat == format)
                 {
                     return (Bitmap)bitmap2.Clone();
                 }
-                if (format == PixelFormat.Format32bppArgb || format == PixelFormat.Format24bppRgb)
+                if (format is PixelFormat.Format32bppArgb or PixelFormat.Format24bppRgb)
                 {
                     try
                     {
@@ -396,13 +362,13 @@ public static class BitmapExtensions
 
     public static Bitmap Distort(this Bitmap baseBitmap, Point topleft, Point topright, Point bottomleft, Point bottomright)
     {
-        Point[] array = new Point[4]
-        {
+        Point[] array =
+        [
             topleft,
             topright,
             bottomright,
             bottomleft
-        };
+        ];
         int val = int.MaxValue;
         int num = int.MinValue;
         int val2 = int.MaxValue;
@@ -416,10 +382,10 @@ public static class BitmapExtensions
             val2 = Math.Min(val2, point.Y);
             num2 = Math.Max(num2, point.Y);
         }
-        Rectangle rectangle = new Rectangle(0, 0, num, num2);
-        using (Bitmap bitmap = new Bitmap(rectangle.Width, rectangle.Height))
+        Rectangle rectangle = new(0, 0, num, num2);
+        using (Bitmap bitmap = new(rectangle.Width, rectangle.Height))
         {
-            using (Bitmap inputBitmap = new Bitmap(baseBitmap, rectangle.Width, rectangle.Height))
+            using (Bitmap inputBitmap = new(baseBitmap, rectangle.Width, rectangle.Height))
             {
                 PointF pointF = topleft;
                 PointF pointF2 = topright;
@@ -431,25 +397,25 @@ public static class BitmapExtensions
                 float angularCoefficient4 = GetAngularCoefficient(pointF3, pointF2);
                 PointF? intersection = GetIntersection(pointF2, angularCoefficient, pointF3, angularCoefficient2);
                 PointF? intersection2 = GetIntersection(pointF, angularCoefficient3, pointF2, angularCoefficient4);
-                using (FastBitmap fastBitmap2 = new FastBitmap(bitmap))
+                using (FastBitmap fastBitmap2 = new(bitmap))
                 {
-                    using (FastBitmap fastBitmap = new FastBitmap(inputBitmap))
+                    using (FastBitmap fastBitmap = new(inputBitmap))
                     {
                         for (int j = 0; j < rectangle.Height; j++)
                         {
                             for (int k = 0; k < rectangle.Width; k++)
                             {
-                                PointF pointF5 = new PointF(k, j);
-                                float m = ((!intersection.HasValue) ? angularCoefficient : GetAngularCoefficient(intersection.Value, pointF5));
-                                float m2 = ((!intersection2.HasValue) ? angularCoefficient4 : GetAngularCoefficient(intersection2.Value, pointF5));
+                                PointF pointF5 = new(k, j);
+                                float m = (!intersection.HasValue) ? angularCoefficient : GetAngularCoefficient(intersection.Value, pointF5);
+                                float m2 = (!intersection2.HasValue) ? angularCoefficient4 : GetAngularCoefficient(intersection2.Value, pointF5);
                                 PointF? intersection3 = GetIntersection(pointF5, m, pointF, angularCoefficient3);
-                                PointF a = (intersection3.HasValue ? intersection3.Value : pointF);
+                                PointF a = intersection3.HasValue ? intersection3.Value : pointF;
                                 PointF? intersection4 = GetIntersection(pointF5, m, pointF2, angularCoefficient4);
-                                PointF a2 = ((!intersection4.HasValue) ? pointF3 : intersection4.Value);
+                                PointF a2 = (!intersection4.HasValue) ? pointF3 : intersection4.Value;
                                 PointF? intersection5 = GetIntersection(pointF5, m2, pointF, angularCoefficient);
-                                PointF a3 = (intersection5.HasValue ? intersection5.Value : pointF2);
+                                PointF a3 = intersection5.HasValue ? intersection5.Value : pointF2;
                                 PointF? intersection6 = GetIntersection(pointF5, m2, pointF4, angularCoefficient2);
-                                PointF a4 = (intersection6.HasValue ? intersection6.Value : pointF4);
+                                PointF a4 = intersection6.HasValue ? intersection6.Value : pointF4;
                                 float distance = GetDistance(a, pointF5);
                                 float distance2 = GetDistance(a2, pointF5);
                                 float distance3 = GetDistance(a3, pointF5);
@@ -465,18 +431,18 @@ public static class BitmapExtensions
                         }
                     }
                 }
-                Bitmap bitmap2 = new Bitmap(rectangle.Width, rectangle.Height);
+                Bitmap bitmap2 = new(rectangle.Width, rectangle.Height);
                 using (Graphics graphics = Graphics.FromImage(bitmap2))
                 {
-                    using (GraphicsPath graphicsPath = new GraphicsPath())
+                    using (GraphicsPath graphicsPath = new())
                     {
-                        graphicsPath.AddLines(new PointF[4]
-                        {
+                        graphicsPath.AddLines(
+                        [
                             pointF,
                             pointF2,
                             pointF3,
                             pointF4
-                        });
+                        ]);
                         graphicsPath.CloseFigure();
                         graphics.Clip = new Region(graphicsPath);
                         graphics.DrawImage(bitmap, 0, 0);
@@ -489,17 +455,17 @@ public static class BitmapExtensions
 
     public static Bitmap CreateMosaicImage(this IEnumerable<Bitmap> images, int imagesInEachRow, Size size, Color backColor)
     {
-        Bitmap bitmap = new Bitmap(size.Width, size.Height);
+        Bitmap bitmap = new(size.Width, size.Height);
         using (Graphics graphics = Graphics.FromImage(bitmap))
         {
-            Rectangle rect = new Rectangle(Point.Empty, size);
+            Rectangle rect = new(Point.Empty, size);
             using (Brush brush = new SolidBrush(backColor))
             {
                 graphics.FillRectangle(brush, rect);
             }
             float num = (float)size.Width / (float)imagesInEachRow;
             float num2 = float.MaxValue;
-            PointF pointF = new PointF(0f, 0f);
+            PointF pointF = new(0f, 0f);
             foreach (Bitmap image in images)
             {
                 float num3 = num / (float)image.Width;
@@ -565,34 +531,20 @@ public static class BitmapExtensions
     private static float GetAngularCoefficient(PointF u, PointF v)
     {
         float angularCoefficientRads = GetAngularCoefficientRads(u, v);
-        if (angularCoefficientRads % Pi == Pi / 2f)
-        {
-            return float.PositiveInfinity;
-        }
-        if (angularCoefficientRads % Pi == -Pi / 2f)
-        {
-            return float.NegativeInfinity;
-        }
-        return (float)Math.Tan(angularCoefficientRads);
+        return angularCoefficientRads % Pi == Pi / 2f
+            ? float.PositiveInfinity
+            : angularCoefficientRads % Pi == -Pi / 2f ? float.NegativeInfinity : (float)Math.Tan(angularCoefficientRads);
     }
 
     private static float GetAngularCoefficientRads(PointF from, PointF to)
     {
         if (to.Y == from.Y)
         {
-            if (!(from.X > to.X))
-            {
-                return 0f;
-            }
-            return Pi;
+            return !(from.X > to.X) ? 0f : Pi;
         }
         if (to.X == from.X)
         {
-            if (!(to.Y < from.Y))
-            {
-                return Pi / 2f;
-            }
-            return -Pi / 2f;
+            return !(to.Y < from.Y) ? Pi / 2f : -Pi / 2f;
         }
         float num = (float)Math.Atan((to.Y - from.Y) / (to.X - from.X));
         if (to.X < 0f)
@@ -616,7 +568,7 @@ public static class BitmapExtensions
             var width = firstImage.Width + secondImage.Width;
             var height = Math.Max(firstImage.Height, secondImage.Height);
 
-            Bitmap result = new Bitmap(width, height);
+            Bitmap result = new(width, height);
             using (Graphics g = Graphics.FromImage(result))
             {
                 g.DrawImage(firstImage, 0, 0, firstImage.Width, firstImage.Height);
@@ -640,9 +592,9 @@ public static class BitmapExtensions
     /// </summary>
     public static Icon BitmapToIcon(this Bitmap bitmap)
     {
-        Type[] cargt = new[] { typeof(IntPtr), typeof(bool) };
+        Type[] cargt = [typeof(IntPtr), typeof(bool)];
         ConstructorInfo ci = typeof(Icon).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, cargt, null);
-        object[] cargs = new[] { (object)bitmap.GetHicon(), true };
+        object[] cargs = [(object)bitmap.GetHicon(), true];
         Icon icon = (Icon)ci.Invoke(cargs);
         return icon;
     }

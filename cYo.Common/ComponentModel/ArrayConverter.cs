@@ -15,39 +15,29 @@ public class ArrayConverter<T> : TypeConverter
 
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
     {
-        if (sourceType == typeof(string) && tc.CanConvertFrom(context, sourceType))
-        {
-            return true;
-        }
-        return base.CanConvertFrom(context, sourceType);
+        return sourceType == typeof(string) && tc.CanConvertFrom(context, sourceType) ? true : base.CanConvertFrom(context, sourceType);
     }
 
     public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
-        if (destinationType == typeof(string) && tc.CanConvertTo(context, destinationType))
-        {
-            return true;
-        }
-        return base.CanConvertTo(context, destinationType);
+        return destinationType == typeof(string) && tc.CanConvertTo(context, destinationType)
+            ? true
+            : base.CanConvertTo(context, destinationType);
     }
 
     public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
     {
-        string text = value as string;
-        if (text != null)
-        {
-            return (from x in text.Split(culture.TextInfo.ListSeparator, StringSplitOptions.RemoveEmptyEntries)
-                    select (T)tc.ConvertFrom(context, culture, x)).ToArray();
-        }
-        return base.ConvertFrom(context, culture, value);
+        return value is string text
+            ? (from x in text.Split(culture.TextInfo.ListSeparator, StringSplitOptions.RemoveEmptyEntries)
+               select (T)tc.ConvertFrom(context, culture, x)).ToArray()
+            : base.ConvertFrom(context, culture, value);
     }
 
     public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
-        IEnumerable<T> enumerable = value as IEnumerable<T>;
-        if (destinationType == typeof(string) && enumerable != null)
+        if (destinationType == typeof(string) && value is IEnumerable<T> enumerable)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach (T item in enumerable)
             {
                 if (stringBuilder.Length != 0)

@@ -10,10 +10,6 @@ public class SmartListSeriesLastOpenedTimeMatcher : ComicBookDateMatcher
 {
     protected override DateTime GetValue(ComicBook comicBook)
     {
-        if (base.StatsProvider != null)
-        {
-            return base.StatsProvider.GetSeriesStats(comicBook).LastOpenedTime;
-        }
-        return DateTime.MinValue;
+        return base.StatsProvider != null ? StatsProvider.GetSeriesStats(comicBook).LastOpenedTime : DateTime.MinValue;
     }
 }

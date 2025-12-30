@@ -6,7 +6,7 @@ public struct FontSize
 
     public bool Relative;
 
-    public static readonly FontSize Empty = new FontSize(0, relative: true);
+    public static readonly FontSize Empty = new(0, relative: true);
 
     public FontSize(int size, bool relative)
     {
@@ -16,16 +16,12 @@ public struct FontSize
 
     public override bool Equals(object obj)
     {
-        if (!(obj is FontSize))
+        if (obj is not FontSize)
         {
             return false;
         }
         FontSize fontSize = (FontSize)obj;
-        if (fontSize.Relative == Relative)
-        {
-            return fontSize.Size == Size;
-        }
-        return false;
+        return fontSize.Relative == Relative ? fontSize.Size == Size : false;
     }
 
     public override int GetHashCode()

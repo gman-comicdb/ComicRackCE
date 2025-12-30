@@ -54,10 +54,7 @@ public abstract class DisposableObject : IDisposable
         {
             try
             {
-                if (this.Disposing != null)
-                {
-                    this.Disposing(this, EventArgs.Empty);
-                }
+                Disposing?.Invoke(this, EventArgs.Empty);
             }
             catch
             {
@@ -66,10 +63,7 @@ public abstract class DisposableObject : IDisposable
             isDisposed = true;
             try
             {
-                if (this.Disposed != null)
-                {
-                    this.Disposed(this, EventArgs.Empty);
-                }
+                Disposed?.Invoke(this, EventArgs.Empty);
             }
             catch
             {

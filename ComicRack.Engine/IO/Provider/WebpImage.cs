@@ -58,11 +58,9 @@ public static class WebpImage
 
         public static int WebPGetInfo(IntPtr data, UIntPtr dataSize, ref int width, ref int height)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPGetInfo32(data, dataSize, ref width, ref height);
-            }
-            return WebPGetInfo64(data, dataSize, ref width, ref height);
+            return !Environment.Is64BitProcess
+                ? WebPGetInfo32(data, dataSize, ref width, ref height)
+                : WebPGetInfo64(data, dataSize, ref width, ref height);
         }
 
         public static void WebPFree(IntPtr toDeallocate)
@@ -79,47 +77,37 @@ public static class WebpImage
 
         public static IntPtr WebPDecodeBGRAInto(IntPtr data, UIntPtr dataSize, IntPtr outputBuffer, UIntPtr outputBufferSize, int outputStride)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPDecodeBGRAInto32(data, dataSize, outputBuffer, outputBufferSize, outputStride);
-            }
-            return WebPDecodeBGRAInto64(data, dataSize, outputBuffer, outputBufferSize, outputStride);
+            return !Environment.Is64BitProcess
+                ? WebPDecodeBGRAInto32(data, dataSize, outputBuffer, outputBufferSize, outputStride)
+                : WebPDecodeBGRAInto64(data, dataSize, outputBuffer, outputBufferSize, outputStride);
         }
 
         public static UIntPtr WebPEncodeLosslessBGR(IntPtr bgr, int width, int height, int stride, ref IntPtr output)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPEncodeLosslessBGR32(bgr, width, height, stride, ref output);
-            }
-            return WebPEncodeLosslessBGR64(bgr, width, height, stride, ref output);
+            return !Environment.Is64BitProcess
+                ? WebPEncodeLosslessBGR32(bgr, width, height, stride, ref output)
+                : WebPEncodeLosslessBGR64(bgr, width, height, stride, ref output);
         }
 
         public static UIntPtr WebPEncodeLosslessBGRA(IntPtr bgra, int width, int height, int stride, ref IntPtr output)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPEncodeLosslessBGRA32(bgra, width, height, stride, ref output);
-            }
-            return WebPEncodeLosslessBGRA64(bgra, width, height, stride, ref output);
+            return !Environment.Is64BitProcess
+                ? WebPEncodeLosslessBGRA32(bgra, width, height, stride, ref output)
+                : WebPEncodeLosslessBGRA64(bgra, width, height, stride, ref output);
         }
 
         public static UIntPtr WebPEncodeBGR(IntPtr bgr, int width, int height, int stride, float qualityFactor, ref IntPtr output)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPEncodeBGR32(bgr, width, height, stride, qualityFactor, ref output);
-            }
-            return WebPEncodeBGR64(bgr, width, height, stride, qualityFactor, ref output);
+            return !Environment.Is64BitProcess
+                ? WebPEncodeBGR32(bgr, width, height, stride, qualityFactor, ref output)
+                : WebPEncodeBGR64(bgr, width, height, stride, qualityFactor, ref output);
         }
 
         public static IntPtr WebPEncodeBGRA(IntPtr bgra, int width, int height, int stride, float qualityFactor, ref IntPtr output)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                return WebPEncodeBGRA32(bgra, width, height, stride, qualityFactor, ref output);
-            }
-            return WebPEncodeBGRA64(bgra, width, height, stride, qualityFactor, ref output);
+            return !Environment.Is64BitProcess
+                ? WebPEncodeBGRA32(bgra, width, height, stride, qualityFactor, ref output)
+                : WebPEncodeBGRA64(bgra, width, height, stride, qualityFactor, ref output);
         }
     }
 
@@ -202,32 +190,16 @@ public static class WebpImage
         try
         {
             result = IntPtr.Zero;
-            switch (b.PixelFormat)
+            length = b.PixelFormat switch
             {
-                case PixelFormat.Format32bppRgb:
-                case PixelFormat.Format32bppArgb:
-                    if (quality <= 0f)
-                    {
-                        length = (long)(ulong)NativeMethods.WebPEncodeLosslessBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
-                    }
-                    else
-                    {
-                        length = (long)NativeMethods.WebPEncodeBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
-                    }
-                    break;
-                case PixelFormat.Format24bppRgb:
-                    if (quality <= 0f)
-                    {
-                        length = (long)(ulong)NativeMethods.WebPEncodeLosslessBGR(bitmapData.Scan0, width, height, bitmapData.Stride, ref result);
-                    }
-                    else
-                    {
-                        length = (long)(ulong)NativeMethods.WebPEncodeBGR(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result);
-                    }
-                    break;
-                default:
-                    throw new NotSupportedException("Only Format32bppArgb and Format32bppRgb bitmaps are supported");
-            }
+                PixelFormat.Format32bppRgb or PixelFormat.Format32bppArgb => quality <= 0f
+                                        ? (long)(ulong)NativeMethods.WebPEncodeLosslessBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, ref result)
+                                        : (long)NativeMethods.WebPEncodeBGRA(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result),
+                PixelFormat.Format24bppRgb => quality <= 0f
+                                        ? (long)(ulong)NativeMethods.WebPEncodeLosslessBGR(bitmapData.Scan0, width, height, bitmapData.Stride, ref result)
+                                        : (long)(ulong)NativeMethods.WebPEncodeBGR(bitmapData.Scan0, width, height, bitmapData.Stride, quality, ref result),
+                _ => throw new NotSupportedException("Only Format32bppArgb and Format32bppRgb bitmaps are supported"),
+            };
             if (length == 0L)
             {
                 throw new Exception("WebP encode failed!");
@@ -290,9 +262,9 @@ public static class WebpImage
         Bitmap bitmap = null;
         try
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
-                bitmap = ((bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb));
+                bitmap = (bmp.PixelFormat == PixelFormat.Format24bppRgb) ? bmp : bmp.CreateCopy(PixelFormat.Format24bppRgb);
                 Encode(bitmap, memoryStream, quality);
                 return memoryStream.ToArray();
             }

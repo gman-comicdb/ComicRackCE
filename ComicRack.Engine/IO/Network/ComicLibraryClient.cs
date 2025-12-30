@@ -23,29 +23,19 @@ public class ComicLibraryClient : DisposableObject
         get
         {
             IServiceChannel serviceChannel = remoteLibrary as IServiceChannel;
-            if (serviceChannel.State == CommunicationState.Faulted || serviceChannel.State == CommunicationState.Closed)
+            if (serviceChannel.State is CommunicationState.Faulted or CommunicationState.Closed)
             {
                 Connect();
             }
             return remoteLibrary;
         }
-        set
-        {
-            remoteLibrary = value;
-        }
+
+        set => remoteLibrary = value;
     }
 
-    public string Password
-    {
-        get;
-        set;
-    }
+    public string Password { get; set; }
 
-    public ShareInformation ShareInformation
-    {
-        get;
-        private set;
-    }
+    public ShareInformation ShareInformation { get; private set; }
 
     private ComicLibraryClient(string serviceAddress, ShareInformation information)
     {
@@ -99,7 +89,7 @@ public class ComicLibraryClient : DisposableObject
         {
             byte[] libraryData = RemoteLibrary.GetLibraryData();
             ComicLibrary comicLibrary = ComicLibrary.FromByteArray(libraryData);
-            comicLibrary.EditMode = (ShareInformation.IsEditable ? ComicsEditModes.EditProperties : ComicsEditModes.None);
+            comicLibrary.EditMode = ShareInformation.IsEditable ? ComicsEditModes.EditProperties : ComicsEditModes.None;
             foreach (ComicBook book in comicLibrary.Books)
             {
                 book.FileInfoRetrieved = true;
@@ -129,10 +119,7 @@ public class ComicLibraryClient : DisposableObject
     {
         Guid id = cb.Id;
         string item = $"{id}:{propertyName}";
-        if (queue == null)
-        {
-            queue = new ProcessingQueue<string>("Server Book Info Update", ThreadPriority.Highest);
-        }
+        queue ??= new ProcessingQueue<string>("Server Book Info Update", ThreadPriority.Highest);
         queue.AddItem(item, delegate
         {
             try
@@ -169,8 +156,8 @@ public class ComicLibraryClient : DisposableObject
     private static IRemoteComicLibrary GetComicLibraryService(string address, string password)
     {
         string uriString = string.Format("net.tcp://{0}/{1}", address, ComicLibraryServer.LibraryPoint);
-        EndpointAddress remoteAddress = new EndpointAddress(new Uri(uriString), EndpointIdentity.CreateDnsIdentity("ComicRack"), (AddressHeaderCollection)null);
-        ChannelFactory<IRemoteComicLibrary> channelFactory = new ChannelFactory<IRemoteComicLibrary>(ComicLibraryServer.CreateChannel(secure: true), remoteAddress);
+        EndpointAddress remoteAddress = new(new Uri(uriString), EndpointIdentity.CreateDnsIdentity("ComicRack"), (AddressHeaderCollection)null);
+        ChannelFactory<IRemoteComicLibrary> channelFactory = new(ComicLibraryServer.CreateChannel(secure: true), remoteAddress);
         channelFactory.Credentials.UserName.UserName = "ComicRack";
         channelFactory.Credentials.UserName.Password = password;
         channelFactory.Credentials.ClientCertificate.Certificate = ComicLibraryServer.Certificate;// New Cert (sha256)
@@ -183,7 +170,7 @@ public class ComicLibraryClient : DisposableObject
     private static IRemoteServerInfo GetServerInfoService(string serviceAddress)
     {
         string remoteAddress = string.Format("net.tcp://{0}/{1}", serviceAddress, ComicLibraryServer.InfoPoint);
-        ChannelFactory<IRemoteServerInfo> channelFactory = new ChannelFactory<IRemoteServerInfo>(ComicLibraryServer.CreateChannel(secure: false), remoteAddress);
+        ChannelFactory<IRemoteServerInfo> channelFactory = new(ComicLibraryServer.CreateChannel(secure: false), remoteAddress);
         IRemoteServerInfo remoteServerInfo = channelFactory.CreateChannel();
         ((IContextChannel)remoteServerInfo).OperationTimeout = TimeSpan.FromSeconds(EngineConfiguration.Default.OperationTimeout);
         return remoteServerInfo;

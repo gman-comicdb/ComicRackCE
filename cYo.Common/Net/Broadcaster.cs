@@ -21,10 +21,7 @@ public class Broadcaster<T> : DisposableObject, IBroadcast<T>
 
     public int Port
     {
-        get
-        {
-            return port;
-        }
+        get => port;
         set
         {
             if (port != value)
@@ -41,10 +38,7 @@ public class Broadcaster<T> : DisposableObject, IBroadcast<T>
 
     public bool Listen
     {
-        get
-        {
-            return listen;
-        }
+        get => listen;
         set
         {
             if (listen != value)
@@ -159,10 +153,7 @@ public class Broadcaster<T> : DisposableObject, IBroadcast<T>
 
     protected virtual void OnRecieved(BroadcastEventArgs<T> bea)
     {
-        if (this.Recieved != null)
-        {
-            this.Recieved(this, bea);
-        }
+        Recieved?.Invoke(this, bea);
     }
 
     public bool Broadcast(T data)
@@ -171,7 +162,7 @@ public class Broadcaster<T> : DisposableObject, IBroadcast<T>
         {
             foreach (IPEndPoint localEndpoint in LocalEndpoints)
             {
-                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+                using (Socket socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                 {
                     socket.Bind(localEndpoint);
                     socket.EnableBroadcast = true;

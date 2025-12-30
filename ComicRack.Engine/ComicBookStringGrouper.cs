@@ -6,8 +6,8 @@ public abstract class ComicBookStringGrouper<T> : SingleComicGrouper where T : C
 {
     public override ComicBookMatcher CreateMatcher(IGroupInfo info)
     {
-        T val = new T();
-        val.MatchOperator = (info.Caption.Contains(",") ? ComicBookStringMatcher.OperatorListContains : ComicBookStringMatcher.OperatorEquals);
+        T val = new();
+        val.MatchOperator = info.Caption.Contains(",") ? ComicBookStringMatcher.OperatorListContains : ComicBookStringMatcher.OperatorEquals;
         val.MatchValue = info.Caption;
         return val;
     }

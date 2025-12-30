@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using cYo.Common.ComponentModel;
 using cYo.Common.Windows.Forms;
@@ -16,8 +12,8 @@ public class ComicBookMetadata
     private readonly IGrouper<IViewableItem> grouper;
     public ComicBookMetadata(int id, string name, IComparer<IViewableItem> comparer = null, IGrouper<IViewableItem> grouper = null)
     {
-        this.Id = id;
-        this.Name = name;
+        Id = id;
+        Name = name;
         this.comparer = comparer;
         this.grouper = grouper;
     }

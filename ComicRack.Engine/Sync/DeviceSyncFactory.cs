@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 
@@ -11,20 +10,20 @@ namespace cYo.Projects.ComicRack.Engine.Sync;
 
 public static class DeviceSyncFactory
 {
-    private static List<IPAddress> extraWifiDeviceAddresses = new List<IPAddress>();
+    private static List<IPAddress> extraWifiDeviceAddresses = new();
 
     public static IEnumerable<IPAddress> ExtraWifiDeviceAddresses => extraWifiDeviceAddresses;
 
     public static IEnumerable<ISyncProvider> Discover()
     {
-        Dictionary<string, ISyncProvider> dictionary = new Dictionary<string, ISyncProvider>();
+        Dictionary<string, ISyncProvider> dictionary = new();
         try
         {
             foreach (Device device in DeviceFactory.GetDevices())
             {
                 try
                 {
-                    PortableDeviceSyncProvider portableDeviceSyncProvider = new PortableDeviceSyncProvider(device.Key);
+                    PortableDeviceSyncProvider portableDeviceSyncProvider = new(device.Key);
                     dictionary[portableDeviceSyncProvider.Device.Key] = portableDeviceSyncProvider;
                 }
                 catch (Exception)
@@ -39,7 +38,7 @@ public static class DeviceSyncFactory
         {
             try
             {
-                DiskDriveSyncProvider diskDriveSyncProvider = new DiskDriveSyncProvider(removeableDrife);
+                DiskDriveSyncProvider diskDriveSyncProvider = new(removeableDrife);
                 dictionary[diskDriveSyncProvider.Device.Key] = diskDriveSyncProvider;
             }
             catch (Exception)
@@ -55,12 +54,12 @@ public static class DeviceSyncFactory
 
     public static IEnumerable<ISyncProvider> Discover(IEnumerable<IPAddress> adresses)
     {
-        Dictionary<string, ISyncProvider> dictionary = new Dictionary<string, ISyncProvider>();
+        Dictionary<string, ISyncProvider> dictionary = new();
         foreach (IPAddress item in adresses.Distinct())
         {
             try
             {
-                WirelessSyncProvider wirelessSyncProvider = new WirelessSyncProvider(item);
+                WirelessSyncProvider wirelessSyncProvider = new(item);
                 dictionary[wirelessSyncProvider.Device.Key] = wirelessSyncProvider;
             }
             catch (Exception)

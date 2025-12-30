@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 using cYo.Common.Collections;
@@ -15,17 +13,9 @@ public partial class ShowErrorsDialog : FormEx
 {
     public class ErrorItem
     {
-        public string Item
-        {
-            get;
-            set;
-        }
+        public string Item { get; set; }
 
-        public string Message
-        {
-            get;
-            set;
-        }
+        public string Message { get; set; }
     }
 
     public ShowErrorsDialog()
@@ -48,7 +38,7 @@ public partial class ShowErrorsDialog : FormEx
         {
             return;
         }
-        ShowErrorsDialog dlg = new ShowErrorsDialog();
+        ShowErrorsDialog dlg = new();
         try
         {
             foreach (T error in errors)

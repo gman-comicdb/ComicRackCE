@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
-using cYo.Common;
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
 using cYo.Common.Drawing;
@@ -18,13 +15,11 @@ using cYo.Common.Win32;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Controls;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Engine.Drawing;
 using cYo.Projects.ComicRack.Engine.IO;
 using cYo.Projects.ComicRack.Plugins;
 using cYo.Projects.ComicRack.Viewer.Controls;
-using cYo.Projects.ComicRack.Viewer.Properties;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -54,22 +49,19 @@ public partial class ComicBookDialog : FormEx
 
     private static int currentScript;
 
-    private static ItemViewConfig pagesConfig = new ItemViewConfig();
+    private static ItemViewConfig pagesConfig = new();
 
     private static PluginEngine scriptEngine;
 
     public string CustomThumbnailKey
     {
-        get
-        {
-            return customThumbnailKey;
-        }
+        get => customThumbnailKey;
         set
         {
             if (!displayComic.IsLinked && !(value == customThumbnailKey))
             {
-                ComicBook comicBook = new ComicBook(displayComic);
-                string text2 = (customThumbnailKey = (comicBook.CustomThumbnailKey = value));
+                ComicBook comicBook = new(displayComic);
+                string text2 = customThumbnailKey = comicBook.CustomThumbnailKey = value;
                 SetCoverThumbnailImage(coverThumbnail, comicBook);
             }
         }
@@ -77,26 +69,14 @@ public partial class ComicBookDialog : FormEx
 
     public static ItemViewConfig PagesConfig
     {
-        get
-        {
-            return pagesConfig;
-        }
-        set
-        {
-            pagesConfig = value;
-        }
+        get => pagesConfig;
+        set => pagesConfig = value;
     }
 
     public static PluginEngine ScriptEngine
     {
-        get
-        {
-            return scriptEngine;
-        }
-        set
-        {
-            scriptEngine = value;
-        }
+        get => scriptEngine;
+        set => scriptEngine = value;
     }
 
     public static Size SafeSize { get; set; }
@@ -111,7 +91,7 @@ public partial class ComicBookDialog : FormEx
     private void SetSize()
     {
         Size = !SafeSize.IsEmpty ? SafeSize : MinimumSize;
-        this.CenterToParent();
+        CenterToParent();
     }
 
     private void UpdateSafeSize()
@@ -160,13 +140,10 @@ public partial class ComicBookDialog : FormEx
         EditControlUtility.InitializeYesNo(cbSeriesComplete);
         EditControlUtility.InitializeYesNo(cbEnableProposed, withEmpty: false);
         EditControlUtility.InitializeYesNo(cbEnableDynamicUpdate, withEmpty: false);
-        if (allBooks == null)
-        {
-            allBooks = new ComicBook[1]
-            {
+        allBooks ??=
+            [
                 current
-            };
-        }
+            ];
         this.allBooks = allBooks;
         pagesView.PageFilter = ComicPageType.AllWithDeleted;
         pagesView.ItemView.SelectedIndexChanged += PagesViewSelectedIndexChanged;
@@ -262,10 +239,7 @@ public partial class ComicBookDialog : FormEx
     {
         displayComic = comic;
         Text = comic.Caption;
-        new Control[4] { labelType, lblType, labelPages, lblPages }.ForEach((Control c) =>
-        {
-            c.Visible = comic.IsLinked;
-        });
+        new Control[4] { labelType, lblType, labelPages, lblPages }.ForEach((Control c) => c.Visible = comic.IsLinked);
         AllowDrop = btThumbnail.Visible = btLinkFile.Visible = !comic.IsLinked && comic.EditMode.IsLocalComic();
         labelWhere.Visible = whereSeparator.Visible = lblPath.Visible = comic.IsLinked && comic.EditMode.IsLocalComic();
         customThumbnailKey = comic.CustomThumbnailKey;
@@ -276,7 +250,7 @@ public partial class ComicBookDialog : FormEx
         SetPageView(comic.CurrentPage);
         SetDataToEditor(comic);
         ComicBookNavigator book = pagesView.Book;
-        ComicBook comicBook = new ComicBook(comic);
+        ComicBook comicBook = new(comic);
         pagesView.Book = comicBook.CreateNavigator();
         if (pagesView.Book != null)
         {
@@ -352,7 +326,7 @@ public partial class ComicBookDialog : FormEx
         EditControlUtility.SetText(cbBlackAndWhite, comic.BlackAndWhite);
         EditControlUtility.SetText(cbEnableProposed, comic.EnableProposed ? YesNo.Yes : YesNo.No);
         ComboBox comboBox = cbEnableDynamicUpdate;
-        bool visible = (labelEnableDynamicUpdate.Visible = comic.IsDynamicSource);
+        bool visible = labelEnableDynamicUpdate.Visible = comic.IsDynamicSource;
         comboBox.Visible = visible;
         EditControlUtility.SetText(cbEnableDynamicUpdate, comic.EnableDynamicUpdate ? YesNo.Yes : YesNo.No);
         EditControlUtility.SetText(txAlternateSeries, comic.AlternateSeries);
@@ -442,18 +416,18 @@ public partial class ComicBookDialog : FormEx
             TextBoxEx textBoxEx4 = txCount;
             TextBoxEx textBoxEx5 = txYear;
             TextBoxEx textBoxEx6 = txVolume;
-            string text = (cbFormat.PromptText = string.Empty);
-            string text3 = (textBoxEx6.PromptText = text);
-            string text5 = (textBoxEx5.PromptText = text3);
-            string text7 = (textBoxEx4.PromptText = text5);
-            string text9 = (textBoxEx3.PromptText = text7);
-            string text12 = (textBoxEx.PromptText = (textBoxEx2.PromptText = text9));
+            string text = cbFormat.PromptText = string.Empty;
+            string text3 = textBoxEx6.PromptText = text;
+            string text5 = textBoxEx5.PromptText = text3;
+            string text7 = textBoxEx4.PromptText = text5;
+            string text9 = textBoxEx3.PromptText = text7;
+            string text12 = textBoxEx.PromptText = textBoxEx2.PromptText = text9;
         }
     }
 
     private ComicBook GetFromEditor()
     {
-        ComicBook comicBook = new ComicBook(current);
+        ComicBook comicBook = new(current);
         SaveBook(comicBook);
         return comicBook;
     }
@@ -606,7 +580,7 @@ public partial class ComicBookDialog : FormEx
         if (current != null)
         {
             IEnumerable<ComicPageInfo> selectedPages = pagesView.GetSelectedPages();
-            int pageView = ((!selectedPages.IsEmpty()) ? current.TranslateImageIndexToPage(selectedPages.First().ImageIndex) : current.FrontCoverPageIndex);
+            int pageView = (!selectedPages.IsEmpty()) ? current.TranslateImageIndexToPage(selectedPages.First().ImageIndex) : current.FrontCoverPageIndex;
             SetPageView(pageView);
         }
     }
@@ -729,12 +703,11 @@ public partial class ComicBookDialog : FormEx
         {
             return;
         }
-        TextBox textBox = e.Control as TextBox;
-        if (textBox == null)
+        if (e.Control is not TextBox textBox)
         {
             return;
         }
-        AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+        AutoCompleteStringCollection autoCompleteStringCollection = new();
         string key = (string)customValuesData.Rows[customValuesData.CurrentRow.Index].Cells[0].Value;
         if (!string.IsNullOrEmpty(key))
         {
@@ -770,10 +743,10 @@ public partial class ComicBookDialog : FormEx
     private void IdleProcess_Idle(object sender, EventArgs e)
     {
         Button button = btFirstPage;
-        bool enabled = (btPrevPage.Enabled = displayComic != null && displayComic.PageCount > 0 && pageViewPage > 0);
+        bool enabled = btPrevPage.Enabled = displayComic != null && displayComic.PageCount > 0 && pageViewPage > 0;
         button.Enabled = enabled;
         Button button2 = btLastPage;
-        enabled = (btNextPage.Enabled = displayComic != null && displayComic.PageCount > 0 && pageViewPage < displayComic.PageCount - 1);
+        enabled = btNextPage.Enabled = displayComic != null && displayComic.PageCount > 0 && pageViewPage < displayComic.PageCount - 1;
         button2.Enabled = enabled;
     }
 
@@ -819,9 +792,9 @@ public partial class ComicBookDialog : FormEx
         TrackBarLite trackBarLite = tbSaturation;
         TrackBarLite trackBarLite2 = tbBrightness;
         TrackBarLite trackBarLite3 = tbContrast;
-        int num2 = (tbGamma.Value = 0);
-        int num4 = (trackBarLite3.Value = num2);
-        int num7 = (trackBarLite.Value = (trackBarLite2.Value = num4));
+        int num2 = tbGamma.Value = 0;
+        int num4 = trackBarLite3.Value = num2;
+        int num7 = trackBarLite.Value = trackBarLite2.Value = num4;
         tbSharpening.Value = 0;
         SetCurrentColorAdjustment(pageViewer, Color.White);
     }
@@ -850,7 +823,7 @@ public partial class ComicBookDialog : FormEx
     private void btResetPages_ShowContextMenu(object sender, EventArgs e)
     {
         ToolStripMenuItem toolStripMenuItem = miOrderByName;
-        bool enabled = (miOrderByNameNumeric.Enabled = pagesView.Book != null && pagesView.Book.IsIndexRetrievalCompleted);
+        bool enabled = miOrderByNameNumeric.Enabled = pagesView.Book != null && pagesView.Book.IsIndexRetrievalCompleted;
         toolStripMenuItem.Enabled = enabled;
     }
 
@@ -940,8 +913,7 @@ public partial class ComicBookDialog : FormEx
 
     private void ComicBookDialog_DragDrop(object sender, DragEventArgs e)
     {
-        string[] array = e.Data.GetData(DataFormats.FileDrop) as string[];
-        if (array != null && array.Length != 0)
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] array && array.Length != 0)
         {
             LinkFile(array[0]);
         }
@@ -949,20 +921,18 @@ public partial class ComicBookDialog : FormEx
 
     private void ComicBookDialog_DragOver(object sender, DragEventArgs e)
     {
-        e.Effect = (e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void coverThumbnail_DragDrop(object sender, DragEventArgs e)
     {
         try
         {
-            Bitmap bitmap = e.Data.GetData(DataFormats.Bitmap) as Bitmap;
-            string[] array = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (bitmap != null)
+            if (e.Data.GetData(DataFormats.Bitmap) is Bitmap bitmap)
             {
                 CustomThumbnailKey = Program.ImagePool.AddCustomThumbnail(bitmap);
             }
-            else if (array != null)
+            else if (e.Data.GetData(DataFormats.FileDrop) is string[] array)
             {
                 LoadThumbnail(array[0]);
             }
@@ -975,7 +945,7 @@ public partial class ComicBookDialog : FormEx
     private void coverThumbnail_DragOver(object sender, DragEventArgs e)
     {
         bool flag = !displayComic.IsLinked && (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Bitmap));
-        e.Effect = (flag ? DragDropEffects.Copy : DragDropEffects.None);
+        e.Effect = flag ? DragDropEffects.Copy : DragDropEffects.None;
     }
 
     private void btThumbnail_Click(object sender, EventArgs e)
@@ -1089,12 +1059,9 @@ public partial class ComicBookDialog : FormEx
         }
         foreach (Command command in scriptEngine.GetCommands(PluginEngine.ScriptTypeEditor))
         {
-            if (btScript.ContextMenuStrip == null)
-            {
-                btScript.ContextMenuStrip = new ContextMenuStrip();
-            }
+            btScript.ContextMenuStrip ??= new ContextMenuStrip();
             string localizedName = command.GetLocalizedName();
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(localizedName)
+            ToolStripMenuItem toolStripMenuItem = new(localizedName)
             {
                 Tag = command
             };
@@ -1133,13 +1100,13 @@ public partial class ComicBookDialog : FormEx
             ComicBook fromEditor = GetFromEditor();
             using (new WaitCursor(this))
             {
-                cmd.Invoke(new object[1]
-                {
+                cmd.Invoke(
+                [
                     new ComicBook[1]
                     {
                         fromEditor
                     }
-                });
+                ]);
             }
             SetDataToEditor(fromEditor);
         }
@@ -1151,7 +1118,7 @@ public partial class ComicBookDialog : FormEx
 
     public static bool Show(IWin32Window parent, ComicBook comicBook, ComicBook[] books, Func<ComicBook, bool> selHandler)
     {
-        using (ComicBookDialog comicBookDialog = new ComicBookDialog(comicBook, books))
+        using (ComicBookDialog comicBookDialog = new(comicBook, books))
         {
             comicBookDialog.selectComicHandler = selHandler;
             if (lastActivePage != -1)

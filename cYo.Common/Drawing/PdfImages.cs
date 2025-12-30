@@ -20,7 +20,7 @@ public class PdfImages
 
     private string tempPath = Path.GetTempPath();
 
-    private static readonly Regex rxCount = new Regex("file:\\s(?<count>\\d+)", RegexOptions.Compiled);
+    private static readonly Regex rxCount = new("file:\\s(?<count>\\d+)", RegexOptions.Compiled);
 
     private string pdfFile;
 
@@ -32,28 +32,16 @@ public class PdfImages
 
     public string TempPath
     {
-        get
-        {
-            return tempPath;
-        }
-        set
-        {
-            tempPath = value;
-        }
+        get => tempPath;
+        set => tempPath = value;
     }
 
     public string PdfFile => pdfFile;
 
     public int PageCount
     {
-        get
-        {
-            return pageCount;
-        }
-        set
-        {
-            pageCount = value;
-        }
+        get => pageCount;
+        set => pageCount = value;
     }
 
     public static string GhostscriptPath
@@ -67,10 +55,8 @@ public class PdfImages
             }
             return ghostscriptPath;
         }
-        set
-        {
-            ghostscriptPath = value;
-        }
+
+        set => ghostscriptPath = value;
     }
 
     public static bool IsGhostscriptAvailable
@@ -212,20 +198,14 @@ public class PdfImages
 
     private static string CheckProgramPath(string path)
     {
-        if (Machine.Is64Bit)
-        {
-            return CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), path)) ?? CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), path));
-        }
-        return CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), path));
+        return Machine.Is64Bit
+            ? CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), path)) ?? CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), path))
+            : CheckPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), path));
     }
 
     private static string ExecuteGhostscript(string arguments, params object[] objs)
     {
         ExecuteProcess.Result result = ExecuteProcess.Execute(GhostscriptPath, string.Format(arguments, objs), ExecuteProcess.Options.StoreOutput);
-        if (result.ExitCode != 0)
-        {
-            throw new FileLoadException();
-        }
-        return result.ConsoleText;
+        return result.ExitCode != 0 ? throw new FileLoadException() : result.ConsoleText;
     }
 }

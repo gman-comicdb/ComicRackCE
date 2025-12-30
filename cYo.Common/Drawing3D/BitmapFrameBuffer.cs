@@ -37,10 +37,7 @@ public class BitmapFrameBuffer : DisposableObject, IFrameBuffer, ITexture
 
     protected override void Dispose(bool disposing)
     {
-        if (fastBitmap != null)
-        {
-            fastBitmap.Dispose();
-        }
+        fastBitmap?.Dispose();
         base.Dispose(disposing);
     }
 
@@ -48,11 +45,7 @@ public class BitmapFrameBuffer : DisposableObject, IFrameBuffer, ITexture
     {
         x += clip.X;
         y += clip.Y;
-        if (x < bounds.Width && y < bounds.Height && x >= 0 && y >= 0)
-        {
-            return fastBitmap.GetPixel(x, y);
-        }
-        return Color.Empty;
+        return x < bounds.Width && y < bounds.Height && x >= 0 && y >= 0 ? fastBitmap.GetPixel(x, y) : Color.Empty;
     }
 
     public void SetColor(int x, int y, Color color)

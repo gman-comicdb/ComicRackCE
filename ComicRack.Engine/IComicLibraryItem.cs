@@ -4,8 +4,5 @@ namespace cYo.Projects.ComicRack.Engine;
 
 public interface IComicLibraryItem
 {
-    ComicLibrary Library
-    {
-        get;
-    }
+    ComicLibrary Library { get; }
 }

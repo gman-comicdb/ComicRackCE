@@ -21,8 +21,7 @@ public static class ThemeHandler
     /// </summary>
     public static void SetTheme(this Control control, bool recursive)
     {
-        if (Handler != null)
-            Handler.Handle(control);
+        Handler?.Handle(control);
 
         if (Handler != null && recursive)
             foreach (Control childControl in control.Controls)

@@ -19,7 +19,7 @@ public class SearchContextMenuBuilder
 
     public ToolStripMenuItem CreateMenuItem(INetSearch search, string hint, string text)
     {
-        ToolStripMenuItem mi = new ToolStripMenuItem(TR.Load("SearchMenu")[search.Name, search.Name], search.Image);
+        ToolStripMenuItem mi = new(TR.Load("SearchMenu")[search.Name, search.Name], search.Image);
         mi.DropDownOpening += delegate
         {
             mi.DropDownItems.Clear();
@@ -42,8 +42,8 @@ public class SearchContextMenuBuilder
     {
         using (new WaitCursor())
         {
-            List<ToolStripItem> list = new List<ToolStripItem>();
-            Image image = (withImages ? search.Image : null);
+            List<ToolStripItem> list = new();
+            Image image = withImages ? search.Image : null;
             try
             {
                 text = (text ?? string.Empty).Trim();
@@ -86,7 +86,7 @@ public class SearchContextMenuBuilder
                 string gl = search.GenericSearchLink(hint, text);
                 if (!string.IsNullOrEmpty(gl))
                 {
-                    if (list.Count > 0 && !(list[list.Count - 1] is ToolStripSeparator))
+                    if (list.Count > 0 && list[list.Count - 1] is not ToolStripSeparator)
                     {
                         list.Add(new ToolStripSeparator());
                     }
@@ -102,14 +102,11 @@ public class SearchContextMenuBuilder
 
     public ContextMenuStrip CreateContextMenu(IEnumerable<INetSearch> searches, string hint, string text, Action<ContextMenuStrip> customItems)
     {
-        ContextMenuStrip cm = new ContextMenuStrip();
+        ContextMenuStrip cm = new();
         if (searches.Count() > 1)
         {
             cm.Items.AddRange(CreateMenuItems(searches, hint, text).ToArray());
-            if (customItems != null)
-            {
-                customItems(cm);
-            }
+            customItems?.Invoke(cm);
         }
         else
         {
@@ -120,10 +117,7 @@ public class SearchContextMenuBuilder
                 {
                     cm.Items.Clear();
                     cm.Items.AddRange(CreateItems(search, hint, text, withImages: true).ToArray());
-                    if (customItems != null)
-                    {
-                        customItems(cm);
-                    }
+                    customItems?.Invoke(cm);
                 };
                 cm.Items.Add(new ToolStripMenuItem("Dummy"));
             }

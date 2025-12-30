@@ -8,6 +8,6 @@ public static class SearchEngines
 {
     public static readonly IList<INetSearch> Engines = new List<INetSearch>(new WikiSearch[1]
     {
-        new WikiSearch()
+        new()
     });
 }

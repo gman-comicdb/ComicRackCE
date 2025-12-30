@@ -13,9 +13,6 @@ using cYo.Common.Windows.Forms.Theme;
 using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
-using cYo.Projects.ComicRack.Viewer.Properties;
-
-using static IronPython.Modules._ast;
 
 namespace cYo.Projects.ComicRack.Viewer.Dialogs;
 
@@ -23,42 +20,22 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 {
     private class UndoItem
     {
-        public string Text
-        {
-            get;
-            set;
-        }
+        public string Text { get; set; }
 
-        public int SelectionStart
-        {
-            get;
-            set;
-        }
+        public int SelectionStart { get; set; }
 
-        public int SelectionLength
-        {
-            get;
-            set;
-        }
+        public int SelectionLength { get; set; }
     }
 
     private ComicSmartListItem smartComicList;
 
-    private CursorList<UndoItem> undoList = new CursorList<UndoItem>();
+    private CursorList<UndoItem> undoList = new();
 
     private string coloredText;
 
-    public ComicLibrary Library
-    {
-        get;
-        set;
-    }
+    public ComicLibrary Library { get; set; }
 
-    public Guid EditId
-    {
-        get;
-        set;
-    }
+    public Guid EditId { get; set; }
 
     public ComicSmartListItem SmartComicList
     {
@@ -98,48 +75,26 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     public bool EnableNavigation
     {
-        get
-        {
-            return btPrev.Visible;
-        }
+        get => btPrev.Visible;
         set
         {
             Button button = btPrev;
-            bool visible = (btNext.Visible = value);
+            bool visible = btNext.Visible = value;
             button.Visible = visible;
-            if (value)
-            {
-                btDesigner.Left = btNext.Right + (btNext.Left - btPrev.Right);
-            }
-            else
-            {
-                btDesigner.Left = btPrev.Left;
-            }
+            btDesigner.Left = value ? btNext.Right + (btNext.Left - btPrev.Right) : btPrev.Left;
         }
     }
 
     public bool PreviousEnabled
     {
-        get
-        {
-            return btPrev.Enabled;
-        }
-        set
-        {
-            btPrev.Enabled = value;
-        }
+        get => btPrev.Enabled;
+        set => btPrev.Enabled = value;
     }
 
     public bool NextEnabled
     {
-        get
-        {
-            return btNext.Enabled;
-        }
-        set
-        {
-            btNext.Enabled = value;
-        }
+        get => btNext.Enabled;
+        set => btNext.Enabled = value;
     }
 
     public override UIComponent UIComponent => UIComponent.Content;
@@ -152,9 +107,9 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     public static class queryFont
     {
-        public static readonly Font Default = new("Courier New", 10.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-        public static readonly Font Language = new("Courier New", 10.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-        public static readonly Font Exception = new("Courier New", 10.25F, FontStyle.Underline, GraphicsUnit.Point, ((byte)(0)));
+        public static readonly Font Default = new("Courier New", 10.25F, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
+        public static readonly Font Language = new("Courier New", 10.25F, FontStyle.Bold, GraphicsUnit.Point, (byte)0);
+        public static readonly Font Exception = new("Courier New", 10.25F, FontStyle.Underline, GraphicsUnit.Point, (byte)0);
     }
 
     public SmartListQueryDialog()
@@ -164,7 +119,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
         this.RestorePosition();
         LocalizeUtility.Localize(this, typeof(SmartListDialog).Name, components);
         LocalizeUtility.Localize(TR.Load("TextBoxContextMenu"), cmEdit);
-        ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+        ContextMenuBuilder contextMenuBuilder = new();
         foreach (IComicBookValueMatcher availableMatcher in ComicBookValueMatcher.GetAvailableMatchers())
         {
             contextMenuBuilder.Add(availableMatcher.Description, topLevel: false, chk: false, OnInsertQuery, availableMatcher, DateTime.MinValue);
@@ -202,42 +157,24 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     private void btApply_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btOK_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
     }
 
     private void btPrev_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Previous != null)
-        {
-            this.Previous(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
+        Previous?.Invoke(this, EventArgs.Empty);
     }
 
     private void btNext_Click(object sender, EventArgs e)
     {
-        if (this.Apply != null)
-        {
-            this.Apply(this, EventArgs.Empty);
-        }
-        if (this.Next != null)
-        {
-            this.Next(this, EventArgs.Empty);
-        }
+        Apply?.Invoke(this, EventArgs.Empty);
+        Next?.Invoke(this, EventArgs.Empty);
     }
 
     private void rtfQuery_SelectionChanged(object sender, EventArgs e)
@@ -296,8 +233,8 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
                     }
                     string t = token.Text.Substring(0, rtfQuery.SelectionStart - token.Index);
                     t = token.Text.Trim('[', ']', ' ', ',', '"', ';');
-                    ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
-                    ContextMenuBuilder contextMenuBuilder = new ContextMenuBuilder();
+                    ContextMenuStrip contextMenuStrip = new();
+                    ContextMenuBuilder contextMenuBuilder = new();
                     foreach (IComicBookValueMatcher item in from m in ComicBookValueMatcher.GetAvailableMatchers()
                                                             where m.DescriptionNeutral.StartsWith(t, StringComparison.OrdinalIgnoreCase)
                                                             select m)
@@ -362,7 +299,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
         miUndo.Enabled = CanUndo();
         miRedo.Enabled = CanRedo();
         ToolStripMenuItem toolStripMenuItem = miCopy;
-        bool enabled = (miCut.Enabled = rtfQuery.SelectionLength > 0);
+        bool enabled = miCut.Enabled = rtfQuery.SelectionLength > 0;
         toolStripMenuItem.Enabled = enabled;
         miPaste.Enabled = Clipboard.ContainsText();
     }
@@ -401,7 +338,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
     {
         try
         {
-            ComicSmartListItem comicSmartListItem = new ComicSmartListItem(string.Empty, rtfQuery.Text, Library);
+            ComicSmartListItem comicSmartListItem = new(string.Empty, rtfQuery.Text, Library);
             rtfQuery.Text = comicSmartListItem.ToString();
             Colorize(all: true, forced: true);
         }
@@ -528,8 +465,8 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
             new ComicSmartListItem(string.Empty, rtfQuery.Text, Library);
             Button button = btDesigner;
             Button button2 = btOK;
-            bool flag2 = (btApply.Enabled = true);
-            bool enabled = (button2.Enabled = flag2);
+            bool flag2 = btApply.Enabled = true;
+            bool enabled = button2.Enabled = flag2;
             button.Enabled = enabled;
         }
         catch (Exception ex2)
@@ -538,8 +475,8 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
             labelStatus.Text = ex2.Message;
             Button button3 = btDesigner;
             Button button4 = btOK;
-            bool flag2 = (btApply.Enabled = false);
-            bool enabled = (button4.Enabled = flag2);
+            bool flag2 = btApply.Enabled = false;
+            bool enabled = button4.Enabled = flag2;
             button3.Enabled = enabled;
         }
         using (rtfQuery.SuspendPainting())

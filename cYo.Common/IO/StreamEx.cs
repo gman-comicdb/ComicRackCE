@@ -17,14 +17,8 @@ public class StreamEx : Stream
 
     public override long Position
     {
-        get
-        {
-            return baseStream.Position;
-        }
-        set
-        {
-            baseStream.Position = value;
-        }
+        get => baseStream.Position;
+        set => baseStream.Position = value;
     }
 
     public event EventHandler Closed;
@@ -42,10 +36,7 @@ public class StreamEx : Stream
 
     protected virtual void OnClosed()
     {
-        if (this.Closed != null)
-        {
-            this.Closed(this, EventArgs.Empty);
-        }
+        Closed?.Invoke(this, EventArgs.Empty);
     }
 
     public override void Flush()

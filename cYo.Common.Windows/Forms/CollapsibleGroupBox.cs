@@ -42,10 +42,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DefaultValue(24)]
     public int HeaderHeight
     {
-        get
-        {
-            return headerHeight;
-        }
+        get => headerHeight;
         set
         {
             if (headerHeight != value)
@@ -63,10 +60,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DefaultValue(FontStyle.Bold)]
     public FontStyle HeaderFontStyle
     {
-        get
-        {
-            return fontStyle;
-        }
+        get => fontStyle;
         set
         {
             if (fontStyle != value)
@@ -82,10 +76,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool Collapsed
     {
-        get
-        {
-            return collapsed;
-        }
+        get => collapsed;
         set
         {
             if (value != collapsed)
@@ -109,10 +100,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DefaultValue(true)]
     public bool UseTheme
     {
-        get
-        {
-            return useTheme;
-        }
+        get => useTheme;
         set
         {
             if (useTheme != value)
@@ -124,17 +112,13 @@ public class CollapsibleGroupBox : ContainerControl
     }
 
     [DefaultValue(false)]
-    public bool TransparentTouch
-    {
-        get;
-        set;
-    }
+    public bool TransparentTouch { get; set; }
 
     protected Rectangle HeaderRectangle
     {
         get
         {
-            Rectangle rectangle = new Rectangle(0, 0, base.ClientRectangle.Width, FormUtility.ScaleDpiY(headerHeight));
+            Rectangle rectangle = new(0, 0, base.ClientRectangle.Width, FormUtility.ScaleDpiY(headerHeight));
             if (rectangle != cachedHeaderRectangle)
             {
                 cachedHeaderRectangle = rectangle;
@@ -157,10 +141,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DefaultValue(null)]
     public Bitmap CollapsedImage
     {
-        get
-        {
-            return collapsedImage;
-        }
+        get => collapsedImage;
         set
         {
             if (collapsedImage != value)
@@ -174,10 +155,7 @@ public class CollapsibleGroupBox : ContainerControl
     [DefaultValue(null)]
     public Bitmap ExpandedImage
     {
-        get
-        {
-            return expandedImage;
-        }
+        get => expandedImage;
         set
         {
             if (expandedImage != value)
@@ -188,32 +166,12 @@ public class CollapsibleGroupBox : ContainerControl
         }
     }
 
-    public bool UsesTheme
-    {
-        get
-        {
-            if (useTheme && VisualStyleRenderer.IsSupported)
-            {
-                return VisualStyleRenderer.IsElementDefined(VisualStyleElement.Tab.Body.Normal);
-            }
-            return false;
-        }
-    }
+    public bool UsesTheme => useTheme && VisualStyleRenderer.IsSupported ? VisualStyleRenderer.IsElementDefined(VisualStyleElement.Tab.Body.Normal) : false;
 
     public override Color BackColor
     {
-        get
-        {
-            if (!UsesTheme || TransparentTouch)
-            {
-                return base.BackColor;
-            }
-            return ThemeColors.CollapsibleGroupBox.Back;
-        }
-        set
-        {
-            base.BackColor = value;
-        }
+        get => !UsesTheme || TransparentTouch ? base.BackColor : ThemeColors.CollapsibleGroupBox.Back;
+        set => base.BackColor = value;
     }
 
     public override Rectangle DisplayRectangle
@@ -255,7 +213,7 @@ public class CollapsibleGroupBox : ContainerControl
         base.OnPaintBackground(e);
         if (UsesTheme && !TransparentTouch)
         {
-            VisualStyleRenderer visualStyleRenderer = new VisualStyleRenderer(VisualStyleElement.Tab.Body.Normal);
+            VisualStyleRenderer visualStyleRenderer = new(VisualStyleElement.Tab.Body.Normal);
             //visualStyleRenderer.DrawBackground(e.Graphics, base.ClientRectangle);
             visualStyleRenderer.DrawThemeBackground(e.Graphics, base.ClientRectangle);
         }
@@ -280,7 +238,7 @@ public class CollapsibleGroupBox : ContainerControl
         if (UsesTheme)
         {
 
-            using (LinearGradientBrush brush = new LinearGradientBrush(headerRectangle, ThemeColors.CollapsibleGroupBox.HeaderGradientStart, ThemeColors.CollapsibleGroupBox.HeaderGradientEnd, 0f))
+            using (LinearGradientBrush brush = new(headerRectangle, ThemeColors.CollapsibleGroupBox.HeaderGradientStart, ThemeColors.CollapsibleGroupBox.HeaderGradientEnd, 0f))
             {
                 gr.FillRectangle(brush, headerRectangle);
             }
@@ -291,7 +249,7 @@ public class CollapsibleGroupBox : ContainerControl
         }
         Image toggleImage = GetToggleImage();
         gr.DrawImage(toggleImage, toggleImage.Size.Align(ToggleRectange, System.Drawing.ContentAlignment.MiddleCenter));
-        using (StringFormat format = new StringFormat
+        using (StringFormat format = new()
         {
             LineAlignment = StringAlignment.Center
         })
@@ -320,18 +278,12 @@ public class CollapsibleGroupBox : ContainerControl
 
     protected virtual void OnCollapsedChanged()
     {
-        if (this.CollapsedChanged != null)
-        {
-            this.CollapsedChanged(this, EventArgs.Empty);
-        }
+        CollapsedChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnCollapseClicked()
     {
-        if (this.CollapseClicked != null)
-        {
-            this.CollapseClicked(this, EventArgs.Empty);
-        }
+        CollapseClicked?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void OnControlAdded(ControlEventArgs e)
@@ -367,10 +319,10 @@ public class CollapsibleGroupBox : ContainerControl
         {
             return;
         }
-        Region region = new Region(HeaderRectangle);
+        Region region = new(HeaderRectangle);
         foreach (Control control in base.Controls)
         {
-            if (!(control is Label))
+            if (control is not Label)
             {
                 region.Union(control.Bounds);
             }

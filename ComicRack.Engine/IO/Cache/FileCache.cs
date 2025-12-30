@@ -7,11 +7,7 @@ namespace cYo.Projects.ComicRack.Engine.IO.Cache;
 
 public class FileCache : DiskCache<string, byte[]>
 {
-    public static FileCache Default
-    {
-        get;
-        set;
-    }
+    public static FileCache Default { get; set; }
 
     public FileCache(string path, int sizeMB)
         : base(path, sizeMB, 10)
@@ -36,10 +32,6 @@ public class FileCache : DiskCache<string, byte[]>
     public string GetText(string file)
     {
         byte[] item = GetItem(file);
-        if (item != null)
-        {
-            return Encoding.UTF8.GetString(item);
-        }
-        return null;
+        return item != null ? Encoding.UTF8.GetString(item) : null;
     }
 }

@@ -20,18 +20,6 @@ public abstract class CoverViewItemComparer : Comparer<CoverViewItem>, IComparer
 
     private int OnCompareInternal(CoverViewItem x, CoverViewItem y)
     {
-        if (x == null && y == null)
-        {
-            return 0;
-        }
-        if (x == null)
-        {
-            return -1;
-        }
-        if (y == null)
-        {
-            return 1;
-        }
-        return OnCompare(x, y);
+        return x == null && y == null ? 0 : x == null ? -1 : y == null ? 1 : OnCompare(x, y);
     }
 }

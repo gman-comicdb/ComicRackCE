@@ -19,8 +19,8 @@ public static class PointExtensions
         {
             return Rectangle.Empty;
         }
-        Point location = new Point(int.MaxValue, int.MaxValue);
-        Point point = new Point(int.MinValue, int.MinValue);
+        Point location = new(int.MaxValue, int.MaxValue);
+        Point point = new(int.MinValue, int.MinValue);
         foreach (Point point2 in points)
         {
             location.X = Math.Min(point2.X, location.X);

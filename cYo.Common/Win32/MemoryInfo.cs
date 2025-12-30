@@ -41,7 +41,7 @@ public static class MemoryInfo
 
         public static MEMORYSTATUSEX GetStatus()
         {
-            MEMORYSTATUSEX mEMORYSTATUSEX = new MEMORYSTATUSEX();
+            MEMORYSTATUSEX mEMORYSTATUSEX = new();
             GlobalMemoryStatusEx(mEMORYSTATUSEX);
             return mEMORYSTATUSEX;
         }
@@ -61,7 +61,7 @@ public static class MemoryInfo
             {
                 try
                 {
-                    using (ManagementObject managementObject = new ManagementObject("Win32_Processor.DeviceID='CPU0'"))
+                    using (ManagementObject managementObject = new("Win32_Processor.DeviceID='CPU0'"))
                     {
                         object obj = managementObject["MaxClockSpeed"];
                         cpuSpeedInHz = (int)(uint)obj;

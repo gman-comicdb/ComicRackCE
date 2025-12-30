@@ -57,7 +57,7 @@ public static class ExecuteProcess
 
     public static Result Execute(string application, string parameters, byte[] inputData, string currentDirectory, Options options)
     {
-        ProcessStartInfo processStartInfo = new ProcessStartInfo(application, parameters);
+        ProcessStartInfo processStartInfo = new(application, parameters);
         byte[] output = null;
         processStartInfo.WorkingDirectory = currentDirectory;
         processStartInfo.CreateNoWindow = (options & Options.EnableWindow) == 0;
@@ -67,10 +67,10 @@ public static class ExecuteProcess
         Process p = Process.Start(processStartInfo);
         try
         {
-            ManualResetEvent handle = (processStartInfo.RedirectStandardOutput ? new ManualResetEvent(initialState: false) : null);
+            ManualResetEvent handle = processStartInfo.RedirectStandardOutput ? new ManualResetEvent(initialState: false) : null;
             try
             {
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 try
                 {
                     byte[] buffer = new byte[65535];

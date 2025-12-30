@@ -86,7 +86,7 @@ public class TextureManager : DisposableObject
                             Gl.glTexParameteri(3553, 10243, 33071);
                             Rectangle texturePartBounds = GetTexturePartBounds(bitmap, part, !manager.Settings.IsSquareTextures);
                             textureTileGlSize = texturePartBounds.Size;
-                            using (FastBitmapLock fastBitmapLock = new FastBitmapLock(bitmap, texturePartBounds))
+                            using (FastBitmapLock fastBitmapLock = new(bitmap, texturePartBounds))
                             {
                                 int num = bitmap.Width * bitmap.Height;
                                 int num2 = texturePartBounds.Width * texturePartBounds.Height;
@@ -165,17 +165,15 @@ public class TextureManager : DisposableObject
                 catch (Exception)
                 {
                 }
-                name[0] = (memory = 0);
+                name[0] = memory = 0;
             }
         }
 
         private Rectangle GetTexturePartBounds(RendererImage bmp, int part, bool clamp)
         {
-            if (!IsValid(bmp))
-            {
-                return Rectangle.Empty;
-            }
-            return GetPartBounds(bmp.Size, part, manager.Settings.MinTextureTileSize, manager.Settings.MaxTextureTileSize, clamp);
+            return !IsValid(bmp)
+                ? Rectangle.Empty
+                : GetPartBounds(bmp.Size, part, manager.Settings.MinTextureTileSize, manager.Settings.MaxTextureTileSize, clamp);
         }
 
         private static Rectangle GetPartBounds(Size fullSize, int part, int minPartSize, int maxPartSize, bool clamp)
@@ -187,9 +185,9 @@ public class TextureManager : DisposableObject
             }
             int num = part % gridSize.Width;
             int num2 = part / gridSize.Width;
-            Rectangle result = new Rectangle(num * maxPartSize, num2 * maxPartSize, maxPartSize, maxPartSize);
-            int num3 = ((result.Right > fullSize.Width) ? (fullSize.Width - result.X) : result.Width);
-            int num4 = ((result.Height > fullSize.Height) ? (fullSize.Height - result.Y) : result.Height);
+            Rectangle result = new(num * maxPartSize, num2 * maxPartSize, maxPartSize, maxPartSize);
+            int num3 = (result.Right > fullSize.Width) ? (fullSize.Width - result.X) : result.Width;
+            int num4 = (result.Height > fullSize.Height) ? (fullSize.Height - result.Y) : result.Height;
             if (clamp)
             {
                 result.Width = num3;
@@ -205,12 +203,7 @@ public class TextureManager : DisposableObject
 
         public override bool Equals(object obj)
         {
-            TextureElement textureElement = obj as TextureElement;
-            if (textureElement != null && part == textureElement.part)
-            {
-                return object.Equals(Bitmap, textureElement.Bitmap);
-            }
-            return false;
+            return obj is TextureElement textureElement && part == textureElement.part ? object.Equals(Bitmap, textureElement.Bitmap) : false;
         }
 
         public override int GetHashCode()
@@ -251,33 +244,17 @@ public class TextureManager : DisposableObject
 
         public static Size GetTextureGridSize(RendererImage bmp, int partSize)
         {
-            if (!IsValid(bmp))
-            {
-                return Size.Empty;
-            }
-            return GetGridSize(bmp.Size, partSize);
+            return !IsValid(bmp) ? Size.Empty : GetGridSize(bmp.Size, partSize);
         }
     }
 
-    private readonly LinkedList<TextureElement> textures = new LinkedList<TextureElement>();
+    private readonly LinkedList<TextureElement> textures = new();
 
-    public TextureManagerSettings Settings
-    {
-        get;
-        set;
-    }
+    public TextureManagerSettings Settings { get; set; }
 
-    public bool IsOptimizedTexture
-    {
-        get;
-        set;
-    }
+    public bool IsOptimizedTexture { get; set; }
 
-    public bool EnableFilter
-    {
-        get;
-        set;
-    }
+    public bool EnableFilter { get; set; }
 
     protected override void Dispose(bool disposing)
     {
@@ -314,7 +291,7 @@ public class TextureManager : DisposableObject
 
     private TextureElement GetTextureElement(RendererImage bmp, int part)
     {
-        TextureElement textureElement = new TextureElement(this, bmp, part);
+        TextureElement textureElement = new(this, bmp, part);
         CleanUp();
         LinkedListNode<TextureElement> linkedListNode = textures.Find(textureElement);
         if (linkedListNode == null)
@@ -373,7 +350,7 @@ public class TextureManager : DisposableObject
                         if (!rectangleF.IsEmpty)
                         {
                             RectangleF textureTileCoord = textureElement.TextureTileCoord;
-                            RectangleF rectangleF2 = new RectangleF(textureTileCoord.X + textureTileCoord.Width * (rectangleF.X - a.X) / a.Width, textureTileCoord.Y + textureTileCoord.Height * (rectangleF.Y - a.Y) / a.Height, textureTileCoord.Width * rectangleF.Width / a.Width, textureTileCoord.Height * rectangleF.Height / a.Height);
+                            RectangleF rectangleF2 = new(textureTileCoord.X + textureTileCoord.Width * (rectangleF.X - a.X) / a.Width, textureTileCoord.Y + textureTileCoord.Height * (rectangleF.Y - a.Y) / a.Height, textureTileCoord.Width * rectangleF.Width / a.Width, textureTileCoord.Height * rectangleF.Height / a.Height);
                             rectangleF.X -= src.X;
                             rectangleF.Y -= src.Y;
                             Gl.glBegin(7);

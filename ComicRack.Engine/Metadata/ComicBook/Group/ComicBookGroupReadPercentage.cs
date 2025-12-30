@@ -15,7 +15,7 @@ public class ComicBookGroupReadPercentage : SingleComicGrouper
     {
         if (p != 0)
         {
-            p = ((p < 100) ? (p / 10 + 1) : (captions.Length - 1));
+            p = (p < 100) ? (p / 10 + 1) : (captions.Length - 1);
         }
         return new GroupInfo(captions[p], p);
     }

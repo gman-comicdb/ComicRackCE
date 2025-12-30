@@ -7,7 +7,7 @@ namespace cYo.Projects.ComicRack.Viewer.Controls;
 
 public class PageViewItemComparer<T> : Comparer<PageViewItem>, IComparer<IViewableItem> where T : IComparer<ComicPageInfo>, new()
 {
-    private readonly T comparer = new T();
+    private readonly T comparer = new();
 
     int IComparer<IViewableItem>.Compare(IViewableItem x, IViewableItem y)
     {

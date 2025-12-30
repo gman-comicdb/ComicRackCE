@@ -8,14 +8,14 @@ public class RssNewsFeed : NewsFeed
 {
     protected override NewsChannelCollection ParseFeed(string xmlFeed)
     {
-        NewsChannelCollection newsChannelCollection = new NewsChannelCollection();
-        using (XmlTextReader xmlTextReader = new XmlTextReader(new StringReader(xmlFeed)))
+        NewsChannelCollection newsChannelCollection = new();
+        using (XmlTextReader xmlTextReader = new(new StringReader(xmlFeed)))
         {
             xmlTextReader.MoveToContent();
             xmlTextReader.ReadStartElement("rss");
             while (xmlTextReader.IsStartElement("channel"))
             {
-                NewsChannel newsChannel = new NewsChannel();
+                NewsChannel newsChannel = new();
                 xmlTextReader.ReadStartElement();
                 while (xmlTextReader.IsStartElement())
                 {
@@ -51,7 +51,7 @@ public class RssNewsFeed : NewsFeed
 
     protected static NewsChannelItem ParseItem(XmlReader reader)
     {
-        NewsChannelItem newsChannelItem = new NewsChannelItem();
+        NewsChannelItem newsChannelItem = new();
         reader.ReadStartElement("item");
         while (reader.IsStartElement())
         {
@@ -63,14 +63,7 @@ public class RssNewsFeed : NewsFeed
                 case "pubDate":
                     {
                         string s = reader.ReadElementContentAsString();
-                        if (DateTime.TryParse(s, out var result))
-                        {
-                            newsChannelItem.Published = result;
-                        }
-                        else
-                        {
-                            newsChannelItem.Published = DateTime.Now;
-                        }
+                        newsChannelItem.Published = DateTime.TryParse(s, out var result) ? result : DateTime.Now;
                         break;
                     }
                 case "title":
@@ -96,9 +89,9 @@ public class RssNewsFeed : NewsFeed
         reader.ReadEndElement();
         if (string.IsNullOrEmpty(newsChannelItem.Guid))
         {
-            int num = ((!string.IsNullOrEmpty(newsChannelItem.Title)) ? newsChannelItem.Title.GetHashCode() : 0);
+            int num = (!string.IsNullOrEmpty(newsChannelItem.Title)) ? newsChannelItem.Title.GetHashCode() : 0;
             int hashCode = newsChannelItem.Published.GetHashCode();
-            int num2 = ((!string.IsNullOrEmpty(newsChannelItem.Description)) ? newsChannelItem.Description.GetHashCode() : 0);
+            int num2 = (!string.IsNullOrEmpty(newsChannelItem.Description)) ? newsChannelItem.Description.GetHashCode() : 0;
             newsChannelItem.Guid = (num ^ hashCode ^ num2).ToString();
         }
         return newsChannelItem;

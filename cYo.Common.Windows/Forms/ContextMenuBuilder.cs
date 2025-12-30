@@ -25,7 +25,7 @@ public class ContextMenuBuilder
 
         public ToolStripMenuItem Create()
         {
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem
+            ToolStripMenuItem toolStripMenuItem = new()
             {
                 Text = Text,
                 Checked = Checked,
@@ -36,13 +36,13 @@ public class ContextMenuBuilder
         }
     }
 
-    private readonly List<MenuEntry> entries = new List<MenuEntry>();
+    private readonly List<MenuEntry> entries = new();
 
     public int Count => entries.Count;
 
     public void Add(string text, bool topLevel, bool chk, EventHandler handler, object tag, DateTime lastTimeUsed)
     {
-        MenuEntry item = new MenuEntry
+        MenuEntry item = new()
         {
             Text = text,
             Checked = chk,
@@ -68,9 +68,9 @@ public class ContextMenuBuilder
         {
             list.Add(new ToolStripSeparator());
         }
-        ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(TR.Default["Recent", "Recent"]);
+        ToolStripMenuItem toolStripMenuItem = new(TR.Default["Recent", "Recent"]);
         list.Add(toolStripMenuItem);
-        List<MenuEntry> lastUsed = new List<MenuEntry>();
+        List<MenuEntry> lastUsed = new();
         entries.ForEach(delegate (MenuEntry me)
         {
             if (!me.TopLevel)
@@ -93,14 +93,14 @@ public class ContextMenuBuilder
             toolStripMenuItem.DropDownItems.Add(menuEntry.Create());
         }
         toolStripMenuItem.Visible = toolStripMenuItem.DropDownItems.Count > 0;
-        ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem(TR.Default["All"]);
+        ToolStripMenuItem toolStripMenuItem2 = new(TR.Default["All"]);
         list.Add(toolStripMenuItem2);
         foreach (MenuEntry entry in entries)
         {
             if (!string.IsNullOrEmpty(entry.Text))
                 toolStripMenuItem2.DropDownItems.Add(entry.Create());
         }
-        Dictionary<char, List<MenuEntry>> dictionary = new Dictionary<char, List<MenuEntry>>();
+        Dictionary<char, List<MenuEntry>> dictionary = new();
         foreach (MenuEntry entry2 in entries)
         {
             if (!string.IsNullOrEmpty(entry2.Text))
@@ -108,13 +108,13 @@ public class ContextMenuBuilder
                 char key = entry2.Text[0];
                 if (!dictionary.TryGetValue(key, out var value))
                 {
-                    List<MenuEntry> list3 = (dictionary[key] = new List<MenuEntry>());
+                    List<MenuEntry> list3 = dictionary[key] = new List<MenuEntry>();
                     value = list3;
                 }
                 value.Add(entry2);
             }
         }
-        List<char> list4 = new List<char>(dictionary.Keys);
+        List<char> list4 = new(dictionary.Keys);
         list4.Sort((char a, char b) => string.Compare(a.ToString(), b.ToString()));
         int num = -1;
         int num2 = 0;
@@ -126,14 +126,14 @@ public class ContextMenuBuilder
                 num = j;
             }
             num2 += dictionary[c].Count;
-            int num3 = ((j != list4.Count - 1) ? dictionary[list4[j + 1]].Count : 0);
+            int num3 = (j != list4.Count - 1) ? dictionary[list4[j + 1]].Count : 0;
             if (num2 + num3 < maxLength && j != list4.Count - 1)
             {
                 continue;
             }
-            ToolStripMenuItem toolStripMenuItem3 = new ToolStripMenuItem
+            ToolStripMenuItem toolStripMenuItem3 = new()
             {
-                Text = ((j == num) ? c.ToString() : $"{list4[num]}-{c}")
+                Text = (j == num) ? c.ToString() : $"{list4[num]}-{c}"
             };
             for (int k = num; k <= j; k++)
             {

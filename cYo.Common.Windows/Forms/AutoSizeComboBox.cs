@@ -13,27 +13,15 @@ public class AutoSizeComboBox : ComboBox
     [DefaultValue(24)]
     public int AutoSizePadding
     {
-        get
-        {
-            return autoSizePadding;
-        }
-        set
-        {
-            autoSizePadding = value;
-        }
+        get => autoSizePadding;
+        set => autoSizePadding = value;
     }
 
     [DefaultValue(true)]
     public bool AutoSizeEnabled
     {
-        get
-        {
-            return autoSizeEnabled;
-        }
-        set
-        {
-            autoSizeEnabled = value;
-        }
+        get => autoSizeEnabled;
+        set => autoSizeEnabled = value;
     }
 
     protected override void OnTextChanged(EventArgs e)

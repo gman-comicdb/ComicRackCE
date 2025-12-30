@@ -19,41 +19,11 @@ public abstract class MemoryOptimizedImage : DisposableObject
     {
         private readonly WeakReference<MemoryOptimizedImage> weakReference;
 
-        public override bool IsValid
-        {
-            get
-            {
-                if (Moi != null)
-                {
-                    return !Moi.IsDisposed;
-                }
-                return false;
-            }
-        }
+        public override bool IsValid => Moi != null ? !Moi.IsDisposed : false;
 
-        public override Bitmap Bitmap
-        {
-            get
-            {
-                if (Moi != null)
-                {
-                    return Moi.Bitmap;
-                }
-                return null;
-            }
-        }
+        public override Bitmap Bitmap => Moi?.Bitmap;
 
-        public override Size Size
-        {
-            get
-            {
-                if (Moi != null)
-                {
-                    return Moi.Size;
-                }
-                return Size.Empty;
-            }
-        }
+        public override Size Size => Moi != null ? Moi.Size : Size.Empty;
 
         private MemoryOptimizedImage Moi => weakReference.GetData();
 
@@ -64,12 +34,7 @@ public abstract class MemoryOptimizedImage : DisposableObject
 
         public override bool Equals(object obj)
         {
-            RendererMemoryOptimizedImage rendererMemoryOptimizedImage = obj as RendererMemoryOptimizedImage;
-            if (rendererMemoryOptimizedImage != null)
-            {
-                return rendererMemoryOptimizedImage.Moi == Moi;
-            }
-            return false;
+            return obj is RendererMemoryOptimizedImage rendererMemoryOptimizedImage ? rendererMemoryOptimizedImage.Moi == Moi : false;
         }
 
         public override int GetHashCode()
@@ -107,11 +72,7 @@ public abstract class MemoryOptimizedImage : DisposableObject
         {
             releaseTimeCounter = 0;
             Bitmap bitmap = this.bitmap;
-            if (bitmap != null)
-            {
-                return bitmap;
-            }
-            return UpdateImageFromData(data);
+            return bitmap ?? UpdateImageFromData(data);
         }
         set
         {
@@ -146,26 +107,14 @@ public abstract class MemoryOptimizedImage : DisposableObject
 
     public int TimeToStay
     {
-        get
-        {
-            return timeToStay;
-        }
-        set
-        {
-            timeToStay = value;
-        }
+        get => timeToStay;
+        set => timeToStay = value;
     }
 
     public bool Optimized
     {
-        get
-        {
-            return optimized;
-        }
-        set
-        {
-            optimized = value;
-        }
+        get => optimized;
+        set => optimized = value;
     }
 
     public virtual Size Size
@@ -203,24 +152,14 @@ public abstract class MemoryOptimizedImage : DisposableObject
 
     public bool IsImage => bitmap != null;
 
-    public bool IsValid
-    {
-        get
-        {
-            if (bitmap == null)
-            {
-                return data != null;
-            }
-            return true;
-        }
-    }
+    public bool IsValid => bitmap == null ? data != null : true;
 
     protected MemoryOptimizedImage(byte[] data, Size size)
     {
         this.data = data;
         if (size.IsEmpty)
         {
-            JpegFile jpegFile = new JpegFile(data);
+            JpegFile jpegFile = new(data);
             if (jpegFile.IsValid)
             {
                 size = jpegFile.Size;

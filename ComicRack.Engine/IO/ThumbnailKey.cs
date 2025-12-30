@@ -14,7 +14,7 @@ public class ThumbnailKey : ImageKey
 
     public const string CustomKey = "custom";
 
-    private static readonly Regex rxResource = new Regex("\\A\\s*(?<type>[a-z]{4,}):\\\\\\\\(?<resource>.*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex rxResource = new("\\A\\s*(?<type>[a-z]{4,}):\\\\\\\\(?<resource>.*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     [NonSerialized]
     private string resourceType;

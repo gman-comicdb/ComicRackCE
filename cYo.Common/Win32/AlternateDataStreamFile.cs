@@ -85,7 +85,7 @@ public static class AlternateDataStreamFile
         {
             throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
         }
-        FileStream stream2 = new FileStream(safeFileHandle, FileAccess.Write);
+        FileStream stream2 = new(safeFileHandle, FileAccess.Write);
         return new StreamWriter(stream2);
     }
 
@@ -108,28 +108,24 @@ public static class AlternateDataStreamFile
         {
             throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
         }
-        FileStream stream2 = new FileStream(safeFileHandle, FileAccess.Write);
+        FileStream stream2 = new(safeFileHandle, FileAccess.Write);
         return new StreamWriter(stream2);
     }
 
     public static FileStream Open(string path, string stream)
     {
         SafeFileHandle safeFileHandle = NativeMethods.CreateFile(path + ":" + stream, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, 0u, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0u, IntPtr.Zero);
-        if (safeFileHandle.IsInvalid)
-        {
-            throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
-        }
-        return new FileStream(safeFileHandle, FileAccess.ReadWrite);
+        return safeFileHandle.IsInvalid
+            ? throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path)
+            : new FileStream(safeFileHandle, FileAccess.ReadWrite);
     }
 
     public static FileStream OpenRead(string path, string stream)
     {
         SafeFileHandle safeFileHandle = NativeMethods.CreateFile(path + ":" + stream, NativeMethods.GENERIC_READ, 1u, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0u, IntPtr.Zero);
-        if (safeFileHandle.IsInvalid)
-        {
-            throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
-        }
-        return new FileStream(safeFileHandle, FileAccess.Read);
+        return safeFileHandle.IsInvalid
+            ? throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path)
+            : new FileStream(safeFileHandle, FileAccess.Read);
     }
 
     public static StreamReader OpenText(string path, string stream)
@@ -139,18 +135,16 @@ public static class AlternateDataStreamFile
         {
             throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
         }
-        FileStream stream2 = new FileStream(safeFileHandle, FileAccess.Read);
+        FileStream stream2 = new(safeFileHandle, FileAccess.Read);
         return new StreamReader(stream2);
     }
 
     public static FileStream OpenWrite(string path, string stream)
     {
         SafeFileHandle safeFileHandle = NativeMethods.CreateFile(path + ":" + stream, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, 0u, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0u, IntPtr.Zero);
-        if (safeFileHandle.IsInvalid)
-        {
-            throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path);
-        }
-        return new FileStream(safeFileHandle, FileAccess.ReadWrite);
+        return safeFileHandle.IsInvalid
+            ? throw new FileNotFoundException("Unable to open stream: " + stream + " in file: " + path + ".", path)
+            : new FileStream(safeFileHandle, FileAccess.ReadWrite);
     }
 
     public static void Delete(string path, string stream)
@@ -178,11 +172,11 @@ public static class AlternateDataStreamFile
             {
                 throw new FileNotFoundException("Unable to open file: " + path + ".", path);
             }
-            NativeMethods.WIN32_STREAM_ID streamID = default(NativeMethods.WIN32_STREAM_ID);
+            NativeMethods.WIN32_STREAM_ID streamID = default;
             int num = Marshal.SizeOf((object)streamID);
             int numberOfBytesRead = 0;
             int context = 0;
-            List<string> list = new List<string>();
+            List<string> list = new();
             while (NativeMethods.BackupRead(safeFileHandle, ref streamID, num, ref numberOfBytesRead, abort: false, processSecurity: false, ref context))
             {
                 if (numberOfBytesRead == num && streamID.StreamNameSize > 0)
@@ -194,7 +188,7 @@ public static class AlternateDataStreamFile
                         NativeMethods.BackupRead(safeFileHandle, intPtr, streamID.StreamNameSize, ref numberOfBytesRead, abort: false, processSecurity: false, ref context);
                         char[] array = new char[streamID.StreamNameSize];
                         Marshal.Copy(intPtr, array, 0, streamID.StreamNameSize);
-                        string text = new string(array);
+                        string text = new(array);
                         text = text.Substring(1, text.IndexOf(":", 1) - 1);
                         list.Add(text);
                     }

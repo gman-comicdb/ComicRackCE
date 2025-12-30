@@ -12,21 +12,17 @@ public class ReverseTextIndex<T>
 {
     public const int MinimumKeyLength = 3;
 
-    private readonly List<T> complete = new List<T>();
+    private readonly List<T> complete = new();
 
-    private readonly Dictionary<string, ICollection<T>> index = new Dictionary<string, ICollection<T>>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, ICollection<T>> index = new(StringComparer.OrdinalIgnoreCase);
 
     private static char[] wordSeparators = " \r\n\t,;.:!?()[]{}-'\u00b4`\\/\"Â\u00a0‘’“”…".ToArray();
 
-    private static Regex rxWords = new Regex("\\w+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static Regex rxWords = new("\\w+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    private static readonly Dictionary<string, string[]> wordMap = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, string[]> wordMap = new(StringComparer.OrdinalIgnoreCase);
 
-    public ReverseTextIndexMode ReverseIndexMode
-    {
-        get;
-        private set;
-    }
+    public ReverseTextIndexMode ReverseIndexMode { get; private set; }
 
     public int Size => index.Count;
 
@@ -46,7 +42,7 @@ public class ReverseTextIndex<T>
             {
                 if (!index.TryGetValue(item2, out value))
                 {
-                    value = (index[item2] = new List<T>());
+                    value = index[item2] = new List<T>();
                 }
             }
             using (ItemMonitor.Lock(value))
@@ -72,7 +68,7 @@ public class ReverseTextIndex<T>
     {
         foreach (T t in items)
         {
-            this.Add(t, predicate(t));
+            Add(t, predicate(t));
         }
     }
 
@@ -82,7 +78,7 @@ public class ReverseTextIndex<T>
         {
             foreach (string text in predicate(item))
             {
-                this.Add(item, text);
+                Add(item, text);
             }
         });
     }
@@ -128,7 +124,7 @@ public class ReverseTextIndex<T>
                     IEnumerable<T> enumerable3;
                     if (!index.TryGetValue(item, out var value))
                     {
-                        enumerable3 = Enumerable.Empty<T>();
+                        enumerable3 = [];
                     }
                     else
                     {
@@ -197,7 +193,7 @@ public class ReverseTextIndex<T>
                     {
                         if (!wordMap.TryGetValue(item, out value))
                         {
-                            value = (wordMap[item] = SplitWordParts(item, 3).ToArray());
+                            value = wordMap[item] = SplitWordParts(item, 3).ToArray();
                         }
                     }
                     string[] array2 = value;

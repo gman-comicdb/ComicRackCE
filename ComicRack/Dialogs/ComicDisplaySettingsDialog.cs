@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,7 +13,6 @@ using cYo.Common.Text;
 using cYo.Common.Windows;
 using cYo.Common.Windows.Forms;
 using cYo.Common.Windows.Forms.Theme;
-using cYo.Common.Windows.Forms.Theme.Resources;
 using cYo.Projects.ComicRack.Engine.Display;
 using cYo.Projects.ComicRack.Viewer.Config;
 
@@ -24,39 +22,19 @@ public partial class ComicDisplaySettingsDialog : FormEx
 {
     private class TextureFileItem : ComboBoxSkinner.ComboBoxItem<string>
     {
-        private Regex rxFormatCode = new Regex("\\s*\\[(?<code>[CSTZ])\\]\\z", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
+        private Regex rxFormatCode = new("\\s*\\[(?<code>[CSTZ])\\]\\z", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
 
         private bool failed;
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public bool IsCustom
-        {
-            get;
-            set;
-        }
+        public bool IsCustom { get; set; }
 
-        public string Default
-        {
-            get;
-            set;
-        }
+        public string Default { get; set; }
 
-        public ImageLayout Layout
-        {
-            get;
-            set;
-        }
+        public ImageLayout Layout { get; set; }
 
-        public Bitmap Sample
-        {
-            get;
-            set;
-        }
+        public Bitmap Sample { get; set; }
 
         public TextureFileItem(string file, bool custom = true)
             : base(file)
@@ -77,24 +55,12 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(base.Item))
-            {
-                return Default;
-            }
-            if (!IsCustom)
-            {
-                return Name;
-            }
-            return Path.GetFileName(base.Item);
+            return string.IsNullOrEmpty(base.Item) ? Default : !IsCustom ? Name : Path.GetFileName(base.Item);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is TextureFileItem)
-            {
-                return ((TextureFileItem)obj).Item == base.Item;
-            }
-            return false;
+            return obj is TextureFileItem ? ((TextureFileItem)obj).Item == base.Item : false;
         }
 
         public override int GetHashCode()
@@ -164,9 +130,9 @@ public partial class ComicDisplaySettingsDialog : FormEx
             catch (Exception)
             {
             }
-            using (SolidBrush brush = new SolidBrush(foreColor))
+            using (SolidBrush brush = new(foreColor))
             {
-                using (StringFormat stringFormat = new StringFormat(StringFormatFlags.NoWrap)
+                using (StringFormat stringFormat = new(StringFormatFlags.NoWrap)
                 {
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
@@ -183,17 +149,9 @@ public partial class ComicDisplaySettingsDialog : FormEx
     }
 
 
-    private DisplayWorkspace Workspace
-    {
-        get;
-        set;
-    }
+    private DisplayWorkspace Workspace { get; set; }
 
-    private Action<DisplayWorkspace> ApplyAction
-    {
-        get;
-        set;
-    }
+    private Action<DisplayWorkspace> ApplyAction { get; set; }
 
     public override UIComponent UIComponent => UIComponent.Content;
 
@@ -265,8 +223,8 @@ public partial class ComicDisplaySettingsDialog : FormEx
     {
         Label label = labelPaperStrength;
         ComboBox comboBox = cbPaperLayout;
-        bool flag2 = (tbPaperStrength.Visible = cbPaperTexture.SelectedIndex != 0);
-        bool visible = (comboBox.Visible = flag2);
+        bool flag2 = tbPaperStrength.Visible = cbPaperTexture.SelectedIndex != 0;
+        bool visible = comboBox.Visible = flag2;
         label.Visible = visible;
         TextureFileItem textureFileItem = (TextureFileItem)cbPaperTexture.SelectedItem;
         if (!textureFileItem.IsCustom)
@@ -290,12 +248,12 @@ public partial class ComicDisplaySettingsDialog : FormEx
     {
         int selectedIndex = cbBackgroundType.SelectedIndex;
         Label label = labelBackgroundColor;
-        bool visible = (cpBackgroundColor.Visible = selectedIndex == 1);
+        bool visible = cpBackgroundColor.Visible = selectedIndex == 1;
         label.Visible = visible;
         Label label2 = labelBackgroundTexture;
         ComboBox comboBox = cbBackgroundTexture;
-        bool flag3 = (btBrowseTexture.Visible = selectedIndex == 2);
-        visible = (comboBox.Visible = flag3);
+        bool flag3 = btBrowseTexture.Visible = selectedIndex == 2;
+        visible = comboBox.Visible = flag3;
         label2.Visible = visible;
         TextureFileItem textureFileItem = cbBackgroundTexture.SelectedItem as TextureFileItem;
         cbTextureLayout.Visible = selectedIndex == 2 && (textureFileItem?.IsCustom ?? true);
@@ -373,7 +331,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
     private string GetTexture()
     {
-        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        using (OpenFileDialog openFileDialog = new())
         {
             openFileDialog.Filter = TR.Load("FileFilter")["PageImageSave", "JPEG Image|*.jpg|Windows Bitmap Image|*.bmp|PNG Image|*.png|GIF Image|*.gif|TIFF Image|*.tif"];
             openFileDialog.CheckFileExists = true;
@@ -387,7 +345,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
     public static bool Show(IWin32Window parent, bool enableHardware, DisplayWorkspace ws, Action<DisplayWorkspace> apply)
     {
-        using (ComicDisplaySettingsDialog comicDisplaySettingsDialog = new ComicDisplaySettingsDialog())
+        using (ComicDisplaySettingsDialog comicDisplaySettingsDialog = new())
         {
             comicDisplaySettingsDialog.Update(ws);
             comicDisplaySettingsDialog.ApplyAction = apply;

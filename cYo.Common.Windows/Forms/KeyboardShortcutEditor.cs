@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace cYo.Common.Windows.Forms;
@@ -32,10 +30,7 @@ public partial class KeyboardShortcutEditor : UserControlEx
 
     public KeyboardShortcuts Shortcuts
     {
-        get
-        {
-            return shortcuts;
-        }
+        get => shortcuts;
         set
         {
             if (shortcuts != value)
@@ -73,10 +68,7 @@ public partial class KeyboardShortcutEditor : UserControlEx
         {
             int imageIndex = -1;
             ListViewGroup listViewGroup = lvCommands.Groups[command.Group];
-            if (listViewGroup == null)
-            {
-                listViewGroup = lvCommands.Groups.Add(command.Group, command.Group);
-            }
+            listViewGroup ??= lvCommands.Groups.Add(command.Group, command.Group);
             if (command.Image != null)
             {
                 imageList.Images.Add(command.Image);

@@ -7,67 +7,33 @@ public class TRInfo
 {
     private float completionPercent = 100f;
 
-    public string ApplicationName
-    {
-        get;
-        set;
-    }
+    public string ApplicationName { get; set; }
 
-    public string ApplicationVersion
-    {
-        get;
-        set;
-    }
+    public string ApplicationVersion { get; set; }
 
-    public string Author
-    {
-        get;
-        set;
-    }
+    public string Author { get; set; }
 
-    public string Notes
-    {
-        get;
-        set;
-    }
+    public string Notes { get; set; }
 
-    public bool RightToLeft
-    {
-        get;
-        set;
-    }
+    public bool RightToLeft { get; set; }
 
     [XmlElement("Language")]
-    public string CultureName
-    {
-        get;
-        set;
-    }
+    public string CultureName { get; set; }
 
     public string DisplayLanguage
     {
         get
         {
             string cultureName = CultureName;
-            if (cultureName == null)
-            {
-                return TR.Default["System", "System"];
-            }
-            return new CultureInfo(CultureName).DisplayName;
+            return cultureName == null ? TR.Default["System", "System"] : new CultureInfo(CultureName).DisplayName;
         }
     }
 
     [XmlIgnore]
     public float CompletionPercent
     {
-        get
-        {
-            return completionPercent;
-        }
-        set
-        {
-            completionPercent = value;
-        }
+        get => completionPercent;
+        set => completionPercent = value;
     }
 
     public TRInfo()

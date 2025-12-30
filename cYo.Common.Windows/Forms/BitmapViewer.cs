@@ -22,10 +22,7 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
     [DefaultValue(null)]
     public Bitmap Bitmap
     {
-        get
-        {
-            return image;
-        }
+        get => image;
         set
         {
             Image image = this.image;
@@ -42,10 +39,7 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
     [DefaultValue(ScaleMode.FitAll)]
     public ScaleMode ScaleMode
     {
-        get
-        {
-            return scaleMode;
-        }
+        get => scaleMode;
         set
         {
             if (scaleMode != value)
@@ -61,10 +55,7 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
     [DefaultValue(typeof(BitmapAdjustment), "0, 0, 0")]
     public BitmapAdjustment ColorAdjustment
     {
-        get
-        {
-            return colorAdjustment;
-        }
+        get => colorAdjustment;
         set
         {
             if (!(colorAdjustment == value))
@@ -78,10 +69,7 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
     [DefaultValue(ContentAlignment.TopCenter)]
     public ContentAlignment TextAlignment
     {
-        get
-        {
-            return textAlignment;
-        }
+        get => textAlignment;
         set
         {
             if (textAlignment != value)
@@ -134,18 +122,12 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
 
     protected virtual void OnImageChanged()
     {
-        if (this.ImageChanged != null)
-        {
-            this.ImageChanged(this, EventArgs.Empty);
-        }
+        ImageChanged?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnScaleModeChanged()
     {
-        if (this.ScaleModeChanged != null)
-        {
-            this.ScaleModeChanged(this, EventArgs.Empty);
-        }
+        ScaleModeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private Size GetImageSize()
@@ -166,11 +148,7 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
 
     private Rectangle GetImageDisplayBounds()
     {
-        if (image == null)
-        {
-            return Rectangle.Empty;
-        }
-        return new Rectangle(GetImageLeftTop(), base.VirtualSize);
+        return image == null ? Rectangle.Empty : new Rectangle(GetImageLeftTop(), base.VirtualSize);
     }
 
     private void UpdateVirtualSize()
@@ -204,9 +182,9 @@ public class BitmapViewer : ScrollControl, IBitmapDisplayControl, IDisposable
         base.OnPaint(e);
         Rectangle displayRectangle = DisplayRectangle;
         displayRectangle.Inflate(-4, -4);
-        using (SolidBrush brush = new SolidBrush(ForeColor))
+        using (SolidBrush brush = new(ForeColor))
         {
-            using (StringFormat format = new StringFormat
+            using (StringFormat format = new()
             {
                 LineAlignment = TextAlignment.ToLineAlignment(),
                 Alignment = TextAlignment.ToAlignment()

@@ -38,129 +38,71 @@ public struct ComicPageInfo
     [XmlAttribute("Image")]
     public int ImageIndex
     {
-        get
-        {
-            return imageIndex - 1;
-        }
-        set
-        {
-            imageIndex = (short)(value + 1);
-        }
+        get => imageIndex - 1;
+        set => imageIndex = (short)(value + 1);
     }
 
     [XmlIgnore]
     public ComicPageType PageType
     {
-        get
-        {
-            if (pageType != 0)
-            {
-                return pageType;
-            }
-            return ComicPageType.Story;
-        }
-        set
-        {
-            pageType = ((value == (ComicPageType)0) ? ComicPageType.Story : value);
-        }
+        get => pageType != 0 ? pageType : ComicPageType.Story;
+        set => pageType = (value == (ComicPageType)0) ? ComicPageType.Story : value;
     }
 
     [XmlAttribute]
     [DefaultValue(null)]
     public string Bookmark
     {
-        get
-        {
-            return bookmark;
-        }
-        set
-        {
-            bookmark = (string.IsNullOrEmpty(value) ? null : value);
-        }
+        get => bookmark;
+        set => bookmark = string.IsNullOrEmpty(value) ? null : value;
     }
 
     [DefaultValue(0)]
     [XmlAttribute("ImageSize")]
     public int ImageFileSize
     {
-        get
-        {
-            return imageFileSize;
-        }
-        set
-        {
-            imageFileSize = value;
-        }
+        get => imageFileSize;
+        set => imageFileSize = value;
     }
 
     [DefaultValue(0)]
     [XmlAttribute]
     public int ImageWidth
     {
-        get
-        {
-            return imageWidth;
-        }
-        set
-        {
-            imageWidth = (short)value;
-        }
+        get => imageWidth;
+        set => imageWidth = (short)value;
     }
 
     [DefaultValue(0)]
     [XmlAttribute]
     public int ImageHeight
     {
-        get
-        {
-            return imageHeight;
-        }
-        set
-        {
-            imageHeight = (short)value;
-        }
+        get => imageHeight;
+        set => imageHeight = (short)value;
     }
 
     [DefaultValue(ImageRotation.None)]
     [XmlAttribute]
     public ImageRotation Rotation
     {
-        get
-        {
-            return rotation;
-        }
-        set
-        {
-            rotation = value;
-        }
+        get => rotation;
+        set => rotation = value;
     }
 
     [DefaultValue(ComicPagePosition.Default)]
     [XmlAttribute]
     public ComicPagePosition PagePosition
     {
-        get
-        {
-            return pagePosition;
-        }
-        set
-        {
-            pagePosition = value;
-        }
+        get => pagePosition;
+        set => pagePosition = value;
     }
 
     [DefaultValue(null)]
     [XmlAttribute]
     public string Key
     {
-        get
-        {
-            return key;
-        }
-        set
-        {
-            key = value;
-        }
+        get => key;
+        set => key = value;
     }
 
     [XmlAttribute("Type")]
@@ -168,10 +110,7 @@ public struct ComicPageInfo
     [DefaultValue("Story")]
     public string TypeSerialized
     {
-        get
-        {
-            return PageType.ToString();
-        }
+        get => PageType.ToString();
         set
         {
             string value2 = value.Replace("Advertisment", "Advertisement");
@@ -191,40 +130,18 @@ public struct ComicPageInfo
         get
         {
             long num = ImageFileSize;
-            if (num > 0)
-            {
-                return string.Format(new FileLengthFormat(), "{0}", new object[1]
-                {
+            return num > 0
+                ? string.Format(new FileLengthFormat(), "{0}",
+                [
                     num
-                });
-            }
-            return UnknownText;
+                ])
+                : UnknownText;
         }
     }
 
-    public string ImageWidthAsText
-    {
-        get
-        {
-            if (ImageWidth != 0)
-            {
-                return ImageWidth.ToString();
-            }
-            return UnknownText;
-        }
-    }
+    public string ImageWidthAsText => ImageWidth != 0 ? ImageWidth.ToString() : UnknownText;
 
-    public string ImageHeightAsText
-    {
-        get
-        {
-            if (ImageHeight != 0)
-            {
-                return ImageHeight.ToString();
-            }
-            return UnknownText;
-        }
-    }
+    public string ImageHeightAsText => ImageHeight != 0 ? ImageHeight.ToString() : UnknownText;
 
     public string RotationAsText => $"{rotation.ToDegrees()}°";
 
@@ -251,7 +168,7 @@ public struct ComicPageInfo
         rotation = ImageRotation.None;
         pagePosition = ComicPagePosition.Default;
         imageIndex = (short)(index + 1);
-        pageType = ((index == 0) ? ComicPageType.FrontCover : ComicPageType.Story);
+        pageType = (index == 0) ? ComicPageType.FrontCover : ComicPageType.Story;
         key = null;
     }
 
@@ -262,11 +179,9 @@ public struct ComicPageInfo
 
     public bool IsDefaultContent(int index)
     {
-        if ((index == -1 || imageIndex == index + 1) && ImageWidth == 0 && ImageHeight == 0 && PageType == ComicPageType.Story && ImageFileSize == 0)
-        {
-            return Bookmark == null;
-        }
-        return false;
+        return (index == -1 || imageIndex == index + 1) && ImageWidth == 0 && ImageHeight == 0 && PageType == ComicPageType.Story && ImageFileSize == 0
+            ? Bookmark == null
+            : false;
     }
 
     public string GetStringValue(string propName)
@@ -283,16 +198,14 @@ public struct ComicPageInfo
 
     public override bool Equals(object obj)
     {
-        if (obj == null || !(obj is ComicPageInfo))
+        if (obj is null or not ComicPageInfo)
         {
             return false;
         }
         ComicPageInfo comicPageInfo = (ComicPageInfo)obj;
-        if (imageIndex == comicPageInfo.imageIndex && pageType == comicPageInfo.pageType && imageHeight == comicPageInfo.imageHeight && imageWidth == comicPageInfo.imageWidth && bookmark == comicPageInfo.bookmark)
-        {
-            return pagePosition == comicPageInfo.pagePosition;
-        }
-        return false;
+        return imageIndex == comicPageInfo.imageIndex && pageType == comicPageInfo.pageType && imageHeight == comicPageInfo.imageHeight && imageWidth == comicPageInfo.imageWidth && bookmark == comicPageInfo.bookmark
+            ? pagePosition == comicPageInfo.pagePosition
+            : false;
     }
 
     public override int GetHashCode()

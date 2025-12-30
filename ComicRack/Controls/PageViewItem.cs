@@ -37,10 +37,7 @@ public class PageViewItem : ThumbnailViewItem
 
     public bool IsCurrentPage
     {
-        get
-        {
-            return isCurrentPage;
-        }
+        get => isCurrentPage;
         set
         {
             if (isCurrentPage != value)
@@ -57,10 +54,7 @@ public class PageViewItem : ThumbnailViewItem
 
     public string Key
     {
-        get
-        {
-            return key;
-        }
+        get => key;
         set
         {
             if (!(key == value))
@@ -117,31 +111,21 @@ public class PageViewItem : ThumbnailViewItem
     protected override Size GetEstimatedSize(Size canvasSize)
     {
         ComicPageInfo pageInfo = PageInfo;
-        Size imageSize = new Size(pageInfo.ImageWidth, pageInfo.ImageHeight);
-        if (imageSize.Width <= 0 || imageSize.Height <= 0)
-        {
-            return base.GetEstimatedSize(canvasSize);
-        }
-        return ThumbRenderer.GetSafeScaledImageSize(imageSize, canvasSize);
+        Size imageSize = new(pageInfo.ImageWidth, pageInfo.ImageHeight);
+        return imageSize.Width <= 0 || imageSize.Height <= 0
+            ? base.GetEstimatedSize(canvasSize)
+            : ThumbRenderer.GetSafeScaledImageSize(imageSize, canvasSize);
     }
 
     public override ItemViewStates GetOwnerDrawnStates(ItemViewMode displayType)
     {
-        if (displayType == ItemViewMode.Tile)
-        {
-            return ItemViewStates.Selected | ItemViewStates.Hot;
-        }
-        return base.GetOwnerDrawnStates(displayType);
+        return displayType == ItemViewMode.Tile ? ItemViewStates.Selected | ItemViewStates.Hot : base.GetOwnerDrawnStates(displayType);
     }
 
     protected override Size MeasureItem(Graphics graphics, Size defaultSize, ItemViewMode displayType)
     {
         defaultSize = base.MeasureItem(graphics, defaultSize, displayType);
-        if (displayType == ItemViewMode.Thumbnail)
-        {
-            return AddBorder(GetThumbnailSizeSafe(defaultSize));
-        }
-        return defaultSize;
+        return displayType == ItemViewMode.Thumbnail ? AddBorder(GetThumbnailSizeSafe(defaultSize)) : defaultSize;
     }
 
     protected override Size MeasureColumn(Graphics graphics, IColumn header, Size defaultSize)
@@ -168,21 +152,21 @@ public class PageViewItem : ThumbnailViewItem
         Color textColor = drawInfo.TextColor;
         Rectangle bounds = drawInfo.Bounds;
         Font font = base.View.Font;
-        ComicListField comicListField = ((drawInfo.Header != null) ? (drawInfo.Header.Tag as ComicListField) : null);
+        ComicListField comicListField = (drawInfo.Header != null) ? (drawInfo.Header.Tag as ComicListField) : null;
         List<Image> list = null;
         if (PageInfo.IsDeleted)
         {
             list = list.SafeAdd(ThumbnailViewItem.DeletedStateImage);
         }
-        using (StringFormat stringFormat = new StringFormat())
+        using (StringFormat stringFormat = new())
         {
-            using (IItemLock<ThumbnailImage> itemLock = ((comicListField == null || comicListField.DisplayProperty == "Thumbnail") ? GetThumbnail(drawInfo) : null))
+            using (IItemLock<ThumbnailImage> itemLock = (comicListField == null || comicListField.DisplayProperty == "Thumbnail") ? GetThumbnail(drawInfo) : null)
             {
                 if (itemLock != null)
                 {
                     Comic.UpdatePageSize(Page, itemLock.Item.OriginalSize.Width, itemLock.Item.OriginalSize.Height);
                 }
-                int height = ((drawInfo.DisplayType == ItemViewMode.Detail) ? 256 : bounds.Height);
+                int height = (drawInfo.DisplayType == ItemViewMode.Detail) ? 256 : bounds.Height;
                 Image image = itemLock?.Item.GetThumbnail(height);
                 ThumbnailDrawingOptions thumbnailDrawingOptions = ThumbnailDrawingOptions.EnableShadow | ThumbnailDrawingOptions.EnableBorder | ThumbnailDrawingOptions.EnableRating | ThumbnailDrawingOptions.EnableVerticalBookmarks | ThumbnailDrawingOptions.EnableBackground | ThumbnailDrawingOptions.EnableStates | ThumbnailDrawingOptions.EnableBowShadow;
                 if (base.Selected | IsCurrentPage)
@@ -202,7 +186,7 @@ public class PageViewItem : ThumbnailViewItem
                     case ItemViewMode.Thumbnail:
                         {
                             Animate(image);
-                            ThumbRenderer thumbRenderer = new ThumbRenderer(image, thumbnailDrawingOptions | ThumbnailDrawingOptions.EnablePageNumber)
+                            ThumbRenderer thumbRenderer = new(image, thumbnailDrawingOptions | ThumbnailDrawingOptions.EnablePageNumber)
                             {
                                 PageNumber = Page + 1,
                                 ImageOpacity = base.Opacity,
@@ -220,7 +204,7 @@ public class PageViewItem : ThumbnailViewItem
                     case ItemViewMode.Tile:
                         {
                             Animate(image);
-                            ThumbTileRenderer thumbTileRenderer = new ThumbTileRenderer(image, thumbnailDrawingOptions)
+                            ThumbTileRenderer thumbTileRenderer = new(image, thumbnailDrawingOptions)
                             {
                                 Font = font,
                                 Border = base.Border,
@@ -310,15 +294,7 @@ public class PageViewItem : ThumbnailViewItem
 
     private string GetStringValue(string property)
     {
-        if (!(property == "Key"))
-        {
-            if (property == "Page")
-            {
-                return PageAsText;
-            }
-            return PageInfo.GetStringValue(property);
-        }
-        return Key;
+        return !(property == "Key") ? property == "Page" ? PageAsText : PageInfo.GetStringValue(property) : Key;
     }
 
     private void UpdateInfo()

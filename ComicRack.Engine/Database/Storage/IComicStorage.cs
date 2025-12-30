@@ -4,10 +4,7 @@ namespace cYo.Projects.ComicRack.Engine.Database.Storage;
 
 public interface IComicStorage
 {
-    bool IsConnected
-    {
-        get;
-    }
+    bool IsConnected { get; }
 
     bool Open(string connection);
 

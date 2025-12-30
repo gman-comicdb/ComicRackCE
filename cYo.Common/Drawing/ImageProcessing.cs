@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using cYo.Common.Collections;
 using cYo.Common.ComponentModel;
-using cYo.Common.Localize;
 using cYo.Common.Mathematics;
 
 namespace cYo.Common.Drawing;
@@ -38,7 +37,7 @@ public static class ImageProcessing
 
     private static void CheckFormat(PixelFormat format)
     {
-        if (format != PixelFormat.Format24bppRgb && format != PixelFormat.Format32bppArgb && format != PixelFormat.Format32bppRgb && format != PixelFormat.Canonical)
+        if (format is not PixelFormat.Format24bppRgb and not PixelFormat.Format32bppArgb and not PixelFormat.Format32bppRgb and not PixelFormat.Canonical)
         {
             throw new ArgumentException("Invalid bitmap format");
         }
@@ -54,7 +53,7 @@ public static class ImageProcessing
         CheckFormat(source);
         CheckFormat(format);
         clip.Intersect(source.Size.ToRectangle());
-        Bitmap bitmap = new Bitmap(clip.Width, clip.Height, format);
+        Bitmap bitmap = new(clip.Width, clip.Height, format);
         BitmapData bitmapData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
         BitmapData bitmapData2 = bitmap.LockBits(new Rectangle(0, 0, clip.Width, clip.Height), ImageLockMode.WriteOnly, bitmap.PixelFormat);
         try
@@ -79,9 +78,9 @@ public static class ImageProcessing
                         byte* ptr8 = (byte*)(void*)scanTarget + y * strideTarget;
                         for (int m = 0; m < w; m++)
                         {
-                            *(ptr8++) = *(ptr7++);
-                            *(ptr8++) = *(ptr7++);
-                            *(ptr8++) = *(ptr7++);
+                            *ptr8++ = *ptr7++;
+                            *ptr8++ = *ptr7++;
+                            *ptr8++ = *ptr7++;
                         }
                     });
                 }
@@ -93,10 +92,10 @@ public static class ImageProcessing
                         byte* ptr6 = (byte*)(void*)scanTarget + y * strideTarget;
                         for (int l = 0; l < w; l++)
                         {
-                            *(ptr6++) = *(ptr5++);
-                            *(ptr6++) = *(ptr5++);
-                            *(ptr6++) = *(ptr5++);
-                            *(ptr6++) = byte.MaxValue;
+                            *ptr6++ = *ptr5++;
+                            *ptr6++ = *ptr5++;
+                            *ptr6++ = *ptr5++;
+                            *ptr6++ = byte.MaxValue;
                         }
                     });
                 }
@@ -109,9 +108,9 @@ public static class ImageProcessing
                     byte* ptr4 = (byte*)(void*)scanTarget + y * strideTarget;
                     for (int k = 0; k < w; k++)
                     {
-                        *(ptr4++) = *(ptr3++);
-                        *(ptr4++) = *(ptr3++);
-                        *(ptr4++) = *(ptr3++);
+                        *ptr4++ = *ptr3++;
+                        *ptr4++ = *ptr3++;
+                        *ptr4++ = *ptr3++;
                         ptr3++;
                     }
                 });
@@ -218,7 +217,7 @@ public static class ImageProcessing
         {
             return new Rectangle(0, 0, bitmap.Width, bitmap.Height);
         }
-        using (FastBitmap fastBitmap = new FastBitmap(bitmap))
+        using (FastBitmap fastBitmap = new(bitmap))
         {
             int width = bitmap.Width;
             int height = bitmap.Height;
@@ -248,11 +247,7 @@ public static class ImageProcessing
                     num3 = Math.Max(i, num3);
                 }
             }
-            if (num >= num2 || num3 >= num4)
-            {
-                return Rectangle.Empty;
-            }
-            return new Rectangle(num, num3, num2 - num + 1, num4 - num3 + 1);
+            return num >= num2 || num3 >= num4 ? Rectangle.Empty : new Rectangle(num, num3, num2 - num + 1, num4 - num3 + 1);
         }
     }
 
@@ -348,8 +343,8 @@ public static class ImageProcessing
                     byte* intPtr = ptr;
                     byte* intPtr2 = ptr + 1;
                     byte b;
-                    ptr[2] = (b = (byte)(0.299f * (float)(int)ptr[2] + 0.587f * (float)(int)ptr[1] + 0.114f * (float)(int)(*ptr)));
-                    *intPtr2 = (b = b);
+                    ptr[2] = b = (byte)(0.299f * (float)(int)ptr[2] + 0.587f * (float)(int)ptr[1] + 0.114f * (float)(int)*ptr);
+                    *intPtr2 = b = b;
                     *intPtr = b;
                 }
             });
@@ -412,7 +407,7 @@ public static class ImageProcessing
 
     public unsafe static void ChangeContrast(this Bitmap bitmap, Rectangle clipRectangle, int contrast)
     {
-        if (contrast < -100 || contrast > 100)
+        if (contrast is < (-100) or > 100)
         {
             throw new ArgumentException("Must be in the range +/- 100");
         }
@@ -646,7 +641,7 @@ public static class ImageProcessing
                 {
                     for (; ptr < ptr2; ptr += pixelWidth)
                     {
-                        float num = (int)(*ptr);
+                        float num = (int)*ptr;
                         float num2 = (int)ptr[1];
                         float num3 = (int)ptr[2];
                         float num4 = (int)ptr[3];
@@ -660,7 +655,7 @@ public static class ImageProcessing
                 {
                     for (; ptr < ptr2; ptr += pixelWidth)
                     {
-                        float num5 = (int)(*ptr);
+                        float num5 = (int)*ptr;
                         float num6 = (int)ptr[1];
                         float num7 = (int)ptr[2];
                         ptr[2] = (byte)Math.Max(Math.Min(255f, num7 * m0 + num6 * m4 + num5 * m8 + m12), 0f);
@@ -782,12 +777,12 @@ public static class ImageProcessing
 
     public static void GaussianBlur(this Bitmap bitmap, Rectangle clipRectangle, int weight)
     {
-        ConvolutionMatrix convolutionMatrix = new ConvolutionMatrix(1);
+        ConvolutionMatrix convolutionMatrix = new(1);
         convolutionMatrix.Pixel = weight;
         ConvolutionMatrix m = convolutionMatrix;
-        int num2 = (m.BottomMid = 2);
-        int num4 = (m.MidRight = num2);
-        int num7 = (m.TopMid = (m.MidLeft = num4));
+        int num2 = m.BottomMid = 2;
+        int num4 = m.MidRight = num2;
+        int num7 = m.TopMid = m.MidLeft = num4;
         m.Divisor = weight + 12;
         bitmap.Convolute(clipRectangle, m);
     }
@@ -833,12 +828,12 @@ public static class ImageProcessing
 
     public static void Sharpen(this Bitmap bitmap, Rectangle clipRectangle, int a, int b)
     {
-        ConvolutionMatrix convolutionMatrix = new ConvolutionMatrix(0);
+        ConvolutionMatrix convolutionMatrix = new(0);
         convolutionMatrix.Pixel = a;
         ConvolutionMatrix m = convolutionMatrix;
-        int num2 = (m.BottomMid = -b);
-        int num4 = (m.MidRight = num2);
-        int num7 = (m.TopMid = (m.MidLeft = num4));
+        int num2 = m.BottomMid = -b;
+        int num4 = m.MidRight = num2;
+        int num7 = m.TopMid = m.MidLeft = num4;
         m.Divisor = a + 4 * -b;
         if (m.Divisor == 0)
         {
@@ -864,10 +859,10 @@ public static class ImageProcessing
 
     public static void EmbossLaplacian(this Bitmap b, Rectangle clipRectangle)
     {
-        ConvolutionMatrix m = new ConvolutionMatrix(-1);
-        int num2 = (m.BottomMid = 0);
-        int num4 = (m.MidRight = num2);
-        int num7 = (m.TopMid = (m.MidLeft = num4));
+        ConvolutionMatrix m = new(-1);
+        int num2 = m.BottomMid = 0;
+        int num4 = m.MidRight = num2;
+        int num7 = m.TopMid = m.MidLeft = num4;
         m.Pixel = 4;
         m.Offset = 127;
         b.Convolute(clipRectangle, m);
@@ -880,13 +875,13 @@ public static class ImageProcessing
 
     public static void EdgeDetectQuick(this Bitmap bitmap, Rectangle clipRectangle)
     {
-        ConvolutionMatrix m = default(ConvolutionMatrix);
-        int num2 = (m.TopRight = -1);
-        int num5 = (m.TopLeft = (m.TopMid = num2));
-        num2 = (m.MidRight = 0);
-        num5 = (m.MidLeft = (m.Pixel = num2));
-        num2 = (m.BottomRight = 1);
-        num5 = (m.BottomLeft = (m.BottomMid = num2));
+        ConvolutionMatrix m = default;
+        int num2 = m.TopRight = -1;
+        int num5 = m.TopLeft = m.TopMid = num2;
+        num2 = m.MidRight = 0;
+        num5 = m.MidLeft = m.Pixel = num2;
+        num2 = m.BottomRight = 1;
+        num5 = m.BottomLeft = m.BottomMid = num2;
         m.Offset = 127;
         bitmap.Convolute(clipRectangle, m);
     }
@@ -902,7 +897,7 @@ public static class ImageProcessing
         Bitmap bitmap = source;
 
         //If format requested is anything other than 24 or 32 bit. Force format to be 32bit
-        if (format != PixelFormat.Format32bppArgb && format != PixelFormat.Format24bppRgb)
+        if (format is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
             format = PixelFormat.Format32bppArgb;
 
         // get source image size
@@ -914,7 +909,7 @@ public static class ImageProcessing
             return bitmap.CreateCopy(format);
 
         //IF source image isn't 24bit or 32bit force create a copy with color
-        if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format24bppRgb)
+        if (bitmap.PixelFormat is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
             bitmap = bitmap.CreateCopy(PixelFormat.Format32bppArgb);
 
         BitmapData srcData = null;
@@ -1145,10 +1140,10 @@ public static class ImageProcessing
         float num = x - 1f;
         float num2 = x + 1f;
         float num3 = x + 2f;
-        float num4 = ((num3 <= 0f) ? 0f : (num3 * num3 * num3));
-        float num5 = ((num2 <= 0f) ? 0f : (num2 * num2 * num2));
-        float num6 = ((x <= 0f) ? 0f : (x * x * x));
-        float num7 = ((num <= 0f) ? 0f : (num * num * num));
+        float num4 = (num3 <= 0f) ? 0f : (num3 * num3 * num3);
+        float num5 = (num2 <= 0f) ? 0f : (num2 * num2 * num2);
+        float num6 = (x <= 0f) ? 0f : (x * x * x);
+        float num7 = (num <= 0f) ? 0f : (num * num * num);
         return 355f / (678f * (float)Math.PI) * (num4 - 4f * num5 + 6f * num6 - 4f * num7);
     }
 
@@ -1157,7 +1152,7 @@ public static class ImageProcessing
         Bitmap bitmap = srcImg;
         int height = bitmap.Height;
         int width = bitmap.Width;
-        if (targetFormat != PixelFormat.Format32bppArgb && targetFormat != PixelFormat.Format24bppRgb)
+        if (targetFormat is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
         {
             targetFormat = PixelFormat.Format32bppArgb;
         }
@@ -1165,13 +1160,13 @@ public static class ImageProcessing
         {
             return srcImg.CreateCopy(targetFormat);
         }
-        if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format24bppRgb)
+        if (bitmap.PixelFormat is not PixelFormat.Format32bppArgb and not PixelFormat.Format24bppRgb)
         {
             bitmap = bitmap.CreateCopy(PixelFormat.Format32bppArgb);
         }
-        Bitmap bitmap2 = new Bitmap(targetWidth, targetHeight, targetFormat);
-        float num = ((width > targetWidth) ? ((float)width / (float)targetWidth) : ((float)(width - 1) / (float)targetWidth));
-        float num2 = ((height > targetHeight) ? ((float)height / (float)targetHeight) : ((float)(height - 1) / (float)targetHeight));
+        Bitmap bitmap2 = new(targetWidth, targetHeight, targetFormat);
+        float num = (width > targetWidth) ? ((float)width / (float)targetWidth) : ((float)(width - 1) / (float)targetWidth);
+        float num2 = (height > targetHeight) ? ((float)height / (float)targetHeight) : ((float)(height - 1) / (float)targetHeight);
         BitmapData bitmapData = null;
         BitmapData bitmapData2 = null;
         try
@@ -1307,7 +1302,7 @@ public static class ImageProcessing
         int num = 0;
         while (num < width)
         {
-            pspan->R = (pspan->G = (pspan->B = 0f));
+            pspan->R = pspan->G = pspan->B = 0f;
             num++;
             pspan++;
         }
@@ -1324,7 +1319,7 @@ public static class ImageProcessing
             int num = 0;
             while (num < width)
             {
-                pspan->R += (int)(*psrc);
+                pspan->R += (int)*psrc;
                 pspan->G += (int)psrc[1];
                 pspan->B += (int)psrc[2];
                 num++;
@@ -1337,7 +1332,7 @@ public static class ImageProcessing
             int num2 = 0;
             while (num2 < width)
             {
-                pspan->R += (float)(int)(*psrc) * fact;
+                pspan->R += (float)(int)*psrc * fact;
                 pspan->G += (float)(int)psrc[1] * fact;
                 pspan->B += (float)(int)psrc[2] * fact;
                 num2++;
@@ -1354,7 +1349,7 @@ public static class ImageProcessing
             int num = 0;
             while (num < width)
             {
-                pspan->R = (int)(*psrc);
+                pspan->R = (int)*psrc;
                 pspan->G = (int)psrc[1];
                 pspan->B = (int)psrc[2];
                 num++;
@@ -1366,7 +1361,7 @@ public static class ImageProcessing
         int num2 = 0;
         while (num2 < width)
         {
-            pspan->R = (float)(int)(*psrc) + (float)(*psrc2 - *psrc) * fact;
+            pspan->R = (float)(int)*psrc + (float)(*psrc2 - *psrc) * fact;
             pspan->G = (float)(int)psrc[1] + (float)(psrc2[1] - psrc[1]) * fact;
             pspan->B = (float)(int)psrc[2] + (float)(psrc2[2] - psrc[2]) * fact;
             num2++;
@@ -1378,12 +1373,12 @@ public static class ImageProcessing
 
     public static Bitmap ResizeGdi(Bitmap bitmap, int width, int height, PixelFormat pixelFormat, bool highQuality = false)
     {
-        Rectangle rectangle = new Rectangle(0, 0, width, height);
+        Rectangle rectangle = new(0, 0, width, height);
         if (rectangle.IsEmpty())
         {
             return null;
         }
-        Bitmap bitmap2 = new Bitmap(width, height, pixelFormat);
+        Bitmap bitmap2 = new(width, height, pixelFormat);
         try
         {
             using (Graphics graphics = Graphics.FromImage(bitmap2))
@@ -1459,23 +1454,23 @@ public static class ImageProcessing
 
     public static Matrix CreateColorScaleMatrix(float scale, float offset)
     {
-        Matrix matrix = new Matrix(5, 5, 1.0);
-        double num2 = (matrix[2, 2] = scale);
-        double num5 = (matrix[0, 0] = (matrix[1, 1] = num2));
-        num2 = (matrix[3, 2] = offset);
-        num5 = (matrix[3, 0] = (matrix[3, 1] = num2));
+        Matrix matrix = new(5, 5, 1.0);
+        double num2 = matrix[2, 2] = scale;
+        double num5 = matrix[0, 0] = matrix[1, 1] = num2;
+        num2 = matrix[3, 2] = offset;
+        num5 = matrix[3, 0] = matrix[3, 1] = num2;
         return matrix;
     }
 
     public static Matrix CreateColorSaturationMatrix(float sat)
     {
-        Matrix matrix = new Matrix(5, 5, 1.0);
+        Matrix matrix = new(5, 5, 1.0);
         matrix[0, 0] = (1f - sat) * grayRed + sat;
-        double num3 = (matrix[0, 1] = (matrix[0, 2] = (1f - sat) * grayRed));
+        double num3 = matrix[0, 1] = matrix[0, 2] = (1f - sat) * grayRed;
         matrix[1, 1] = (1f - sat) * grayGreen + sat;
-        num3 = (matrix[1, 0] = (matrix[1, 2] = (1f - sat) * grayGreen));
+        num3 = matrix[1, 0] = matrix[1, 2] = (1f - sat) * grayGreen;
         matrix[2, 2] = (1f - sat) * grayBlue + sat;
-        num3 = (matrix[2, 0] = (matrix[2, 1] = (1f - sat) * grayBlue));
+        num3 = matrix[2, 0] = matrix[2, 1] = (1f - sat) * grayBlue;
         return matrix;
     }
 
@@ -1483,7 +1478,7 @@ public static class ImageProcessing
     {
         try
         {
-            Matrix matrix = new Matrix(5, 5, 1.0);
+            Matrix matrix = new(5, 5, 1.0);
             byte r = whitePoint.R;
             byte g = whitePoint.G;
             byte b = whitePoint.B;
@@ -1498,9 +1493,9 @@ public static class ImageProcessing
         }
         catch
         {
-            Matrix matrix2 = new Matrix(5, 5, 1.0);
-            double num2 = (matrix2[2, 2] = 1.0);
-            double num5 = (matrix2[0, 0] = (matrix2[1, 1] = num2));
+            Matrix matrix2 = new(5, 5, 1.0);
+            double num2 = matrix2[2, 2] = 1.0;
+            double num5 = matrix2[0, 0] = matrix2[1, 1] = num2;
             return matrix2;
         }
     }
@@ -1508,8 +1503,8 @@ public static class ImageProcessing
     public static ColorMatrix CreateColorMatrix(float blackLevel, float whiteLevel, float contrast, float brightness, float saturation, Color whitePointColor)
     {
         Matrix matrix = CreateColorScaleMatrix((contrast + 1f) / (whiteLevel - blackLevel), brightness - blackLevel) * CreateColorSaturationMatrix(saturation + 1f) * CreateColorWhitePointMatrix(whitePointColor);
-        double num2 = (matrix[4, 2] = 0.0010000000474974513);
-        double num5 = (matrix[4, 0] = (matrix[4, 1] = num2));
+        double num2 = matrix[4, 2] = 0.0010000000474974513;
+        double num5 = matrix[4, 0] = matrix[4, 1] = num2;
         float[][] array = new float[5][];
         for (int i = 0; i < 5; i++)
         {

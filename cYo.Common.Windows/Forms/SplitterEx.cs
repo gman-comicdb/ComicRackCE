@@ -17,27 +17,11 @@ public class SplitterEx : Control
     [DefaultValue(null)]
     public Control Sibling
     {
-        get
-        {
-            return sibling;
-        }
-        set
-        {
-            sibling = value;
-        }
+        get => sibling;
+        set => sibling = value;
     }
 
-    public bool IsHorizontal
-    {
-        get
-        {
-            if (Dock != DockStyle.Top)
-            {
-                return Dock == DockStyle.Bottom;
-            }
-            return true;
-        }
-    }
+    public bool IsHorizontal => Dock != DockStyle.Top ? Dock == DockStyle.Bottom : true;
 
     protected override void OnPaint(PaintEventArgs e)
     {
@@ -59,7 +43,7 @@ public class SplitterEx : Control
     {
         for (int i = bounds.Left + 1; i < bounds.Right; i += 8)
         {
-            Rectangle bounds2 = new Rectangle(i, 0, 6, bounds.Height);
+            Rectangle bounds2 = new(i, 0, 6, bounds.Height);
             using (GraphicsPath path = PathUtility.GetArrowPath(bounds2, up: true))
             {
                 gr.FillPath(brush, path);
@@ -71,7 +55,7 @@ public class SplitterEx : Control
     protected override void OnDockChanged(EventArgs e)
     {
         base.OnDockChanged(e);
-        Cursor = (IsHorizontal ? Cursors.HSplit : Cursors.VSplit);
+        Cursor = IsHorizontal ? Cursors.HSplit : Cursors.VSplit;
     }
 
     private Control GetSibling(int offset)
@@ -82,11 +66,7 @@ public class SplitterEx : Control
         }
         Control parent = base.Parent;
         int num = parent.Controls.IndexOf(this) + offset;
-        if (num >= 0 && num < parent.Controls.Count)
-        {
-            return parent.Controls[num];
-        }
-        return null;
+        return num >= 0 && num < parent.Controls.Count ? parent.Controls[num] : null;
     }
 
     protected virtual void OnSplitterMoving(SplitterEventArgs sevent)

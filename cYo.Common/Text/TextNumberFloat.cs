@@ -13,10 +13,7 @@ public class TextNumberFloat : IComparable<TextNumberFloat>
 
     public float Number
     {
-        get
-        {
-            return number;
-        }
+        get => number;
         protected set
         {
             IsNumber = true;
@@ -24,18 +21,11 @@ public class TextNumberFloat : IComparable<TextNumberFloat>
         }
     }
 
-    public bool IsNumber
-    {
-        get;
-        private set;
-    }
+    public bool IsNumber { get; private set; }
 
     public string Text
     {
-        get
-        {
-            return text;
-        }
+        get => text;
         private set
         {
             if (!(text == value))
@@ -209,28 +199,24 @@ public class TextNumberFloat : IComparable<TextNumberFloat>
 
     public static float Parse(string text)
     {
-        if (!TryParseExpression(text, out var accu))
-        {
-            throw new FormatException();
-        }
-        return accu;
+        return !TryParseExpression(text, out var accu) ? throw new FormatException() : accu;
     }
 
     public IEnumerable<float> GetRange()
     {
-        Regex regex = new Regex(@"(\d+)[ -]+(\d+)", RegexOptions.IgnoreCase);
-        Match match = regex.Match(this.Text ?? string.Empty);
+        Regex regex = new(@"(\d+)[ -]+(\d+)", RegexOptions.IgnoreCase);
+        Match match = regex.Match(Text ?? string.Empty);
 
         if (match.Success)
         {
             bool ba = match.Groups[1].Value.TryParse(out float a, true);
             bool bb = match.Groups[2].Value.TryParse(out float b, true);
 
-            if ((ba && bb) && (b > a))
+            if (ba && bb && (b > a))
             {
                 return RangeF.ToEnumerable(a, b, 1.0f);
             }
         }
-        return Enumerable.Empty<float>();
+        return [];
     }
 }

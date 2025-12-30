@@ -24,42 +24,18 @@ public abstract class ComicBookDateMatcher : ComicBookValueMatcher<DateTime>
 
     private static readonly string daysText = ComicBookMatcher.TRMatcher["Days", "Days"];
 
-    public override int ArgumentCount
-    {
-        get
-        {
-            if (MatchOperator != OperatorIsInRange)
-            {
-                return 1;
-            }
-            return 2;
-        }
-    }
+    public override int ArgumentCount => MatchOperator != OperatorIsInRange ? 1 : 2;
 
     public override string[] OperatorsListNeutral => opListNeutral;
 
     public override string[] OperatorsList => opList;
 
-    public override string UnitDescription
-    {
-        get
-        {
-            if (MatchOperator == OperatorIsInLastDays)
-            {
-                return daysText;
-            }
-            return base.UnitDescription;
-        }
-    }
+    public override string UnitDescription => MatchOperator == OperatorIsInLastDays ? daysText : base.UnitDescription;
 
     public override bool TimeDependant => MatchOperator == OperatorIsInLastDays;
 
     [XmlIgnore]
-    public bool IgnoreTime
-    {
-        get;
-        set;
-    }
+    public bool IgnoreTime { get; set; }
 
     public ComicBookDateMatcher()
     {

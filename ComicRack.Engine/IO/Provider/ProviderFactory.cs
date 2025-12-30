@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 
-using cYo.Common.Collections;
 using cYo.Common.Localize;
 using cYo.Common.Reflection;
 using cYo.Common.Threading;
@@ -29,8 +26,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
 
     public override void RegisterProvider(Type pt, bool withLocking = true)
     {
-        IValidateProvider validateProvider = Activator.CreateInstance(pt) as IValidateProvider;
-        if (validateProvider == null || validateProvider.IsValid)
+        if (Activator.CreateInstance(pt) is not IValidateProvider validateProvider || validateProvider.IsValid)
         {
             RegisterProvider(pt, from ffa in pt.GetAttributes<FileFormatAttribute>()
                                  select ffa.Format, withLocking);
@@ -83,20 +79,13 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
 
     public FileFormat GetSourceFormat(string source, bool actualFormat = false)
     {
-        if (actualFormat)
-            return GetActualSourceFormat(source);
-
-        return GetSourceFormats(source).FirstOrDefault((FileFormat ff) => ff.Supports(source));
+        return actualFormat ? GetActualSourceFormat(source) : GetSourceFormats(source).FirstOrDefault((FileFormat ff) => ff.Supports(source));
     }
 
     public string GetSourceFormatName(string source, bool actualFormat = false)
     {
         FileFormat sourceFormat = GetSourceFormat(source, actualFormat);
-        if (sourceFormat != null && !string.IsNullOrEmpty(sourceFormat.Name))
-        {
-            return sourceFormat.Name;
-        }
-        return TR.Default["Unknown", "Unknown"];
+        return sourceFormat != null && !string.IsNullOrEmpty(sourceFormat.Name) ? sourceFormat.Name : TR.Default["Unknown", "Unknown"];
     }
 
     public Type GetFormatProviderType(string formatName)
@@ -133,11 +122,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
     public T CreateFormatProvider(int formatId)
     {
         Type formatProviderType = GetFormatProviderType(formatId);
-        if (!(formatProviderType != null))
-        {
-            return null;
-        }
-        return Activator.CreateInstance(formatProviderType) as T;
+        return !(formatProviderType != null) ? null : Activator.CreateInstance(formatProviderType) as T;
     }
 
     public IEnumerable<T> CreateProviders()

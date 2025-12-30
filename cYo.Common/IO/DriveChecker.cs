@@ -6,7 +6,7 @@ namespace cYo.Common.IO;
 
 public class DriveChecker
 {
-    private readonly Dictionary<string, bool> cache = new Dictionary<string, bool>();
+    private readonly Dictionary<string, bool> cache = new();
 
     public bool IsConnected(string path)
     {

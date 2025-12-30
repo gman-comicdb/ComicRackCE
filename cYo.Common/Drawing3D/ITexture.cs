@@ -4,10 +4,7 @@ namespace cYo.Common.Drawing3D;
 
 public interface ITexture
 {
-    Size Size
-    {
-        get;
-    }
+    Size Size { get; }
 
     Color GetColor(int x, int y);
 

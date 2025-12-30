@@ -19,7 +19,7 @@ public static class DeviceFactory
         }
         catch (Exception)
         {
-            return Enumerable.Empty<Device>();
+            return [];
         }
     }
 
