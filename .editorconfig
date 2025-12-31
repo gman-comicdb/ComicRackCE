@@ -3,6 +3,8 @@ root = true
 # All files
 [*]
 indent_style = space
+# VSExtension required (EditorConfig Guidelines)
+guidelines = 100 dotted, 110 dashed, 120 solid
 
 # Xml files
 [*.xml]
