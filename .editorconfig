@@ -27,9 +27,6 @@ insert_final_newline = false
 # Indentation and spacing
 trim_trailing_whitespace = true
 
-# Using default setting of true + silent instead of + suggestion
-csharp_style_prefer_implicitly_typed_lambda_expression = true:silent
-
 # Use collection initializers or expressions - might change semantics
 dotnet_diagnostic.IDE0028.severity = none
 
