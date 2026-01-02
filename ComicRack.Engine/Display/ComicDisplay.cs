@@ -671,42 +671,50 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public event EventHandler BookChanged
     {
-        add => display.BookChanged += value; remove => display.BookChanged -= value;
+        add => display.BookChanged += value;
+        remove => display.BookChanged -= value;
     }
 
     public event EventHandler<GestureEventArgs> Gesture
     {
-        add => display.Gesture += value; remove => display.Gesture -= value;
+        add => display.Gesture += value;
+        remove => display.Gesture -= value;
     }
 
     public event EventHandler VisibleInfoOverlaysChanged
     {
-        add => display.VisibleInfoOverlaysChanged += value; remove => display.VisibleInfoOverlaysChanged -= value;
+        add => display.VisibleInfoOverlaysChanged += value;
+        remove => display.VisibleInfoOverlaysChanged -= value;
     }
 
     public event EventHandler<GestureEventArgs> PreviewGesture
     {
-        add => display.PreviewGesture += value; remove => display.PreviewGesture -= value;
+        add => display.PreviewGesture += value;
+        remove => display.PreviewGesture -= value;
     }
 
     public event EventHandler<BookPageEventArgs> PageChange
     {
-        add => display.PageChange += value; remove => display.PageChange -= value;
+        add => display.PageChange += value;
+        remove => display.PageChange -= value;
     }
 
     public event EventHandler<BookPageEventArgs> PageChanged
     {
-        add => display.PageChanged += value; remove => display.PageChanged -= value;
+        add => display.PageChanged += value;
+        remove => display.PageChanged -= value;
     }
 
     public event EventHandler DrawnPageCountChanged
     {
-        add => display.DrawnPageCountChanged += value; remove => display.DrawnPageCountChanged -= value;
+        add => display.DrawnPageCountChanged += value;
+        remove => display.DrawnPageCountChanged -= value;
     }
 
     public event EventHandler<BrowseEventArgs> Browse
     {
-        add => display.Browse += value; remove => display.Browse -= value;
+        add => display.Browse += value;
+        remove => display.Browse -= value;
     }
 
     public ComicDisplay(IComicDisplay display)

@@ -228,7 +228,8 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     [XmlIgnore]
     public ComicBookContainer Container
     {
-        get => container; internal set => container = value;
+        get => container;
+        internal set => container = value;
     }
 
     [XmlAttribute]
