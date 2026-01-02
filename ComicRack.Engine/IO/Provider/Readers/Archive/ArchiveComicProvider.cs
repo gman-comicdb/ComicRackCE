@@ -53,7 +53,7 @@ public abstract class ArchiveComicProvider : ComicProvider
     {
         using (IItemLock<List<ProviderImageInfo>> itemLock = GetCachedFileList())
         {
-            List<ProviderImageInfo> list = new(itemLock.Item.Where((ProviderImageInfo ii) => IsSupportedImage(ii)));
+            List<ProviderImageInfo> list = new(itemLock.Item.Where(ii => IsSupportedImage(ii)));
             list.Sort((a, b) => cYo.Common.Text.ExtendedStringComparer.Compare(a.Name, b.Name, ExtendedStringComparison.IgnoreCase));
             foundImageList = list;
         }
@@ -77,7 +77,7 @@ public abstract class ArchiveComicProvider : ComicProvider
         {
             imageInfoCache ??= new Cache<FileKey, List<ProviderImageInfo>>(100);
         }
-        return imageInfoCache.LockItem(new FileKey(base.Source), (FileKey fi) => GetFileList().ToList());
+        return imageInfoCache.LockItem(new FileKey(base.Source), fi => GetFileList().ToList());
     }
 
     public ProviderImageInfo GetFile(int index)

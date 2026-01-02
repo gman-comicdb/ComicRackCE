@@ -304,7 +304,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
                         Guid id = displayListConfig.Display.StackedComicId;
                         if (id != Guid.Empty)
                         {
-                            CoverViewItem coverViewItem = itemView.Items.OfType<CoverViewItem>().FirstOrDefault((CoverViewItem i) => i.Comic.Id == id);
+                            CoverViewItem coverViewItem = itemView.Items.OfType<CoverViewItem>().FirstOrDefault(i => i.Comic.Id == id);
                             if (coverViewItem != null)
                             {
                                 itemView.Select(coverViewItem);
@@ -1001,8 +1001,8 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         miAutomation.DropDownItems.AddRange(ScriptUtility.CreateToolItems<ToolStripMenuItem>(this, "Books", () => GetBookList(ComicBookFilterType.Selected)).ToArray());
         miAutomation.Visible = miAutomation.DropDownItems.Count != 0;
         List<ToolStripItem> list = new();
-        list.AddRange(ScriptUtility.CreateToolItems<ToolStripButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), (Command c) => c.Image != null && c.Configure == null));
-        list.AddRange(ScriptUtility.CreateToolItems<ToolStripSplitButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), (Command c) => c.Image != null && c.Configure != null));
+        list.AddRange(ScriptUtility.CreateToolItems<ToolStripButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), c => c.Image != null && c.Configure == null));
+        list.AddRange(ScriptUtility.CreateToolItems<ToolStripSplitButton>(this, "Books", () => GetBookList(ComicBookFilterType.Selected), c => c.Image != null && c.Configure != null));
         if (list.Count != 0)
         {
             list.ForEach(delegate (ToolStripItem bt)
@@ -1108,7 +1108,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         CoverViewItem oldItem = stackItem as CoverViewItem;
         CloseStack(withUpdate: true);
         CoverViewItem[] array = itemView.DisplayedItems.OfType<CoverViewItem>().ToArray();
-        int num = array.FindIndex((CoverViewItem ci) => (from sci in itemView.GetStackItems(ci).OfType<CoverViewItem>()
+        int num = array.FindIndex(ci => (from sci in itemView.GetStackItems(ci).OfType<CoverViewItem>()
                                                          select sci.Comic).Contains(oldItem.Comic)) - 1;
         if (num < 0)
         {
@@ -1128,7 +1128,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         CoverViewItem oldItem = stackItem as CoverViewItem;
         CloseStack(withUpdate: true);
         CoverViewItem[] array = itemView.DisplayedItems.OfType<CoverViewItem>().ToArray();
-        int num = array.FindIndex((CoverViewItem ci) => (from sci in itemView.GetStackItems(ci).OfType<CoverViewItem>()
+        int num = array.FindIndex(ci => (from sci in itemView.GetStackItems(ci).OfType<CoverViewItem>()
                                                          select sci.Comic).Contains(oldItem.Comic)) + 1;
         if (num >= array.Length)
         {
@@ -1352,7 +1352,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private void itemView_SelectedIndexChanged(object sender, EventArgs e)
     {
-        selectedSize = itemView.SelectedItems.Cast<CoverViewItem>().Sum((CoverViewItem cvi) => Math.Max(cvi.Comic.FileSize, 0L));
+        selectedSize = itemView.SelectedItems.Cast<CoverViewItem>().Sum(cvi => Math.Max(cvi.Comic.FileSize, 0L));
     }
 
     private void BookInListChanged(object sender, PropertyChangedEventArgs e)
@@ -1409,7 +1409,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         Guid id = stackConfigItem.TopId;
         if (id != Guid.Empty)
         {
-            int num = e.Stack.Items.FindIndex((IViewableItem item) => ((CoverViewItem)item).Comic.Id == id);
+            int num = e.Stack.Items.FindIndex(item => ((CoverViewItem)item).Comic.Id == id);
             if (num != -1)
             {
                 IViewableItem item2 = e.Stack.Items[num];
@@ -1469,7 +1469,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
                               Prop = "{" + customKey + "}",
                               Key = customKey
                           } into customField
-                          select new ItemViewColumn(customField.Id, customField.Key, 100, new ComicListField(customField.Prop, customFieldDescription.SafeFormat(customField.Key), customField.Prop), new CoverViewItemPropertyComparer(customField.Prop), new CoverViewItemPropertyGrouper(customField.Prop), visible: false)).ToDictionary((ItemViewColumn item) => item.Id);
+                          select new ItemViewColumn(customField.Id, customField.Key, 100, new ComicListField(customField.Prop, customFieldDescription.SafeFormat(customField.Key), customField.Prop), new CoverViewItemPropertyComparer(customField.Prop), new CoverViewItemPropertyGrouper(customField.Prop), visible: false)).ToDictionary(item => item.Id);
         }
         for (int num = itemView.Columns.Count - 1; num >= 0; num--)
         {
@@ -1595,18 +1595,18 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool AllSelectedLinked()
     {
-        return GetBookList(ComicBookFilterType.Selected).All((ComicBook cb) => cb.IsLinked);
+        return GetBookList(ComicBookFilterType.Selected).All(cb => cb.IsLinked);
     }
 
     private bool AnySelectedLinked()
     {
-        return GetBookList(ComicBookFilterType.Selected).Any((ComicBook cb) => cb.IsLinked);
+        return GetBookList(ComicBookFilterType.Selected).Any(cb => cb.IsLinked);
     }
 
     private void OptimizeToolstripDisplay()
     {
         IEnumerable<ToolStripItem> source = toolStrip.Items.OfType<ToolStripItem>();
-        int num = source.Sum((ToolStripItem n) => n.Width);
+        int num = source.Sum(n => n.Width);
         int num2 = toolStrip.Width - 20;
         if (num2 == savedOptimizeToolstripRight && num == savedOptimizeToolstripWitdh)
         {
@@ -1619,14 +1619,14 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         if (num < num2)
         {
             SaveStyleSet(ToolStripItemDisplayStyle.ImageAndText, tbbView, tbbGroup, tbbSort, tbbStack);
-            num = source.Sum((ToolStripItem n) => n.Width);
+            num = source.Sum(n => n.Width);
             if (num > num2)
             {
                 SaveStyleSet(ToolStripItemDisplayStyle.Image, tbbView, tbbGroup, tbbSort, tbbStack);
             }
         }
         savedOptimizeToolstripRight = num2;
-        savedOptimizeToolstripWitdh = source.Sum((ToolStripItem n) => n.Width);
+        savedOptimizeToolstripWitdh = source.Sum(n => n.Width);
     }
 
     private static void SaveStyleSet(ToolStripItemDisplayStyle style, params ToolStripItem[] items)
@@ -1990,7 +1990,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         if (showGroupHeaders && itemView.AreGroupsVisible)
         {
             lvGroupHeaders.BeginUpdate();
-            IColumn column = itemView.Columns.FirstOrDefault((IColumn c) => c.ColumnGrouper == itemView.ItemGrouper);
+            IColumn column = itemView.Columns.FirstOrDefault(c => c.ColumnGrouper == itemView.ItemGrouper);
             lvGroupsName.Text = (column == null) ? string.Empty : column.Text;
             lvGroupHeaders.Items.Clear();
             foreach (string displayedGroup in itemView.DisplayedGroups)
@@ -2067,7 +2067,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         {
             comicSmartListItem.Matchers.Add(matcher.Clone() as ComicBookMatcher);
         }
-        foreach (ComicBookValueMatcher item in comicSmartListItem.Matchers.Recurse<ComicBookValueMatcher>((object cbm) => (cbm is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)cbm).Matchers))
+        foreach (ComicBookValueMatcher item in comicSmartListItem.Matchers.Recurse<ComicBookValueMatcher>(cbm => (cbm is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)cbm).Matchers))
         {
             string text = item.MatchValue.Trim();
             if (!string.IsNullOrEmpty(text))
@@ -2214,8 +2214,8 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         if (itemView.IsStacked)
         {
-            IViewableItem[] array = itemView.SelectedItems.Where((IViewableItem si) => itemView.IsStack(si)).ToArray();
-            comicBookContainer.Name = array.Select((IViewableItem si) => itemView.GetStackCaption(si)).FirstOrDefault();
+            IViewableItem[] array = itemView.SelectedItems.Where(si => itemView.IsStack(si)).ToArray();
+            comicBookContainer.Name = array.Select(si => itemView.GetStackCaption(si)).FirstOrDefault();
             SingleComicGrouper[] array2 = (from bg in itemView.ItemStacker.GetGroupers().OfType<IBookGrouper>()
                                            select bg.BookGrouper).OfType<SingleComicGrouper>().ToArray();
             IViewableItem[] array3 = array;
@@ -2458,7 +2458,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             bool forceRefreshInfo = Control.ModifierKeys == Keys.Control;
             IEnumerable<CoverViewItem> itemToRefresh = forceRefreshInfo ? selectedItems : selectedItems.Where(cvi => cvi.Comic.IsInContainer);
 
-            Program.Scanner.ScanFilesOrFolders(itemToRefresh.Select((CoverViewItem cvi) => cvi.Comic.FilePath), all: false, removeMissing: false, forceRefreshInfo: forceRefreshInfo);
+            Program.Scanner.ScanFilesOrFolders(itemToRefresh.Select(cvi => cvi.Comic.FilePath), all: false, removeMissing: false, forceRefreshInfo: forceRefreshInfo);
         }
     }
 
@@ -2722,7 +2722,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         miResetTopOfStack.Visible = !(miSetTopOfStack.Visible = openStackPanel.Visible) && itemView.IsStack(itemView.SelectedItems.FirstOrDefault());
         miSetStackThumbnail.Visible = itemView.IsStack(itemView.SelectedItems.FirstOrDefault());
         miRemoveStackThumbnail.Visible = stacksConfig != null && !string.IsNullOrEmpty(stacksConfig.GetStackCustomThumbnail(itemView.GetStackCaption(itemView.SelectedItems.FirstOrDefault())));
-        ComicLibrary comicLibrary = enumerable2.Select((ComicBook cb) => cb.Container as ComicLibrary).FirstOrDefault();
+        ComicLibrary comicLibrary = enumerable2.Select(cb => cb.Container as ComicLibrary).FirstOrDefault();
         miAddList.Visible = comicLibrary != null && !comicLibrary.ComicLists.GetItems<ComicIdListItem>().IsEmpty() && flag3;
         miEditList.Visible = CanReorderList(mustBeOrdered: false);
         miExportComics.Visible = ComicEditMode.CanExport();
@@ -2763,7 +2763,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
             }
         }
         miShowOnly.Visible = miShowOnly.DropDownItems.Count != 0;
-        miUpdateComicFiles.Visible = enumerable.Any((ComicBook cb) => cb.ComicInfoIsDirty);
+        miUpdateComicFiles.Visible = enumerable.Any(cb => cb.ComicInfoIsDirty);
         contextMenuItems.FixSeparators();
         miPasteData.Enabled = isPasteComicDataEnabled();
     }
@@ -2862,7 +2862,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
         int num = 0;
         IEnumerable<ComicBook> selectedBooks = GetBookList(ComicBookFilterType.Library | ComicBookFilterType.Selected);
-        ComicLibrary comicLibrary = selectedBooks.Select((ComicBook cb) => cb.Container as ComicLibrary).FirstOrDefault();
+        ComicLibrary comicLibrary = selectedBooks.Select(cb => cb.Container as ComicLibrary).FirstOrDefault();
         if (comicLibrary == null || !comicLibrary.EditMode.CanEditList())
         {
             return;
@@ -3210,7 +3210,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     {
         if (!(id == Guid.Empty))
         {
-            CoverViewItem coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault((CoverViewItem ci) => ci.Comic.Id == id);
+            CoverViewItem coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault(ci => ci.Comic.Id == id);
             if (coverViewItem != null)
             {
                 coverViewItem.Focused = true;
@@ -3223,7 +3223,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
     public bool SelectComic(ComicBook comic)
     {
         CloseStack(withUpdate: true);
-        CoverViewItem coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault((CoverViewItem c) => (!itemView.IsStack(c)) ? (c.Comic == comic) : (itemView.GetStackItems(c).OfType<CoverViewItem>().FirstOrDefault((CoverViewItem sc) => sc.Comic == comic) != null));
+        CoverViewItem coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault(c => (!itemView.IsStack(c)) ? (c.Comic == comic) : (itemView.GetStackItems(c).OfType<CoverViewItem>().FirstOrDefault(sc => sc.Comic == comic) != null));
         if (coverViewItem == null)
         {
             if (string.IsNullOrEmpty(QuickSearch) && ShowOptionType == ComicBookAllPropertiesMatcher.ShowOptionType.All && ShowComicType == ComicBookAllPropertiesMatcher.ShowComicType.All && !ShowOnlyDuplicates)
@@ -3240,7 +3240,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         if (itemView.IsStack(coverViewItem))
         {
             OpenStack(coverViewItem);
-            coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault((CoverViewItem c) => c.Comic == comic);
+            coverViewItem = itemView.DisplayedItems.OfType<CoverViewItem>().FirstOrDefault(c => c.Comic == comic);
         }
         itemView.SelectAll(selectionState: false);
         if (coverViewItem != null)

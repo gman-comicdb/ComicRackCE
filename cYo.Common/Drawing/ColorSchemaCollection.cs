@@ -9,7 +9,7 @@ namespace cYo.Common.Drawing;
 
 public class ColorSchemaCollection : List<ColorSchema>
 {
-    public ColorSchema this[string name] => Find((ColorSchema item) => item.Name == name);
+    public ColorSchema this[string name] => Find(item => item.Name == name);
 
     public static ColorSchemaCollection Load(string file)
     {

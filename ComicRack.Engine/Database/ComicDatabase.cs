@@ -239,25 +239,25 @@ public class ComicDatabase : ComicLibrary, IBlackList
         try
         {
             HashSet<string> files = Directory.Exists(customThumbnailsPath) ? new HashSet<string>(Directory.GetFiles(customThumbnailsPath), StringComparer.OrdinalIgnoreCase) : new HashSet<string>();
-            Dictionary<string, IGrouping<string, ComicBook>> bookKeyGroups = base.Books.Where((ComicBook cb) => !string.IsNullOrEmpty(cb.CustomThumbnailKey)).GroupBy((ComicBook cb) => cb.CustomThumbnailKey, StringComparer.OrdinalIgnoreCase).ToDictionary((IGrouping<string, ComicBook> gr) => gr.Key, StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, IGrouping<string, ComicBook>> bookKeyGroups = base.Books.Where(cb => !string.IsNullOrEmpty(cb.CustomThumbnailKey)).GroupBy(cb => cb.CustomThumbnailKey, StringComparer.OrdinalIgnoreCase).ToDictionary(gr => gr.Key, StringComparer.OrdinalIgnoreCase);
             Dictionary<string, IGrouping<string, StacksConfig.StackConfigItem>> stackKeyGroups = (from sc in (from cli in base.ComicLists.GetItems<ComicListItem>()
                                                                                                               select cli.Display.StackConfig into sc
                                                                                                               where sc != null
-                                                                                                              select sc).SelectMany((StacksConfig sc) => sc.Configs)
+                                                                                                              select sc).SelectMany(sc => sc.Configs)
                                                                                                   where !string.IsNullOrEmpty(sc.ThumbnailKey)
-                                                                                                  select sc).GroupBy((StacksConfig.StackConfigItem sc) => sc.ThumbnailKey, StringComparer.OrdinalIgnoreCase).ToDictionary((IGrouping<string, StacksConfig.StackConfigItem> gr) => gr.Key, StringComparer.OrdinalIgnoreCase);
-            foreach (string item in files.Where((string f) => !bookKeyGroups.ContainsKey(Path.GetFileName(f)) && !stackKeyGroups.ContainsKey(Path.GetFileName(f))))
+                                                                                                  select sc).GroupBy(sc => sc.ThumbnailKey, StringComparer.OrdinalIgnoreCase).ToDictionary(gr => gr.Key, StringComparer.OrdinalIgnoreCase);
+            foreach (string item in files.Where(f => !bookKeyGroups.ContainsKey(Path.GetFileName(f)) && !stackKeyGroups.ContainsKey(Path.GetFileName(f))))
             {
                 FileUtility.SafeDelete(item);
             }
-            foreach (string item2 in bookKeyGroups.Keys.Where((string k) => !files.Contains(Path.Combine(customThumbnailsPath, k))))
+            foreach (string item2 in bookKeyGroups.Keys.Where(k => !files.Contains(Path.Combine(customThumbnailsPath, k))))
             {
                 bookKeyGroups[item2].ForEach(delegate (ComicBook cb)
                 {
                     cb.CustomThumbnailKey = null;
                 });
             }
-            foreach (string item3 in stackKeyGroups.Keys.Where((string k) => !files.Contains(Path.Combine(customThumbnailsPath, k))))
+            foreach (string item3 in stackKeyGroups.Keys.Where(k => !files.Contains(Path.Combine(customThumbnailsPath, k))))
             {
                 stackKeyGroups[item3].ForEach(delegate (StacksConfig.StackConfigItem sc)
                 {
@@ -309,7 +309,7 @@ public class ComicDatabase : ComicLibrary, IBlackList
 
     public static ComicDatabase LoadXml(string file, Action<int> progress = null)
     {
-        return LoadXml(file, (Stream fs) => XmlUtility.Load<ComicDatabase>(fs, compressed: false), progress);
+        return LoadXml(file, fs => XmlUtility.Load<ComicDatabase>(fs, compressed: false), progress);
     }
 
     public static ComicDatabase CreateNew()

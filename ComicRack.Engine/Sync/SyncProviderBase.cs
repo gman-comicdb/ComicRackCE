@@ -44,7 +44,7 @@ public abstract class SyncProviderBase : ISyncProvider
         {
             Name = list.Name;
             Description = list.Description;
-            books.AddRange(list.BookIds.Where((Guid id) => validate == null || validate(id)));
+            books.AddRange(list.BookIds.Where(id => validate == null || validate(id)));
         }
     }
 

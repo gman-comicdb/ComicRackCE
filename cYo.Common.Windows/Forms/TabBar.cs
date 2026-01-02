@@ -311,7 +311,7 @@ public class TabBar : ContainerControl
 
     public class TabBarItemCollection : SmartList<TabBarItem>
     {
-        public TabBarItem this[string name] => Find((TabBarItem x) => x.Name == name);
+        public TabBarItem this[string name] => Find(x => x.Name == name);
 
         public TabBarItemCollection()
             : base(SmartListOptions.DisableOnSet | SmartListOptions.ClearWithRemove)
@@ -715,8 +715,8 @@ public class TabBar : ContainerControl
             {
                 return base.ClientRectangle;
             }
-            int num = base.Controls.Cast<Control>().Max((Control c) => (c.Dock == DockStyle.Left) ? c.Right : 0);
-            int num2 = base.Controls.Cast<Control>().Min((Control c) => (c.Dock == DockStyle.Right) ? c.Left : 0);
+            int num = base.Controls.Cast<Control>().Max(c => (c.Dock == DockStyle.Left) ? c.Right : 0);
+            int num2 = base.Controls.Cast<Control>().Min(c => (c.Dock == DockStyle.Right) ? c.Left : 0);
             if (num != 0)
             {
                 num += 20;
@@ -794,12 +794,12 @@ public class TabBar : ContainerControl
     public bool SelectTab(int tab, int offset, bool rollover)
     {
         tab = tab.Clamp(0, items.Count - 1);
-        TabBarItem[] array = items.Where((TabBarItem i) => i.Visible).ToArray();
+        TabBarItem[] array = items.Where(i => i.Visible).ToArray();
         if (array.Length == 0)
         {
             return false;
         }
-        int num = array.FindIndex((TabBarItem t) => t == items[tab]);
+        int num = array.FindIndex(t => t == items[tab]);
         if (num == -1)
         {
             num = (tab >= array.Length) ? (array.Length - 1) : 0;
@@ -995,7 +995,7 @@ public class TabBar : ContainerControl
     {
         ContextMenuStrip contextMenuStrip = new();
         bool flag = false;
-        int num = items.Count((TabBarItem x) => x.Visible);
+        int num = items.Count(x => x.Visible);
         for (int i = 0; i < items.Count; i++)
         {
             TabBarItem tbi = items[i];
@@ -1088,7 +1088,7 @@ public class TabBar : ContainerControl
         RightArrowState = GetItemState(GetRightArrowBounds(tabsRectangle), pt, e.Button);
         LeftArrowState = GetItemState(GetLeftArrowBounds(tabsRectangle), pt, e.Button);
         DropDownState = GetItemState(GetDropDownBounds(tabsRectangle), pt, e.Button);
-        TabBarItem tbi = items.Find((TabBarItem x) => x.Bounds.Contains(pt));
+        TabBarItem tbi = items.Find(x => x.Bounds.Contains(pt));
         if (tbi != null && GetTabBounds(tabsRectangle).Contains(pt))
         {
             items.ForEach(delegate (TabBarItem x)
@@ -1122,7 +1122,7 @@ public class TabBar : ContainerControl
     private void ShowToolTip(bool always, TabBarItem item)
     {
         Point pt = PointToClient(Cursor.Position);
-        item ??= items.Find((TabBarItem x) => x.Bounds.Contains(pt));
+        item ??= items.Find(x => x.Bounds.Contains(pt));
         if (item == null)
         {
             HideToolTip();
@@ -1172,7 +1172,7 @@ public class TabBar : ContainerControl
         ImageAnimator.UpdateFrames(img);
         using (ItemMonitor.Lock(animatedImages))
         {
-            TabBarItem tabBarItem = animatedImages.Keys.FirstOrDefault((TabBarItem tbi) => tbi.Image == img);
+            TabBarItem tabBarItem = animatedImages.Keys.FirstOrDefault(tbi => tbi.Image == img);
             if (tabBarItem != null)
             {
                 Invalidate(tabBarItem.Bounds);
@@ -1223,7 +1223,7 @@ public class TabBar : ContainerControl
                     });
                     if (MarkerPosition >= 0)
                     {
-                        TabBarItem[] array = items.Where((TabBarItem x) => x.Visible).ToArray();
+                        TabBarItem[] array = items.Where(x => x.Visible).ToArray();
                         if (array.Length != 0)
                         {
                             DrawMarker(rc: new Rectangle(((MarkerPosition < array.Length) ? array[MarkerPosition].Bounds.Left : array[array.Length - 1].Bounds.Right) - 2, rectangle.Top, 4, rectangle.Height), gr: e.Graphics);
@@ -1248,8 +1248,8 @@ public class TabBar : ContainerControl
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        int num = items.Where((TabBarItem x) => x.Visible).FindIndex((TabBarItem x) => x.Bounds.Contains(e.Location));
-        if (DragDropReorder && inDrag < 0 && !clickPoint.IsEmpty && items.Count((TabBarItem x) => x.Visible) > 1)
+        int num = items.Where(x => x.Visible).FindIndex(x => x.Bounds.Contains(e.Location));
+        if (DragDropReorder && inDrag < 0 && !clickPoint.IsEmpty && items.Count(x => x.Visible) > 1)
         {
             Point point = e.Location.Subtract(clickPoint);
             if (Math.Abs(point.X) > SystemInformation.DragSize.Width / 2 || Math.Abs(point.Y) > SystemInformation.DragSize.Height / 2)
@@ -1312,7 +1312,7 @@ public class TabBar : ContainerControl
         scrollTimer.Enabled = false;
         if (inDrag >= 0)
         {
-            TabBarItem[] array = items.Where((TabBarItem x) => x.Visible).ToArray();
+            TabBarItem[] array = items.Where(x => x.Visible).ToArray();
             if (inDrag != MarkerPosition && MarkerPosition >= 0 && MarkerPosition <= array.Length)
             {
                 TabBarItem item = array[inDrag];
@@ -1338,7 +1338,7 @@ public class TabBar : ContainerControl
             {
                 return;
             }
-            TabBarItem tabBarItem = items.Find((TabBarItem x) => x.Visible && x.Bounds.Contains(pt));
+            TabBarItem tabBarItem = items.Find(x => x.Visible && x.Bounds.Contains(pt));
             if (tabBarItem == null)
             {
                 return;
@@ -1479,7 +1479,7 @@ public class TabBar : ContainerControl
     {
         base.OnDragOver(drgevent);
         Point pt = PointToClient(new Point(drgevent.X, drgevent.Y));
-        TabBarItem tabBarItem = items.Find((TabBarItem x) => x.Bounds.Contains(pt));
+        TabBarItem tabBarItem = items.Find(x => x.Bounds.Contains(pt));
         if (tabBarItem != null)
         {
             SelectedTab = tabBarItem;
@@ -1517,7 +1517,7 @@ public class TabBar : ContainerControl
 
     private Rectangle GetDropDownBounds(Rectangle rc)
     {
-        return !ShowArrows || !ShowDropDown || !items.Exists((TabBarItem x) => x.ShowInDropDown)
+        return !ShowArrows || !ShowDropDown || !items.Exists(x => x.ShowInDropDown)
             ? Rectangle.Empty
             : new Rectangle(rc.Right - dropDownWidth, rc.Top, dropDownWidth, rc.Height);
     }
@@ -1530,7 +1530,7 @@ public class TabBar : ContainerControl
         float num3 = 1f;
         if (decreaseSize > 0)
         {
-            int num4 = items.Where((TabBarItem tbi) => tbi.AdjustWidth && tbi.Bounds.Width > FormUtility.ScaleDpiX(tbi.MinimumWidth)).Sum((TabBarItem tbi) => tbi.Bounds.Width);
+            int num4 = items.Where(tbi => tbi.AdjustWidth && tbi.Bounds.Width > FormUtility.ScaleDpiX(tbi.MinimumWidth)).Sum(tbi => tbi.Bounds.Width);
             if (num4 > 0)
             {
                 float val = num4 - (decreaseSize + 10);

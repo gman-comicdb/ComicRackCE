@@ -14,7 +14,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
     {
         using (withLocking ? rwLock.UpgradeableReadLock() : null)
         {
-            if (!providerDict.Any((IProviderInfo pi) => pi.ProviderType == pt))
+            if (!providerDict.Any(pi => pi.ProviderType == pt))
             {
                 using (withLocking ? rwLock.WriteLock() : null)
                 {
@@ -41,7 +41,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
     public IEnumerable<ProviderInfo> GetSourceProviderInfos(string source)
     {
         return from pi in GetProviderInfos()
-               where pi.Formats.Any((FileFormat f) => f.Supports(source))
+               where pi.Formats.Any(f => f.Supports(source))
                select pi;
     }
 
@@ -63,12 +63,12 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
 
     public IEnumerable<FileFormat> GetSourceFormats()
     {
-        return GetProviderInfos().SelectMany((ProviderInfo pi) => pi.Formats);
+        return GetProviderInfos().SelectMany(pi => pi.Formats);
     }
 
     public IEnumerable<FileFormat> GetSourceFormats(string source)
     {
-        return GetSourceProviderInfos(source).SelectMany((ProviderInfo pi) => pi.Formats);
+        return GetSourceProviderInfos(source).SelectMany(pi => pi.Formats);
     }
 
     protected virtual FileFormat GetActualSourceFormat(string source)
@@ -79,7 +79,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
 
     public FileFormat GetSourceFormat(string source, bool actualFormat = false)
     {
-        return actualFormat ? GetActualSourceFormat(source) : GetSourceFormats(source).FirstOrDefault((FileFormat ff) => ff.Supports(source));
+        return actualFormat ? GetActualSourceFormat(source) : GetSourceFormats(source).FirstOrDefault(ff => ff.Supports(source));
     }
 
     public string GetSourceFormatName(string source, bool actualFormat = false)
@@ -91,20 +91,20 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
     public Type GetFormatProviderType(string formatName)
     {
         return (from pi in GetProviderInfos()
-                where pi.Formats.Any((FileFormat f) => f.Name == formatName)
+                where pi.Formats.Any(f => f.Name == formatName)
                 select pi.ProviderType).FirstOrDefault();
     }
 
     public Type GetFormatProviderType(int formatId)
     {
         return (from pi in GetProviderInfos()
-                where pi.Formats.Any((FileFormat f) => f.Id == formatId)
+                where pi.Formats.Any(f => f.Id == formatId)
                 select pi.ProviderType).FirstOrDefault();
     }
 
     public IEnumerable<string> GetFileExtensions()
     {
-        return GetSourceFormats().SelectMany((FileFormat f) => f.Extensions).Distinct();
+        return GetSourceFormats().SelectMany(f => f.Extensions).Distinct();
     }
 
     public T CreateFormatProvider(string formatName)
@@ -147,7 +147,7 @@ public class ProviderFactory<T> : ProviderFactoryBase<T> where T : class
         IEnumerable<FileFormat> enumerable = GetSourceFormats();
         if (sort)
         {
-            enumerable = enumerable.OrderBy((FileFormat f) => f);
+            enumerable = enumerable.OrderBy(f => f);
         }
         return enumerable.GetDialogFilter(withAllFilter);
     }

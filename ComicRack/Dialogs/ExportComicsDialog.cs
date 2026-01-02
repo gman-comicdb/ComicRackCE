@@ -166,7 +166,7 @@ public partial class ExportComicsDialog : FormEx
         enumUtil.ValueChanged += enumUtil_ValueChanged;
         new NiceTreeSkin(tvPresets);
         ListSelectorControl.Register(SearchEngines.Engines, txTagsToAppend);
-        EditControlUtility.SetText(txTagsToAppend, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Tags));
+        EditControlUtility.SetText(txTagsToAppend, null, () => Program.Lists.GetComicFieldList(cb => cb.Tags));
         IdleProcess.Idle += OnIdle;
     }
 
@@ -217,7 +217,7 @@ public partial class ExportComicsDialog : FormEx
         if (!string.IsNullOrEmpty(name))
         {
             SettingName = name;
-            UserPresets.RemoveAll((ExportSetting x) => x.Name == name);
+            UserPresets.RemoveAll(x => x.Name == name);
             UserPresets.Add(Setting);
             BuildPresetsList();
         }

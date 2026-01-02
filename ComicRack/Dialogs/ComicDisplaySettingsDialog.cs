@@ -307,7 +307,7 @@ public partial class ComicDisplaySettingsDialog : FormEx
 
     private void SelectTextureFile(ComboBox cb, string texture)
     {
-        int num = cb.Items.OfType<TextureFileItem>().FindIndex((TextureFileItem i) => string.Equals(i.Item, texture, StringComparison.OrdinalIgnoreCase));
+        int num = cb.Items.OfType<TextureFileItem>().FindIndex(i => string.Equals(i.Item, texture, StringComparison.OrdinalIgnoreCase));
         if (num != -1)
         {
             cb.SelectedIndex = num;

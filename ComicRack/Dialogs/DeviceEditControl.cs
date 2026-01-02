@@ -100,7 +100,7 @@ public partial class DeviceEditControl : UserControlEx
         new LibraryTreeSkin
         {
             TreeView = tvSharedLists,
-            GetNodeItem = (TreeNode n) => ((TagElement)n.Tag).Item,
+            GetNodeItem = n => ((TagElement)n.Tag).Item,
             DisableDeviceIcon = true
         };
         txLimit.EnableOnlyNumberKeys();
@@ -125,7 +125,7 @@ public partial class DeviceEditControl : UserControlEx
 
     public void SelectList(Guid id)
     {
-        tvSharedLists.SelectedNode = tvSharedLists.Nodes.Find((TreeNode tn) => ((TagElement)tn.Tag).Item.Id == id);
+        tvSharedLists.SelectedNode = tvSharedLists.Nodes.Find(tn => ((TagElement)tn.Tag).Item.Id == id);
     }
 
     public void CopyShareSettings()
@@ -221,7 +221,7 @@ public partial class DeviceEditControl : UserControlEx
         DeviceSyncSettings settings = Settings;
         ComicListItem cli = GetSelectedComicListItem();
         UpdateTree(settings, clear: true);
-        TreeNode treeNode = (cli == null) ? null : tvSharedLists.Nodes.Find((TreeNode n) => GetSharedList(n) != null && GetComicListItem(n).Id == cli.Id);
+        TreeNode treeNode = (cli == null) ? null : tvSharedLists.Nodes.Find(n => GetSharedList(n) != null && GetComicListItem(n).Id == cli.Id);
         tvSharedLists.SelectedNode = treeNode;
         SetEditor(treeNode);
     }
@@ -327,10 +327,10 @@ public partial class DeviceEditControl : UserControlEx
     {
         IEnumerable<TreeNode> source = tvSharedLists.AllNodes();
         IEnumerable<TreeNode> source2 = (tvSharedLists.SelectedNode == null) ? [] : tvSharedLists.SelectedNode.Nodes.All().AddFirst(tvSharedLists.SelectedNode);
-        btSelectAll.Enabled = source.Any((TreeNode n) => !n.Checked);
-        btSelectNone.Enabled = source.Any((TreeNode n) => n.Checked);
-        btSelectList.Enabled = source2.Any((TreeNode n) => !n.Checked);
-        btDeselectList.Enabled = source2.Any((TreeNode n) => n.Checked);
+        btSelectAll.Enabled = source.Any(n => !n.Checked);
+        btSelectNone.Enabled = source.Any(n => n.Checked);
+        btSelectList.Enabled = source2.Any(n => !n.Checked);
+        btDeselectList.Enabled = source2.Any(n => n.Checked);
         chkOnlyShowSelected.Enabled = chkOnlyShowSelected.Checked || chkOnlyChecked.Checked || btSelectNone.Enabled;
         chkOnlyChecked.Visible = chkOnlyChecked.Checked || tvSharedLists.Height > 12;
     }
@@ -371,9 +371,9 @@ public partial class DeviceEditControl : UserControlEx
         foreach (ComicListItem cli in clic)
         {
             num++;
-            DeviceSyncSettings.SharedList sharedList = settings.Lists.FirstOrDefault((DeviceSyncSettings.SharedList sl) => sl.ListId == cli.Id);
+            DeviceSyncSettings.SharedList sharedList = settings.Lists.FirstOrDefault(sl => sl.ListId == cli.Id);
             bool flag = sharedList != null;
-            TreeNode treeNode = tnc.Find((TreeNode n) => ((TagElement)n.Tag).Item == cli, all: false);
+            TreeNode treeNode = tnc.Find(n => ((TagElement)n.Tag).Item == cli, all: false);
             if (flag || fillAll)
             {
                 treeNode ??= tnc.Add(cli.Name);

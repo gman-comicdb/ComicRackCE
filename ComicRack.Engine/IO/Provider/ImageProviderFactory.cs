@@ -18,7 +18,7 @@ public class ImageProviderFactory : ProviderFactory<ImageProvider>
             {
                 return imageProvider;
             }
-            ImageProvider imageProvider2 = CreateProviders().FirstOrDefault((ImageProvider t) => (t.Capabilities & ImageProviderCapabilities.FastFormatCheck) != 0 && t.FastFormatCheck(source));
+            ImageProvider imageProvider2 = CreateProviders().FirstOrDefault(t => (t.Capabilities & ImageProviderCapabilities.FastFormatCheck) != 0 && t.FastFormatCheck(source));
             if (imageProvider2 != null)
             {
                 imageProvider2.Source = source;

@@ -458,7 +458,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public SmartList<ComicLibraryServerConfig> Shares => shares;
 
-    public bool IsSharing => shares.Any((ComicLibraryServerConfig sc) => sc.IsValidShare);
+    public bool IsSharing => shares.Any(sc => sc.IsValidShare);
 
     [DefaultValue("")]
     public string ExternalServerAddress { get; set; }
@@ -2196,13 +2196,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     {
         return string.IsNullOrEmpty(name)
             ? null
-            : workspaces.FirstOrDefault((DisplayWorkspace ws) => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
+            : workspaces.FirstOrDefault(ws => string.Equals(ws.Name, name, StringComparison.OrdinalIgnoreCase));
     }
 
     public void AddPasswordToCache(string remote, string password)
     {
         int hash = remote.GetHashCode();
-        PasswordCacheEntry passwordCacheEntry = passwordCache.Find((PasswordCacheEntry e) => e.RemoteId == hash);
+        PasswordCacheEntry passwordCacheEntry = passwordCache.Find(e => e.RemoteId == hash);
         if (passwordCacheEntry == null)
         {
             passwordCache.Add(new PasswordCacheEntry(remote, password));
@@ -2216,13 +2216,13 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     public string GetPasswordFromCache(string remote)
     {
         int hash = remote.GetHashCode();
-        PasswordCacheEntry passwordCacheEntry = passwordCache.Find((PasswordCacheEntry e) => e.RemoteId == hash);
+        PasswordCacheEntry passwordCacheEntry = passwordCache.Find(e => e.RemoteId == hash);
         return passwordCacheEntry == null ? string.Empty : passwordCacheEntry.Password;
     }
 
     public DisplayListConfig GetRemoteViewConfig(Guid id, DisplayListConfig defaultConfig)
     {
-        RemoteViewConfig remoteViewConfig = remoteViewConfigList.Find((RemoteViewConfig item) => item.Id == id);
+        RemoteViewConfig remoteViewConfig = remoteViewConfigList.Find(item => item.Id == id);
         DisplayListConfig displayListConfig = null;
         if (remoteViewConfig != null)
         {
@@ -2233,7 +2233,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public void UpdateRemoteViewConfig(Guid id, DisplayListConfig config)
     {
-        RemoteViewConfig remoteViewConfig = remoteViewConfigList.Find((RemoteViewConfig item) => item.Id == id);
+        RemoteViewConfig remoteViewConfig = remoteViewConfigList.Find(item => item.Id == id);
         if (remoteViewConfig != null)
         {
             remoteViewConfig.Display = config;
@@ -2246,12 +2246,12 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     public ComicExplorerViewSettings GetRemoteExplorerViewSetting(Guid id)
     {
-        return RemoteExplorerViewSettingsList.FirstOrDefault((RemoteExplorerViewSettings s) => s.Id == id)?.Settings;
+        return RemoteExplorerViewSettingsList.FirstOrDefault(s => s.Id == id)?.Settings;
     }
 
     public void UpdateExplorerViewSetting(Guid id, ComicExplorerViewSettings setting)
     {
-        RemoteExplorerViewSettingsList.RemoveAll((RemoteExplorerViewSettings s) => s.Id == id);
+        RemoteExplorerViewSettingsList.RemoveAll(s => s.Id == id);
         RemoteExplorerViewSettingsList.Add(new RemoteExplorerViewSettings(id, setting));
     }
 
@@ -2265,7 +2265,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
     {
         Devices.ForEach(delegate (DeviceSyncSettings d)
         {
-            ((ICollection<DeviceSyncSettings.SharedList>)d.Lists).RemoveAll((Predicate<DeviceSyncSettings.SharedList>)((DeviceSyncSettings.SharedList sl) => sl == null));
+            ((ICollection<DeviceSyncSettings.SharedList>)d.Lists).RemoveAll((Predicate<DeviceSyncSettings.SharedList>)(sl => sl == null));
         });
     }
 

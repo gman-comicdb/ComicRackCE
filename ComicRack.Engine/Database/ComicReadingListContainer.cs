@@ -47,11 +47,11 @@ public class ComicReadingListContainer
             if (comicSmartListItem != null && sortHandler != null && !string.IsNullOrEmpty(sortKey) && (sortHandler(sortKey) is IComparer<ComicBook> comparer) && comparer != null)
                 bookList.Sort(comparer);  // sort the book list using the sort key;
 
-            bookList.ForEach((ComicBook b) => items.Add(new ComicReadingListItem(b, withFilenames))); // add the individual list of books
+            bookList.ForEach(b => items.Add(new ComicReadingListItem(b, withFilenames))); // add the individual list of books
             return;
         }
         MatcherMode = comicSmartListItem.MatcherMode;
-        comicSmartListItem.Matchers.ForEach((ComicBookMatcher m) => Matchers.Add(m.Clone() as ComicBookMatcher));
+        comicSmartListItem.Matchers.ForEach(m => Matchers.Add(m.Clone() as ComicBookMatcher));
     }
 
     public void Serialize(Stream outStream)

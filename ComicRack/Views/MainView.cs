@@ -193,7 +193,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             ShowView(tsbLibrary);
             return;
         }
-        TabBar.TabBarItem tabBarItem = tabStrip.Items.Where((TabBar.TabBarItem ti) => ti.Tag is ComicExplorerView && (ti.Tag as ComicExplorerView).ComicBrowser.Library == library).FirstOrDefault();
+        TabBar.TabBarItem tabBarItem = tabStrip.Items.Where(ti => ti.Tag is ComicExplorerView && (ti.Tag as ComicExplorerView).ComicBrowser.Library == library).FirstOrDefault();
         ShowView(tabBarItem ?? tsbLibrary);
     }
 
@@ -227,7 +227,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             ShowLast();
             return;
         }
-        tabStrip.Items.Where((TabBar.TabBarItem btn) => btn.Visible && object.Equals(n, btn.Tag)).ForFirst(delegate (TabBar.TabBarItem btn)
+        tabStrip.Items.Where(btn => btn.Visible && object.Equals(n, btn.Tag)).ForFirst(delegate (TabBar.TabBarItem btn)
         {
             ShowView(btn);
         });
@@ -252,7 +252,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public IEnumerable<TabBar.TabBarItem> GetFileTabs(bool withPlus = false)
     {
-        return tabStrip.Items.Where((TabBar.TabBarItem tbi) => tbi.Tag is int && ((int)tbi.Tag >= 0 || withPlus)).ToArray();
+        return tabStrip.Items.Where(tbi => tbi.Tag is int && ((int)tbi.Tag >= 0 || withPlus)).ToArray();
     }
 
     public void AddFileTab(TabBar.TabBarItem tsb)
@@ -297,7 +297,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public IEnumerable<ComicLibrary> GetLibraries(bool includeRemote = true, bool onlyLocalRemote = false)
     {
-        return from cev in tabStrip.Items.Select((TabBar.TabBarItem tb) => tb.Tag).OfType<ComicExplorerView>()
+        return from cev in tabStrip.Items.Select(tb => tb.Tag).OfType<ComicExplorerView>()
                select new
                {
                    Client = cev.Tag as ComicLibraryClient,
@@ -310,7 +310,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
 
     public void AddRemoteLibrary(ComicLibraryClient client, AddRemoteLibraryOptions options)
     {
-        if (!Program.ExtendedSettings.OwnRemoteConnect && (client == null || Program.NetworkManager.RunningServers.Any((ComicLibraryServer s) => s.Id == client.ShareInformation.Id)))
+        if (!Program.ExtendedSettings.OwnRemoteConnect && (client == null || Program.NetworkManager.RunningServers.Any(s => s.Id == client.ShareInformation.Id)))
         {
             return;
         }
@@ -573,7 +573,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
             }
             else
             {
-                TabBar.TabBarItem tabBarItem = tabStrip.Items.FirstOrDefault((TabBar.TabBarItem t) => t == tabStripButton && t.Tag is Control);
+                TabBar.TabBarItem tabBarItem = tabStrip.Items.FirstOrDefault(t => t == tabStripButton && t.Tag is Control);
                 if (tabBarItem != null)
                 {
                     Control control = tabBarItem.Tag as Control;
@@ -581,7 +581,7 @@ public partial class MainView : SubView, IDisplayWorkspace, IListDisplays
                     control.Focus();
                 }
             }
-            foreach (TabBar.TabBarItem item in tabStrip.Items.Where((TabBar.TabBarItem tsi) => tsi != tabStripButton && tsi.Tag is Control))
+            foreach (TabBar.TabBarItem item in tabStrip.Items.Where(tsi => tsi != tabStripButton && tsi.Tag is Control))
             {
                 ((Control)item.Tag).Hide();
             }

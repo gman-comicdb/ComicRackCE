@@ -433,9 +433,9 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
                     IEnumerable<ShareableComicListItem> source = from scli in ComicLibrary.ComicLists.GetItems<ShareableComicListItem>()
                                                                  where Config.SharedItems.Contains(scli.Id)
                                                                  select scli;
-                    comicLibrary.ComicLists.AddRange(source.Select((ShareableComicListItem scli) => new ComicIdListItem(scli)));
-                    hashSet.AddRange(source.SelectMany((ShareableComicListItem scli) => scli.GetBooks()));
-                    comicLibrary.Books.AddRange(hashSet.Select((ComicBook cb) => new ComicBook(cb)));
+                    comicLibrary.ComicLists.AddRange(source.Select(scli => new ComicIdListItem(scli)));
+                    hashSet.AddRange(source.SelectMany(scli => scli.GetBooks()));
+                    comicLibrary.Books.AddRange(hashSet.Select(cb => new ComicBook(cb)));
                     return comicLibrary;
                 }
             case LibraryShareMode.All:
@@ -492,7 +492,7 @@ public class ComicLibraryServer : IRemoteComicLibrary, IRemoteServerInfo, IDispo
 
     public static IEnumerable<ComicLibraryServer> Start(IEnumerable<ComicLibraryServerConfig> servers, int port, Func<ComicLibrary> getComicLibrary, IPagePool pagePool, IThumbnailPool thumbPool, IBroadcast<BroadcastData> broadcaster)
     {
-        foreach (ComicLibraryServerConfig item in servers.Where((ComicLibraryServerConfig c) => c.IsValidShare))
+        foreach (ComicLibraryServerConfig item in servers.Where(c => c.IsValidShare))
         {
             int freeShareNumber = GetFreeShareNumber(port);
             item.ServicePort = port;

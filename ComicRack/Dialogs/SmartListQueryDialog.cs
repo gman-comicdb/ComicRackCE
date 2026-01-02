@@ -215,7 +215,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
                 {
                     e.Handled = true;
                     int lineFromCharIndex = rtfQuery.GetLineFromCharIndex(rtfQuery.SelectionStart);
-                    int val = rtfQuery.Lines[lineFromCharIndex].FindIndex((char c) => !char.IsWhiteSpace(c));
+                    int val = rtfQuery.Lines[lineFromCharIndex].FindIndex(c => !char.IsWhiteSpace(c));
                     InsertText("\n" + new string(' ', Math.Max(0, val)));
                     break;
                 }
@@ -417,7 +417,7 @@ public partial class SmartListQueryDialog : FormEx, ISmartListDialog
 
     private Tokenizer.Token GetCurrentToken(int n)
     {
-        return ComicSmartListItem.TokenizeQuery(rtfQuery.Text).GetAll().FirstOrDefault((Tokenizer.Token t) => n >= t.Index && n <= t.Index + t.Length);
+        return ComicSmartListItem.TokenizeQuery(rtfQuery.Text).GetAll().FirstOrDefault(t => n >= t.Index && n <= t.Index + t.Length);
     }
 
     private void InsertText(string text)

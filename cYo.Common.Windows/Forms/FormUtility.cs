@@ -195,11 +195,11 @@ public static class FormUtility
             panel.Clear(withDispose: true);
         }
         PropertyInfo[] properties = data.GetType().GetProperties();
-        IEnumerable<string> enumerable = properties.Select((PropertyInfo p) => p.Category()).Distinct();
+        IEnumerable<string> enumerable = properties.Select(p => p.Category()).Distinct();
         foreach (string cat in enumerable)
         {
             string caption = tr[cat ?? "Other"];
-            CollapsibleGroupBox collapsibleGroupBox = panel.Controls.OfType<CollapsibleGroupBox>().FirstOrDefault((CollapsibleGroupBox cp) => cp.Text == caption);
+            CollapsibleGroupBox collapsibleGroupBox = panel.Controls.OfType<CollapsibleGroupBox>().FirstOrDefault(cp => cp.Text == caption);
             var array = (from p in properties
                          where p.PropertyType == typeof(bool) && p.Browsable() && p.Category() == cat
                          select new
@@ -213,7 +213,7 @@ public static class FormUtility
             var array2 = array;
             foreach (var pi in array2)
             {
-                CheckBox checkBox = panel.GetControls<CheckBox>().FirstOrDefault((CheckBox cb) => pi.Property.Name.Equals(cb.Tag));
+                CheckBox checkBox = panel.GetControls<CheckBox>().FirstOrDefault(cb => pi.Property.Name.Equals(cb.Tag));
                 if (checkBox == null)
                 {
                     if (collapsibleGroupBox == null)
@@ -402,7 +402,7 @@ public static class FormUtility
 
     public static IEnumerable<T> GetControls<T>(this Control container, bool all = true) where T : Control
     {
-        return !all ? container.Controls.OfType<T>() : container.Controls.Recurse<T>((object o) => ((Control)o).Controls);
+        return !all ? container.Controls.OfType<T>() : container.Controls.Recurse<T>(o => ((Control)o).Controls);
     }
 
     public static void ForEachControl<T>(this Control container, Action<T> action, bool all = true) where T : Control

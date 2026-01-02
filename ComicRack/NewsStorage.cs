@@ -109,7 +109,7 @@ public class NewsStorage
 
     private readonly NewsChannelItemInfoCollection newsChannelItemInfos = new();
 
-    public bool HasUnread => Items.Find((NewsChannelItem item) => !NewsChannelItemInfos[item].IsRead) != null;
+    public bool HasUnread => Items.Find(item => !NewsChannelItemInfos[item].IsRead) != null;
 
     public SubscriptionCollection Subscriptions => subscriptions;
 
@@ -187,7 +187,7 @@ public class NewsStorage
     private void UpdateChannelInfo()
     {
         NewsChannelItemCollection items = Items;
-        newsChannelItemInfos.RemoveAll((NewsChannelItemInfo ci) => items[ci.Guid] == null);
+        newsChannelItemInfos.RemoveAll(ci => items[ci.Guid] == null);
     }
 
     public static NewsStorage Load(string file)

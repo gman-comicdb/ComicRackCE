@@ -175,7 +175,7 @@ public class ContextHelp
         {
             yield break;
         }
-        var enumerable = Lookup.Where((KeyValuePair<string, string> n) => n.Key.StartsWith("HelpMenu")).Select(delegate (KeyValuePair<string, string> n)
+        var enumerable = Lookup.Where(n => n.Key.StartsWith("HelpMenu")).Select(delegate (KeyValuePair<string, string> n)
         {
             string[] array = n.Value.Split(';').TrimStrings().RemoveEmpty()
                 .ToArray();

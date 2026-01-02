@@ -77,7 +77,7 @@ public class DeviceFolder : DeviceItem
     public DeviceItem Find(string regEx, int maxLevel = -1)
     {
         Regex rx = new(regEx, RegexOptions.IgnoreCase);
-        return Items.Recurse<DeviceItem>((object item) => (item is not DeviceFolder) ? null : ((DeviceFolder)item).Items, bottomUp: false, maxLevel).FirstOrDefault((DeviceItem item) => rx.IsMatch(item.Name));
+        return Items.Recurse<DeviceItem>(item => (item is not DeviceFolder) ? null : ((DeviceFolder)item).Items, bottomUp: false, maxLevel).FirstOrDefault(item => rx.IsMatch(item.Name));
     }
 
     public static string CombinePath(string pathAbsolute, string pathRelative)

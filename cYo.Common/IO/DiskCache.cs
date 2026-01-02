@@ -348,7 +348,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
         ILookup<string, K> lookup;
         using (ItemMonitor.Lock(fileList))
         {
-            lookup = fileList.ToLookup(GetFullPath, (CacheItem f) => f.Key);
+            lookup = fileList.ToLookup(GetFullPath, f => f.Key);
         }
         foreach (string file in FileUtility.GetFiles(CacheFolder, SearchOption.AllDirectories, ".cache"))
         {
@@ -537,7 +537,7 @@ public abstract class DiskCache<K, T> : DisposableObject, IDiskCache<K, T>, IDis
     {
         using (ItemMonitor.Lock(fileList))
         {
-            return fileList.Select((CacheItem lln) => lln.Key).ToArray();
+            return fileList.Select(lln => lln.Key).ToArray();
         }
     }
 

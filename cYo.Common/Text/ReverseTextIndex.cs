@@ -87,7 +87,7 @@ public class ReverseTextIndex<T>
     {
         using (ItemMonitor.Lock(index))
         {
-            KeyValuePair<string, ICollection<T>>[] array = index.Where((KeyValuePair<string, ICollection<T>> kvp) => kvp.Value.Contains(item)).ToArray();
+            KeyValuePair<string, ICollection<T>>[] array = index.Where(kvp => kvp.Value.Contains(item)).ToArray();
             for (int i = 0; i < array.Length; i++)
             {
                 KeyValuePair<string, ICollection<T>> keyValuePair = array[i];

@@ -68,7 +68,7 @@ public class ReverseIndex<T, K>
     {
         using (ItemMonitor.Lock(index))
         {
-            KeyValuePair<K, ICollection<T>>[] array = index.Where((KeyValuePair<K, ICollection<T>> kvp) => kvp.Value.Contains(item)).ToArray();
+            KeyValuePair<K, ICollection<T>>[] array = index.Where(kvp => kvp.Value.Contains(item)).ToArray();
             for (int i = 0; i < array.Length; i++)
             {
                 KeyValuePair<K, ICollection<T>> keyValuePair = array[i];

@@ -94,7 +94,7 @@ public class NetworkManager : DisposableObject
 
     public bool IsOwnServer(string serverAddress)
     {
-        return runningServers.Any((ComicLibraryServer rs) => rs.GetAnnouncementUri() == serverAddress);
+        return runningServers.Any(rs => rs.GetAnnouncementUri() == serverAddress);
     }
 
     public bool HasActiveServers()
@@ -104,7 +104,7 @@ public class NetworkManager : DisposableObject
 
     public bool RecentServerActivity(int seconds = 10)
     {
-        return runningServers.Any((ComicLibraryServer s) => s.Statistics.WasActive(seconds));
+        return runningServers.Any(s => s.Statistics.WasActive(seconds));
     }
 
     public void BroadcastStart()
@@ -130,8 +130,8 @@ public class NetworkManager : DisposableObject
             share.OnlyPrivateConnections = !share.IsInternet && PrivatePort == PublicPort;
             share.PrivateListPassword = (share.IsInternet && share.IsPrivate) ? Settings.PrivateListingPassword : string.Empty;
         }
-        runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => !sc.IsInternet), PrivatePort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
-        runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where((ComicLibraryServerConfig sc) => sc.IsInternet), PublicPort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
+        runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where(sc => !sc.IsInternet), PrivatePort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
+        runningServers.AddRange(ComicLibraryServer.Start(Settings.Shares.Where(sc => sc.IsInternet), PublicPort, () => DatabaseManager.Database, CacheManager.ImagePool, CacheManager.ImagePool, Broadcaster));
     }
 
     public void Stop()
@@ -157,7 +157,7 @@ public class NetworkManager : DisposableObject
         switch (e.Data.BroadcastType)
         {
             case BroadcastType.ClientStarted:
-                foreach (ComicLibraryServer item in runningServers.Where((ComicLibraryServer si) => !si.Config.IsInternet))
+                foreach (ComicLibraryServer item in runningServers.Where(si => !si.Config.IsInternet))
                 {
                     Broadcaster.Broadcast(new BroadcastData(BroadcastType.ServerStarted, item.Config.ServiceName, item.Config.ServicePort));
                 }

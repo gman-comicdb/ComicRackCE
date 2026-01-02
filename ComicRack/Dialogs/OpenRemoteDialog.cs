@@ -95,7 +95,7 @@ public partial class OpenRemoteDialog : FormEx
 
     private void cbServer_TextUpdate(object sender, EventArgs e)
     {
-        RemoteShareItem remoteShareItem = cbServer.Items.OfType<RemoteShareItem>().FirstOrDefault((RemoteShareItem n) => n.Name == cbServer.Text);
+        RemoteShareItem remoteShareItem = cbServer.Items.OfType<RemoteShareItem>().FirstOrDefault(n => n.Name == cbServer.Text);
         CurrentItem = remoteShareItem ?? new RemoteShareItem(cbServer.Text);
     }
 
@@ -151,7 +151,7 @@ public partial class OpenRemoteDialog : FormEx
             }
         }
         lvServers.Items.Clear();
-        foreach (ShareInformation item in servers.Where((ShareInformation s) => string.IsNullOrEmpty(filter) || s.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) || s.Comment.Contains(filter, StringComparison.OrdinalIgnoreCase)))
+        foreach (ShareInformation item in servers.Where(s => string.IsNullOrEmpty(filter) || s.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) || s.Comment.Contains(filter, StringComparison.OrdinalIgnoreCase)))
         {
             ListViewItem listViewItem = lvServers.Items.Add(item.Name, item.IsProtected ? 1 : 0);
             listViewItem.SubItems.Add(item.Comment);

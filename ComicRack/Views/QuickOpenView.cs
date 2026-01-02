@@ -90,7 +90,7 @@ public partial class QuickOpenView : CaptionControl
         HashSet<Guid> h = new(from item in itemView.Items.OfType<CoverViewItem>()
                                             select item.Comic.Id);
         int i = itemView.Items.Count;
-        foreach (CoverViewItem item in from cb in (from cb in books.OrderBy((ComicBook cb) => cb, new ComicBookOpenedSorter())
+        foreach (CoverViewItem item in from cb in (from cb in books.OrderBy(cb => cb, new ComicBookOpenedSorter())
                                                    where cb.IsLinked
                                                    where !h.Contains(cb.Id)
                                                    select cb).Take(maxCount)

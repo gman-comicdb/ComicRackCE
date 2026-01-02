@@ -84,7 +84,7 @@ public static class ListExtensions
 
     public static void RemoveAll<T>(this ICollection<T> collection, Predicate<T> filter)
     {
-        collection.RemoveRange(collection.Where((T t) => filter(t)).ToArray());
+        collection.RemoveRange(collection.Where(t => filter(t)).ToArray());
     }
 
     public static void RemoveAll<T>(this IList collection, Predicate<T> filter)
@@ -203,7 +203,7 @@ public static class ListExtensions
 
     public static T Max<T>(this IEnumerable<T> items, Comparison<T> comparision)
     {
-        return items.Aggregate((T a, T b) => (comparision(a, b) <= 0) ? b : a);
+        return items.Aggregate((a, b) => (comparision(a, b) <= 0) ? b : a);
     }
 
     public static IEnumerable<T> AddFirst<T>(this IEnumerable<T> list, T item)

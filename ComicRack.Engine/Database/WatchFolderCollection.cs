@@ -9,7 +9,7 @@ namespace cYo.Projects.ComicRack.Engine.Database;
 [Serializable]
 public class WatchFolderCollection : SmartList<WatchFolder>
 {
-    public IEnumerable<string> Folders => this.Select((WatchFolder wf) => wf.Folder);
+    public IEnumerable<string> Folders => this.Select(wf => wf.Folder);
 
     public WatchFolderCollection()
     {

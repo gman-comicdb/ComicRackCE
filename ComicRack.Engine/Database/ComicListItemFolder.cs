@@ -82,7 +82,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
         switch (CombineMode)
         {
             case ComicFolderCombineMode.And:
-                foreach (ComicBook item in cbl.Where((ComicBook cb) => Items.All((ComicListItem list) => list.GetCache().Contains(cb))))
+                foreach (ComicBook item in cbl.Where(cb => Items.All(list => list.GetCache().Contains(cb))))
                 {
                     yield return item;
                 }
@@ -90,7 +90,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
             case ComicFolderCombineMode.Empty:
                 yield break;
         }
-        foreach (ComicBook item2 in cbl.Where((ComicBook cb) => Items.Any((ComicListItem list) => list.GetCache().Contains(cb))))
+        foreach (ComicBook item2 in cbl.Where(cb => Items.Any(list => list.GetCache().Contains(cb))))
         {
             yield return item2;
         }
@@ -98,7 +98,7 @@ public class ComicListItemFolder : ShareableComicListItem, IDeserializationCallb
 
     public override bool Filter(string filter)
     {
-        return Items.Any((ComicListItem cli) => cli.Filter(filter));
+        return Items.Any(cli => cli.Filter(filter));
     }
 
     private void items_Changed(object sender, SmartListChangedEventArgs<ComicListItem> e)

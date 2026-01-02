@@ -48,17 +48,17 @@ public abstract class ImageManagerBase<T> : DisposableObject where T : class, ID
 
     public void RefreshLastImage(string source)
     {
-        Func<ImageKey, bool> predicate = (ImageKey k) => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase);
+        Func<ImageKey, bool> predicate = k => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase);
         try
         {
-            RefreshImage(MemoryCache.GetKeys().Where(predicate).Max((ImageKey a, ImageKey b) => Math.Sign(a.Index - b.Index)));
+            RefreshImage(MemoryCache.GetKeys().Where(predicate).Max((a, b) => Math.Sign(a.Index - b.Index)));
         }
         catch
         {
         }
         try
         {
-            RefreshImage(DiskCache.GetKeys().Where(predicate).Max((ImageKey a, ImageKey b) => Math.Sign(a.Index - b.Index)));
+            RefreshImage(DiskCache.GetKeys().Where(predicate).Max((a, b) => Math.Sign(a.Index - b.Index)));
         }
         catch
         {
@@ -89,7 +89,7 @@ public abstract class ImageManagerBase<T> : DisposableObject where T : class, ID
 
     public IItemLock<T> AddImage(ImageKey key, IImageProvider imageProvider)
     {
-        return AddImage(key, (ImageKey k) => CreateNewFromProvider(k, imageProvider));
+        return AddImage(key, k => CreateNewFromProvider(k, imageProvider));
     }
 
     public bool IsAvailable(ImageKey key, bool memoryOnly)

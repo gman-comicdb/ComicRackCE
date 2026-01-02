@@ -196,41 +196,41 @@ public class ComicBookSeriesStatistics
     {
         Books = books;
         count = new Lazy<int>(() => Books.Count());
-        minCount = new Lazy<int>(() => Books.Min((ComicBook cb) => cb.ShadowCount));
-        maxCount = new Lazy<int>(() => Books.Max((ComicBook cb) => cb.ShadowCount));
-        readCount = new Lazy<int>(() => Books.Count((ComicBook cb) => cb.HasBeenRead));
-        pageCount = new Lazy<int>(() => Books.Sum((ComicBook cb) => cb.PageCount));
-        pageReadCount = new Lazy<int>(() => Books.Sum((ComicBook cb) => cb.LastPageRead));
+        minCount = new Lazy<int>(() => Books.Min(cb => cb.ShadowCount));
+        maxCount = new Lazy<int>(() => Books.Max(cb => cb.ShadowCount));
+        readCount = new Lazy<int>(() => Books.Count(cb => cb.HasBeenRead));
+        pageCount = new Lazy<int>(() => Books.Sum(cb => cb.PageCount));
+        pageReadCount = new Lazy<int>(() => Books.Sum(cb => cb.LastPageRead));
         readPercentage = new Lazy<int>(() => (Count != 0) ? (ReadCount * 100 / Count) : 0);
-        firstNumber = new Lazy<float>(() => Books.Min((ComicBook cb) => GetSafeNumber(cb)));
-        lastNumber = new Lazy<float>(() => Books.Max((ComicBook cb) => GetSafeNumber(cb)));
-        ratingCount = new Lazy<int>(() => Books.Count((ComicBook cb) => cb.Rating > 0f));
-        communityRatingCount = new Lazy<int>(() => Books.Count((ComicBook cb) => cb.CommunityRating > 0f));
-        averageRating = new Lazy<float>(() => (RatingCount != 0) ? Books.Where((ComicBook cb) => cb.Rating > 0f).Average((ComicBook cb) => cb.Rating) : 0f);
-        averageCommunityRating = new Lazy<float>(() => (CommunityRatingCount != 0) ? Books.Where((ComicBook cb) => cb.CommunityRating > 0f).Average((ComicBook cb) => cb.CommunityRating) : 0f);
-        minYear = new Lazy<int>(() => Books.Min((ComicBook cb) => cb.ShadowYear));
-        maxYear = new Lazy<int>(() => Books.Max((ComicBook cb) => cb.ShadowYear));
+        firstNumber = new Lazy<float>(() => Books.Min(cb => GetSafeNumber(cb)));
+        lastNumber = new Lazy<float>(() => Books.Max(cb => GetSafeNumber(cb)));
+        ratingCount = new Lazy<int>(() => Books.Count(cb => cb.Rating > 0f));
+        communityRatingCount = new Lazy<int>(() => Books.Count(cb => cb.CommunityRating > 0f));
+        averageRating = new Lazy<float>(() => (RatingCount != 0) ? Books.Where(cb => cb.Rating > 0f).Average(cb => cb.Rating) : 0f);
+        averageCommunityRating = new Lazy<float>(() => (CommunityRatingCount != 0) ? Books.Where(cb => cb.CommunityRating > 0f).Average(cb => cb.CommunityRating) : 0f);
+        minYear = new Lazy<int>(() => Books.Min(cb => cb.ShadowYear));
+        maxYear = new Lazy<int>(() => Books.Max(cb => cb.ShadowYear));
         runningTimeYears = new Lazy<int>(() => (LastYear >= 0) ? (LastYear - FirstYear) : 0);
         gaps = new Lazy<IEnumerable<RangeF>>(() => GetGaps(Books).ToArray());
         gapCount = new Lazy<int>(() => Gaps.Count());
-        maxGapSize = new Lazy<int>(() => (GapCount != 0) ? Gaps.Max((RangeF g) => (int)g.Length) : 0);
+        maxGapSize = new Lazy<int>(() => (GapCount != 0) ? Gaps.Max(g => (int)g.Length) : 0);
         complete = new Lazy<YesNo>(() => SumComplete(Books));
-        lastAddedTime = new Lazy<DateTime>(() => Books.Max((ComicBook cb) => cb.AddedTime));
-        lastOpenedTime = new Lazy<DateTime>(() => Books.Max((ComicBook cb) => cb.OpenedTime));
-        lastPublishedTime = new Lazy<DateTime>(() => Books.Max((ComicBook cb) => cb.Published));
-        lastReleasedTime = new Lazy<DateTime>(() => Books.Max((ComicBook cb) => cb.ReleasedTime));
+        lastAddedTime = new Lazy<DateTime>(() => Books.Max(cb => cb.AddedTime));
+        lastOpenedTime = new Lazy<DateTime>(() => Books.Max(cb => cb.OpenedTime));
+        lastPublishedTime = new Lazy<DateTime>(() => Books.Max(cb => cb.Published));
+        lastReleasedTime = new Lazy<DateTime>(() => Books.Max(cb => cb.ReleasedTime));
     }
 
     public bool IsGapStart(ComicBook book)
     {
         float i = GetSafeNumber(book);
-        return Gaps.Any((RangeF g) => g.Start == i);
+        return Gaps.Any(g => g.Start == i);
     }
 
     public bool IsGapEnd(ComicBook book)
     {
         float i = GetSafeNumber(book);
-        return Gaps.Any((RangeF g) => g.End == i);
+        return Gaps.Any(g => g.End == i);
     }
 
     public T GetTypedValue<T>(string propName)
@@ -274,7 +274,7 @@ public class ComicBookSeriesStatistics
     public static Dictionary<Key, ComicBookSeriesStatistics> Create(IEnumerable<ComicBook> books)
     {
         return (from cb in books.Lock()
-                group cb by new Key(cb)).ToDictionary((IGrouping<Key, ComicBook> gr) => gr.Key, (IGrouping<Key, ComicBook> gr) => new ComicBookSeriesStatistics(gr));
+                group cb by new Key(cb)).ToDictionary(gr => gr.Key, gr => new ComicBookSeriesStatistics(gr));
     }
 
     public static IEnumerable<RangeF> GetGaps(IEnumerable<ComicBook> books)

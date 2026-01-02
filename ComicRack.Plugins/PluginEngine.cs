@@ -152,7 +152,7 @@ public class PluginEngine
 
     public string CommandStates
     {
-        get => Commands.Select((Command cmd) => (cmd.Enabled ? "+" : "-") + cmd.Key).ToListString(",");
+        get => Commands.Select(cmd => (cmd.Enabled ? "+" : "-") + cmd.Key).ToListString(",");
         set
         {
             value.FromListString(',').SafeForEach(delegate (string s)
@@ -169,7 +169,7 @@ public class PluginEngine
 
     public IEnumerable<Command> GetCommands(string hook)
     {
-        return Commands.Where((Command cmd) => cmd.Enabled && cmd.IsHook(hook));
+        return Commands.Where(cmd => cmd.Enabled && cmd.IsHook(hook));
     }
 
     public void Initialize(IPluginEnvironment env, string path)
@@ -178,7 +178,7 @@ public class PluginEngine
         string[] hooks = ValidHooks.Keys.ToArray();
         foreach (string file in FileUtility.GetFiles(path, SearchOption.AllDirectories))
         {
-            foreach (Command cmd in initializers.SelectMany((PluginInitializer si) => si.GetCommands(file)))
+            foreach (Command cmd in initializers.SelectMany(si => si.GetCommands(file)))
             {
                 try
                 {
@@ -192,13 +192,13 @@ public class PluginEngine
                     }
                     else
                     {
-                        if (commands.Exists((Command c) => c.Key == cmd.Key))
+                        if (commands.Exists(c => c.Key == cmd.Key))
                         {
                             continue;
                         }
                         if (cmd.Enabled)
                         {
-                            int num = commands.Count((Command c) => c.Enabled);
+                            int num = commands.Count(c => c.Enabled);
                             cmd.ShortCutKeys = (Keys)((num < 12) ? (0x30000 | (112 + num)) : 0);
                         }
                         commands.Add(cmd);
@@ -211,7 +211,7 @@ public class PluginEngine
             }
             foreach (Command cfg in list)
             {
-                Command command = commands.FirstOrDefault((Command c) => c.Key == cfg.Key);
+                Command command = commands.FirstOrDefault(c => c.Key == cfg.Key);
                 if (command != null)
                 {
                     command.Configure = cfg;

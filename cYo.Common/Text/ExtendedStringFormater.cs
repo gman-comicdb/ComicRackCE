@@ -30,7 +30,7 @@ public static class ExtendedStringFormater
     {
         try
         {
-            return Format(format, (string s) => GetValue(values, s));
+            return Format(format, s => GetValue(values, s));
         }
         catch (Exception e)
         {

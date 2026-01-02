@@ -112,7 +112,7 @@ public partial class NewsDialog : FormEx
     {
         listNewItems.Items.Clear();
         NewsChannelItemCollection items = news.Items;
-        items.Sort((NewsChannelItem a, NewsChannelItem b) => DateTime.Compare(b.Published, a.Published));
+        items.Sort((a, b) => DateTime.Compare(b.Published, a.Published));
         foreach (NewsChannelItem item in items)
         {
             ListViewItem listViewItem = listNewItems.Items.Add(item.Title);

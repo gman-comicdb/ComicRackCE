@@ -50,7 +50,7 @@ public class Tokenizer
 
         public bool Is(params string[] p)
         {
-            return p.Any((string s) => string.Equals(Text, s, StringComparison.OrdinalIgnoreCase));
+            return p.Any(s => string.Equals(Text, s, StringComparison.OrdinalIgnoreCase));
         }
 
         public void ThrowEndException()
@@ -197,7 +197,7 @@ public class Tokenizer
 
     public bool IsOptional(params string[] p)
     {
-        return p.Any((string s) => string.Equals(Text, s, StringComparison.OrdinalIgnoreCase));
+        return p.Any(s => string.Equals(Text, s, StringComparison.OrdinalIgnoreCase));
     }
 
     public void Skip(int count = 1)

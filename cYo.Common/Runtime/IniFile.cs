@@ -452,7 +452,7 @@ public class IniFile : DisposableObject
 
     private static bool FileExists(string file)
     {
-        return GetFiles(file).Any((string f) => File.Exists(file));
+        return GetFiles(file).Any(f => File.Exists(file));
     }
 
     private static string MakeApplicationPath(string folder)

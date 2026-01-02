@@ -13,7 +13,7 @@ public class ChainedComparer<T> : Comparer<T>
 
     public ChainedComparer(IEnumerable<IComparer<T>> comparers)
     {
-        this.comparers = comparers.Where((IComparer<T> c) => c != null).Distinct(Equality<IComparer<T>>.TypeEquality).ToArray();
+        this.comparers = comparers.Where(c => c != null).Distinct(Equality<IComparer<T>>.TypeEquality).ToArray();
         len = this.comparers.Length;
     }
 

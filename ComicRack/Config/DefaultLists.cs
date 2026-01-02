@@ -70,7 +70,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetGenreList(bool withSeparator)
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.Genre);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.Genre);
         comicFieldList.Remove("");
         if (withSeparator)
         {
@@ -86,7 +86,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetFormatList()
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.ShadowFormat, sort: true);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.ShadowFormat, sort: true);
         comicFieldList.Remove("");
         comicFieldList.Remove("-");
         if (comicFieldList.Count > 0)
@@ -99,7 +99,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetAgeRatingList()
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.AgeRating);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.AgeRating);
         comicFieldList.Remove("");
         comicFieldList.Remove("-");
         if (comicFieldList.Count > 0)
@@ -112,7 +112,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetBookAgeList()
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookAge);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.BookAge);
         comicFieldList.Remove("");
         comicFieldList.Remove("-");
         if (comicFieldList.Count > 0)
@@ -125,7 +125,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetBookConditionList()
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCondition);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.BookCondition);
         comicFieldList.Remove("");
         comicFieldList.Remove("-");
         if (comicFieldList.Count > 0)
@@ -138,7 +138,7 @@ public class DefaultLists
 
     public AutoCompleteStringCollection GetBookCollectionStatusList()
     {
-        AutoCompleteStringCollection comicFieldList = GetComicFieldList((ComicBook cb) => cb.BookCollectionStatus);
+        AutoCompleteStringCollection comicFieldList = GetComicFieldList(cb => cb.BookCollectionStatus);
         comicFieldList.Remove("");
         comicFieldList.Remove("-");
         comicFieldList.AddRange(DefaultBookCollectionStatus);

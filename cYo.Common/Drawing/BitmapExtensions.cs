@@ -63,7 +63,7 @@ public static class BitmapExtensions
 
     private static ImageCodecInfo GetEncoderInfo(ImageFormat format)
     {
-        return ImageCodecInfo.GetImageEncoders().FirstOrDefault((ImageCodecInfo ici) => ici.FormatID == format.Guid);
+        return ImageCodecInfo.GetImageEncoders().FirstOrDefault(ici => ici.FormatID == format.Guid);
     }
 
     public static void SaveJpeg(this Image image, Stream s, int quality = -1)

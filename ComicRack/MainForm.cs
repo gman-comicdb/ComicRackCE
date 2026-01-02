@@ -134,7 +134,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             if (IsValid())
             {
                 Program.Database.Undo.SetMarker(TR.Messages["UndoRating", "Change Rating"]);
-                books.ForEach((ComicBook cb) => cb.Rating = rating);
+                books.ForEach(cb => cb.Rating = rating);
             }
         }
 
@@ -662,7 +662,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             foreach (Command sc in ScriptUtility.Scripts.GetCommands(PluginEngine.ScriptTypeDrawThumbnailOverlay))
             {
                 sc.PreCompile();
-                CoverViewItem.DrawCustomThumbnailOverlay += (ComicBook comic, Graphics graphics, Rectangle bounds, int flags) =>
+                CoverViewItem.DrawCustomThumbnailOverlay += (comic, graphics, bounds, flags) =>
                 {
                     sc.Invoke(
                     [
@@ -742,13 +742,13 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         string url = e.Book.FilePath;
         Win7.AddTabbedThumbnail(this, e.Book.FilePath, delegate
         {
-            books.CurrentSlot = books.Slots.FindIndex((ComicBookNavigator s) => s.Comic.FilePath == url);
+            books.CurrentSlot = books.Slots.FindIndex(s => s.Comic.FilePath == url);
         }, delegate
         {
-            books.Close(books.Slots.FindIndex((ComicBookNavigator s) => s.Comic.FilePath == url));
+            books.Close(books.Slots.FindIndex(s => s.Comic.FilePath == url));
         }, delegate
         {
-            ComicBookNavigator comicBookNavigator = books.Slots.FirstOrDefault((ComicBookNavigator s) => s.Comic.FilePath == url);
+            ComicBookNavigator comicBookNavigator = books.Slots.FirstOrDefault(s => s.Comic.FilePath == url);
             return (comicBookNavigator == books.CurrentBook) ? ComicDisplay.CreateThumbnail() : comicBookNavigator.Thumbnail;
         });
     }
@@ -901,7 +901,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         RatingControl.InsertRatingControl(contextRating2, contextRating2.Items.Count - 2, Resources.StarYellow, GetRatingEditor);
         contextRating.Renderer = new MenuRenderer(Resources.StarYellow);
         contextRating2.Renderer = new MenuRenderer(Resources.StarYellow);
-        IdleProcess.CancelIdle += (object a, CancelEventArgs b) => b.Cancel = !IdleProcess.ShouldProcess(this) && !IdleProcess.ShouldProcess(readerForm);
+        IdleProcess.CancelIdle += (a, b) => b.Cancel = !IdleProcess.ShouldProcess(this) && !IdleProcess.ShouldProcess(readerForm);
         Program.StartupProgress(TR.Messages["LoadComic", "Opening Files"], 90);
         Refresh();
         foreach (string commandLineFile in Program.CommandLineFiles)
@@ -977,7 +977,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         if (Program.Settings.UpdateComicFiles)
         {
-            IEnumerable<ComicBook> dirtyTempList = Program.BookFactory.TemporaryBooks.Where((ComicBook cb) => cb.ComicInfoIsDirty);
+            IEnumerable<ComicBook> dirtyTempList = Program.BookFactory.TemporaryBooks.Where(cb => cb.ComicInfoIsDirty);
             int dirtyCount = dirtyTempList.Count();
             if (dirtyCount != 0 && Program.AskQuestion(this, TR.Messages["AskDirtyItems", "Save changed information for Books that are not in the database?\nAll changes not saved now will be lost!"], TR.Default["Save", "Save"], HiddenMessageBoxes.AskDirtyItems, TR.Messages["AlwaysSaveDirty", "Always save changes"], TR.Default["No", "No"]))
             {
@@ -1138,8 +1138,8 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         commands.Add(ComicDisplay.DisplayLastPageRead, () => ComicDisplay.Book != null && ComicDisplay.Book.CurrentPage != ComicDisplay.Book.Comic.LastPageRead, miLastPageRead, tbLastPageRead, cmLastPageRead);
         commands.Add(OpenBooks.PreviousSlot, () => OpenBooks.Slots.Count > 1, miPrevTab);
         commands.Add(OpenBooks.NextSlot, () => OpenBooks.Slots.Count > 1, miNextTab);
-        commands.AddService(this, (ILibraryBrowser s) => s.BrowseNext(), (ILibraryBrowser s) => s.CanBrowseNext(), miNextList);
-        commands.AddService(this, (ILibraryBrowser s) => s.BrowsePrevious(), (ILibraryBrowser s) => s.CanBrowsePrevious(), miPreviousList);
+        commands.AddService(this, s => s.BrowseNext(), (ILibraryBrowser s) => s.CanBrowseNext(), miNextList);
+        commands.AddService(this, s => s.BrowsePrevious(), (ILibraryBrowser s) => s.CanBrowsePrevious(), miPreviousList);
         commands.Add(delegate
         {
             Program.Settings.AutoScrolling = !Program.Settings.AutoScrolling;
@@ -1755,17 +1755,17 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void UpdateComics()
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => Program.QueueManager.AddBookToFileUpdate(cb, alwaysWrite: true));
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach(cb => Program.QueueManager.AddBookToFileUpdate(cb, alwaysWrite: true));
     }
 
     public static void GenerateFrontCoverCache()
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => Program.ImagePool.GenerateFrontCoverThumbnail(cb));
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach(cb => Program.ImagePool.GenerateFrontCoverThumbnail(cb));
     }
 
     public void UpdateWebComics(bool refresh = false)
     {
-        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach((ComicBook cb) => UpdateWebComic(cb, refresh));
+        Program.Database.Books.Concat(Program.BookFactory.TemporaryBooks).ForEach(cb => UpdateWebComic(cb, refresh));
     }
 
     public void UpdateWebComics()
@@ -1789,14 +1789,14 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             return false;
         }
-        IComicBrowser comicBrowser = this.FindServices<IComicBrowser>().FirstOrDefault((IComicBrowser cb) => cb.Library == comic.Container);
+        IComicBrowser comicBrowser = this.FindServices<IComicBrowser>().FirstOrDefault(cb => cb.Library == comic.Container);
         if (comicBrowser == null)
         {
             return false;
         }
         if (comicBrowser.Library != null && comic.LastOpenedFromListId != Guid.Empty)
         {
-            ComicListItem comicListItem = comicBrowser.Library.ComicLists.GetItems<ComicListItem>().FirstOrDefault((ComicListItem li) => li.Id == comic.LastOpenedFromListId);
+            ComicListItem comicListItem = comicBrowser.Library.ComicLists.GetItems<ComicListItem>().FirstOrDefault(li => li.Id == comic.LastOpenedFromListId);
             if (comicListItem != null)
             {
                 ShowBookInList(comicBrowser.Library, comicListItem, comic, switchToList: false);
@@ -1807,7 +1807,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             return false;
         }
-        int num = array.FindIndex((ComicBook cb) => cb.Id == comic.Id);
+        int num = array.FindIndex(cb => cb.Id == comic.Id);
         ComicBook comicBook;
         if (relative != 0)
         {
@@ -1859,7 +1859,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return;
         }
         IEnumerable<ComicBook> bookList = getBookList.GetBookList(ComicBookFilterType.Selected);
-        if (bookList.Count() > 1 && bookList.All((ComicBook cb) => cb.EditMode.CanEditProperties()))
+        if (bookList.Count() > 1 && bookList.All(cb => cb.EditMode.CanEditProperties()))
         {
             Program.Database.Undo.SetMarker(TR.Messages["UndoEditMultipleComics", "Edit multiple Books"]);
             using (MultipleComicBooksDialog multipleComicBooksDialog = new(bookList))
@@ -2085,7 +2085,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             return false;
         }
-        ComicBook cb = array.Aggregate((ComicBook a, ComicBook b) => (!(a.OpenedTime > b.OpenedTime)) ? b : a);
+        ComicBook cb = array.Aggregate((a, b) => (!(a.OpenedTime > b.OpenedTime)) ? b : a);
         return books.Open(cb, newSlot);
     }
 
@@ -2121,7 +2121,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return false;
         }
         ComicBook comic = ComicDisplay.Book.Comic;
-        IComicBrowser comicBrowser = this.FindServices<IComicBrowser>().FirstOrDefault((IComicBrowser b) => b.Library == comic.Container);
+        IComicBrowser comicBrowser = this.FindServices<IComicBrowser>().FirstOrDefault(b => b.Library == comic.Container);
         if (comicBrowser == null)
         {
             return false;
@@ -2133,7 +2133,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         if (comic.LastOpenedFromListId != Guid.Empty)
         {
-            ComicListItem comicListItem = comicBrowser.Library.ComicLists.GetItems<ComicListItem>().FirstOrDefault((ComicListItem li) => li.Id == comic.LastOpenedFromListId);
+            ComicListItem comicListItem = comicBrowser.Library.ComicLists.GetItems<ComicListItem>().FirstOrDefault(li => li.Id == comic.LastOpenedFromListId);
             if (comicListItem != null && ShowBookInList(comicBrowser.Library, comicListItem, comic))
             {
                 return true;
@@ -2185,7 +2185,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             return;
         }
-        bool flag = books.All((ComicBook b) => b.EditMode.IsLocalComic());
+        bool flag = books.All(b => b.EditMode.IsLocalComic());
         Program.Settings.CurrentExportSetting = exportSetting;
         if (flag && (exportSetting.Target == ExportTarget.ReplaceSource || exportSetting.DeleteOriginal) && !Program.AskQuestion(this, TR.Messages["AskExport", "You have chosen to delete or replace existing files during export. Are you sure you want to continue?\nThe deleted files will be moved to the Recycle Bin during export. Please make sure there is enough disk space available and the eComics are not located on a network drive!"], TR.Messages["Export", "Export"], HiddenMessageBoxes.ConvertComics))
         {
@@ -2318,7 +2318,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         {
             lastWorkspaceName = newWs.Name;
             lastWorkspaceType = newWs.Type;
-            int num = Program.Settings.Workspaces.FindIndex((DisplayWorkspace ws) => ws.Name == newWs.Name);
+            int num = Program.Settings.Workspaces.FindIndex(ws => ws.Name == newWs.Name);
             if (num != -1)
             {
                 Program.Settings.Workspaces[num] = newWs;
@@ -2333,7 +2333,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         if (Program.Settings.Workspaces.Count != 0)
         {
-            IList<DisplayWorkspace> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Default["Workspaces"], Program.Settings.Workspaces, CreateNewWorkspace, null, (DisplayWorkspace w) => SetWorkspace(w, remember: true));
+            IList<DisplayWorkspace> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Default["Workspaces"], Program.Settings.Workspaces, CreateNewWorkspace, null, w => SetWorkspace(w, remember: true));
             if (list != null)
             {
                 Program.Settings.Workspaces.Clear();
@@ -2444,7 +2444,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return Rectangle.Empty;
 
         Rectangle b = formBounds;
-        Screen screen = Screen.AllScreens.Where((Screen scr) => scr.Bounds.IntersectsWith(b)).FirstOrDefault();
+        Screen screen = Screen.AllScreens.Where(scr => scr.Bounds.IntersectsWith(b)).FirstOrDefault();
         if (screen == null)
         {
             Rectangle bounds = Screen.PrimaryScreen.Bounds;
@@ -2623,7 +2623,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ListConfiguration cfg = CreateListLayout();
         if (cfg != null)
         {
-            int num = Program.Settings.ListConfigurations.FindIndex((ListConfiguration c) => c.Name == cfg.Name);
+            int num = Program.Settings.ListConfigurations.FindIndex(c => c.Name == cfg.Name);
             if (num != -1)
             {
                 Program.Settings.ListConfigurations[num] = cfg;
@@ -2638,7 +2638,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         if (Program.Settings.ListConfigurations.Count != 0)
         {
-            IList<ListConfiguration> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Messages["ListLayouts", "List Layouts"], Program.Settings.ListConfigurations, CreateListLayout, null, (ListConfiguration elc) => SetListLayout(elc.Config), (ListConfiguration elc) => SetListLayoutToAll(elc.Config));
+            IList<ListConfiguration> list = ListEditorDialog.Show(Form.ActiveForm ?? this, TR.Messages["ListLayouts", "List Layouts"], Program.Settings.ListConfigurations, CreateListLayout, null, elc => SetListLayout(elc.Config), elc => SetListLayoutToAll(elc.Config));
             if (list != null)
             {
                 Program.Settings.ListConfigurations.Clear();
@@ -2961,7 +2961,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         using (ItemMonitor.Lock(OpenBooks.Slots.SyncRoot))
         {
-            foreach (TabBar.TabBarItem item in fileTabs.Items.Where((TabBar.TabBarItem t) => t.Tag is int && (int)t.Tag >= 0))
+            foreach (TabBar.TabBarItem item in fileTabs.Items.Where(t => t.Tag is int && (int)t.Tag >= 0))
             {
                 item.Text = OpenBooks.GetSlotCaption((int)item.Tag);
             }
@@ -3494,7 +3494,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 items.RemoveAt(num);
             }
         }
-        ToolStripItem toolStripItem = items.OfType<ToolStripItem>().FirstOrDefault((ToolStripItem ti) => "bms".Equals(ti.Tag));
+        ToolStripItem toolStripItem = items.OfType<ToolStripItem>().FirstOrDefault(ti => "bms".Equals(ti.Tag));
         int num2 = items.IndexOf(toolStripItem) + 1;
         if (toolStripItem != null)
         {
@@ -3586,7 +3586,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void tbTools_DropDownOpening(object sender, EventArgs e)
     {
-        tbUpdateWebComics.Visible = Program.Database.Books.FirstOrDefault((ComicBook cb) => cb.IsDynamicSource) != null;
+        tbUpdateWebComics.Visible = Program.Database.Books.FirstOrDefault(cb => cb.IsDynamicSource) != null;
     }
 
     protected override void OnKeyUp(KeyEventArgs e)
@@ -3690,7 +3690,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             tsDeviceSyncActivity,
             tsBackupActivity
         ];
-        int num = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
+        int num = Numeric.BinaryHash(array.Select(l => l.Visible).ToArray());
         tsScanActivity.Visible = Program.Scanner.IsScanning;
         tsWriteInfoActivity.Visible = Program.QueueManager.IsInComicFileUpdate;
         tsReadInfoActivity.Visible = Program.QueueManager.IsInComicFileRefresh;
@@ -3735,7 +3735,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         tsCurrentPage.Image = Program.Settings.TrackCurrentPage ? null : trackPagesLockedImage;
         tsPageCount.Image = image3;
-        int num2 = Numeric.BinaryHash(array.Select((ToolStripStatusLabel l) => l.Visible).ToArray());
+        int num2 = Numeric.BinaryHash(array.Select(l => l.Visible).ToArray());
         if (num2 != num)
         {
             int num3 = Numeric.HighestBit(num2);
@@ -4050,7 +4050,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     public void ShowComicInfo(IEnumerable<ComicBook> books)
     {
-        books = (books ?? []).Where((ComicBook cb) => cb.EditMode.CanEditProperties());
+        books = (books ?? []).Where(cb => cb.EditMode.CanEditProperties());
         if (books.IsEmpty())
         {
             return;
@@ -4153,7 +4153,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
         if (!quickUpdateRegistered)
         {
-            Program.Database.ComicListsChanged += (object s, ComicListItemChangedEventArgs e) =>
+            Program.Database.ComicListsChanged += (s, e) =>
             {
                 if (e.Change != ComicListItemChange.Statistic)
                 {
@@ -4253,7 +4253,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 TR.Messages["UpdateNotAvailable", "There are no updates available"];
             string okButtonText = isUpdateAvailable ? TR.Default["Download", "Download"] : TR.Default["OK", "OK"];
 
-            QuestionResult qr = QuestionDialog.AskQuestion(this, message, okButtonText, (QuestionDialog qd) =>
+            QuestionResult qr = QuestionDialog.AskQuestion(this, message, okButtonText, qd =>
             {
                 qd.Option2Independent = true;
                 qd.OptionText = $"{(doNotCheckForUpdate ? "!" : "")}{TR.Messages["NeverCheckForUpdate", "&Never check for updates on startup"]}";

@@ -89,7 +89,7 @@ public partial class SelectItemDialog : FormEx
             selectItemDialog.TextCaption = itemCaption;
             if (list != null)
             {
-                selectItemDialog.SelectionItems.AddRange(list.Select((T x) => x.ToString()).ToArray());
+                selectItemDialog.SelectionItems.AddRange(list.Select(x => x.ToString()).ToArray());
             }
             return selectItemDialog.GetName(parent);
         }

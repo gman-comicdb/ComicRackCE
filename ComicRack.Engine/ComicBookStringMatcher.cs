@@ -73,13 +73,13 @@ public abstract class ComicBookStringMatcher : ComicBookValueMatcher<string>
             case OperatorContainsAny://contains any of
                 if (parsedMatchValues.Length != 0)
                 {
-                    return parsedMatchValues.Any((string s) => value.IndexOf(s, sc) != -1);
+                    return parsedMatchValues.Any(s => value.IndexOf(s, sc) != -1);
                 }
                 return true;
             case OperatorContainsAll://contains all of
                 if (!string.IsNullOrEmpty(value))
                 {
-                    return parsedMatchValues.All((string s) => value.IndexOf(s, sc) != -1);
+                    return parsedMatchValues.All(s => value.IndexOf(s, sc) != -1);
                 }
                 return false;
             case OperatorStartsWith://starts with

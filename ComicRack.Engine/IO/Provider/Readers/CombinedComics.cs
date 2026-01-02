@@ -26,11 +26,11 @@ public static class CombinedComics
 
         public IPagePool PagePool { get; set; }
 
-        public bool IsSlow => providers.Any((Provider p) => p.ImageProvider.IsSlow);
+        public bool IsSlow => providers.Any(p => p.ImageProvider.IsSlow);
 
         public string Source => providers[0].ImageProvider.Source;
 
-        public int Count => providers.Sum((Provider p) => p.ImageProvider.Count);
+        public int Count => providers.Sum(p => p.ImageProvider.Count);
 
         public ProviderImageInfo GetImageInfo(int index)
         {

@@ -287,13 +287,13 @@ public class QueueManager : DisposableObject
     public void ExportComic(IEnumerable<ComicBook> cbs, ExportSetting setting, int sequence)
     {
         ComicBook kcb = cbs.FirstOrDefault();
-        if (kcb == null || cbs.Any((ComicBook cb) => cb == null || !cb.EditMode.CanExport()))
+        if (kcb == null || cbs.Any(cb => cb == null || !cb.EditMode.CanExport()))
         {
             return;
         }
         IProgressState ps = default;
         string outPath = default;
-        ExportComicsQueue.AddItem(kcb, (IAsyncResult ar) =>
+        ExportComicsQueue.AddItem(kcb, ar =>
         {
             foreach (ComicBook cb in cbs)
             {
@@ -308,7 +308,7 @@ public class QueueManager : DisposableObject
                 if (ps != null)
                 {
                     ps.ProgressAvailable = true;
-                    comicExporter.Progress += (object s, StorageProgressEventArgs e) =>
+                    comicExporter.Progress += (s, e) =>
                     {
                         ps.ProgressPercentage = e.PercentDone;
                         e.Cancel = ps.Abort;
@@ -320,7 +320,7 @@ public class QueueManager : DisposableObject
 
 
                 //Callback function to check if the file is already in the database, will be checked when calling Export
-                comicExporter.FileIsInDatabase = (string targetPath, string sourceFile) =>
+                comicExporter.FileIsInDatabase = (targetPath, sourceFile) =>
                 {
                     if (string.IsNullOrEmpty(targetPath))
                         return false;
@@ -332,7 +332,7 @@ public class QueueManager : DisposableObject
                 outPath = comicExporter.Export(CacheManager.ImagePool);
                 if (outPath != null)
                 {
-                    source = source.Where((string p) => !string.Equals(p, outPath, StringComparison.OrdinalIgnoreCase));
+                    source = source.Where(p => !string.Equals(p, outPath, StringComparison.OrdinalIgnoreCase));
                     if (isLocal && replace)
                     {
                         kcb.FilePath = outPath;
@@ -435,11 +435,11 @@ public class QueueManager : DisposableObject
             DateTime oldWrite = cb.FileModifiedTime;
             if (cb.WriteInfoToFile(withRefreshFileProperties: false))
             {
-                CacheManager.ImagePool.Pages.UpdateKeys((ImageKey key) => key.IsSameFile(cb.FilePath, oldSize, oldWrite), delegate (ImageKey key)
+                CacheManager.ImagePool.Pages.UpdateKeys(key => key.IsSameFile(cb.FilePath, oldSize, oldWrite), delegate (ImageKey key)
                 {
                     key.UpdateFileInfo();
                 });
-                CacheManager.ImagePool.Thumbs.UpdateKeys((ImageKey key) => key.IsSameFile(cb.FilePath, oldSize, oldWrite), delegate (ImageKey key)
+                CacheManager.ImagePool.Thumbs.UpdateKeys(key => key.IsSameFile(cb.FilePath, oldSize, oldWrite), delegate (ImageKey key)
                 {
                     key.UpdateFileInfo();
                 });
@@ -463,7 +463,7 @@ public class QueueManager : DisposableObject
 
     public void SynchronizeDevice(string key, IPAddress address)
     {
-        SynchronizeDevice(Devices.FirstOrDefault((DeviceSyncSettings s) => s.DeviceKey == key), address);
+        SynchronizeDevice(Devices.FirstOrDefault(s => s.DeviceKey == key), address);
     }
 
     public void SynchronizeDevice(DeviceSyncSettings dss, IPAddress address = null)
@@ -535,16 +535,16 @@ public class QueueManager : DisposableObject
             taskGroupScanning = TR.Messages["TaskGroupScanning", "Scanning"];
             taskGroupDeviceSync = TR.Messages["TaskGroupDeviceSync", "Syncing Devices"];
         }
-        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupLoadThumbnails, CacheManager.ImagePool.FastThumbnailQueue, (IProcessingItem<ImageKey> ik) => new TaskInfo(ik, StringUtility.Format(fastThumbanilQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
-        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreateThumbnails, CacheManager.ImagePool.SlowThumbnailQueue, (IProcessingItem<ImageKey> ik) => new TaskInfo(ik, StringUtility.Format(slowThumbnailQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
-        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreateThumbnails, CacheManager.ImagePool.SlowThumbnailQueueUnlimited, (IProcessingItem<ImageKey> ik) => new TaskInfo(ik, StringUtility.Format(slowThumbnailQueueUnlimitedMessage, Path.GetFileName(ik.Item.Location))), "Abort Cover Generation", CacheManager.ImagePool.SlowThumbnailQueueUnlimited.Clear));
-        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreatePages, CacheManager.ImagePool.SlowPageQueue, (IProcessingItem<ImageKey> ik) => new TaskInfo(ik, StringUtility.Format(getImageQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
-        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupLoadPages, CacheManager.ImagePool.FastPageQueue, (IProcessingItem<ImageKey> ik) => new TaskInfo(ik, StringUtility.Format(getImageQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
-        list.Add(new PendingTasksInfo<ComicBook>("ReadInfoAnimation", taskGroupReadInfo, ReadComicBookInfoFileQueue, (IProcessingItem<ComicBook> cb) => new TaskInfo(cb, StringUtility.Format(refreshInfoQueueMessage, cb.Item.Caption))));
-        list.Add(new PendingTasksInfo<ComicBook>("UpdateInfoAnimation", taskGroupWriteInfo, WriteComicBookInfoFileQueue, (IProcessingItem<ComicBook> cb) => new TaskInfo(cb, StringUtility.Format(writeInfoQueueMessage, cb.Item.Caption))));
-        list.Add(new PendingTasksInfo<ComicBook>("ReadInfoAnimation", taskGroupUpdateDynamic, UpdateComicBookDynamicQueue, (IProcessingItem<ComicBook> cb) => new TaskInfo(cb, StringUtility.Format(updateDynamicQueueMessage, cb.Item.Caption))));
-        list.Add(new PendingTasksInfo<ComicBook>("ExportAnimation", taskGroupExport, ExportComicsQueue, (IProcessingItem<ComicBook> cb) => new TaskInfo(cb, StringUtility.Format(exportQueueMessage, cb.Item.Caption)), exportAbortText, ExportComicsQueue.Clear));
-        list.Add(new PendingTasksInfo<DeviceSyncSettings>("DeviceSyncAnimation", taskGroupDeviceSync, DeviceSyncQueue, (IProcessingItem<DeviceSyncSettings> sds) => new TaskInfo(sds, StringUtility.Format(deviceSyncQueueMessage, sds.Item.DeviceName)), deviceSyncAbortText, DeviceSyncQueue.Clear));
+        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupLoadThumbnails, CacheManager.ImagePool.FastThumbnailQueue, ik => new TaskInfo(ik, StringUtility.Format(fastThumbanilQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
+        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreateThumbnails, CacheManager.ImagePool.SlowThumbnailQueue, ik => new TaskInfo(ik, StringUtility.Format(slowThumbnailQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
+        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreateThumbnails, CacheManager.ImagePool.SlowThumbnailQueueUnlimited, ik => new TaskInfo(ik, StringUtility.Format(slowThumbnailQueueUnlimitedMessage, Path.GetFileName(ik.Item.Location))), "Abort Cover Generation", CacheManager.ImagePool.SlowThumbnailQueueUnlimited.Clear));
+        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupCreatePages, CacheManager.ImagePool.SlowPageQueue, ik => new TaskInfo(ik, StringUtility.Format(getImageQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
+        list.Add(new PendingTasksInfo<ImageKey>("ReadPagesAnimation", taskGroupLoadPages, CacheManager.ImagePool.FastPageQueue, ik => new TaskInfo(ik, StringUtility.Format(getImageQueueMessage, ik.Item.Index + 1, Path.GetFileName(ik.Item.Location)))));
+        list.Add(new PendingTasksInfo<ComicBook>("ReadInfoAnimation", taskGroupReadInfo, ReadComicBookInfoFileQueue, cb => new TaskInfo(cb, StringUtility.Format(refreshInfoQueueMessage, cb.Item.Caption))));
+        list.Add(new PendingTasksInfo<ComicBook>("UpdateInfoAnimation", taskGroupWriteInfo, WriteComicBookInfoFileQueue, cb => new TaskInfo(cb, StringUtility.Format(writeInfoQueueMessage, cb.Item.Caption))));
+        list.Add(new PendingTasksInfo<ComicBook>("ReadInfoAnimation", taskGroupUpdateDynamic, UpdateComicBookDynamicQueue, cb => new TaskInfo(cb, StringUtility.Format(updateDynamicQueueMessage, cb.Item.Caption))));
+        list.Add(new PendingTasksInfo<ComicBook>("ExportAnimation", taskGroupExport, ExportComicsQueue, cb => new TaskInfo(cb, StringUtility.Format(exportQueueMessage, cb.Item.Caption)), exportAbortText, ExportComicsQueue.Clear));
+        list.Add(new PendingTasksInfo<DeviceSyncSettings>("DeviceSyncAnimation", taskGroupDeviceSync, DeviceSyncQueue, sds => new TaskInfo(sds, StringUtility.Format(deviceSyncQueueMessage, sds.Item.DeviceName)), deviceSyncAbortText, DeviceSyncQueue.Clear));
         list.Add(new PendingTasksInfo("ScanAnimation", taskGroupScanning, () => Scanner.IsScanning ? new string[1]
         {
             StringUtility.Format(scanComicQueueMessage, Scanner.CurrentLocation)

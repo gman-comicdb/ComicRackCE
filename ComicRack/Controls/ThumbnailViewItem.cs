@@ -313,7 +313,7 @@ public abstract class ThumbnailViewItem : ItemViewItem, IDisposable
 
     public override bool OnClick(Point pt)
     {
-        ClickRegion clickRegion = clickRegions?.FirstOrDefault((ClickRegion c) => c.Bounds.Contains(pt));
+        ClickRegion clickRegion = clickRegions?.FirstOrDefault(c => c.Bounds.Contains(pt));
         if (clickRegion == null)
         {
             return false;

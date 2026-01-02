@@ -286,7 +286,7 @@ public class TextureManager : DisposableObject
 
     private int GetTotalMemory()
     {
-        return textures.Sum((TextureElement te) => te.Memory);
+        return textures.Sum(te => te.Memory);
     }
 
     private TextureElement GetTextureElement(RendererImage bmp, int part)

@@ -57,7 +57,7 @@ public partial class DevicesEditDialog : FormEx
     private void btPair_Click(object sender, EventArgs e)
     {
         ISyncProvider sd = DeviceSelectDialog.SelectProvider(this, Devices);
-        if (sd != null && Devices.All((DeviceSyncSettings d) => d.DeviceKey != sd.Device.Key))
+        if (sd != null && Devices.All(d => d.DeviceKey != sd.Device.Key))
         {
             tabDevices.SelectedTab = AddTab(new DeviceSyncSettings
             {

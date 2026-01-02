@@ -1408,7 +1408,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
             ScaleY = sy,
             Bitmap = bmp
         };
-        IItemLock<ScaledPageItem> itemLock = scaledCache.LockItem(key, (ScaledPageKey b) => new ScaledPageItem());
+        IItemLock<ScaledPageItem> itemLock = scaledCache.LockItem(key, b => new ScaledPageItem());
         int num = EngineConfiguration.Default.SoftwareFilterDelay.Clamp(100, 5000);
         long ticks = Machine.Ticks;
         if (!itemLock.Item.IsValid)
@@ -1809,8 +1809,8 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
                                 bitmap.GetAverageColor(2, bitmap.Height - 2 - 4, 4)
                             ];
                             itemLock.Item.BackgrounColor = array.GetAverage().GetBrightness() < 0.5f
-                                ? array.Max((Color a, Color b) => a.GetBrightness().CompareTo(b.GetBrightness()))
-                                : array.Max((Color a, Color b) => b.GetBrightness().CompareTo(a.GetBrightness()));
+                                ? array.Max((a, b) => a.GetBrightness().CompareTo(b.GetBrightness()))
+                                : array.Max((a, b) => b.GetBrightness().CompareTo(a.GetBrightness()));
                         }
                     }
                     return itemLock.Item.BackgrounColor;
@@ -1843,7 +1843,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     protected override bool IsMouseOk(Point point)
     {
-        return overlayManager.Panels.Find((OverlayPanel x) => x.HasMouse) == null;
+        return overlayManager.Panels.Find(x => x.HasMouse) == null;
     }
 
     protected override void OnImageDisplayOptionsChanged()
@@ -1950,7 +1950,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
         {
             return;
         }
-        int[] array = pageNumbers.Where((int n) => n >= 0).ToArray();
+        int[] array = pageNumbers.Where(n => n >= 0).ToArray();
         if (array.Length == 0 || currentPageOverlayHash == DisplayHash)
         {
             return;
@@ -2202,7 +2202,7 @@ public class ComicDisplayControl : ImageDisplayControl, IComicDisplay, IComicDis
 
     private void MemoryPageCache_ItemAdded(object sender, CacheItemEventArgs<ImageKey, PageImage> e)
     {
-        if (IsValid && (object.Equals(e.Key, GetPageKey(CurrentPage)) || (TwoPageDisplay && object.Equals(e.Key, GetPageKey(NextPage))) || !DisplayedPages.Where((int dp) => object.Equals(e.Key, GetPageKey(dp))).IsEmpty()))
+        if (IsValid && (object.Equals(e.Key, GetPageKey(CurrentPage)) || (TwoPageDisplay && object.Equals(e.Key, GetPageKey(NextPage))) || !DisplayedPages.Where(dp => object.Equals(e.Key, GetPageKey(dp))).IsEmpty()))
         {
             Invalidate();
         }

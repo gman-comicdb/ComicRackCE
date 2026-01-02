@@ -18,7 +18,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     private readonly ComicBookMatcherCollection matchers = new();
 
-    public override bool TimeDependant => Matchers.Any((ComicBookMatcher m) => m.TimeDependant);
+    public override bool TimeDependant => Matchers.Any(m => m.TimeDependant);
 
     [XmlAttribute]
     [DefaultValue(MatcherMode.And)]
@@ -61,7 +61,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
             MatcherMode = MatcherMode,
             Collapsed = Collapsed
         };
-        comicBookGroupMatcher.Matchers.AddRange(Matchers.Select((ComicBookMatcher matcher) => matcher.Clone() as ComicBookMatcher));
+        comicBookGroupMatcher.Matchers.AddRange(Matchers.Select(matcher => matcher.Clone() as ComicBookMatcher));
         return comicBookGroupMatcher;
     }
 
@@ -74,12 +74,12 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
 
     public override IEnumerable<string> GetDependentProperties()
     {
-        return Matchers.SelectMany((ComicBookMatcher m) => m.GetDependentProperties());
+        return Matchers.SelectMany(m => m.GetDependentProperties());
     }
 
     public override bool UsesProperty(string propertyHint)
     {
-        return Matchers.Any((ComicBookMatcher m) => m.UsesProperty(propertyHint));
+        return Matchers.Any(m => m.UsesProperty(propertyHint));
     }
 
     public ComicBookMatcher Optimized()
@@ -154,7 +154,7 @@ public class ComicBookGroupMatcher : ComicBookMatcher, IComicBookGroupMatcher
         }
         comicBookValueMatcher.Not = not;
         Tokenizer.Token op = tokens.Expect(comicBookValueMatcher.OperatorsListNeutral);
-        int num = comicBookValueMatcher.OperatorsListNeutral.FindIndex((string o) => string.Equals(o, op.Text, StringComparison.OrdinalIgnoreCase));
+        int num = comicBookValueMatcher.OperatorsListNeutral.FindIndex(o => string.Equals(o, op.Text, StringComparison.OrdinalIgnoreCase));
         if (num == -1)
         {
             token.ThrowParserException("Invalid operator {0} encountered");

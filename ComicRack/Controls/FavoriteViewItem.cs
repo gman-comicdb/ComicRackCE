@@ -80,7 +80,7 @@ public class FavoriteViewItem : ThumbnailViewItem
         Bitmap bmp = GetListImage(ComicListItem.GetBooks(), new Size(341, 512), 3, 4);
         try
         {
-            using (Program.ImagePool.Thumbs.AddImage(key, (ImageKey k) => ThumbnailImage.CreateFrom(bmp, bmp.Size)))
+            using (Program.ImagePool.Thumbs.AddImage(key, k => ThumbnailImage.CreateFrom(bmp, bmp.Size)))
             {
             }
         }

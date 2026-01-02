@@ -109,7 +109,7 @@ public class FolderTreeView : TreeViewEx
                     if (sortNetworkFolders && PathIsNetworkPath(shellFolder.Pidl.PhysicalPath)
                         || shellFolder.Pidl.IsFileSystem && !shellFolder.Pidl.IsDesktop && !PathIsNetworkPath(shellFolder.Pidl.PhysicalPath))
                     {
-                        list.Sort((TreeNode a, TreeNode b) => string.Compare(a.Text, b.Text, StringComparison.InvariantCultureIgnoreCase));
+                        list.Sort((a, b) => string.Compare(a.Text, b.Text, StringComparison.InvariantCultureIgnoreCase));
                     }
                     foreach (TreeNode item4 in list)
                     {

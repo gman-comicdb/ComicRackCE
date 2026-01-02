@@ -383,7 +383,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
         }
         if (e.PageInfo.IsTypeOf(PageFilter))
         {
-            PageViewItem pageViewItem = itemView.Items.Cast<PageViewItem>().FirstOrDefault((PageViewItem iv) => iv.ImageIndex == e.PageInfo.ImageIndex);
+            PageViewItem pageViewItem = itemView.Items.Cast<PageViewItem>().FirstOrDefault(iv => iv.ImageIndex == e.PageInfo.ImageIndex);
             if (pageViewItem == null)
             {
                 itemView.Items.Add(new PageViewItem(comicBookNavigator, e.PageInfo.ImageIndex, e.PageKey));
@@ -415,7 +415,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
                     {
                         PageViewItem pageViewItem = new(nav, cpi.ImageIndex);
                         itemView.Items.Add(pageViewItem);
-                        if (selectedPages != null && selectedPages.FindIndex((ComicPageInfo c) => c.ImageIndex == cpi.ImageIndex) != -1)
+                        if (selectedPages != null && selectedPages.FindIndex(c => c.ImageIndex == cpi.ImageIndex) != -1)
                         {
                             pageViewItem.Selected = true;
                         }
@@ -537,7 +537,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     public void MoveSelectedPageEnd()
     {
         ComicPageInfo[] array = GetSelectedPages().ToArray();
-        if (array.All((ComicPageInfo p) => p.PageType == ComicPageType.FrontCover))
+        if (array.All(p => p.PageType == ComicPageType.FrontCover))
         {
             ComicPageInfo[] array2 = array;
             foreach (ComicPageInfo cpi in array2)
@@ -740,7 +740,7 @@ public partial class PagesView : UserControlEx, IEditBookmark, IEditPage
     {
         //If any other quantity than 2 or any of the pages are marked as Deleted, abort
         List<PageViewItem> selectedPages = itemView.SelectedItems.Cast<PageViewItem>().ToList();
-        if (selectedPages?.Count() != 2 && selectedPages.Any((PageViewItem p) => p.PageInfo.PageType == ComicPageType.Deleted))
+        if (selectedPages?.Count() != 2 && selectedPages.Any(p => p.PageInfo.PageType == ComicPageType.Deleted))
             return;
 
         //Check the reading direction to determine the first and second page.

@@ -78,7 +78,7 @@ public class FolderViewItem : ThumbnailViewItem
         Bitmap bmp = GetFolderImage(Text, new Size(341, 512), 3, 4);
         try
         {
-            using (Program.ImagePool.Thumbs.AddImage(key, (ImageKey k) => ThumbnailImage.CreateFrom(bmp, bmp.Size)))
+            using (Program.ImagePool.Thumbs.AddImage(key, k => ThumbnailImage.CreateFrom(bmp, bmp.Size)))
             {
             }
         }

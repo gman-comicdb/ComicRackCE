@@ -10,7 +10,7 @@ public static class ComicListItemExtension
 {
     public static ComicListItemFolder GetItemParent(this ComicListItem item)
     {
-        return item.Library?.ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault((ComicListItemFolder clif) => clif.Items.Contains(item));
+        return item.Library?.ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault(clif => clif.Items.Contains(item));
     }
 
     public static IEnumerable<ComicListItem> GetItemPath(this ComicListItem item)

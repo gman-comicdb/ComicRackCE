@@ -68,7 +68,7 @@ public class ComicPageContainerControl : ContainerControl
     protected override void OnControlRemoved(ControlEventArgs e)
     {
         ComicPageControl c = e.Control as ComicPageControl;
-        TabBar.TabBarItem tabBarItem = tabBar.Items.FirstOrDefault((TabBar.TabBarItem t) => t.Tag == c);
+        TabBar.TabBarItem tabBarItem = tabBar.Items.FirstOrDefault(t => t.Tag == c);
         if (tabBarItem != null)
         {
             tabBar.Items.Remove(tabBarItem);

@@ -153,13 +153,13 @@ public class StorageSync
                               cli.List.ResetCache();
                               return new
                               {
-                                  List = LimitList(new ComicIdListItem(cli.List, (ComicBook cb) => cb.IsLinked && (cb.Checked || !cli.Setting.OnlyChecked)), library, cli.Setting, cli.List is ComicIdListItem),
+                                  List = LimitList(new ComicIdListItem(cli.List, cb => cb.IsLinked && (cb.Checked || !cli.Setting.OnlyChecked)), library, cli.Setting, cli.List is ComicIdListItem),
                                   Setting = cli.Setting
                               };
                           }).ToList();
                 int count2 = (provider.Device.BookSyncLimit > 0) ? provider.Device.BookSyncLimit : int.MaxValue;
                 Dictionary<Guid, ComicBook> dictionary = new((from id in source.SelectMany(bl => bl.List.BookIds).Distinct()
-                                                                                          select library.Books[id]).Take(count2).ToDictionary((ComicBook cb) => cb.Id));
+                                                                                          select library.Books[id]).Take(count2).ToDictionary(cb => cb.Id));
                 HashSet<Guid> hashSet = new(source.Where(bl => bl.Setting.OptimizePortable).SelectMany(bl => bl.List.BookIds).Distinct());
                 lists = source.Select(bl => bl.List);
                 i = 0;
@@ -320,7 +320,7 @@ public class StorageSync
             }
         }
         list2.Clear();
-        int num = (array.Length != 0) ? array.Max((List<ComicBook> gr) => gr.Count) : 0;
+        int num = (array.Length != 0) ? array.Max(gr => gr.Count) : 0;
         int i;
         for (i = 0; i < num; i++)
         {
@@ -331,7 +331,7 @@ public class StorageSync
         list.BookIds.Clear();
         if (!setting.Limit)
         {
-            list.BookIds.AddRange(list2.Select((ComicBook cb) => cb.Id));
+            list.BookIds.AddRange(list2.Select(cb => cb.Id));
         }
         else
         {

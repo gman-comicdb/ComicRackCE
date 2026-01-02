@@ -213,7 +213,7 @@ public static class StringUtility
 
     public static bool IsArticle(this string text)
     {
-        return articles.Any((string a) => string.Compare(text, a, ignoreCase: true) == 0);
+        return articles.Any(a => string.Compare(text, a, ignoreCase: true) == 0);
     }
 
     public static bool Contains(this string s, string search, StringComparison comparison)
@@ -414,7 +414,7 @@ public static class StringUtility
 
     public static bool HasLetters(this IEnumerable<char> text)
     {
-        return text.Any((char c) => char.IsLetter(c));
+        return text.Any(c => char.IsLetter(c));
     }
 
     public static string OnlyDigits(this string text)
@@ -514,17 +514,17 @@ public static class StringUtility
 
     public static IEnumerable<string> TrimStrings(this IEnumerable<string> list)
     {
-        return list.Select((string x) => x.Trim());
+        return list.Select(x => x.Trim());
     }
 
     public static IEnumerable<string> TrimEndStrings(this IEnumerable<string> list)
     {
-        return list.Select((string x) => x.TrimEnd());
+        return list.Select(x => x.TrimEnd());
     }
 
     public static IEnumerable<string> RemoveEmpty(this IEnumerable<string> list)
     {
-        return list.Where((string x) => !string.IsNullOrEmpty(x));
+        return list.Where(x => !string.IsNullOrEmpty(x));
     }
 
     public static string CutOff(this string text, params char[] delimiters)
@@ -579,7 +579,7 @@ public static class StringUtility
 
     public static bool ContainsAny(this string s, string characters)
     {
-        return string.IsNullOrEmpty(s) || string.IsNullOrEmpty(characters) ? false : characters.Any((char c) => s.Contains(c));
+        return string.IsNullOrEmpty(s) || string.IsNullOrEmpty(characters) ? false : characters.Any(c => s.Contains(c));
     }
 
     public static string Left(this string s, int len)

@@ -146,7 +146,7 @@ public class ThumbTileRenderer : ViewItemRenderer
         {
             tl.ForeColor = ThemeColors.ThumbTileRenderer.TitleText;
         });
-        base.TextLines.Where((TextLine tl) => tl.Font != null && !tl.Font.Bold).ForEach(delegate (TextLine tl)
+        base.TextLines.Where(tl => tl.Font != null && !tl.Font.Bold).ForEach(delegate (TextLine tl)
         {
             tl.ForeColor = ThemeColors.ThumbTileRenderer.BodyText;
         });

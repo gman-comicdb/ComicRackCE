@@ -38,7 +38,7 @@ public static class ScriptUtility
                 text,
                 limit
             ]) as Dictionary<string, string>;
-            return source.Select((KeyValuePair<string, string> kvp) => new SearchResult
+            return source.Select(kvp => new SearchResult
             {
                 Name = kvp.Key,
                 Result = kvp.Value
@@ -53,7 +53,7 @@ public static class ScriptUtility
                 text,
                 -1
             ]) as Dictionary<string, string>;
-            return source.Select((KeyValuePair<string, string> kvp) => kvp.Value).FirstOrDefault();
+            return source.Select(kvp => kvp.Value).FirstOrDefault();
         }
     }
 
@@ -200,7 +200,7 @@ public static class ScriptUtility
                 Icon = command.CommandImage,
                 ScriptEngine = command.Environment,
                 ScriptConfig = command.LoadConfig(),
-                InfoFunction = (ComicBook[] b) =>
+                InfoFunction = b =>
                 {
                     try
                     {

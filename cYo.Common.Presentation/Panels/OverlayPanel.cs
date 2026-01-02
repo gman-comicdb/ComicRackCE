@@ -416,7 +416,7 @@ public class OverlayPanel : DisposableObject
         set => hitTestType = value;
     }
 
-    public bool HasMouse => PanelState != 0 ? true : panels != null ? panels.Find((OverlayPanel x) => x.HasMouse) != null : false;
+    public bool HasMouse => PanelState != 0 ? true : panels != null ? panels.Find(x => x.HasMouse) != null : false;
 
     public Color BackgroundColor
     {

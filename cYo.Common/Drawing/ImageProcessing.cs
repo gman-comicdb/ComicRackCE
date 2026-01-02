@@ -953,7 +953,7 @@ public static class ImageProcessing
             {
                 case ResizeFastInterpolation.NearestNeighbor:
                     // for each line
-                    Parallel.For(0, newHeight, (int y) =>
+                    Parallel.For(0, newHeight, y =>
                     {
                         //Ref: https://github.com/andrewkirillov/AForge.NET/blob/master/Sources/Imaging/Filters/Transform/ResizeNearestNeighbor.cs#L81
                         byte* dst = orgdst + dstStride * y;
@@ -980,7 +980,7 @@ public static class ImageProcessing
                         int xmax = width - 1;
 
                         // for each line
-                        Parallel.For(0, newHeight, (int y) =>
+                        Parallel.For(0, newHeight, y =>
                         {
                             byte* dst = orgdst + y * dstStride;
 
@@ -1030,7 +1030,7 @@ public static class ImageProcessing
                         int ymax = height - 1;
                         int xmax = width - 1;
 
-                        Parallel.For(0, newHeight, (int y) =>
+                        Parallel.For(0, newHeight, y =>
                         {
                             byte* dst = orgdst + y * dstStride;
 

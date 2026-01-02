@@ -458,7 +458,7 @@ public class WebComic
         }
         if (sort)
         {
-            matches = matches.OrderBy((string u) => u, StringComparer.OrdinalIgnoreCase);
+            matches = matches.OrderBy(u => u, StringComparer.OrdinalIgnoreCase);
         }
         if (reverse)
         {

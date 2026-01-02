@@ -208,7 +208,7 @@ public partial class ListLayoutDialog : FormEx
         }
         DisplayListConfig.Thumbnail.TextElements = (ComicTextElements)(from tti in lbTileItems.Items.OfType<TileTextItem>()
                                                                        where lbTileItems.GetItemChecked(lbTileItems.Items.IndexOf(tti))
-                                                                       select tti).Sum((TileTextItem tti) => tti.Value);
+                                                                       select tti).Sum(tti => tti.Value);
     }
 
     private void AddItem(ItemViewColumnInfo ci)

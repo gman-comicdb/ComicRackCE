@@ -151,7 +151,7 @@ public partial class PreferencesDialog : FormEx
 
     private void AutoSizeColumn()
     {
-        this.FindServices<ListView>().ForEach((ListView lv) => lv.AutoResizeColumn(0, 32));
+        this.FindServices<ListView>().ForEach(lv => lv.AutoResizeColumn(0, 32));
     }
 
     private void UpdateSafeSize()
@@ -231,7 +231,7 @@ public partial class PreferencesDialog : FormEx
 
     private void lbPaths_DragDrop(object sender, DragEventArgs e)
     {
-        (from d in (e.Data.GetData(DataFormats.FileDrop) as string[])?.Select((string d) => (!Directory.Exists(d)) ? Path.GetDirectoryName(d) : d)
+        (from d in (e.Data.GetData(DataFormats.FileDrop) as string[])?.Select(d => (!Directory.Exists(d)) ? Path.GetDirectoryName(d) : d)
          where !lbPaths.Items.Contains(d)
          select d).ForEach(delegate (string d)
          {

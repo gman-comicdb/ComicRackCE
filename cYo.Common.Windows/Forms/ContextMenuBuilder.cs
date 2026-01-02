@@ -115,7 +115,7 @@ public class ContextMenuBuilder
             }
         }
         List<char> list4 = new(dictionary.Keys);
-        list4.Sort((char a, char b) => string.Compare(a.ToString(), b.ToString()));
+        list4.Sort((a, b) => string.Compare(a.ToString(), b.ToString()));
         int num = -1;
         int num2 = 0;
         for (int j = 0; j < list4.Count; j++)
@@ -137,7 +137,7 @@ public class ContextMenuBuilder
             };
             for (int k = num; k <= j; k++)
             {
-                foreach (MenuEntry item in dictionary[list4[k]].OrderBy((MenuEntry t) => t.Text))
+                foreach (MenuEntry item in dictionary[list4[k]].OrderBy(t => t.Text))
                 {
                     toolStripMenuItem3.DropDownItems.Add(item.Create());
                 }

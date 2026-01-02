@@ -61,7 +61,7 @@ public class NavigatorManager : IOpenBooksManager
 
     public IComicDisplay ComicDisplay => comicDisplay;
 
-    public int OpenCount => slots.Count((ComicBookNavigator nav) => nav != null);
+    public int OpenCount => slots.Count(nav => nav != null);
 
     public IEnumerable<string> OpenFiles => from nav in slots
                                             where nav != null && nav.Comic != null && nav.Comic.EditMode.IsLocalComic()
@@ -85,7 +85,7 @@ public class NavigatorManager : IOpenBooksManager
 
     public bool IsOpen(ComicBook cb)
     {
-        return slots.Any((ComicBookNavigator nav) => nav != null && nav.Comic == cb);
+        return slots.Any(nav => nav != null && nav.Comic == cb);
     }
 
     public void AddSlot()
@@ -130,7 +130,7 @@ public class NavigatorManager : IOpenBooksManager
             {
                 page = cb.CurrentPage;
             }
-            comicBookNavigator = Slots.Find((ComicBookNavigator nav) => nav != null && nav.Comic == cb);
+            comicBookNavigator = Slots.Find(nav => nav != null && nav.Comic == cb);
             try
             {
                 if (comicBookNavigator != null)

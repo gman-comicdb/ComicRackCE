@@ -152,36 +152,36 @@ public partial class ComicBookDialog : FormEx
         coverThumbnail.DrawingFlags &= ~ThumbnailDrawingOptions.EnableRating;
         coverThumbnail.DrawingFlags &= ~ThumbnailDrawingOptions.EnableBackground;
         coverThumbnail.HighQuality = (Program.Settings.PageImageDisplayOptions & ImageDisplayOptions.HighQuality) != 0;
-        EditControlUtility.SetText(txTitle, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowTitle));
-        EditControlUtility.SetText(txSeries, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowSeries));
-        EditControlUtility.SetText(txWriter, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Writer));
+        EditControlUtility.SetText(txTitle, null, () => Program.Lists.GetComicFieldList(cb => cb.ShadowTitle));
+        EditControlUtility.SetText(txSeries, null, () => Program.Lists.GetComicFieldList(cb => cb.ShadowSeries));
+        EditControlUtility.SetText(txWriter, null, () => Program.Lists.GetComicFieldList(cb => cb.Writer));
         EditControlUtility.SetText(txGenre, null, () => Program.Lists.GetGenreList(withSeparator: false));
-        EditControlUtility.SetText(txTags, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Tags));
-        EditControlUtility.SetText(txAlternateSeries, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.AlternateSeries));
-        EditControlUtility.SetText(txStoryArc, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.StoryArc));
-        EditControlUtility.SetText(txSeriesGroup, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.SeriesGroup));
-        EditControlUtility.SetText(txPenciller, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Penciller));
-        EditControlUtility.SetText(txColorist, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Colorist));
-        EditControlUtility.SetText(txInker, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Inker));
-        EditControlUtility.SetText(txLetterer, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Letterer));
-        EditControlUtility.SetText(txCoverArtist, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.CoverArtist));
-        EditControlUtility.SetText(txEditor, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Editor));
-        EditControlUtility.SetText(txTranslator, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Translator));
-        EditControlUtility.SetText(txCharacters, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Characters));
-        EditControlUtility.SetText(txTeams, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Teams));
-        EditControlUtility.SetText(txMainCharacterOrTeam, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.MainCharacterOrTeam));
-        EditControlUtility.SetText(txLocations, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Locations));
-        EditControlUtility.SetText(txScanInformation, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ScanInformation));
+        EditControlUtility.SetText(txTags, null, () => Program.Lists.GetComicFieldList(cb => cb.Tags));
+        EditControlUtility.SetText(txAlternateSeries, null, () => Program.Lists.GetComicFieldList(cb => cb.AlternateSeries));
+        EditControlUtility.SetText(txStoryArc, null, () => Program.Lists.GetComicFieldList(cb => cb.StoryArc));
+        EditControlUtility.SetText(txSeriesGroup, null, () => Program.Lists.GetComicFieldList(cb => cb.SeriesGroup));
+        EditControlUtility.SetText(txPenciller, null, () => Program.Lists.GetComicFieldList(cb => cb.Penciller));
+        EditControlUtility.SetText(txColorist, null, () => Program.Lists.GetComicFieldList(cb => cb.Colorist));
+        EditControlUtility.SetText(txInker, null, () => Program.Lists.GetComicFieldList(cb => cb.Inker));
+        EditControlUtility.SetText(txLetterer, null, () => Program.Lists.GetComicFieldList(cb => cb.Letterer));
+        EditControlUtility.SetText(txCoverArtist, null, () => Program.Lists.GetComicFieldList(cb => cb.CoverArtist));
+        EditControlUtility.SetText(txEditor, null, () => Program.Lists.GetComicFieldList(cb => cb.Editor));
+        EditControlUtility.SetText(txTranslator, null, () => Program.Lists.GetComicFieldList(cb => cb.Translator));
+        EditControlUtility.SetText(txCharacters, null, () => Program.Lists.GetComicFieldList(cb => cb.Characters));
+        EditControlUtility.SetText(txTeams, null, () => Program.Lists.GetComicFieldList(cb => cb.Teams));
+        EditControlUtility.SetText(txMainCharacterOrTeam, null, () => Program.Lists.GetComicFieldList(cb => cb.MainCharacterOrTeam));
+        EditControlUtility.SetText(txLocations, null, () => Program.Lists.GetComicFieldList(cb => cb.Locations));
+        EditControlUtility.SetText(txScanInformation, null, () => Program.Lists.GetComicFieldList(cb => cb.ScanInformation));
         EditControlUtility.SetText(cbAgeRating, null, () => Program.Lists.GetAgeRatingList());
         EditControlUtility.SetText(cbFormat, null, () => Program.Lists.GetFormatList());
-        EditControlUtility.SetText(cbPublisher, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Publisher, sort: true));
-        EditControlUtility.SetText(cbImprint, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Imprint, sort: true));
+        EditControlUtility.SetText(cbPublisher, null, () => Program.Lists.GetComicFieldList(cb => cb.Publisher, sort: true));
+        EditControlUtility.SetText(cbImprint, null, () => Program.Lists.GetComicFieldList(cb => cb.Imprint, sort: true));
         EditControlUtility.SetText(cbBookAge, null, () => Program.Lists.GetBookAgeList());
-        EditControlUtility.SetText(cbBookStore, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookStore, sort: true));
-        EditControlUtility.SetText(cbBookOwner, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookOwner, sort: true));
+        EditControlUtility.SetText(cbBookStore, null, () => Program.Lists.GetComicFieldList(cb => cb.BookStore, sort: true));
+        EditControlUtility.SetText(cbBookOwner, null, () => Program.Lists.GetComicFieldList(cb => cb.BookOwner, sort: true));
         EditControlUtility.SetText(cbBookCondition, null, () => Program.Lists.GetBookConditionList());
-        EditControlUtility.SetText(cbBookPrice, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookPriceAsText, sort: true));
-        EditControlUtility.SetText(cbBookLocation, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookLocation, sort: true));
+        EditControlUtility.SetText(cbBookPrice, null, () => Program.Lists.GetComicFieldList(cb => cb.BookPriceAsText, sort: true));
+        EditControlUtility.SetText(cbBookLocation, null, () => Program.Lists.GetComicFieldList(cb => cb.BookLocation, sort: true));
         EditControlUtility.SetText(txCollectionStatus, null, Program.Lists.GetBookCollectionStatusList);
         coverThumbnail.ThreeD = Program.Settings.InformationCover3D;
         InitializeScriptButton();
@@ -239,7 +239,7 @@ public partial class ComicBookDialog : FormEx
     {
         displayComic = comic;
         Text = comic.Caption;
-        new Control[4] { labelType, lblType, labelPages, lblPages }.ForEach((Control c) => c.Visible = comic.IsLinked);
+        new Control[4] { labelType, lblType, labelPages, lblPages }.ForEach(c => c.Visible = comic.IsLinked);
         AllowDrop = btThumbnail.Visible = btLinkFile.Visible = !comic.IsLinked && comic.EditMode.IsLocalComic();
         labelWhere.Visible = whereSeparator.Visible = lblPath.Visible = comic.IsLinked && comic.EditMode.IsLocalComic();
         customThumbnailKey = comic.CustomThumbnailKey;
@@ -358,10 +358,10 @@ public partial class ComicBookDialog : FormEx
         dtpAddedTime.Value = comic.AddedTime;
         dtpReleasedTime.Value = comic.ReleasedTime;
         dtpOpenedTime.Value = comic.OpenedTime;
-        cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList((ComicBook cb) => cb.LanguageISO).Cast<string>().Distinct();
+        cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList(cb => cb.LanguageISO).Cast<string>().Distinct();
         cbLanguage.SelectedCulture = comic.LanguageISO;
         customValuesData.Rows.Clear();
-        foreach (string item in Program.Database.CustomValues.OrderBy((string s) => s))
+        foreach (string item in Program.Database.CustomValues.OrderBy(s => s))
         {
             int index = customValuesData.Rows.Add(item, comic.GetCustomValue(item) ?? string.Empty);
             customValuesData.Rows[index].Visible = Program.ExtendedSettings.ShowCustomScriptValues || !item.Contains('.');
@@ -473,13 +473,13 @@ public partial class ComicBookDialog : FormEx
         if (comic.Publisher != text)
         {
             comic.Publisher = text;
-            EditControlUtility.SetText(cbPublisher, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Publisher), onlyDirectList: true);
+            EditControlUtility.SetText(cbPublisher, null, () => Program.Lists.GetComicFieldList(cb => cb.Publisher), onlyDirectList: true);
         }
         string text2 = cbImprint.Text.Trim();
         if (comic.Imprint != text2)
         {
             comic.Imprint = text2;
-            EditControlUtility.SetText(cbImprint, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Imprint), onlyDirectList: true);
+            EditControlUtility.SetText(cbImprint, null, () => Program.Lists.GetComicFieldList(cb => cb.Imprint), onlyDirectList: true);
         }
         string text3 = cbFormat.Text.Trim();
         if (comic.Format != text3)
@@ -503,19 +503,19 @@ public partial class ComicBookDialog : FormEx
         if (comic.BookStore != text6)
         {
             comic.BookStore = text6;
-            EditControlUtility.SetText(cbBookStore, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookStore), onlyDirectList: true);
+            EditControlUtility.SetText(cbBookStore, null, () => Program.Lists.GetComicFieldList(cb => cb.BookStore), onlyDirectList: true);
         }
         string text7 = cbBookOwner.Text.Trim();
         if (comic.BookOwner != text7)
         {
             comic.BookOwner = text7;
-            EditControlUtility.SetText(cbBookOwner, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookOwner), onlyDirectList: true);
+            EditControlUtility.SetText(cbBookOwner, null, () => Program.Lists.GetComicFieldList(cb => cb.BookOwner), onlyDirectList: true);
         }
         string b = cbBookPrice.Text.Trim();
         if (comic.BookPriceAsText != b)
         {
             comic.BookPrice = EditControlUtility.GetRealNumber(cbBookPrice);
-            EditControlUtility.SetText(cbBookPrice, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookPriceAsText), onlyDirectList: true);
+            EditControlUtility.SetText(cbBookPrice, null, () => Program.Lists.GetComicFieldList(cb => cb.BookPriceAsText), onlyDirectList: true);
         }
         string text8 = cbBookCondition.Text.Trim();
         if (comic.BookCondition != text8)
@@ -527,7 +527,7 @@ public partial class ComicBookDialog : FormEx
         if (comic.BookLocation != text9)
         {
             comic.BookLocation = text9;
-            EditControlUtility.SetText(cbBookLocation, null, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookLocation), onlyDirectList: true);
+            EditControlUtility.SetText(cbBookLocation, null, () => Program.Lists.GetComicFieldList(cb => cb.BookLocation), onlyDirectList: true);
         }
         comic.BookNotes = txBookNotes.Text.Trim();
         comic.BookCollectionStatus = EditControlUtility.GetText(txCollectionStatus, comic.BookCollectionStatus);
@@ -711,7 +711,7 @@ public partial class ComicBookDialog : FormEx
         string key = (string)customValuesData.Rows[customValuesData.CurrentRow.Index].Cells[0].Value;
         if (!string.IsNullOrEmpty(key))
         {
-            autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany((ComicBook cb) => cb.GetCustomValues())
+            autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany(cb => cb.GetCustomValues())
                                                    where p.Key.Equals(key, StringComparison.OrdinalIgnoreCase)
                                                    select p.Value).ToArray());
         }
@@ -834,14 +834,14 @@ public partial class ComicBookDialog : FormEx
             return;
         }
         Comparison<ComicPageInfo> comparison = null;
-        Dictionary<int, PageViewItem> map = pagesView.GetItems().ToDictionary((PageViewItem item) => item.PageInfo.ImageIndex);
+        Dictionary<int, PageViewItem> map = pagesView.GetItems().ToDictionary(item => item.PageInfo.ImageIndex);
         if (e.ClickedItem == miOrderByName)
         {
-            comparison = (ComicPageInfo a, ComicPageInfo b) => string.CompareOrdinal(map[a.ImageIndex].Key, map[b.ImageIndex].Key);
+            comparison = (a, b) => string.CompareOrdinal(map[a.ImageIndex].Key, map[b.ImageIndex].Key);
         }
         else if (e.ClickedItem == miOrderByNameNumeric)
         {
-            comparison = (ComicPageInfo a, ComicPageInfo b) => ExtendedStringComparer.Compare(map[a.ImageIndex].Key, map[b.ImageIndex].Key);
+            comparison = (a, b) => ExtendedStringComparer.Compare(map[a.ImageIndex].Key, map[b.ImageIndex].Key);
         }
         if (comparison != null)
         {

@@ -29,7 +29,7 @@ public class PopupComboBoxBase : ComboBox
             }
             if (modalMenuFilter == null)
             {
-                modalMenuFilter = new List<Type>(typeof(ToolStripManager).Assembly.GetTypes()).Find((Type type) => type.FullName == "System.Windows.Forms.ToolStripManager+ModalMenuFilter");
+                modalMenuFilter = new List<Type>(typeof(ToolStripManager).Assembly.GetTypes()).Find(type => type.FullName == "System.Windows.Forms.ToolStripManager+ModalMenuFilter");
             }
             return modalMenuFilter;
         }

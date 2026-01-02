@@ -303,7 +303,7 @@ public partial class SearchBrowserControl : UserControlEx
 
     private void BookPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        listIsDirty = workingSelectionInfos.Any((SelectionInfo si) => si.Property == e.PropertyName);
+        listIsDirty = workingSelectionInfos.Any(si => si.Property == e.PropertyName);
     }
 
     private void IdleUpdate(object sender, EventArgs e)

@@ -21,16 +21,16 @@ public class ComicListItemCollection : SmartList<ComicListItem>
 
     public IEnumerable<T> GetItems<T>(bool bottomUp = false) where T : ComicListItem
     {
-        return this.Recurse<T>((object o) => (o is not ComicListItemFolder) ? null : ((ComicListItemFolder)o).Items, bottomUp);
+        return this.Recurse<T>(o => (o is not ComicListItemFolder) ? null : ((ComicListItemFolder)o).Items, bottomUp);
     }
 
     public int GetChildLevel<T>(T cli) where T : ComicListItem
     {
-        return this.GetChildLevel(cli, (object o) => (o is not ComicListItemFolder) ? null : ((ComicListItemFolder)o).Items, 0);
+        return this.GetChildLevel(cli, o => (o is not ComicListItemFolder) ? null : ((ComicListItemFolder)o).Items, 0);
     }
 
     public ComicListItem FindItem(Guid id)
     {
-        return GetItems<ComicListItem>().FirstOrDefault((ComicListItem cli) => cli.Id == id);
+        return GetItems<ComicListItem>().FirstOrDefault(cli => cli.Id == id);
     }
 }

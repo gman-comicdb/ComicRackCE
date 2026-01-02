@@ -37,7 +37,7 @@ public class ItemViewGroupsStatus
         }
         headers = headers.ToArray();
         int num = headers.Count();
-        int num2 = headers.Count((GroupHeaderInformation h) => h.Collapsed);
+        int num2 = headers.Count(h => h.Collapsed);
         int num3 = num - num2;
         if (num3 == num)
         {

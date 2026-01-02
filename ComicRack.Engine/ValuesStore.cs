@@ -53,7 +53,7 @@ public class ValuesStore
 
     public IEnumerable<StringPair> GetValues()
     {
-        return lookup.Keys.Select((string key) => new StringPair(key, lookup[key]));
+        return lookup.Keys.Select(key => new StringPair(key, lookup[key]));
     }
 
     public override string ToString()
@@ -63,7 +63,7 @@ public class ValuesStore
             return string.Empty;
         }
         StringBuilder stringBuilder = new();
-        foreach (string item in lookup.Keys.OrderBy((string s) => s))
+        foreach (string item in lookup.Keys.OrderBy(s => s))
         {
             if (item.Length != 0)
             {

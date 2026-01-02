@@ -92,7 +92,7 @@ public partial class TasksDialog : FormEx
 
     private Image GetImage(string imageKey)
     {
-        return imageCache.Get(imageKey, (string k) => (Bitmap)Resources.ResourceManager.GetObject(imageKey));
+        return imageCache.Get(imageKey, k => (Bitmap)Resources.ResourceManager.GetObject(imageKey));
     }
 
     private void UpdateTaskList()

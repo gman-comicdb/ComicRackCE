@@ -146,7 +146,7 @@ public class DeviceSyncSettings
     {
         DeviceName = sds.DeviceName;
         DeviceKey = sds.DeviceKey;
-        Lists.AddRange(sds.Lists.Select((SharedList sl) => new SharedList(sl)));
+        Lists.AddRange(sds.Lists.Select(sl => new SharedList(sl)));
     }
 
     public override int GetHashCode()

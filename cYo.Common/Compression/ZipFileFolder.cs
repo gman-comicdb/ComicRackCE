@@ -85,15 +85,14 @@ public class ZipFileFolder : DisposableObject, IVirtualFolder
 
     public static IEnumerable<ZipFileFolder> CreateFromFiles(IEnumerable<string> folders, string searchPattern)
     {
-        return folders.SelectMany((string folder) => (from f in FileUtility.SafeGetFiles(folder, searchPattern)
+        return folders.SelectMany(folder => (from f in FileUtility.SafeGetFiles(folder, searchPattern)
                                                       orderby f
                                                       select f).Select(CreateFromFile)).ToArray();
     }
 
     public static Dictionary<string, ZipFileFolder> CreateDictionaryFromFiles(IEnumerable<string> folders, string searchPattern, string trigger = "")
     {
-        return folders.SelectMany((string folder) =>
-            (from f in FileUtility.SafeGetFiles(folder, $"{trigger}{searchPattern}")
+        return folders.SelectMany(folder => (from f in FileUtility.SafeGetFiles(folder, $"{trigger}{searchPattern}")
              orderby f
              select f).Select(f => new
              {

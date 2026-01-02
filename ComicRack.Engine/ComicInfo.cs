@@ -551,12 +551,12 @@ public class ComicInfo
                 return cachedFrontCoverPageIndex;
             }
             ComicPageInfo[] source = GetPageList().ToArray();
-            ComicPageInfo[] array = source.Where((ComicPageInfo pi) => pi.PageType == ComicPageType.FrontCover).ToArray();
+            ComicPageInfo[] array = source.Where(pi => pi.PageType == ComicPageType.FrontCover).ToArray();
             int num = PreferredFrontCover.Clamp(0, array.Length - 1);
             ComicPageInfo comicPageInfo = (num == -1 || array.Length == 0) ? ComicPageInfo.Empty : array[num];
             if (comicPageInfo.IsEmpty)
             {
-                comicPageInfo = source.Where((ComicPageInfo p) => p.PageType != ComicPageType.Other).FirstOrDefault();
+                comicPageInfo = source.Where(p => p.PageType != ComicPageType.Other).FirstOrDefault();
             }
             cachedFrontCoverPageIndex = (!comicPageInfo.IsEmpty) ? TranslateImageIndexToPage(comicPageInfo.ImageIndex) : 0;
             return cachedFrontCoverPageIndex;
@@ -595,7 +595,7 @@ public class ComicInfo
         {
             if (cachedBookmarkCount == -1)
             {
-                cachedBookmarkCount = (pages != null) ? pages.Lock().Count((ComicPageInfo pi) => !string.IsNullOrEmpty(pi.Bookmark)) : 0;
+                cachedBookmarkCount = (pages != null) ? pages.Lock().Count(pi => !string.IsNullOrEmpty(pi.Bookmark)) : 0;
             }
             return cachedBookmarkCount;
         }
@@ -742,7 +742,7 @@ public class ComicInfo
     {
         using (ItemMonitor.Lock(Pages))
         {
-            int num = Pages.FindIndex((ComicPageInfo cpi) => cpi.ImageIndex == imageIndex);
+            int num = Pages.FindIndex(cpi => cpi.ImageIndex == imageIndex);
             return (num == -1) ? imageIndex : num;
         }
     }
@@ -1293,7 +1293,7 @@ public class ComicInfo
     public static bool IsValidCoverKey(string fileKey)
     {
         string file = Path.GetFileName(fileKey);
-        return !coverKeyFilter.Any((string f) => file.Contains(f, StringComparison.OrdinalIgnoreCase));
+        return !coverKeyFilter.Any(f => file.Contains(f, StringComparison.OrdinalIgnoreCase));
     }
 
     public static bool SeriesEquals(string a, string b, CompareSeriesOptions options)

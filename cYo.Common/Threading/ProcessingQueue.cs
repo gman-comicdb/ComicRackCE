@@ -183,7 +183,7 @@ public class ProcessingQueue<K> : DisposableObject
         }
     }
 
-    public bool IsActive => processThreads.Any((ProcessData pd) => pd.IsActive);
+    public bool IsActive => processThreads.Any(pd => pd.IsActive);
 
     public IEnumerable<K> PendingItems
     {

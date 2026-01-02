@@ -667,7 +667,7 @@ public abstract class ComicListItem : NamedIdComponent, IComicBookListProvider, 
         try
         {
             recurseShield.Value = true;
-            if (this is ComicListItemFolder comicListItemFolder && comicListItemFolder.Items.Any((ComicListItem cli) => cli.RecursionTest(listId)))
+            if (this is ComicListItemFolder comicListItemFolder && comicListItemFolder.Items.Any(cli => cli.RecursionTest(listId)))
                 result = true;
 
             if (this is ComicSmartListItem comicSmartListItem)

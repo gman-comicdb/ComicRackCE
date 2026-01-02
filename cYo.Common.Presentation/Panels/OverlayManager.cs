@@ -185,7 +185,7 @@ public class OverlayManager : Component
                 {
                     stillRunning |= op.Animate();
                 }, copy: true);
-                panels.RemoveRange(panels.FindAll((OverlayPanel op) => op.Animators.AllCompleted && op.DestroyAfterCompletion));
+                panels.RemoveRange(panels.FindAll(op => op.Animators.AllCompleted && op.DestroyAfterCompletion));
                 if (!stillRunning)
                 {
                     break;
@@ -219,7 +219,7 @@ public class OverlayManager : Component
     public OverlayPanel HitTest(Point pt)
     {
         return (from op in panels.ToArray().Reverse()
-                select op.HitTest(pt)).FirstOrDefault((OverlayPanel hit) => hit != null);
+                select op.HitTest(pt)).FirstOrDefault(hit => hit != null);
     }
 
     public virtual void Invalidate()

@@ -33,7 +33,7 @@ public abstract class ProviderFactoryBase<T> where T : class
         {
             (from t in assembly.GetTypes()
              where !t.IsAbstract && t.IsSubclassOf(baseType) && t.GetConstructor([]) != null
-             select t).ForEach((Type t) => RegisterProvider(t, withLocking: false));
+             select t).ForEach(t => RegisterProvider(t, withLocking: false));
         }
     }
 

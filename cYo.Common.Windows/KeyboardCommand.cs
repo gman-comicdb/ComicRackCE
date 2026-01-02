@@ -131,7 +131,7 @@ public class KeyboardCommand
 
     public bool Handles(CommandKey key)
     {
-        return keyboard.Any((CommandKey k) => k == key);
+        return keyboard.Any(k => k == key);
     }
 
     private static string GetEnglishName(CommandKey key)

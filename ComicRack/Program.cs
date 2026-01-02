@@ -238,7 +238,7 @@ public static class Program
                         }
                         installedLanguages.Add(languageInfo);
                     }
-                    installedLanguages.Sort((TRInfo a, TRInfo b) =>
+                    installedLanguages.Sort((a, b) =>
                     {
                         int num = b.CompletionPercent.CompareTo(a.CompletionPercent);
                         return (num == 0) ? string.Compare(a.CultureName, b.CultureName) : num;
@@ -274,7 +274,7 @@ public static class Program
 
     public static void RefreshAllWindows()
     {
-        ForAllForms((Form f) => f.Refresh());
+        ForAllForms(f => f.Refresh());
     }
 
     public static void ForAllForms(Action<Form> action)
@@ -378,7 +378,7 @@ public static class Program
 
     public static IEnumerable<ComicBookValueMatcher> GetUsedComicBookMatchers(int minUsage)
     {
-        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany((ComicSmartListItem n) => n.Matchers.Recurse<ComicBookValueMatcher>((object o) => (o is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)o).Matchers))
+        return from n in Database.ComicLists.GetItems<ComicSmartListItem>().SelectMany(n => n.Matchers.Recurse<ComicBookValueMatcher>(o => (o is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)o).Matchers))
                select n.GetType() into n
                group n by n into g
                where g.Count() >= minUsage
@@ -435,7 +435,7 @@ public static class Program
 
     public static IEnumerable<string> GetFavoritePaths()
     {
-        return Settings.FavoriteFolders.Concat(Database.WatchFolders.Select((WatchFolder wf) => wf.Folder)).Distinct();
+        return Settings.FavoriteFolders.Concat(Database.WatchFolders.Select(wf => wf.Folder)).Distinct();
     }
 
     public static Image MakeBooksImage(IEnumerable<ComicBook> books, Size size, int maxImages, bool onlyMemory)
@@ -524,7 +524,7 @@ public static class Program
             {
                 bool flag = !item.Contains("-");
                 string name = item.Remove("-");
-                FileFormat fileFormat = Providers.Readers.GetSourceFormats().FirstOrDefault((FileFormat sf) => sf.Name == name);
+                FileFormat fileFormat = Providers.Readers.GetSourceFormats().FirstOrDefault(sf => sf.Name == name);
                 if (fileFormat != null)
                 {
                     if (flag)
@@ -709,11 +709,11 @@ public static class Program
         };
         DatabaseManager.BackgroundSaveInterval = ExtendedSettings.DatabaseBackgroundSaving;
         WirelessSyncProvider.StartListen();
-        WirelessSyncProvider.ClientSyncRequest += (object s, WirelessSyncProvider.ClientSyncRequestArgs e) =>
+        WirelessSyncProvider.ClientSyncRequest += (s, e) =>
         {
             if (MainForm != null)
             {
-                e.IsPaired = QueueManager.Devices.Any((DeviceSyncSettings d) => d.DeviceKey == e.Key);
+                e.IsPaired = QueueManager.Devices.Any(d => d.DeviceKey == e.Key);
                 if (e.IsPaired && s is IPAddress address)
                 {
                     MainForm.BeginInvoke(delegate
@@ -872,7 +872,7 @@ public static class Program
         NetworkManager = new NetworkManager(DatabaseManager, CacheManager, Settings, ExtendedSettings.PrivateServerPort, ExtendedSettings.InternetServerPort, ExtendedSettings.DisableBroadcast);
         MainForm = new MainForm();
         MainForm.FormClosed += MainFormFormClosed;
-        MainForm.FormClosing += (object s, FormClosingEventArgs e) =>
+        MainForm.FormClosing += (s, e) =>
         {
             bool flag2 = e.CloseReason == CloseReason.UserClosing;
             foreach (Command command in ScriptUtility.GetCommands(PluginEngine.ScriptTypeShutdown))
@@ -972,7 +972,7 @@ public static class Program
 
     private static bool InitializeDatabase(int startPercent, string readDbMessage)
     {
-        return DatabaseManager.Open(Paths.DatabasePath, ExtendedSettings.DataSource, ExtendedSettings.DoNotLoadQueryCaches, string.IsNullOrEmpty(readDbMessage) ? null : ((Action<int>)((int percent) => StartupProgress(readDbMessage, startPercent + percent / 5))));
+        return DatabaseManager.Open(Paths.DatabasePath, ExtendedSettings.DataSource, ExtendedSettings.DoNotLoadQueryCaches, string.IsNullOrEmpty(readDbMessage) ? null : ((Action<int>)(percent => StartupProgress(readDbMessage, startPercent + percent / 5))));
     }
 
     private static void MainFormFormClosed(object sender, FormClosedEventArgs e)
@@ -1019,7 +1019,7 @@ public static class Program
                 }
                 if (enumerable.Any())
                 {
-                    enumerable.ForEach((string file) => MainForm.OpenSupportedFile(file, newSlot: true, sw.Page, fromShell: true));
+                    enumerable.ForEach(file => MainForm.OpenSupportedFile(file, newSlot: true, sw.Page, fromShell: true));
                 }
             }
             catch (Exception)

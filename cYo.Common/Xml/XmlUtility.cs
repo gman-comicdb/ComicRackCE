@@ -22,7 +22,7 @@ public static class XmlUtility
     {
         using (ItemMonitor.Lock(cachedSerialzers))
         {
-            return cachedSerialzers.Get(type, (Type k) => new XmlSerializer(type, GetExtraTypes(type)));
+            return cachedSerialzers.Get(type, k => new XmlSerializer(type, GetExtraTypes(type)));
         }
     }
 

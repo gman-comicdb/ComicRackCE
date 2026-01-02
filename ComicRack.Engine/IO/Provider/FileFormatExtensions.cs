@@ -49,6 +49,6 @@ public static class FileFormatExtensions
 
     public static IEnumerable<string> GetExtensions(this IEnumerable<FileFormat> formats)
     {
-        return formats.SelectMany((FileFormat ff) => ff.Extensions);
+        return formats.SelectMany(ff => ff.Extensions);
     }
 }

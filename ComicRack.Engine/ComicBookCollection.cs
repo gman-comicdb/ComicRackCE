@@ -88,14 +88,14 @@ public class ComicBookCollection : SmartList<ComicBook>, IDeserializationCallbac
 
     public ComicBook FindItemByFileName(string fileName)
     {
-        return Find((ComicBook cb) => string.Equals(cb.FileName, fileName, StringComparison.OrdinalIgnoreCase));
+        return Find(cb => string.Equals(cb.FileName, fileName, StringComparison.OrdinalIgnoreCase));
     }
 
     public ComicBook FindItemByFileNameSize(string file)
     {
         FileInfo fi = new(file);
         string name = Path.GetFileNameWithoutExtension(file);
-        return Find((ComicBook cb) => string.Equals(cb.FileName, name, StringComparison.OrdinalIgnoreCase) && cb.FileSize == fi.Length);
+        return Find(cb => string.Equals(cb.FileName, name, StringComparison.OrdinalIgnoreCase) && cb.FileSize == fi.Length);
     }
 
     private void OnBookAdded(ComicBook item)
@@ -139,39 +139,39 @@ public class ComicBookCollection : SmartList<ComicBook>, IDeserializationCallbac
     {
         if (filter.HasFlag(ComicBookFilterType.Library))
         {
-            books = books.Where((ComicBook cb) => cb.IsInContainer);
+            books = books.Where(cb => cb.IsInContainer);
         }
         if (filter.HasFlag(ComicBookFilterType.NotInLibrary))
         {
-            books = books.Where((ComicBook cb) => !cb.IsInContainer);
+            books = books.Where(cb => !cb.IsInContainer);
         }
         if (filter.HasFlag(ComicBookFilterType.IsLocal))
         {
-            books = books.Where((ComicBook cb) => cb.EditMode.IsLocalComic());
+            books = books.Where(cb => cb.EditMode.IsLocalComic());
         }
         if (filter.HasFlag(ComicBookFilterType.IsNotLocal))
         {
-            books = books.Where((ComicBook cb) => !cb.EditMode.IsLocalComic());
+            books = books.Where(cb => !cb.EditMode.IsLocalComic());
         }
         if (filter.HasFlag(ComicBookFilterType.IsFileless))
         {
-            books = books.Where((ComicBook cb) => !cb.IsLinked);
+            books = books.Where(cb => !cb.IsLinked);
         }
         if (filter.HasFlag(ComicBookFilterType.IsNotFileless))
         {
-            books = books.Where((ComicBook cb) => cb.IsLinked);
+            books = books.Where(cb => cb.IsLinked);
         }
         if (filter.HasFlag(ComicBookFilterType.IsEditable))
         {
-            books = books.Where((ComicBook cb) => cb.EditMode.CanEditProperties());
+            books = books.Where(cb => cb.EditMode.CanEditProperties());
         }
         if (filter.HasFlag(ComicBookFilterType.IsNotEditable))
         {
-            books = books.Where((ComicBook cb) => !cb.EditMode.CanEditProperties());
+            books = books.Where(cb => !cb.EditMode.CanEditProperties());
         }
         if (filter.HasFlag(ComicBookFilterType.CanExport))
         {
-            books = books.Where((ComicBook cb) => cb.EditMode.CanExport());
+            books = books.Where(cb => cb.EditMode.CanExport());
         }
         if (filter.HasFlag(ComicBookFilterType.AsArray))
         {

@@ -57,7 +57,7 @@ public partial class DeviceSelectDialog : FormEx
             {
                 syncProviders.AddRange(DeviceSyncFactory.Discover());
             }, AutomaticProgressDialogOptions.None);
-            deviceSelectDialog.FillList(syncProviders.Where((ISyncProvider sd) => devices.All((DeviceSyncSettings d) => d.DeviceKey != sd.Device.Key)));
+            deviceSelectDialog.FillList(syncProviders.Where(sd => devices.All(d => d.DeviceKey != sd.Device.Key)));
             return deviceSelectDialog.ShowDialog(parent) == DialogResult.Cancel
                 ? null
                 : (deviceSelectDialog.lvDevices.SelectedItems.Count == 0) ? null : (deviceSelectDialog.lvDevices.SelectedItems[0].Tag as ISyncProvider);

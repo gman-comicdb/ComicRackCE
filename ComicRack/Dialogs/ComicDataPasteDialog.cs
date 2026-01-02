@@ -91,7 +91,7 @@ public partial class ComicDataPasteDialog : FormEx
     {
         IEnumerable<string> checks = null;
         int count = books.Count();
-        string[] array = Program.Settings.ShowCustomBookFields ? Program.Database.CustomValues.Where((string k) => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray() : null;
+        string[] array = Program.Settings.ShowCustomBookFields ? Program.Database.CustomValues.Where(k => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray() : null;
         using (ComicDataPasteDialog comicDataPasteDialog = new())
         {
             comicDataPasteDialog.SetChecks(data, Program.Settings.PasteProperties.Split(';'));
@@ -140,7 +140,7 @@ public partial class ComicDataPasteDialog : FormEx
                     comicDataPasteDialog.grpCustom.Height = control.Bottom + 8;
                 }
             }
-            if (!books.Any((ComicBook cb) => cb.IsLinked))
+            if (!books.Any(cb => cb.IsLinked))
             {
                 comicDataPasteDialog.chkScanInformation.Visible = false;
             }
@@ -154,7 +154,7 @@ public partial class ComicDataPasteDialog : FormEx
                 bool visible = checkBox3.Visible = flag4;
                 checkBox2.Visible = visible;
             }
-            if (!books.Any((ComicBook cb) => cb.IsInContainer))
+            if (!books.Any(cb => cb.IsInContainer))
             {
                 CheckBox checkBox5 = comicDataPasteDialog.chkCommunityRating;
                 CheckBox checkBox6 = comicDataPasteDialog.chkRating;

@@ -402,7 +402,7 @@ public partial class ListSelectorControl : UserControlEx, Popup.INotifyClose
         };
         if (!textBox.Multiline)
         {
-            textBox.KeyUp += (object s2, KeyEventArgs ea2) =>
+            textBox.KeyUp += (s2, ea2) =>
             {
                 if (ea2.KeyCode == Keys.Down)
                 {

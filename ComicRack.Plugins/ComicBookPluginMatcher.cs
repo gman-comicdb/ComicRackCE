@@ -42,7 +42,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
         {
             try
             {
-                return Commands.FirstOrDefault((Command cmd) => cmd.Key == PluginKey).PCount.Clamp(0, 2);
+                return Commands.FirstOrDefault(cmd => cmd.Key == PluginKey).PCount.Clamp(0, 2);
             }
             catch
             {
@@ -57,7 +57,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
         {
             List<string> list = new();
             list.Add(TR.Default["None", "None"]);
-            list.AddRange(Commands.Select((Command cmd) => cmd.GetLocalizedName()));
+            list.AddRange(Commands.Select(cmd => cmd.GetLocalizedName()));
             return list.ToArray();
         }
     }
@@ -119,7 +119,7 @@ public class ComicBookPluginMatcher : ComicBookValueMatcher
     {
         try
         {
-            Command command = Commands.FirstOrDefault((Command c) => c.Key == PluginKey);
+            Command command = Commands.FirstOrDefault(c => c.Key == PluginKey);
             if (command == null)
             {
                 return items;

@@ -120,8 +120,8 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public bool AreImagesPending(string filePath)
     {
-        return !slowPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastPageQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !fastThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath) && !slowThumbnailQueueUnlimited.PendingItems.Any((ImageKey key) => key.Location == filePath)
-            ? slowThumbnailQueue.PendingItems.Any((ImageKey key) => key.Location == filePath)
+        return !slowPageQueue.PendingItems.Any(key => key.Location == filePath) && !fastPageQueue.PendingItems.Any(key => key.Location == filePath) && !fastThumbnailQueue.PendingItems.Any(key => key.Location == filePath) && !slowThumbnailQueueUnlimited.PendingItems.Any(key => key.Location == filePath)
+            ? slowThumbnailQueue.PendingItems.Any(key => key.Location == filePath)
             : true;
     }
 
@@ -309,7 +309,7 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
         });
         return itemLock ?? (onErrorThrowException
             ? throw new Exception("Could not open image")
-            : pages.MemoryCache.LockItem(key, (ImageKey tk) => PageImage.Wrap(CreateErrorPage())));
+            : pages.MemoryCache.LockItem(key, tk => PageImage.Wrap(CreateErrorPage())));
     }
 
     private Bitmap GetPartialDiskPage(PageKey key, ImageRotation rot, BitmapAdjustment transform)
@@ -346,8 +346,8 @@ public class ImagePool : DisposableObject, IPagePool, IThumbnailPool, ICustomThu
 
     public void RemoveImages(string source, int imageIndex = -1)
     {
-        pages.RemoveKeys((ImageKey k) => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase) && (imageIndex == -1 || k.Index == imageIndex));
-        thumbs.RemoveKeys((ImageKey k) => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase) && (imageIndex == -1 || k.Index == imageIndex));
+        pages.RemoveKeys(k => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase) && (imageIndex == -1 || k.Index == imageIndex));
+        thumbs.RemoveKeys(k => string.Equals(k.Location, source, StringComparison.OrdinalIgnoreCase) && (imageIndex == -1 || k.Index == imageIndex));
     }
 
     public void CachePage(PageKey key, bool checkMemoryOnly, IImageProvider provider, bool bottom)

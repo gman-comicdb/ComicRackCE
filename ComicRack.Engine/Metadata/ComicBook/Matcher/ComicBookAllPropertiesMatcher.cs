@@ -47,7 +47,7 @@ public class ComicBookAllPropertiesMatcher : ComicBookStringMatcher
 
     private bool MatchOption(ComicBook comicBook, MatcherOption option)
     {
-        return GetOptionValueSet(comicBook, option).Any((string t) => MatchBook(comicBook, t));
+        return GetOptionValueSet(comicBook, option).Any(t => MatchBook(comicBook, t));
     }
 
     public override bool Match(ComicBook comicBook)
@@ -115,7 +115,7 @@ public class ComicBookAllPropertiesMatcher : ComicBookStringMatcher
                 MatchOperator = matchOperator
             });
         }
-        list.AddRange(additonalMatchers.Where((ComicBookMatcher m) => m != null));
+        list.AddRange(additonalMatchers.Where(m => m != null));
         if (list.Count == 0)
         {
             return null;

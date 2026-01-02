@@ -61,7 +61,7 @@ public class StacksConfig
 
     public StackConfigItem FindItem(string stack)
     {
-        return configs.Find((StackConfigItem ti) => ti.Stack == stack);
+        return configs.Find(ti => ti.Stack == stack);
     }
 
     public bool IsTop(string stack, ComicBook cb)

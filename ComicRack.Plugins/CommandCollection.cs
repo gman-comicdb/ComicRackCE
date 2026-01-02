@@ -8,5 +8,5 @@ namespace cYo.Projects.ComicRack.Plugins;
 [XmlInclude(typeof(PythonCommand))]
 public class CommandCollection : SmartList<Command>
 {
-    public Command this[string key] => this.FirstOrDefault((Command cmd) => cmd.Key == key);
+    public Command this[string key] => this.FirstOrDefault(cmd => cmd.Key == key);
 }

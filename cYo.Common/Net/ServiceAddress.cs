@@ -131,7 +131,7 @@ public class ServiceAddress
         try
         {
             ServiceAddress serviceAddress = new(address);
-            return Dns.GetHostAddresses(serviceAddress.Host).All((IPAddress ip) => ip.IsPrivate());
+            return Dns.GetHostAddresses(serviceAddress.Host).All(ip => ip.IsPrivate());
         }
         catch (Exception)
         {

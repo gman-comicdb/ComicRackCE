@@ -21,7 +21,7 @@ public class DiskDriveSyncProvider : SyncProviderBase
             throw new ArgumentException();
         }
         this.rootPath = rootPath;
-        syncPath = FileUtility.GetFolders(rootPath, 3).FirstOrDefault((string fullPath) => FileUtility.SafeFileExists(Path.Combine(fullPath, MarkerFile)));
+        syncPath = FileUtility.GetFolders(rootPath, 3).FirstOrDefault(fullPath => FileUtility.SafeFileExists(Path.Combine(fullPath, MarkerFile)));
         if (syncPath == null)
         {
             throw new DriveNotFoundException();

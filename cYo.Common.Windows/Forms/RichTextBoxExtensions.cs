@@ -93,7 +93,7 @@ public static class RichTextBoxExtensions
 
     public static void RegisterColorize(this RichTextBox rtb, IEnumerable<ValuePair<Color, string>> colors)
     {
-        rtb.RegisterColorize(colors.Select((ValuePair<Color, string> vp) => new ValuePair<Color, Regex>(vp.Key, new Regex(vp.Value, RegexOptions.IgnoreCase))));
+        rtb.RegisterColorize(colors.Select(vp => new ValuePair<Color, Regex>(vp.Key, new Regex(vp.Value, RegexOptions.IgnoreCase))));
     }
 
     public static void RegisterColorize(this RichTextBox rtb, Color color, string expression)

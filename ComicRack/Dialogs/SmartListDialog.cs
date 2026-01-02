@@ -253,14 +253,14 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
         switch (e.Action)
         {
             case SmartListAction.Insert:
-                if (matcherControls.Controls.OfType<Control>().FirstOrDefault((Control c) => c.Tag == e.Item) == null)
+                if (matcherControls.Controls.OfType<Control>().FirstOrDefault(c => c.Tag == e.Item) == null)
                 {
                     AddMatcherControl(e.Item);
                 }
                 break;
             case SmartListAction.Remove:
                 {
-                    Control control2 = matcherControls.Controls.OfType<Control>().FirstOrDefault((Control cc) => cc.Tag == e.Item);
+                    Control control2 = matcherControls.Controls.OfType<Control>().FirstOrDefault(cc => cc.Tag == e.Item);
                     if (control2 != null)
                     {
                         matcherControls.Controls.Remove(control2);
@@ -269,7 +269,7 @@ public partial class SmartListDialog : FormEx, ISmartListDialog
                 }
             case SmartListAction.Move:
                 {
-                    Control control = matcherControls.Controls.OfType<Control>().FirstOrDefault((Control cc) => cc.Tag == e.Item);
+                    Control control = matcherControls.Controls.OfType<Control>().FirstOrDefault(cc => cc.Tag == e.Item);
                     if (control != null)
                     {
                         matcherControls.Controls.SetChildIndex(control, e.Index);

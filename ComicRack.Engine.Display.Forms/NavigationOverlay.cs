@@ -335,7 +335,7 @@ public class NavigationOverlay : OverlayPanel
         }
         using (ItemMonitor.Lock(thumbnailAreas))
         {
-            Invalidate(thumbnailAreas.FirstOrDefault((IndexRectangle ta) => ta.Page == page).Bounds);
+            Invalidate(thumbnailAreas.FirstOrDefault(ta => ta.Page == page).Bounds);
         }
     }
 
@@ -373,7 +373,7 @@ public class NavigationOverlay : OverlayPanel
             return;
         }
         SelectedPage = downPage;
-        IndexRectangle indexRectangle = thumbnailAreas.FirstOrDefault((IndexRectangle ta) => ta.Page == downPage);
+        IndexRectangle indexRectangle = thumbnailAreas.FirstOrDefault(ta => ta.Page == downPage);
         if (indexRectangle.Bounds.Width == 0 || e.Y < indexRectangle.Bounds.Top || e.Y > indexRectangle.Bounds.Bottom)
         {
             return;

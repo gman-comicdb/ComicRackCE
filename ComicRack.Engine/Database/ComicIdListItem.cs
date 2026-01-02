@@ -134,7 +134,7 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
 
     protected override IEnumerable<ComicBook> OnCacheMatch(IEnumerable<ComicBook> cbl)
     {
-        return cbl.Where((ComicBook cb) => BookIds.Contains(cb.Id));
+        return cbl.Where(cb => BookIds.Contains(cb.Id));
     }
 
     protected override bool OnRetrieveCustomCache(HashSet<ComicBook> books)
@@ -173,19 +173,19 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
                 }
             }
             crli.SetFileNameInfo();
-            IEnumerable<ComicBook> enumerable = library.Where((ComicBook ci) => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.None));
+            IEnumerable<ComicBook> enumerable = library.Where(ci => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.None));
             if (enumerable.Count() == 0)
             {
-                enumerable = library.Where((ComicBook ci) => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.IgnoreVolumeInName));
+                enumerable = library.Where(ci => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.IgnoreVolumeInName));
             }
             if (enumerable.Count() == 0)
             {
-                enumerable = library.Where((ComicBook ci) => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.IgnoreVolumeInName | CompareSeriesOptions.StripDown));
+                enumerable = library.Where(ci => ci.ShadowNumber == crli.Number && ComicInfo.SeriesEquals(ci.ShadowSeries, crli.Series, CompareSeriesOptions.IgnoreVolumeInName | CompareSeriesOptions.StripDown));
             }
             if (enumerable.Count() > 1)
             {
                 IEnumerable<ComicBook> enumerable2 = enumerable;
-                enumerable = enumerable2.Where((ComicBook ci) => Math.Abs(ci.ShadowYear - crli.Year) <= 1);
+                enumerable = enumerable2.Where(ci => Math.Abs(ci.ShadowYear - crli.Year) <= 1);
                 if (enumerable.Count() == 0)
                 {
                     enumerable = enumerable2;
@@ -194,7 +194,7 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
             if (enumerable.Count() > 1)
             {
                 IEnumerable<ComicBook> enumerable3 = enumerable;
-                enumerable = enumerable3.Where((ComicBook ci) => ci.ShadowVolume == crli.Volume);
+                enumerable = enumerable3.Where(ci => ci.ShadowVolume == crli.Volume);
                 if (enumerable.Count() == 0)
                 {
                     enumerable = enumerable3;
@@ -203,7 +203,7 @@ public class ComicIdListItem : ShareableComicListItem, IEditableComicBookListPro
             if (enumerable.Count() > 1 && !string.IsNullOrEmpty(crli.Format))
             {
                 IEnumerable<ComicBook> enumerable4 = enumerable;
-                enumerable = enumerable4.Where((ComicBook ci) => string.Compare(ci.ShadowFormat, crli.Format, StringComparison.OrdinalIgnoreCase) == 0);
+                enumerable = enumerable4.Where(ci => string.Compare(ci.ShadowFormat, crli.Format, StringComparison.OrdinalIgnoreCase) == 0);
                 if (enumerable.Count() == 0)
                 {
                     enumerable = enumerable4;

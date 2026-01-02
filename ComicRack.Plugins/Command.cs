@@ -105,7 +105,7 @@ public abstract class Command
 
     public bool IsHook(params string[] hooks)
     {
-        return hooks.Any((string hook) => Hook.Contains(hook));
+        return hooks.Any(hook => Hook.Contains(hook));
     }
 
     public void PreCompile(bool handleException = true)

@@ -61,7 +61,7 @@ public static class ComparerExtension
 
     public static int Compare<T>(this IEnumerable<IComparer<T>> comparerList, T a, T b)
     {
-        return comparerList.Select((IComparer<T> c) => c.Compare(a, b)).FirstOrDefault((int r) => r != 0);
+        return comparerList.Select(c => c.Compare(a, b)).FirstOrDefault(r => r != 0);
     }
 
     public static IComparer<T> Cast<T>(this IComparer comparer)
@@ -71,6 +71,6 @@ public static class ComparerExtension
 
     public static int Compare<T>(T a, T b, params Comparison<T>[] comparers)
     {
-        return comparers.Select((Comparison<T> c) => c(a, b)).FirstOrDefault((int n) => n != 0);
+        return comparers.Select(c => c(a, b)).FirstOrDefault(n => n != 0);
     }
 }

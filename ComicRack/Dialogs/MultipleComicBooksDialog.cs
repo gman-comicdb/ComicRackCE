@@ -85,11 +85,11 @@ public partial class MultipleComicBooksDialog : FormEx
             txMainCharacterOrTeam
         });
         ListSelectorControl.Register(SearchEngines.Engines, listFields.ToArray());
-        cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList((ComicBook cb) => cb.LanguageISO).Cast<string>().Distinct();
+        cbLanguage.TopISOLanguages = Program.Lists.GetComicFieldList(cb => cb.LanguageISO).Cast<string>().Distinct();
         this.books = books.ToArray();
         Text = StringUtility.Format(Text, books.Count());
-        labelOpenedTime.Visible = dtpOpenedTime.Visible = dtpOpenedTime.Enabled = labelPagesAsTextSimple.Visible = txPagesAsTextSimple.Visible = txPagesAsTextSimple.Enabled = !books.Any((ComicBook cb) => cb.IsLinked);
-        txCommunityRating.Enabled = txRating.Enabled = cbEnableProposed.Enabled = cbSeriesComplete.Enabled = books.All((ComicBook cb) => cb.IsInContainer);
+        labelOpenedTime.Visible = dtpOpenedTime.Visible = dtpOpenedTime.Enabled = labelPagesAsTextSimple.Visible = txPagesAsTextSimple.Visible = txPagesAsTextSimple.Enabled = !books.Any(cb => cb.IsLinked);
+        txCommunityRating.Enabled = txRating.Enabled = cbEnableProposed.Enabled = cbSeriesComplete.Enabled = books.All(cb => cb.IsInContainer);
         SpinButton.AddUpDown(txVolume);
         SpinButton.AddUpDown(txCount, 1, 0);
         SpinButton.AddUpDown(txNumber);
@@ -105,7 +105,7 @@ public partial class MultipleComicBooksDialog : FormEx
         txMonth.EnableOnlyNumberKeys();
         txAlternateCount.EnableOnlyNumberKeys();
         txPagesAsTextSimple.EnableOnlyNumberKeys();
-        string[] array = Program.Database.CustomValues.Where((string k) => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray();
+        string[] array = Program.Database.CustomValues.Where(k => Program.ExtendedSettings.ShowCustomScriptValues || !k.Contains('.')).ToArray();
         if (!Program.Settings.ShowCustomBookFields || array.Length == 0)
         {
             grpCustom.Visible = false;
@@ -171,31 +171,31 @@ public partial class MultipleComicBooksDialog : FormEx
     private void Init()
     {
         AutomaticProgressDialog.Process(this, TR.Messages["RefreshInfo", "Refreshing Information"], TR.Messages["RefreshInfoText", "Refreshing information for selected Books"], 1000, RefreshBooksInfoFromFiles, AutomaticProgressDialogOptions.None);
-        bool flag = books.Any((ComicBook b) => b.IsLinked);
-        SetText(txSeries, "Series", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowSeries));
+        bool flag = books.Any(b => b.IsLinked);
+        SetText(txSeries, "Series", () => Program.Lists.GetComicFieldList(cb => cb.ShadowSeries));
         SetText(txNumber, "Number");
         SetText(txCount, "Count");
         SetText(txYear, "Year");
         SetText(txVolume, "Volume");
         SetText(cbSeriesComplete, "SeriesComplete");
-        SetText(txTitle, "Title", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Title));
-        SetText(txAlternateSeries, "AlternateSeries", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.AlternateSeries));
+        SetText(txTitle, "Title", () => Program.Lists.GetComicFieldList(cb => cb.Title));
+        SetText(txAlternateSeries, "AlternateSeries", () => Program.Lists.GetComicFieldList(cb => cb.AlternateSeries));
         SetText(txAlternateNumber, "AlternateNumber");
         SetText(txAlternateCount, "AlternateCount");
-        SetText(txSeriesGroup, "SeriesGroup", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.SeriesGroup));
-        SetText(txStoryArc, "StoryArc", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.StoryArc));
+        SetText(txSeriesGroup, "SeriesGroup", () => Program.Lists.GetComicFieldList(cb => cb.SeriesGroup));
+        SetText(txStoryArc, "StoryArc", () => Program.Lists.GetComicFieldList(cb => cb.StoryArc));
         SetText(txMonth, "Month");
         SetText(txDay, "Day");
-        SetText(txWriter, "Writer", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Writer));
-        SetText(txPenciller, "Penciller", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Penciller));
-        SetText(txColorist, "Colorist", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Colorist));
-        SetText(txInker, "Inker", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Inker));
-        SetText(txLetterer, "Letterer", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Letterer));
-        SetText(txCoverArtist, "CoverArtist", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.CoverArtist));
-        SetText(txEditor, "Editor", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Editor));
-        SetText(txTranslator, "Translator", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Translator));
-        SetText(cbPublisher, "Publisher", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Publisher, sort: true));
-        SetText(cbImprint, "Imprint", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Imprint, sort: true));
+        SetText(txWriter, "Writer", () => Program.Lists.GetComicFieldList(cb => cb.Writer));
+        SetText(txPenciller, "Penciller", () => Program.Lists.GetComicFieldList(cb => cb.Penciller));
+        SetText(txColorist, "Colorist", () => Program.Lists.GetComicFieldList(cb => cb.Colorist));
+        SetText(txInker, "Inker", () => Program.Lists.GetComicFieldList(cb => cb.Inker));
+        SetText(txLetterer, "Letterer", () => Program.Lists.GetComicFieldList(cb => cb.Letterer));
+        SetText(txCoverArtist, "CoverArtist", () => Program.Lists.GetComicFieldList(cb => cb.CoverArtist));
+        SetText(txEditor, "Editor", () => Program.Lists.GetComicFieldList(cb => cb.Editor));
+        SetText(txTranslator, "Translator", () => Program.Lists.GetComicFieldList(cb => cb.Translator));
+        SetText(cbPublisher, "Publisher", () => Program.Lists.GetComicFieldList(cb => cb.Publisher, sort: true));
+        SetText(cbImprint, "Imprint", () => Program.Lists.GetComicFieldList(cb => cb.Imprint, sort: true));
         SetText(txGenre, "Genre", () => Program.Lists.GetGenreList(withSeparator: false));
         SetText(cbFormat, "Format", () => Program.Lists.GetFormatList());
         SetText(cbAgeRating, "AgeRating", () => Program.Lists.GetAgeRatingList());
@@ -209,12 +209,12 @@ public partial class MultipleComicBooksDialog : FormEx
         SetText(txNotes, "Notes");
         SetText(txReview, "Review");
         SetText(txWeb, "Web");
-        SetText(txTags, "Tags", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Tags));
-        SetText(txCharacters, "Characters", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Characters));
-        SetText(txTeams, "Teams", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Teams));
-        SetText(txMainCharacterOrTeam, "MainCharacterOrTeam", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.MainCharacterOrTeam));
-        SetText(txLocations, "Locations", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Locations));
-        SetText(txScanInformation, "ScanInformation", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ScanInformation));
+        SetText(txTags, "Tags", () => Program.Lists.GetComicFieldList(cb => cb.Tags));
+        SetText(txCharacters, "Characters", () => Program.Lists.GetComicFieldList(cb => cb.Characters));
+        SetText(txTeams, "Teams", () => Program.Lists.GetComicFieldList(cb => cb.Teams));
+        SetText(txMainCharacterOrTeam, "MainCharacterOrTeam", () => Program.Lists.GetComicFieldList(cb => cb.MainCharacterOrTeam));
+        SetText(txLocations, "Locations", () => Program.Lists.GetComicFieldList(cb => cb.Locations));
+        SetText(txScanInformation, "ScanInformation", () => Program.Lists.GetComicFieldList(cb => cb.ScanInformation));
         SetGrayText(txSeries, "ProposedSeries");
         SetGrayText(txNumber, "ProposedNumber");
         SetGrayText(txCount, "ProposedCountAsText");
@@ -225,10 +225,10 @@ public partial class MultipleComicBooksDialog : FormEx
         Label label = labelScanInformation;
         bool visible = txScanInformation.Visible = flag;
         label.Visible = visible;
-        SetText(cbBookStore, "BookStore", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookStore, sort: true));
-        SetText(cbBookOwner, "BookOwner", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookOwner, sort: true));
-        SetText(cbBookLocation, "BookLocation", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookLocation, sort: true));
-        SetText(cbBookPrice, "BookPriceAsText", () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookPriceAsText, sort: true));
+        SetText(cbBookStore, "BookStore", () => Program.Lists.GetComicFieldList(cb => cb.BookStore, sort: true));
+        SetText(cbBookOwner, "BookOwner", () => Program.Lists.GetComicFieldList(cb => cb.BookOwner, sort: true));
+        SetText(cbBookLocation, "BookLocation", () => Program.Lists.GetComicFieldList(cb => cb.BookLocation, sort: true));
+        SetText(cbBookPrice, "BookPriceAsText", () => Program.Lists.GetComicFieldList(cb => cb.BookPriceAsText, sort: true));
         SetText(cbBookAge, "BookAge", () => Program.Lists.GetBookAgeList());
         SetText(cbBookCondition, "BookCondition", () => Program.Lists.GetBookConditionList());
         SetText(txCollectionStatus, "BookCollectionStatus", () => Program.Lists.GetBookCollectionStatusList());
@@ -247,7 +247,7 @@ public partial class MultipleComicBooksDialog : FormEx
             SetText(customField, "{" + key + "}", delegate
             {
                 AutoCompleteStringCollection autoCompleteStringCollection = new();
-                autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany((ComicBook cb) => cb.GetCustomValues())
+                autoCompleteStringCollection.AddRange((from p in Program.Database.GetBooks().SelectMany(cb => cb.GetCustomValues())
                                                        where p.Key.Equals(key, StringComparison.OrdinalIgnoreCase)
                                                        select p.Value).ToArray());
                 return autoCompleteStringCollection;
@@ -405,7 +405,7 @@ public partial class MultipleComicBooksDialog : FormEx
     {
         Control control = tx as Control;
         string s = "chk" + control.Name;
-        CheckBox chk = this.GetControls<CheckBox>().FirstOrDefault((CheckBox cb) => cb.Name == s);
+        CheckBox chk = this.GetControls<CheckBox>().FirstOrDefault(cb => cb.Name == s);
         if (chk == null)
         {
             return;

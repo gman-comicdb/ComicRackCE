@@ -30,7 +30,7 @@ public abstract class ComicProvider : ImageProvider, IInfoStorage
 			//"jxl",
 		];
 
-    public bool UpdateEnabled => GetType().GetAttributes<FileFormatAttribute>().FirstOrDefault((FileFormatAttribute f) => f.Format.Supports(base.Source))?.EnableUpdate ?? false;
+    public bool UpdateEnabled => GetType().GetAttributes<FileFormatAttribute>().FirstOrDefault(f => f.Format.Supports(base.Source))?.EnableUpdate ?? false;
 
     private bool disableNtfs = false;
     protected bool DisableNtfs
@@ -97,7 +97,7 @@ public abstract class ComicProvider : ImageProvider, IInfoStorage
             return false;
 
         string fileExt = Path.GetExtension(FileUtility.MakeValidFilename(file.Name));
-        return supportedTypes.Any((string ext) => string.Equals(fileExt, "." + ext, StringComparison.OrdinalIgnoreCase));
+        return supportedTypes.Any(ext => string.Equals(fileExt, "." + ext, StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool IsImageThumbnailFolder(string file)

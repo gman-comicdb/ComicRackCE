@@ -100,7 +100,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             if (stackReadPercent < 0)
             {
                 int stackCount = base.View.GetStackCount(this);
-                int num = base.View.GetStackItems(this).OfType<CoverViewItem>().Count((CoverViewItem cvi) => cvi.Comic.HasBeenRead);
+                int num = base.View.GetStackItems(this).OfType<CoverViewItem>().Count(cvi => cvi.Comic.HasBeenRead);
                 stackReadPercent = num * 100 / stackCount;
             }
             return stackReadPercent;
@@ -122,7 +122,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                     averageRating = (from cvi in base.View.GetStackItems(this).OfType<CoverViewItem>()
                                      select cvi.Comic.Rating into r
                                      where r > 0f
-                                     select r).Average((float r) => r);
+                                     select r).Average(r => r);
                 }
                 catch (Exception)
                 {
@@ -148,7 +148,7 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                     averageCommunityRating = (from cvi in base.View.GetStackItems(this).OfType<CoverViewItem>()
                                               select cvi.Comic.CommunityRating into r
                                               where r > 0f
-                                              select r).Average((float r) => r);
+                                              select r).Average(r => r);
                 }
                 catch (Exception)
                 {
@@ -1180,15 +1180,15 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
             {
                 case "Series":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowSeries, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowSeries));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowSeries, () => Program.Lists.GetComicFieldList(cb => cb.ShadowSeries));
                     break;
                 case "Title":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowTitle, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowTitle));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowTitle, () => Program.Lists.GetComicFieldList(cb => cb.ShadowTitle));
                     break;
                 case "Format":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowFormat, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ShadowFormat));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.ShadowFormat, () => Program.Lists.GetComicFieldList(cb => cb.ShadowFormat));
                     break;
                 case "Year":
                     autoSizeTextBox = new AutoSizeTextBox();
@@ -1215,15 +1215,15 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                     break;
                 case "AlternateSeries":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.AlternateSeries, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.AlternateSeries));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.AlternateSeries, () => Program.Lists.GetComicFieldList(cb => cb.AlternateSeries));
                     break;
                 case "StoryArc":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.StoryArc, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.StoryArc));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.StoryArc, () => Program.Lists.GetComicFieldList(cb => cb.StoryArc));
                     break;
                 case "SeriesGroup":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.SeriesGroup, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.SeriesGroup));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.SeriesGroup, () => Program.Lists.GetComicFieldList(cb => cb.SeriesGroup));
                     break;
                 case "Count":
                     autoSizeTextBox = new AutoSizeTextBox();
@@ -1242,47 +1242,47 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                     break;
                 case "Writer":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Writer, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Writer));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Writer, () => Program.Lists.GetComicFieldList(cb => cb.Writer));
                     break;
                 case "Inker":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Inker, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Inker));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Inker, () => Program.Lists.GetComicFieldList(cb => cb.Inker));
                     break;
                 case "Letterer":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Letterer, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Letterer));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Letterer, () => Program.Lists.GetComicFieldList(cb => cb.Letterer));
                     break;
                 case "CoverArtist":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.CoverArtist, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.CoverArtist));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.CoverArtist, () => Program.Lists.GetComicFieldList(cb => cb.CoverArtist));
                     break;
                 case "Editor":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Editor, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Editor));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Editor, () => Program.Lists.GetComicFieldList(cb => cb.Editor));
                     break;
                 case "Translator":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Translator, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Translator));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Translator, () => Program.Lists.GetComicFieldList(cb => cb.Translator));
                     break;
                 case "Colorist":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Colorist, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Colorist));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Colorist, () => Program.Lists.GetComicFieldList(cb => cb.Colorist));
                     break;
                 case "Penciller":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Penciller, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Penciller));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Penciller, () => Program.Lists.GetComicFieldList(cb => cb.Penciller));
                     break;
                 case "Genre":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Genre, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Genre));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Genre, () => Program.Lists.GetComicFieldList(cb => cb.Genre));
                     break;
                 case "Publisher":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Publisher, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Publisher));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Publisher, () => Program.Lists.GetComicFieldList(cb => cb.Publisher));
                     break;
                 case "Imprint":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Imprint, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Imprint));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Imprint, () => Program.Lists.GetComicFieldList(cb => cb.Imprint));
                     break;
                 case "FileName":
                     if (!Comic.IsLinked)
@@ -1290,35 +1290,35 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                         break;
                     }
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.FileName, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.FileName));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.FileName, () => Program.Lists.GetComicFieldList(cb => cb.FileName));
                     break;
                 case "Tags":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Tags, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Tags));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Tags, () => Program.Lists.GetComicFieldList(cb => cb.Tags));
                     break;
                 case "Review":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Review, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Review));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Review, () => Program.Lists.GetComicFieldList(cb => cb.Review));
                     break;
                 case "Characters":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Characters, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Characters));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Characters, () => Program.Lists.GetComicFieldList(cb => cb.Characters));
                     break;
                 case "Teams":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Teams, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Teams));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Teams, () => Program.Lists.GetComicFieldList(cb => cb.Teams));
                     break;
                 case "MainCharacterOrTeam":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.MainCharacterOrTeam, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.MainCharacterOrTeam));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.MainCharacterOrTeam, () => Program.Lists.GetComicFieldList(cb => cb.MainCharacterOrTeam));
                     break;
                 case "Locations":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.Locations, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.Locations));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.Locations, () => Program.Lists.GetComicFieldList(cb => cb.Locations));
                     break;
                 case "ScanInformation":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.ScanInformation, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.ScanInformation));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.ScanInformation, () => Program.Lists.GetComicFieldList(cb => cb.ScanInformation));
                     break;
                 case "BookAge":
                     autoSizeTextBox = new AutoSizeTextBox();
@@ -1326,19 +1326,19 @@ public class CoverViewItem : ThumbnailViewItem, IViewableItemHitTest, ISetCustom
                     break;
                 case "BookStore":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookStore, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookStore));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookStore, () => Program.Lists.GetComicFieldList(cb => cb.BookStore));
                     break;
                 case "BookLocation":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookLocation, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookLocation));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookLocation, () => Program.Lists.GetComicFieldList(cb => cb.BookLocation));
                     break;
                 case "BookOwner":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookOwner, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookOwner));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookOwner, () => Program.Lists.GetComicFieldList(cb => cb.BookOwner));
                     break;
                 case "BookPriceAsText":
                     autoSizeTextBox = new AutoSizeTextBox();
-                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookPriceAsText, () => Program.Lists.GetComicFieldList((ComicBook cb) => cb.BookPriceAsText));
+                    EditControlUtility.SetText(autoSizeTextBox, Comic.BookPriceAsText, () => Program.Lists.GetComicFieldList(cb => cb.BookPriceAsText));
                     break;
                 case "BookCondition":
                     autoSizeTextBox = new AutoSizeTextBox();

@@ -132,7 +132,7 @@ public class Broadcaster<T> : DisposableObject, IBroadcast<T>
             try
             {
                 byte[] bytes = listener.EndReceive(ar, ref listenerEP);
-                if (LocalEndpoints.FirstOrDefault((IPEndPoint ep) => ep.Address.Equals(listenerEP.Address)) == null)
+                if (LocalEndpoints.FirstOrDefault(ep => ep.Address.Equals(listenerEP.Address)) == null)
                 {
                     T data = XmlUtility.Load<T>(bytes);
                     OnRecieved(new BroadcastEventArgs<T>(data, listenerEP.Address));

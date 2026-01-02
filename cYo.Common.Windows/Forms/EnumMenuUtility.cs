@@ -68,7 +68,7 @@ public class EnumMenuUtility
 
     public bool Enabled
     {
-        get => items.All((ToolStripItem ti) => ti.Enabled);
+        get => items.All(ti => ti.Enabled);
         set
         {
             items.ForEach(delegate (ToolStripItem ti)

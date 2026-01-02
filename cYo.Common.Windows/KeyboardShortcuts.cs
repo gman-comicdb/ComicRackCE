@@ -18,7 +18,7 @@ public class KeyboardShortcuts : ICloneable
 
     public KeyboardShortcuts(KeyboardShortcuts copy)
     {
-        Commands.AddRange(copy.Commands.Select((KeyboardCommand kc) => new KeyboardCommand(kc)));
+        Commands.AddRange(copy.Commands.Select(kc => new KeyboardCommand(kc)));
     }
 
     public bool HandleKey(CommandKey key)
@@ -73,7 +73,7 @@ public class KeyboardShortcuts : ICloneable
 
     public KeyboardCommand FindCommandByKey(string key)
     {
-        return commands.FirstOrDefault((KeyboardCommand kc) => kc.Id == key);
+        return commands.FirstOrDefault(kc => kc.Id == key);
     }
 
     public void SetKeyMapping(IEnumerable<StringPair> list)
@@ -90,7 +90,7 @@ public class KeyboardShortcuts : ICloneable
 
     public IEnumerable<StringPair> GetKeyMapping()
     {
-        return Commands.Select((KeyboardCommand kc) => new StringPair(kc.Id, kc.KeyList));
+        return Commands.Select(kc => new StringPair(kc.Id, kc.KeyList));
     }
 
     public object Clone()

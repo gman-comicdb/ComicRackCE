@@ -86,7 +86,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
             foreach (string file in FileUtility.GetFiles(folder, includeSubFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
             {
                 string f = file;
-                if (fileExtensions.Any((string ext) => f.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
+                if (fileExtensions.Any(ext => f.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
                 {
                     ComicBook comicBook = Program.BookFactory.Create(file, CreateBookOption.AddToTemporary, (list.Count > 100) ? RefreshInfoOptions.DontReadInformation : RefreshInfoOptions.None);
                     if (comicBook != null)

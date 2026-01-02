@@ -49,7 +49,7 @@ public class MenuRenderer : ThemeToolStripProRenderer
             base.OnRenderItemText(e);
             return;
         }
-        float num = text.Count((char c) => c == '*');
+        float num = text.Count(c => c == '*');
         Rectangle textRectangle = e.TextRectangle;
         textRectangle.Inflate(-2, -2);
         int x = textRectangle.X;

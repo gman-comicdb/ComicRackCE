@@ -80,11 +80,11 @@ public class ExportSetting : StorageSetting
     {
         try
         {
-            return Providers.Writers.GetSourceFormats().First((FileFormat ff) => (base.FormatId != 0) ? (ff.Id == base.FormatId) : (ff.Name == cb.FileFormat));
+            return Providers.Writers.GetSourceFormats().First(ff => (base.FormatId != 0) ? (ff.Id == base.FormatId) : (ff.Name == cb.FileFormat));
         }
         catch (Exception)
         {
-            return Providers.Writers.GetSourceFormats().First((FileFormat ff) => ff.Id == 2);
+            return Providers.Writers.GetSourceFormats().First(ff => ff.Id == 2);
         }
     }
 

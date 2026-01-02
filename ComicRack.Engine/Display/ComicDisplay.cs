@@ -738,7 +738,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         {
             mouseHWheel.MouseHWheel += display_MouseHWheel;
         }
-        pageKeys = new KeySearch((string s) => Book != null && int.TryParse(s, out var result) && Book.Navigate(result - 1, PageSeekOrigin.Beginning))
+        pageKeys = new KeySearch(s => Book != null && int.TryParse(s, out var result) && Book.Navigate(result - 1, PageSeekOrigin.Beginning))
         {
             SearchDelay = 1000
         };
@@ -1301,7 +1301,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
     {
         if (e.Gesture == GestureType.Touch)
         {
-            e.Handled = keyboardMap.Commands.Any((KeyboardCommand c) => c.Handles(TranslateTouchGesture(e)));
+            e.Handled = keyboardMap.Commands.Any(c => c.Handles(TranslateTouchGesture(e)));
         }
     }
 

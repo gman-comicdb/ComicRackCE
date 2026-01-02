@@ -51,7 +51,7 @@ public class DragDropContainer
     public DragDropContainer(IEnumerable<string> filesOrFolders)
     {
         this.filesOrFolders = filesOrFolders;
-        readingLists = filesOrFolders.Where((string file) => ".cbl".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase));
+        readingLists = filesOrFolders.Where(file => ".cbl".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase));
     }
 
     public IEnumerable<ComicBookMatcher> CreateSeriesGroupMatchers(int maxEntries = 10)
@@ -65,7 +65,7 @@ public class DragDropContainer
             yield return Matcher;
             yield break;
         }
-        foreach (ComicBookGroupMatcher item in (from t in Books.Books.Select((ComicBook cb) => new
+        foreach (ComicBookGroupMatcher item in (from t in Books.Books.Select(cb => new
         {
             Series = cb.ShadowSeries,
             Volume = cb.ShadowVolume

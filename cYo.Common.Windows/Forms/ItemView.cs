@@ -145,7 +145,7 @@ public class ItemView : ScrollControl
 
         public void Clear(ItemViewStates mask)
         {
-            GetItems().ForEach((IViewableItem vi) => Set(vi, mask, on: false));
+            GetItems().ForEach(vi => Set(vi, mask, on: false));
         }
 
         public void Focus(IViewableItem item)
@@ -161,7 +161,7 @@ public class ItemView : ScrollControl
         {
             using (ItemMonitor.Lock(stateDict))
             {
-                return stateDict.Keys.FirstOrDefault((IViewableItem item) => (this[item] & mask) != 0);
+                return stateDict.Keys.FirstOrDefault(item => (this[item] & mask) != 0);
             }
         }
 
@@ -1073,7 +1073,7 @@ public class ItemView : ScrollControl
         {
             using (ItemMonitor.Lock(selectedItems))
             {
-                return IsStacked ? selectedItems.Sum((IViewableItem si) => GetStackCount(si)) : selectedItems.Count;
+                return IsStacked ? selectedItems.Sum(si => GetStackCount(si)) : selectedItems.Count;
             }
         }
     }
@@ -1181,7 +1181,7 @@ public class ItemView : ScrollControl
         get
         {
             return (from comp in itemSorters.Lock()
-                    select Columns.FindBySorter(comp)).TakeWhile((IColumn ic) => ic != null).ToArray();
+                    select Columns.FindBySorter(comp)).TakeWhile(ic => ic != null).ToArray();
         }
         set
         {
@@ -1207,7 +1207,7 @@ public class ItemView : ScrollControl
         get
         {
             return (from comp in ItemGrouper.GetGroupers()
-                    select Columns.FindByGrouper(comp)).TakeWhile((IColumn ic) => ic != null).ToArray();
+                    select Columns.FindByGrouper(comp)).TakeWhile(ic => ic != null).ToArray();
         }
         set
         {
@@ -1221,7 +1221,7 @@ public class ItemView : ScrollControl
                 ItemGrouper = value[0].ColumnGrouper;
                 return;
             }
-            ItemGrouper = new CompoundSingleGrouper<IViewableItem>(value.Select((IColumn c) => c.ColumnGrouper).ToArray());
+            ItemGrouper = new CompoundSingleGrouper<IViewableItem>(value.Select(c => c.ColumnGrouper).ToArray());
         }
     }
 
@@ -1236,7 +1236,7 @@ public class ItemView : ScrollControl
         get
         {
             IGrouper<IViewableItem> grouper = (ItemGrouper is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemGrouper).Groupers.FirstOrDefault() : ItemGrouper;
-            return grouper != null ? Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == grouper) : null;
+            return grouper != null ? Columns.FirstOrDefault(h => h.ColumnGrouper == grouper) : null;
         }
     }
 
@@ -1245,7 +1245,7 @@ public class ItemView : ScrollControl
         get
         {
             IGrouper<IViewableItem> stacker = (ItemStacker is CompoundSingleGrouper<IViewableItem>) ? ((CompoundSingleGrouper<IViewableItem>)ItemStacker).Groupers.FirstOrDefault() : ItemStacker;
-            return ItemStacker != null ? Columns.FirstOrDefault((IColumn h) => h.ColumnGrouper == stacker) : null;
+            return ItemStacker != null ? Columns.FirstOrDefault(h => h.ColumnGrouper == stacker) : null;
         }
     }
 
@@ -1254,7 +1254,7 @@ public class ItemView : ScrollControl
         get
         {
             return (from comp in ItemStacker.GetGroupers()
-                    select Columns.FindByGrouper(comp)).TakeWhile((IColumn ic) => ic != null).ToArray();
+                    select Columns.FindByGrouper(comp)).TakeWhile(ic => ic != null).ToArray();
         }
         set
         {
@@ -1268,7 +1268,7 @@ public class ItemView : ScrollControl
                 ItemStacker = value[0].ColumnGrouper;
                 return;
             }
-            ItemStacker = new CompoundSingleGrouper<IViewableItem>(value.Select((IColumn c) => c.ColumnGrouper).ToArray());
+            ItemStacker = new CompoundSingleGrouper<IViewableItem>(value.Select(c => c.ColumnGrouper).ToArray());
         }
     }
 
@@ -1278,13 +1278,13 @@ public class ItemView : ScrollControl
         set => StackColumns = ConvertKeyToColumns(value).ToArray();
     }
 
-    public IColumn StackSorterColum => ItemStackSorter != null ? Columns.Find((IColumn h) => h.ColumnSorter == ItemStackSorter) : null;
+    public IColumn StackSorterColum => ItemStackSorter != null ? Columns.Find(h => h.ColumnSorter == ItemStackSorter) : null;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [Browsable(false)]
     private IEnumerable<ItemViewColumnInfo> ColumnHeaderConfiguration
     {
-        get => Columns.Select((IColumn ivch) => new ItemViewColumnInfo(ivch));
+        get => Columns.Select(ivch => new ItemViewColumnInfo(ivch));
         set
         {
             int num = 0;
@@ -1464,7 +1464,7 @@ public class ItemView : ScrollControl
 
     public int GetGroupSizeFromCaption(string caption)
     {
-        return displayedGroups.Lock().FirstOrDefault((GroupHeaderInformation g) => g.Caption == caption)?.ItemCount ?? 0;
+        return displayedGroups.Lock().FirstOrDefault(g => g.Caption == caption)?.ItemCount ?? 0;
     }
 
     public string CovnertColumnsToKey(IEnumerable<IColumn> cols)
@@ -1716,7 +1716,7 @@ public class ItemView : ScrollControl
     {
         if (AreGroupsVisible)
         {
-            GroupHeaderInformation groupHeaderInformation = displayedGroups.Lock().FirstOrDefault((GroupHeaderInformation h) => h.Caption == caption);
+            GroupHeaderInformation groupHeaderInformation = displayedGroups.Lock().FirstOrDefault(h => h.Caption == caption);
             if (groupHeaderInformation != null)
             {
                 UpdateItems();
@@ -2051,7 +2051,7 @@ public class ItemView : ScrollControl
 
     private int GetColumnHeadersWidth()
     {
-        return columns.Where((IColumn ivch) => ivch.Visible).Sum((IColumn ivch) => ivch.Width);
+        return columns.Where(ivch => ivch.Visible).Sum(ivch => ivch.Width);
     }
 
     public IColumn GetExpandedColumn()
@@ -2060,12 +2060,12 @@ public class ItemView : ScrollControl
         {
             return null;
         }
-        IColumn column = columns.FirstOrDefault((IColumn ch) => ch.Visible);
+        IColumn column = columns.FirstOrDefault(ch => ch.Visible);
         if (column != null && column.Name == ExpandedDetailColumnName)
         {
             return column;
         }
-        IColumn column2 = columns.LastOrDefault((IColumn ch) => ch.Visible);
+        IColumn column2 = columns.LastOrDefault(ch => ch.Visible);
         return column2 != null && column2.Name == ExpandedDetailColumnName ? column2 : null;
     }
 
@@ -2343,7 +2343,7 @@ public class ItemView : ScrollControl
                 IEnumerable<GroupContainer<IViewableItem>> enumerable = groupManager.GetGroups();
                 if (GroupSortingOrder != 0)
                 {
-                    enumerable = enumerable.OrderBy((GroupContainer<IViewableItem> a) => a);
+                    enumerable = enumerable.OrderBy(a => a);
                 }
                 if (GroupSortingOrder == SortOrder.Descending)
                 {
@@ -2426,7 +2426,7 @@ public class ItemView : ScrollControl
             {
                 try
                 {
-                    grpHeaders.ParallelForEach((GroupHeaderInformation ghi) => ghi.Items.Sort(comparer));
+                    grpHeaders.ParallelForEach(ghi => ghi.Items.Sort(comparer));
                 }
                 catch
                 {
@@ -2462,7 +2462,7 @@ public class ItemView : ScrollControl
         int row = 0;
         int itemIndex = 0;
         IColumn expandedColumn = GetExpandedColumn();
-        IColumn column = columns.FirstOrDefault((IColumn c) => c.Visible);
+        IColumn column = columns.FirstOrDefault(c => c.Visible);
         Rectangle rectangle = (expandedColumn != null) ? GetColumnHeaderRectangle(expandedColumn) : Rectangle.Empty;
         Rectangle viewRectangle = ViewRectangle;
         Size itemBorderSize = GetItemBorderSize();
@@ -2700,7 +2700,7 @@ public class ItemView : ScrollControl
             return null;
         }
         x += base.ScrollPosition.X;
-        return columns.FirstOrDefault((IColumn ivch) => GetColumnHeaderRectangle(ivch).Contains(x, y));
+        return columns.FirstOrDefault(ivch => GetColumnHeaderRectangle(ivch).Contains(x, y));
     }
 
     public int ColumnHeaderSeparatorHitTest(int x, int y)
@@ -2743,7 +2743,7 @@ public class ItemView : ScrollControl
         Point test = Translate(new Point(x, y), fromClient: true);
         try
         {
-            return visibleItems.Lock().FirstOrDefault((IViewableItem item) => ItemIntersects(item, test));
+            return visibleItems.Lock().FirstOrDefault(item => ItemIntersects(item, test));
         }
         catch
         {

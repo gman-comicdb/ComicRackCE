@@ -154,7 +154,7 @@ public class KeySequenceHandler : Component
         foreach (KeySequence sequence in Sequences)
         {
             KeySequence ksrun = sequence;
-            if (activeSequences.Find((SequenceState ss) => ss.Sequence == ksrun) == null)
+            if (activeSequences.Find(ss => ss.Sequence == ksrun) == null)
             {
                 SequenceState sequenceState2 = new(sequence);
                 if (sequenceState2.Parse(key, intervallTime))

@@ -65,7 +65,7 @@ public class KeySearch : Component
     {
         KeySearch ks = new(delegate (string s)
         {
-            ListViewItem li = listView.Enumerate().FirstOrDefault((ListViewItem item) => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
+            ListViewItem li = listView.Enumerate().FirstOrDefault(item => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
             if (li == null)
             {
                 return false;
@@ -102,7 +102,7 @@ public class KeySearch : Component
     {
         KeySearch ks = new(delegate (string s)
         {
-            IViewableItem viewableItem = itemView.DisplayedItems.FirstOrDefault((IViewableItem item) => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
+            IViewableItem viewableItem = itemView.DisplayedItems.FirstOrDefault(item => item.Text.StartsWith(s, StringComparison.OrdinalIgnoreCase, ignoreAricles));
             if (viewableItem == null)
             {
                 return false;

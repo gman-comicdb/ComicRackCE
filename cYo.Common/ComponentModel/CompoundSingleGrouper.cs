@@ -64,7 +64,7 @@ public class CompoundSingleGrouper<T> : IGrouper<T>
     public CompoundSingleGrouper(IGrouper<T>[] groupers)
     {
         Groupers = groupers;
-        if (Groupers.Any((IGrouper<T> g) => g.IsMultiGroup))
+        if (Groupers.Any(g => g.IsMultiGroup))
         {
             throw new ArgumentException("Only single groupers are supported");
         }
@@ -72,7 +72,7 @@ public class CompoundSingleGrouper<T> : IGrouper<T>
 
     public IGroupInfo GetGroup(T item)
     {
-        return new CompoundGroupInfo(Groupers.Select((IGrouper<T> g) => g.GetGroup(item)).ToArray());
+        return new CompoundGroupInfo(Groupers.Select(g => g.GetGroup(item)).ToArray());
     }
 
     public IEnumerable<IGroupInfo> GetGroups(T item)

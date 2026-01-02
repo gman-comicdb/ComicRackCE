@@ -1247,7 +1247,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
 
     static ComicBook()
     {
-        GuidEquality = new Equality<ComicBook>((ComicBook a, ComicBook b) => a.Id == b.Id, (ComicBook a) => a.Id.GetHashCode());
+        GuidEquality = new Equality<ComicBook>((a, b) => a.Id == b.Id, a => a.Id.GetHashCode());
         EnableGroupNameCompression = false;
         unkownText = new Lazy<string>(() => TR["Unknown"]);
         pagesText = new Lazy<string>(() => TR["Pages", "{0} Page(s)"]);
@@ -1950,7 +1950,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         bool dateIsModified = FileModifiedTime != d;
         try
         {
-            IsDynamicSource = Providers.Readers.GetSourceProviderInfo(FilePath).Formats.All((FileFormat f) => f.Dynamic);
+            IsDynamicSource = Providers.Readers.GetSourceProviderInfo(FilePath).Formats.All(f => f.Dynamic);
         }
         catch (Exception)
         {
@@ -2312,7 +2312,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
         {
             return value;
         }
-        CultureInfo cultureInfo = CultureInfo.GetCultures(CultureTypes.NeutralCultures).FirstOrDefault((CultureInfo info) => info.TwoLetterISOLanguageName == iso);
+        CultureInfo cultureInfo = CultureInfo.GetCultures(CultureTypes.NeutralCultures).FirstOrDefault(info => info.TwoLetterISOLanguageName == iso);
         return cultureInfo != null ? (languages[iso] = cultureInfo) : new CultureInfo(string.Empty);
     }
 
@@ -2331,7 +2331,7 @@ public class ComicBook : ComicInfo, IImageKeyProvider, ICloneable
     public static IDictionary<string, string> GetTranslatedWritableStringProperties()
     {
         TR tr = TR.Load("Columns");
-        return GetWritableStringProperties().ToDictionary((string s) => tr[s].PascalToSpaced());
+        return GetWritableStringProperties().ToDictionary(s => tr[s].PascalToSpaced());
     }
 
     public static bool MapPropertyName(string propName, out string newName, ComicValueType cvt)

@@ -79,7 +79,7 @@ public class SharpCompressEngine : FileBasedAccessor
         {
             return XmlInfoProviders.Readers.DeserializeAll(s =>
             {
-                IArchiveEntry archiveEntry = archive.Entries.FirstOrDefault((IArchiveEntry e) => Path.GetFileName(e.Key).Equals(s, StringComparison.OrdinalIgnoreCase));
+                IArchiveEntry archiveEntry = archive.Entries.FirstOrDefault(e => Path.GetFileName(e.Key).Equals(s, StringComparison.OrdinalIgnoreCase));
 
                 return archiveEntry?.OpenEntryStream();
             });

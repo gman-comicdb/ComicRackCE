@@ -120,7 +120,7 @@ public class ComicLibrary : ComicBookContainer, IDeserializationCallback
     {
         get
         {
-            ComicListItemFolder comicListItemFolder = ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault((ComicListItemFolder c) => c.Temporary);
+            ComicListItemFolder comicListItemFolder = ComicLists.GetItems<ComicListItemFolder>().FirstOrDefault(c => c.Temporary);
             if (comicListItemFolder == null)
             {
                 comicListItemFolder = new ComicListItemFolder(TR.Load("ComicBook")["TempLists", "Temporary Lists"])

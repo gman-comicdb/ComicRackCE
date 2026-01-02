@@ -27,7 +27,7 @@ public class LibraryTreeSkin : NiceTreeSkin
     {
         base.DrawNodeIcon(di, image, bounds);
         ComicListItem cli = (GetNodeItem == null) ? (di.Node.Tag as ComicListItem) : GetNodeItem(di.Node);
-        if (!DisableDeviceIcon && cli != null && !Program.Settings.Devices.SelectMany((DeviceSyncSettings d) => d.Lists.Where((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id)).IsEmpty())
+        if (!DisableDeviceIcon && cli != null && !Program.Settings.Devices.SelectMany(d => d.Lists.Where(l => l.ListId == cli.Id)).IsEmpty())
         {
             di.Graphics.DrawImage(deviceIcon, bounds.X, bounds.Y);
         }

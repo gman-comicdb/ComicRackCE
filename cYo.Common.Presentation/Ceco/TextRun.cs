@@ -137,7 +137,7 @@ public class TextRun : Span, IRender
         set => text = value;
     }
 
-    public bool IsWhiteSpace => text != null ? text.All((char c) => char.IsWhiteSpace(c)) : true;
+    public bool IsWhiteSpace => text != null ? text.All(c => char.IsWhiteSpace(c)) : true;
 
     static TextRun()
     {

@@ -23,9 +23,9 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
 
     public override string ImageKey => "Search";
 
-    public override bool OptimizedCacheUpdateDisabled => Matchers.Any((ComicBookMatcher m) => m.IsOptimizedCacheUpdateDisabled);
+    public override bool OptimizedCacheUpdateDisabled => Matchers.Any(m => m.IsOptimizedCacheUpdateDisabled);
 
-    public override bool CustomCacheStorage => Matchers.Any((ComicBookMatcher m) => m.TimeDependant);
+    public override bool CustomCacheStorage => Matchers.Any(m => m.TimeDependant);
 
     [XmlAttribute]
     [DefaultValue(MatcherMode.And)]
@@ -83,7 +83,7 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
         : this(name)
     {
         MatcherMode = mode;
-        Matchers.AddRange(matchers.Select((ComicBookMatcher cbm) => cbm.Clone() as ComicBookMatcher));
+        Matchers.AddRange(matchers.Select(cbm => cbm.Clone() as ComicBookMatcher));
     }
 
     public ComicSmartListItem(ComicSmartListItem comicSmartListItem)
@@ -128,7 +128,7 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
             list.Text = list.Text.Unescape("[]", '\\');
             if (library != null)
             {
-                ComicListItem comicListItem = library.ComicLists.GetItems<ComicListItem>().FirstOrDefault((ComicListItem cl) => string.Equals(cl.Name, list.Text, StringComparison.CurrentCultureIgnoreCase));
+                ComicListItem comicListItem = library.ComicLists.GetItems<ComicListItem>().FirstOrDefault(cl => string.Equals(cl.Name, list.Text, StringComparison.CurrentCultureIgnoreCase));
                 if (comicListItem != null)
                 {
                     BaseListId = comicListItem.Id;
@@ -205,12 +205,12 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
 
     public override IEnumerable<string> GetDependentProperties()
     {
-        return base.GetDependentProperties().Concat(Matchers.SelectMany((ComicBookMatcher m) => m.GetDependentProperties()));
+        return base.GetDependentProperties().Concat(Matchers.SelectMany(m => m.GetDependentProperties()));
     }
 
     public override bool IsUpdateNeeded(string propertyHint)
     {
-        return Matchers.All((ComicBookMatcher m) => !m.UsesProperty(propertyHint)) ? false : base.IsUpdateNeeded(propertyHint);
+        return Matchers.All(m => !m.UsesProperty(propertyHint)) ? false : base.IsUpdateNeeded(propertyHint);
     }
 
     protected override IEnumerable<ComicBook> OnCacheMatch(IEnumerable<ComicBook> cbl)
@@ -240,7 +240,7 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
         {
             matcherSet.Add(matcher, MatcherMode, matcher.Not);
         }
-        Matchers.Recurse<ComicBookMatcher>((object m) => (m is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)m).Matchers).ForEach(delegate (ComicBookMatcher m)
+        Matchers.Recurse<ComicBookMatcher>(m => (m is not ComicBookGroupMatcher) ? null : ((ComicBookGroupMatcher)m).Matchers).ForEach(delegate (ComicBookMatcher m)
         {
             m.StatsProvider = this;
         });
@@ -250,14 +250,14 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
             switch (LimitSelectionType)
             {
                 case ComicSmartListLimitSelectionType.SortedBySeries:
-                    enumerable = enumerable.ToList().OrderBy((ComicBook cb) => cb, new ComicBookSeriesComparer());
+                    enumerable = enumerable.ToList().OrderBy(cb => cb, new ComicBookSeriesComparer());
                     break;
                 default:
                     if (LimitRandomSeed == 0)
                     {
                         LimitRandomSeed = new Random().Next();
                     }
-                    enumerable = enumerable.OrderBy((ComicBook l) => l.Id).ToList().Randomize(LimitRandomSeed);
+                    enumerable = enumerable.OrderBy(l => l.Id).ToList().Randomize(LimitRandomSeed);
                     break;
                 case ComicSmartListLimitSelectionType.Position:
                     break;
@@ -274,9 +274,9 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
             if (Library != null)
             {
                 ComicBookCollection books = Library.Books;
-                filteredIds.RemoveWhere((Guid id) => books[id] == null);
+                filteredIds.RemoveWhere(id => books[id] == null);
             }
-            enumerable = enumerable.Where((ComicBook cb) => !filteredIds.Contains(cb.Id));
+            enumerable = enumerable.Where(cb => !filteredIds.Contains(cb.Id));
         }
         return enumerable;
     }
@@ -349,7 +349,7 @@ public class ComicSmartListItem : ShareableComicListItem, IMatcher<ComicBook>, I
     private static IEnumerable<ComicBook> LimitBySize(IEnumerable<ComicBook> cbl, long maxSize)
     {
         long size = 0L;
-        return cbl.TakeWhile((ComicBook cb) => (size += cb.FileSize) < maxSize);
+        return cbl.TakeWhile(cb => (size += cb.FileSize) < maxSize);
     }
 
     public bool IsFiltered(ComicBook ci)

@@ -152,7 +152,7 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
 
     public void SetFile(VirtualFileItem vfi)
     {
-        VirtualFileItem virtualFileItem = virtualFiles.Find((VirtualFileItem v) => string.Equals(vfi.FileName, v.FileName, StringComparison.OrdinalIgnoreCase));
+        VirtualFileItem virtualFileItem = virtualFiles.Find(v => string.Equals(vfi.FileName, v.FileName, StringComparison.OrdinalIgnoreCase));
         if (virtualFileItem != null)
         {
             virtualFiles.Remove(virtualFileItem);
@@ -292,6 +292,6 @@ public class DataObjectEx : DataObject, System.Runtime.InteropServices.ComTypes.
 
     private static bool GetTymedUseable(TYMED tymed)
     {
-        return usableTymeds.Any((TYMED tm) => (tymed & tm) != 0);
+        return usableTymeds.Any(tm => (tymed & tm) != 0);
     }
 }

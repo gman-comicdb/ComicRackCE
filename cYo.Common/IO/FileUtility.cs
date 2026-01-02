@@ -72,7 +72,7 @@ public static class FileUtility
         {
             string checkFile = item;
             FileFolderAction fileFolderAction = SafeValidator(validator, checkFile, isPath: false);
-            if (!fileFolderAction.HasFlag(FileFolderAction.IgnoreFile) && (extensions == null || extensions.Length == 0 || extensions.Any((string ext) => checkFile.EndsWith(ext, StringComparison.OrdinalIgnoreCase))))
+            if (!fileFolderAction.HasFlag(FileFolderAction.IgnoreFile) && (extensions == null || extensions.Length == 0 || extensions.Any(ext => checkFile.EndsWith(ext, StringComparison.OrdinalIgnoreCase))))
             {
                 yield return item;
             }
@@ -108,12 +108,12 @@ public static class FileUtility
 
     public static bool ForeachFile(string path, SearchOption searchOption, Predicate<string> action)
     {
-        return GetFiles(path, searchOption).Any((string file) => !action(file));
+        return GetFiles(path, searchOption).Any(file => !action(file));
     }
 
     public static bool ForeachFile(IEnumerable<string> paths, SearchOption searchOption, Predicate<string> action)
     {
-        return GetFiles(paths, searchOption).Any((string file) => !action(file));
+        return GetFiles(paths, searchOption).Any(file => !action(file));
     }
 
     private static string NetMakeValidFilename(string name, char safe)
@@ -239,7 +239,7 @@ public static class FileUtility
 
     public static DriveInfo GetDriveInfo(string path)
     {
-        return DriveInfo.GetDrives().FirstOrDefault((DriveInfo di) => string.Equals(Path.GetPathRoot(path), di.RootDirectory.Name, StringComparison.OrdinalIgnoreCase));
+        return DriveInfo.GetDrives().FirstOrDefault(di => string.Equals(Path.GetPathRoot(path), di.RootDirectory.Name, StringComparison.OrdinalIgnoreCase));
     }
 
     public static DriveType GetDriveType(string path)

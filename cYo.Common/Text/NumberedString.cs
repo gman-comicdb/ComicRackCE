@@ -31,7 +31,7 @@ public static class NumberedString
     {
         try
         {
-            return texts.Max((string t) => GetNumber(t) + 1);
+            return texts.Max(t => GetNumber(t) + 1);
         }
         catch (Exception)
         {

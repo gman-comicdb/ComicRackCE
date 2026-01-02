@@ -709,12 +709,12 @@ public class ThumbRenderer
         {
             return 0;
         }
-        var enumerable = images.Select((Image img) => new
+        var enumerable = images.Select(img => new
         {
             Size = img.Size.Scale(img.Size.GetScale(bounds.Size, ScaleMode.FitAll, allowOversize)),
             Image = img
         });
-        Func<int, int> getWidth = (int w) => w - (int)(overlapPercent * (float)w);
+        Func<int, int> getWidth = w => w - (int)(overlapPercent * (float)w);
         int num = enumerable.Max(s => s.Size.Height);
         int num2 = enumerable.Last().Size.Width + enumerable.Reverse().Skip(1).Sum(s => getWidth(s.Size.Width));
         float num3 = Math.Min(1f, (float)bounds.Width / (float)num2);

@@ -9,7 +9,7 @@ public class Equality<T> : EqualityComparer<T>
 
     private readonly Func<T, int> hashCode;
 
-    public static Equality<T> TypeEquality => new((T a, T b) => a.GetType() == b.GetType(), (T a) => a.GetType().GetHashCode());
+    public static Equality<T> TypeEquality => new((a, b) => a.GetType() == b.GetType(), a => a.GetType().GetHashCode());
 
     public Equality(Func<T, T, bool> comparer, Func<T, int> hashCode)
     {

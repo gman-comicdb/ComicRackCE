@@ -58,7 +58,7 @@ public static class ThreadUtility
                                                         where t.IsAlive
                                                         select t).ToArray();
 
-    public static Thread ForgroundThread => ActiveThreads.FirstOrDefault((Thread t) => !t.IsBackground);
+    public static Thread ForgroundThread => ActiveThreads.FirstOrDefault(t => !t.IsBackground);
 
     public static bool IsForegroundLocked
     {

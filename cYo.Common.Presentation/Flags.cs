@@ -67,7 +67,7 @@ public static class Flags
             ? flagFromCountry
             : (from ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
                where ci.Name.StartsWith(cultureCode)
-               select GetFlagFromCulture(ci.Name)).FirstOrDefault((Image ci) => ci != null);
+               select GetFlagFromCulture(ci.Name)).FirstOrDefault(ci => ci != null);
     }
 
     public static Image GetFlag(CultureInfo ci)

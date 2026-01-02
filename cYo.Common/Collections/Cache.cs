@@ -124,7 +124,7 @@ public class Cache<K, T> : DisposableObject where T : class
         {
             using (ReadLock())
             {
-                return ((IEnumerable<CacheItem>)cache.Values).Sum((Func<CacheItem, long>)((CacheItem v) => GetDataSize(v.Data)));
+                return ((IEnumerable<CacheItem>)cache.Values).Sum((Func<CacheItem, long>)(v => GetDataSize(v.Data)));
             }
         }
     }
@@ -224,7 +224,7 @@ public class Cache<K, T> : DisposableObject where T : class
 
     public IItemLock<T> LockItem(K key, T data)
     {
-        return LockItem(key, (K k) => data);
+        return LockItem(key, k => data);
     }
 
     public bool IsCached(K key)
@@ -301,7 +301,7 @@ public class Cache<K, T> : DisposableObject where T : class
         K[] list;
         using (ReadLock())
         {
-            list = cache.Keys.Where((K k) => !IsLocked(k) || evenLocked).ToArray();
+            list = cache.Keys.Where(k => !IsLocked(k) || evenLocked).ToArray();
         }
         list.ForEach(delegate (K key)
         {

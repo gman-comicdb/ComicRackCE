@@ -21,6 +21,6 @@ public class SearchableAttribute : Attribute
 
     public static bool IsSearchable(PropertyInfo pi)
     {
-        return pi.GetCustomAttributes(inherit: true).OfType<SearchableAttribute>().FirstOrDefault((SearchableAttribute a) => a.Searchable) != null;
+        return pi.GetCustomAttributes(inherit: true).OfType<SearchableAttribute>().FirstOrDefault(a => a.Searchable) != null;
     }
 }

@@ -90,7 +90,7 @@ public class VisibilityAnimator : Component
 
     private bool GetVisibility()
     {
-        return Controls.Any((Control t) => t.IsVisibleSet());
+        return Controls.Any(t => t.IsVisibleSet());
     }
 
     private void StartAnimation(bool targetVisibility)
@@ -105,7 +105,7 @@ public class VisibilityAnimator : Component
             return;
         }
         animationStart = 0L;
-        animations = Controls.Select((Control t) => new AnimationInfo
+        animations = Controls.Select(t => new AnimationInfo
         {
             Control = t,
             Height = t.Height,

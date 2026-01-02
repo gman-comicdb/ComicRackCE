@@ -68,14 +68,14 @@ public class FileFormat : IComparable<FileFormat>
 
     public bool HasExtension(string extension)
     {
-        return extensionArray.Any((string ext) => string.Equals(extension, ext, StringComparison.OrdinalIgnoreCase));
+        return extensionArray.Any(ext => string.Equals(extension, ext, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool IsShellRegistered(string typeId)
     {
         try
         {
-            return extensionArray.All((string ext) => ShellRegister.IsFileOpenRegistered(typeId, ext) || ShellRegister.IsFileOpenWithRegistered(ext, typeId));
+            return extensionArray.All(ext => ShellRegister.IsFileOpenRegistered(typeId, ext) || ShellRegister.IsFileOpenWithRegistered(ext, typeId));
         }
         catch
         {

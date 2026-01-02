@@ -228,7 +228,7 @@ public abstract class ComicBookValueMatcher : ComicBookMatcher, IComicBookValueM
 
     public static IComicBookValueMatcher Create(string description)
     {
-        Type type = GetAvailableMatcherTypes().FirstOrDefault((Type t) => string.Equals(t.Description(), description, StringComparison.OrdinalIgnoreCase));
+        Type type = GetAvailableMatcherTypes().FirstOrDefault(t => string.Equals(t.Description(), description, StringComparison.OrdinalIgnoreCase));
         return (IComicBookValueMatcher)((type != null) ? Activator.CreateInstance(type) : null);
     }
 }

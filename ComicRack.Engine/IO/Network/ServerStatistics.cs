@@ -65,16 +65,16 @@ public class ServerStatistics
         public StatisticResult(IEnumerable<StatisticItem> items, TimeSpan timeSpan)
         {
             DateTime now = DateTime.Now;
-            IEnumerable<StatisticItem> source = items.Reverse().TakeWhile((StatisticItem n) => now - n.TimeStamp < timeSpan);
-            ClientCount = source.Select((StatisticItem n) => n.Client).Distinct().Count();
-            InfoRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.InfoRequest);
-            LibraryRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.LibraryRequest);
-            PageRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.PageRequest);
-            ThumbnailRequestCount = source.Count((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest);
-            FailedAuthenticationCount = source.Count((StatisticItem n) => n.Type == StatisticType.FailedAuthentication);
-            PageRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.PageRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
-            LibraryRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.LibraryRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
-            ThumbnailRequestSize = source.Where((StatisticItem n) => n.Type == StatisticType.ThumbnailRequest).Sum((Func<StatisticItem, long>)((StatisticItem n) => n.Size));
+            IEnumerable<StatisticItem> source = items.Reverse().TakeWhile(n => now - n.TimeStamp < timeSpan);
+            ClientCount = source.Select(n => n.Client).Distinct().Count();
+            InfoRequestCount = source.Count(n => n.Type == StatisticType.InfoRequest);
+            LibraryRequestCount = source.Count(n => n.Type == StatisticType.LibraryRequest);
+            PageRequestCount = source.Count(n => n.Type == StatisticType.PageRequest);
+            ThumbnailRequestCount = source.Count(n => n.Type == StatisticType.ThumbnailRequest);
+            FailedAuthenticationCount = source.Count(n => n.Type == StatisticType.FailedAuthentication);
+            PageRequestSize = source.Where(n => n.Type == StatisticType.PageRequest).Sum((Func<StatisticItem, long>)(n => n.Size));
+            LibraryRequestSize = source.Where(n => n.Type == StatisticType.LibraryRequest).Sum((Func<StatisticItem, long>)(n => n.Size));
+            ThumbnailRequestSize = source.Where(n => n.Type == StatisticType.ThumbnailRequest).Sum((Func<StatisticItem, long>)(n => n.Size));
         }
 
         public void Add(StatisticResult sr)
@@ -117,6 +117,6 @@ public class ServerStatistics
     public bool WasActive(TimeSpan timeSpan)
     {
         DateTime now = DateTime.Now;
-        return items.Reverse().Any((StatisticItem n) => now - n.TimeStamp < timeSpan);
+        return items.Reverse().Any(n => now - n.TimeStamp < timeSpan);
     }
 }

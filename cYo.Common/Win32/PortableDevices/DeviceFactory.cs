@@ -15,7 +15,7 @@ public static class DeviceFactory
             portableDeviceManager.GetDevices(null, ref pcPnPDeviceIDs);
             string[] array = new string[pcPnPDeviceIDs];
             portableDeviceManager.GetDevices(array, ref pcPnPDeviceIDs);
-            return array.Select((string t) => new Device(t));
+            return array.Select(t => new Device(t));
         }
         catch (Exception)
         {
@@ -25,6 +25,6 @@ public static class DeviceFactory
 
     public static Device GetDevice(string deviceKey)
     {
-        return GetDevices().FirstOrDefault((Device d) => d.Key == deviceKey);
+        return GetDevices().FirstOrDefault(d => d.Key == deviceKey);
     }
 }

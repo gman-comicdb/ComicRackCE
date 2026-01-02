@@ -18,7 +18,7 @@ public class ComicPageInfoCollection : List<ComicPageInfo>
 
     public ComicPageInfo FindByImageIndex(int imageIndex)
     {
-        return Find((ComicPageInfo cpi) => cpi.ImageIndex == imageIndex);
+        return Find(cpi => cpi.ImageIndex == imageIndex);
     }
 
     public bool PagesAreEqual(ComicPageInfoCollection pages)
@@ -39,7 +39,7 @@ public class ComicPageInfoCollection : List<ComicPageInfo>
 
     public void ResetPageSequence()
     {
-        Sort((ComicPageInfo a, ComicPageInfo b) => a.ImageIndex.CompareTo(b.ImageIndex));
+        Sort((a, b) => a.ImageIndex.CompareTo(b.ImageIndex));
     }
 
     public void Consolidate()

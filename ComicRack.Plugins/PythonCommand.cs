@@ -103,67 +103,67 @@ public class PythonCommand : Command
         {
             {
                 PluginEngine.ScriptTypeLibrary,
-                (ScriptScope s, string n) => s.GetVariable<Action<ComicBook[]>>(n)
+                (s, n) => s.GetVariable<Action<ComicBook[]>>(n)
             },
             {
                 PluginEngine.ScriptTypeBooks,
-                (ScriptScope s, string n) => s.GetVariable<Action<ComicBook[]>>(n)
+                (s, n) => s.GetVariable<Action<ComicBook[]>>(n)
             },
             {
                 PluginEngine.ScriptTypeNewBooks,
-                (ScriptScope s, string n) => s.GetVariable<Action<ComicBook[]>>(n)
+                (s, n) => s.GetVariable<Action<ComicBook[]>>(n)
             },
             {
                 PluginEngine.ScriptTypeParseComicPath,
-                (ScriptScope s, string n) => s.GetVariable<Action<string, ComicNameInfo>>(n)
+                (s, n) => s.GetVariable<Action<string, ComicNameInfo>>(n)
             },
             {
                 PluginEngine.ScriptTypeBookOpened,
-                (ScriptScope s, string n) => s.GetVariable<Action<ComicBook>>(n)
+                (s, n) => s.GetVariable<Action<ComicBook>>(n)
             },
             {
                 PluginEngine.ScriptTypeCreateBookList,
-                (ScriptScope s, string n) => s.GetVariable<Func<ComicBook[], string, string, IEnumerable<ComicBook>>>(n)
+                (s, n) => s.GetVariable<Func<ComicBook[], string, string, IEnumerable<ComicBook>>>(n)
             },
             {
                 PluginEngine.ScriptTypeReaderResized,
-                (ScriptScope s, string n) => s.GetVariable<Action<int, int>>(n)
+                (s, n) => s.GetVariable<Action<int, int>>(n)
             },
             {
                 PluginEngine.ScriptTypeSearch,
-                (ScriptScope s, string n) => s.GetVariable<Func<string, string, int, Dictionary<string, string>>>(n)
+                (s, n) => s.GetVariable<Func<string, string, int, Dictionary<string, string>>>(n)
             },
             {
                 PluginEngine.ScriptTypeConfig,
-                (ScriptScope s, string n) => s.GetVariable<Action>(n)
+                (s, n) => s.GetVariable<Action>(n)
             },
             {
                 PluginEngine.ScriptTypeStartup,
-                (ScriptScope s, string n) => s.GetVariable<Action>(n)
+                (s, n) => s.GetVariable<Action>(n)
             },
             {
                 PluginEngine.ScriptTypeShutdown,
-                (ScriptScope s, string n) => s.GetVariable<Func<bool, bool>>(n)
+                (s, n) => s.GetVariable<Func<bool, bool>>(n)
             },
             {
                 PluginEngine.ScriptTypeComicInfoHtml,
-                (ScriptScope s, string n) => s.GetVariable<Func<ComicBook[], string>>(n)
+                (s, n) => s.GetVariable<Func<ComicBook[], string>>(n)
             },
             {
                 PluginEngine.ScriptTypeComicInfoUI,
-                (ScriptScope s, string n) => s.GetVariable<Func<Control>>(n)
+                (s, n) => s.GetVariable<Func<Control>>(n)
             },
             {
                 PluginEngine.ScriptTypeQuickOpenHtml,
-                (ScriptScope s, string n) => s.GetVariable<Func<ComicBook[], string>>(n)
+                (s, n) => s.GetVariable<Func<ComicBook[], string>>(n)
             },
             {
                 PluginEngine.ScriptTypeQuickOpenUI,
-                (ScriptScope s, string n) => s.GetVariable<Func<Control>>(n)
+                (s, n) => s.GetVariable<Func<Control>>(n)
             },
             {
                 PluginEngine.ScriptTypeDrawThumbnailOverlay,
-                (ScriptScope s, string n) => s.GetVariable<Action<ComicBook, Graphics, Rectangle, int>>(n)
+                (s, n) => s.GetVariable<Action<ComicBook, Graphics, Rectangle, int>>(n)
             }
         };
         settings = IniFile.Default.Register<PythonSettings>();

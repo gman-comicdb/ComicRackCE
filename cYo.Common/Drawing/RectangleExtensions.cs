@@ -478,7 +478,7 @@ public static class RectangleExtensions
 
     public static RectangleF ToRectangle(this IEnumerable<PointF> points)
     {
-        return RectangleF.FromLTRB(points.Min((PointF pt) => pt.X), points.Min((PointF pt) => pt.Y), points.Max((PointF pt) => pt.X), points.Max((PointF pt) => pt.Y));
+        return RectangleF.FromLTRB(points.Min(pt => pt.X), points.Min(pt => pt.Y), points.Max(pt => pt.X), points.Max(pt => pt.Y));
     }
 
     public static Point[] ToPoints(this Rectangle rect)
@@ -494,7 +494,7 @@ public static class RectangleExtensions
 
     public static Rectangle ToRectangle(this IEnumerable<Point> points)
     {
-        return Rectangle.FromLTRB(points.Min((Point pt) => pt.X), points.Min((Point pt) => pt.Y), points.Max((Point pt) => pt.X), points.Max((Point pt) => pt.Y));
+        return Rectangle.FromLTRB(points.Min(pt => pt.X), points.Min(pt => pt.Y), points.Max(pt => pt.X), points.Max(pt => pt.Y));
     }
 
     public static RectangleF Union(this RectangleF a, RectangleF b)

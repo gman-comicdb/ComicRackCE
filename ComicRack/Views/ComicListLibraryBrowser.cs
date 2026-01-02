@@ -78,7 +78,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 string moveToRecycleBin = null;
                 if (ask)
                 {
-                    if (books.Any((ComicBook b) => b.IsLinked))
+                    if (books.Any(b => b.IsLinked))
                     {
                         moveToRecycleBin = (Program.Settings.MoveFilesToRecycleBin ? "!" : string.Empty) + TR.Messages["MoveBin", "&Also move the files to the Recycle Bin"];
                     }
@@ -381,7 +381,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
     {
         if (!string.IsNullOrEmpty(filter))
         {
-            items = items.Where((ComicListItem cli) => cli is ComicLibraryListItem || cli.Filter(filter)).ToArray();
+            items = items.Where(cli => cli is ComicLibraryListItem || cli.Filter(filter)).ToArray();
         }
         ComicListItem[] list = (from tn in tnc.OfType<TreeNode>()
                                 select tn.Tag as ComicListItem into cli
@@ -514,12 +514,12 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                 sld.EditId = csli.Id;
                 sld.SmartComicList = comicSmartListItem;
                 tnc = (tn.Parent != null) ? tn.Parent.Nodes : tvQueries.Nodes;
-                sld.EnableNavigation = tnc.OfType<TreeNode>().Count((TreeNode n) => n.Tag is ComicSmartListItem) > 1;
-                getNext = () => tnc.OfType<TreeNode>().SkipWhile((TreeNode n) => n != tn).Skip(1)
-                    .FirstOrDefault((TreeNode n) => n.Tag is ComicSmartListItem);
-                getPrev = () => tnc.OfType<TreeNode>().Reverse().SkipWhile((TreeNode n) => n != tn)
+                sld.EnableNavigation = tnc.OfType<TreeNode>().Count(n => n.Tag is ComicSmartListItem) > 1;
+                getNext = () => tnc.OfType<TreeNode>().SkipWhile(n => n != tn).Skip(1)
+                    .FirstOrDefault(n => n.Tag is ComicSmartListItem);
+                getPrev = () => tnc.OfType<TreeNode>().Reverse().SkipWhile(n => n != tn)
                     .Skip(1)
-                    .FirstOrDefault((TreeNode n) => n.Tag is ComicSmartListItem);
+                    .FirstOrDefault(n => n.Tag is ComicSmartListItem);
                 setItem = delegate (Func<TreeNode> get)
                 {
                     TreeNode treeNode = get();
@@ -820,7 +820,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         {
             ToolStripMenuItem toolStripMenuItem = new(device.DeviceName + "...")
             {
-                Checked = device.Lists.FirstOrDefault((DeviceSyncSettings.SharedList l) => l.ListId == cli.Id) != null
+                Checked = device.Lists.FirstOrDefault(l => l.ListId == cli.Id) != null
             };
             DeviceSyncSettings dss1 = device;
             toolStripMenuItem.Click += delegate
@@ -982,7 +982,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
         TreeNode node = tvQueries.GetNodeAt(point);
         if (dragNode != null)
         {
-            if (node != dragNode && dragNode == e.Data.GetData(typeof(TreeNode)) && dragNode.Nodes.Find((TreeNode cn) => cn == node) == null)
+            if (node != dragNode && dragNode == e.Data.GetData(typeof(TreeNode)) && dragNode.Nodes.Find(cn => cn == node) == null)
             {
                 e.Effect = (dragNode.Tag is ShareableComicListItem && ((uint)e.KeyState & 8u) != 0) ? DragDropEffects.Copy : DragDropEffects.Move;
                 Point point2 = point;
@@ -1152,7 +1152,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
 
     private void ExpandCollapseAllNodes()
     {
-        if (tvQueries.AllNodes().Any((TreeNode t) => t.IsExpanded))
+        if (tvQueries.AllNodes().Any(t => t.IsExpanded))
         {
             tvQueries.CollapseAll();
         }
@@ -1538,7 +1538,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
                                 Library.Books.AddRange(newBooks);
                                 break;
                             default:
-                                idli.BookIds.RemoveRange(newBooks.Select((ComicBook cb) => cb.Id));
+                                idli.BookIds.RemoveRange(newBooks.Select(cb => cb.Id));
                                 break;
                         }
                     }
@@ -1640,7 +1640,7 @@ public partial class ComicListLibraryBrowser : ComicListBrowser, IDisplayWorkspa
     {
         if (base.Visible)
         {
-            Library.CommitComicListCacheChanges((ComicListItem cli) => FindItemNode(cli)?.IsVisible ?? false);
+            Library.CommitComicListCacheChanges(cli => FindItemNode(cli)?.IsVisible ?? false);
         }
     }
 }

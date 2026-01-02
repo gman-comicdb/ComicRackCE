@@ -73,7 +73,7 @@ public class ImagePackage : DisposableObject, IImagePackage
         {
             return;
         }
-        mapKeys ??= (string s) => ListExtensions.AsEnumerable<string>(s);
+        mapKeys ??= s => ListExtensions.AsEnumerable<string>(s);
         if (package.FileExists(MapFile))
         {
             using (Stream stream = package.OpenRead(MapFile))

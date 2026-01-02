@@ -128,7 +128,7 @@ public class Device
         fileName = Path.GetFileName(fileName);
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
         string text = Path.GetExtension(fileName).ToLower();
-        DeviceItem deviceItem = folder.Items.FirstOrDefault((DeviceItem item) => item.Name == fileName);
+        DeviceItem deviceItem = folder.Items.FirstOrDefault(item => item.Name == fileName);
         if (deviceItem != null)
         {
             if (deviceItem is not DeviceFile)
