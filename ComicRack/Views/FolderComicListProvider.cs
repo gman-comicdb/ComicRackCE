@@ -114,11 +114,11 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
         {
             using (Image image = Program.MakeBooksImage(books, new Size(256, 128), 5, onlyMemory: false))
             {
-                QuestionResult questionResult = QuestionDialog.AskQuestion(Window, TR.Messages["AskMoveBin", "Are you sure you want to move these files to the Recycle Bin?"], TR.Messages["Remove", "Remove"], (Program.Settings.RemoveFilesfromDatabase ? "!" : string.Empty) + TR.Messages["AlsoRemoveFromLibrary", "&Additionally remove the books from the Library (all information not stored in the files will be lost)"], image);
+                QuestionResult questionResult = QuestionDialog.AskQuestion(Window, TR.Messages["AskMoveBin", "Are you sure you want to move these files to the Recycle Bin?"], TR.Messages["Remove", "Remove"], (Program.Settings.RemoveFilesFromDatabase ? "!" : string.Empty) + TR.Messages["AlsoRemoveFromLibrary", "&Additionally remove the books from the Library (all information not stored in the files will be lost)"], image);
                 if (questionResult.HasFlag(QuestionResult.Cancel))
                     return;
 
-                Program.Settings.RemoveFilesfromDatabase = questionResult == QuestionResult.OkWithOption;
+                Program.Settings.RemoveFilesFromDatabase = questionResult == QuestionResult.OkWithOption;
             }
         }
         bool flag = false;
@@ -144,7 +144,7 @@ public class FolderComicListProvider : NamedIdComponent, IComicBookListProvider,
                     continue;
                 }
                 BookCount -= num;
-                if (Program.Settings.RemoveFilesfromDatabase)
+                if (Program.Settings.RemoveFilesFromDatabase)
                 {
                     Program.Database.Books.RemoveRange(books);
                 }

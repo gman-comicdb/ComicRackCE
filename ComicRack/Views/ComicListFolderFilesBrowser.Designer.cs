@@ -236,7 +236,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
             this.favView.GroupsStatus = ((cYo.Common.Windows.Forms.ItemViewGroupsStatus)(resources.GetObject("favView.GroupsStatus")));
             this.favView.ItemViewMode = cYo.Common.Windows.Forms.ItemViewMode.Tile;
             this.favView.Location = new System.Drawing.Point(0, 6);
-            this.favView.Multiselect = false;
+            this.favView.MultiSelect = false;
             this.favView.Name = "favView";
             this.favView.Size = new System.Drawing.Size(379, 148);
             this.favView.SortColumn = null;

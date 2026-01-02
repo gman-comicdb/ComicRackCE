@@ -75,9 +75,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
             return nav != null;
         }
 
-        public override void DrawTooltip(Graphics gr, Rectangle rc)
+        public override void DrawToolTip(Graphics gr, Rectangle rc)
         {
-            base.DrawTooltip(gr, rc);
+            base.DrawToolTip(gr, rc);
             if (nav == null)
             {
                 return;
@@ -1475,7 +1475,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miReaderUndocked.Image, "ToggleUndockReader", group, "Toggle Undock Reader", ToggleUndockReader, CommandKey.D));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miFullScreen.Image, "ToggleFullScreen", group, "Toggle Full Screen", ComicDisplay.ToggleFullScreen, CommandKey.F, CommandKey.MouseDoubleLeft, CommandKey.Gesture2));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miTwoPages.Image, "ToggleTwoPages", group, "Toggle Two Pages", ComicDisplay.TogglePageLayout, CommandKey.T));
-        ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("ToggleRealisticPages", group, "Toggle Realistic Display", ComicDisplay.ToogleRealisticPages, CommandKey.D | CommandKey.Shift));
+        ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand("ToggleRealisticPages", group, "Toggle Realistic Display", ComicDisplay.ToggleRealisticPages, CommandKey.D | CommandKey.Shift));
         ComicDisplay.KeyboardMap.Commands.Add(new KeyboardCommand(miMagnify.Image, "ToggleMagnify", group, "Toggle Magnifier", (Action)delegate
         {
             ComicDisplay.MagnifierVisible = !ComicDisplay.MagnifierVisible;
@@ -2041,10 +2041,10 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
         }
     }
 
-    public void ShowPreferences(string autoInstallplugin = null)
+    public void ShowPreferences(string autoInstallPlugin = null)
     {
         KeyboardShortcuts keyboardMap = new(ComicDisplay.KeyboardMap);
-        if (PreferencesDialog.Show(Form.ActiveForm ?? this, keyboardMap, ScriptUtility.Scripts, autoInstallplugin))
+        if (PreferencesDialog.Show(Form.ActiveForm ?? this, keyboardMap, ScriptUtility.Scripts, autoInstallPlugin))
         {
             ComicDisplay.KeyboardMap = keyboardMap;
         }
@@ -3285,9 +3285,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
                 e.Cancel = true;
                 return;
             }
-            if (ComicDisplay.SupressContextMenu)
+            if (ComicDisplay.SuppressContextMenu)
             {
-                ComicDisplay.SupressContextMenu = false;
+                ComicDisplay.SuppressContextMenu = false;
                 e.Cancel = true;
                 return;
             }
@@ -3555,9 +3555,9 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
 
     private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
     {
-        if (notifyIcon.Tag is HiddenMessageBoxes)
+        if (notifyIcon.Tag is HiddenMessageBoxes notifyMsg)
         {
-            Program.Settings.HiddenMessageBoxes |= (HiddenMessageBoxes)notifyIcon.Tag;
+            Program.Settings.HiddenMessageBoxes |= notifyMsg;
             notifyIcon.Tag = null;
         }
     }
@@ -4238,7 +4238,7 @@ public partial class MainForm : FormEx, IMain, IContainerControl, IPluginConfig,
     {
         bool doNotCheckForUpdate = Program.Settings.HiddenMessageBoxes.HasFlag(HiddenMessageBoxes.DoNotCheckForUpdate);
 
-        // Proceed if opened from the menu; otherwise, abort while developping or update checks are disabled.
+        // Proceed if opened from the menu; otherwise, abort while developing or update checks are disabled.
         if (!alwaysCheck && (GitVersion.IsDirty || doNotCheckForUpdate))
             return;
 

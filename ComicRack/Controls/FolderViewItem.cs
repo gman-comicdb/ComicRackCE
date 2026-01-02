@@ -123,7 +123,7 @@ public class FolderViewItem : ThumbnailViewItem
         return new FolderViewItem
         {
             Text = folder,
-            TooltipText = folder
+            ToolTipText = folder
         };
     }
 }

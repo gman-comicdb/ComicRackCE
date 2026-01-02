@@ -1,5 +1,6 @@
 global using SystemBrushes = cYo.Common.Drawing.ExtendedColors.SystemBrushesEx;
 global using SystemColors = cYo.Common.Drawing.ExtendedColors.SystemColorsEx;
+//global using SystemPens = cYo.Common.Drawing.ExtendedColors.SystemPensEx; // unused
 
 using System;
 using System.Collections.Generic;
@@ -318,9 +319,9 @@ public static class Program
         }
     }
 
-    public static bool AskQuestion(IWin32Window parent, string question, string okButton, HiddenMessageBoxes hmb, string askAgainText = null, string cancelButton = null)
+    public static bool AskQuestion(IWin32Window parent, string question, string okButton, HiddenMessageBoxes msgBox, string askAgainText = null, string cancelButton = null)
     {
-        if ((Settings.HiddenMessageBoxes & hmb) != 0)
+        if ((Settings.HiddenMessageBoxes & msgBox) != 0)
         {
             return true;
         }
@@ -333,7 +334,7 @@ public static class Program
             case var type when type.HasFlag(QuestionResult.Cancel):
                 return false;
             case QuestionResult.OkWithOption:
-                Settings.HiddenMessageBoxes |= hmb;
+                Settings.HiddenMessageBoxes |= msgBox;
                 break;
         }
         return true;
@@ -360,11 +361,11 @@ public static class Program
         }
     }
 
-    public static void StartProgram(string exe, string commandLine)
+    public static void StartProgram(string fileName, string commandLine)
     {
         try
         {
-            Process.Start(exe, commandLine);
+            Process.Start(fileName, commandLine);
         }
         catch (Exception)
         {

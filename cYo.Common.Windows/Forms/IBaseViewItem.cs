@@ -9,7 +9,7 @@ public interface IBaseViewItem : INotifyPropertyChanged
 
     string Name { get; }
 
-    string TooltipText { get; }
+    string ToolTipText { get; }
 
     object Tag { get; set; }
 

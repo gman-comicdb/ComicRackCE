@@ -90,7 +90,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
         Paths = paths;
     }
 
-    protected virtual void OnInitalDisplay()
+    protected virtual void OnInitialDisplay()
     {
         this.BeginInvoke(delegate
         {
@@ -135,7 +135,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
         if (initialEnter)
         {
             initialEnter = false;
-            OnInitalDisplay();
+            OnInitialDisplay();
         }
     }
 
@@ -198,7 +198,7 @@ public partial class ComicListFolderFilesBrowser : ComicListFilesBrowser, IDispl
                 }
                 FolderViewItem folderViewItem = FolderViewItem.Create(favoriteFolder);
                 folderViewItem.Tag = favoriteFolder;
-                folderViewItem.TooltipText = favoriteFolder;
+                folderViewItem.ToolTipText = favoriteFolder;
                 favView.Items.Add(folderViewItem);
                 if (refreshThumbnails)
                 {

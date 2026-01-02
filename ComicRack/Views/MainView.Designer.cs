@@ -72,7 +72,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
             this.tabStrip.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabStrip.Location = new System.Drawing.Point(0, 0);
             this.tabStrip.Name = "tabStrip";
-            this.tabStrip.OwnerDrawnTooltips = true;
+            this.tabStrip.OwnerDrawnToolTips = true;
             this.tabStrip.Size = new System.Drawing.Size(895, 25);
             this.tabStrip.TabIndex = 0;
             this.tabStrip.Text = "tabStrip";

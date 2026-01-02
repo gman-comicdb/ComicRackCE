@@ -296,7 +296,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			this.toolStripMenuItem46 = new System.Windows.Forms.ToolStripSeparator();
 			this.cmMinimalGui = new System.Windows.Forms.ToolStripMenuItem();
 			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-			this.notfifyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.notifyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cmNotifyRestore = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
 			this.cmNotifyExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -412,7 +412,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			this.statusStrip.SuspendLayout();
 			this.pageContextMenu.SuspendLayout();
 			this.contextRating2.SuspendLayout();
-			this.notfifyContextMenu.SuspendLayout();
+			this.notifyContextMenu.SuspendLayout();
 			this.viewContainer.SuspendLayout();
 			this.panelReader.SuspendLayout();
 			this.readerContainer.SuspendLayout();
@@ -2470,18 +2470,18 @@ namespace cYo.Projects.ComicRack.Viewer
 			// 
 			// notifyIcon
 			// 
-			this.notifyIcon.ContextMenuStrip = this.notfifyContextMenu;
+			this.notifyIcon.ContextMenuStrip = this.notifyContextMenu;
 			this.notifyIcon.Text = "Double Click to restore";
 			this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
 			// 
-			// notfifyContextMenu
+			// notifyContextMenu
 			// 
-			this.notfifyContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.notifyContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmNotifyRestore,
             this.toolStripMenuItem15,
             this.cmNotifyExit});
-			this.notfifyContextMenu.Name = "notfifyContextMenu";
-			this.notfifyContextMenu.Size = new System.Drawing.Size(114, 54);
+			this.notifyContextMenu.Name = "notifyContextMenu";
+			this.notifyContextMenu.Size = new System.Drawing.Size(114, 54);
 			// 
 			// cmNotifyRestore
 			// 
@@ -2565,7 +2565,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			this.fileTabs.LeftIndent = 8;
 			this.fileTabs.Location = new System.Drawing.Point(0, 0);
 			this.fileTabs.Name = "fileTabs";
-			this.fileTabs.OwnerDrawnTooltips = true;
+			this.fileTabs.OwnerDrawnToolTips = true;
 			this.fileTabs.Size = new System.Drawing.Size(744, 31);
 			this.fileTabs.TabIndex = 1;
 			// 
@@ -3471,7 +3471,7 @@ namespace cYo.Projects.ComicRack.Viewer
 			this.statusStrip.PerformLayout();
 			this.pageContextMenu.ResumeLayout(false);
 			this.contextRating2.ResumeLayout(false);
-			this.notfifyContextMenu.ResumeLayout(false);
+			this.notifyContextMenu.ResumeLayout(false);
 			this.viewContainer.ResumeLayout(false);
 			this.panelReader.ResumeLayout(false);
 			this.readerContainer.ResumeLayout(false);
@@ -3566,7 +3566,7 @@ namespace cYo.Projects.ComicRack.Viewer
 		private ToolStripMenuItem miSyncBrowser;
 		private SizableContainer mainViewContainer;
 		private ToolStripSeparator toolStripMenuItem11;
-		private ContextMenuStrip notfifyContextMenu;
+		private ContextMenuStrip notifyContextMenu;
 		private ToolStripMenuItem cmNotifyRestore;
 		private ToolStripSeparator toolStripMenuItem15;
 		private ToolStripMenuItem cmNotifyExit;

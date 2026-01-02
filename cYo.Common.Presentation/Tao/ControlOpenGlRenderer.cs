@@ -464,18 +464,18 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
         Gl.glClear(16384);
     }
 
-    public void DrawImage(RendererImage image, RectangleF dest, RectangleF src, BitmapAdjustment ajustment, float opacity)
+    public void DrawImage(RendererImage image, RectangleF dest, RectangleF src, BitmapAdjustment adjustment, float opacity)
     {
         opacity *= Opacity;
         Gl.glPushAttrib(24576);
         SetDefaultBlending();
-        if (ajustment.IsEmpty)
+        if (adjustment.IsEmpty)
         {
             tm.DrawImage(image, dest, src, opacity);
         }
         else
         {
-            using (Bitmap image2 = image.Bitmap.CreateAdjustedBitmap(ajustment, PixelFormat.Format32bppArgb, alwaysClone: true))
+            using (Bitmap image2 = image.Bitmap.CreateAdjustedBitmap(adjustment, PixelFormat.Format32bppArgb, alwaysClone: true))
             {
                 tm.DrawImage(image2, dest, src, opacity);
             }
@@ -547,7 +547,7 @@ public class ControlOpenGlRenderer : DisposableObject, IControlRenderer, IBitmap
         DrawImage(image, dest, src, BitmapAdjustment.Empty, opacity);
     }
 
-    public unsafe Bitmap GetFramebuffer(Rectangle rc, bool flip)
+    public unsafe Bitmap GetFrameBuffer(Rectangle rc, bool flip)
     {
         Bitmap bitmap = new(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
         BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);

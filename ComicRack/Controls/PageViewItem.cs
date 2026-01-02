@@ -300,6 +300,6 @@ public class PageViewItem : ThumbnailViewItem
     private void UpdateInfo()
     {
         Text = PageAsText;
-        base.TooltipText = StringUtility.Format("{0} #{1}", TR.Default["Page", "Page"], Text);
+        base.ToolTipText = StringUtility.Format("{0} #{1}", TR.Default["Page", "Page"], Text);
     }
 }

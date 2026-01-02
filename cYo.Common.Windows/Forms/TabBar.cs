@@ -304,7 +304,7 @@ public class TabBar : ContainerControl
             return true;
         }
 
-        public virtual void DrawTooltip(Graphics gr, Rectangle rc)
+        public virtual void DrawToolTip(Graphics gr, Rectangle rc)
         {
         }
     }
@@ -590,7 +590,7 @@ public class TabBar : ContainerControl
     }
 
     [DefaultValue(false)]
-    public bool OwnerDrawnTooltips { get; set; }
+    public bool OwnerDrawnToolTips { get; set; }
 
     [DefaultValue(250)]
     public int MinimumTabWidth
@@ -920,7 +920,7 @@ public class TabBar : ContainerControl
 
     private void toolTip_Popup(object sender, PopupEventArgs e)
     {
-        if (!OwnerDrawnTooltips)
+        if (!OwnerDrawnToolTips)
         {
             return;
         }
@@ -957,17 +957,17 @@ public class TabBar : ContainerControl
             //e.DrawThemeBackground();
             e.DrawThemeBorder();
         }
-        if (OwnerDrawnTooltips && toolTipItem != null && !toolTipItem.ToolTipSize.IsEmpty)
+        if (OwnerDrawnToolTips && toolTipItem != null && !toolTipItem.ToolTipSize.IsEmpty)
         {
-            toolTipItem.DrawTooltip(e.Graphics, e.Bounds);
+            toolTipItem.DrawToolTip(e.Graphics, e.Bounds);
         }
         else
         {
-            DrawTooltipText(visualStyleRenderer, e);
+            DrawToolTipText(visualStyleRenderer, e);
         }
     }
 
-    private static void DrawTooltipText(VisualStyleRenderer vr, DrawToolTipEventArgs e)
+    private static void DrawToolTipText(VisualStyleRenderer vr, DrawToolTipEventArgs e)
     {
         if (vr == null)
         {

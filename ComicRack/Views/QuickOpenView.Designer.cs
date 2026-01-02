@@ -125,7 +125,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
             this.itemView.HorizontalItemAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             this.itemView.LabelEdit = false;
             this.itemView.Location = new System.Drawing.Point(0, 0);
-            this.itemView.Multiselect = false;
+            this.itemView.MultiSelect = false;
             this.itemView.Name = "itemView";
             this.itemView.SelectionMode = System.Windows.Forms.SelectionMode.One;
             this.itemView.ShowGroupCount = false;

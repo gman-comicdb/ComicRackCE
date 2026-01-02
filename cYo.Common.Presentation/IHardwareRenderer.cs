@@ -14,7 +14,7 @@ public interface IHardwareRenderer : IBitmapRenderer
 
     BlendingOperation BlendingOperation { get; set; }
 
-    Bitmap GetFramebuffer(Rectangle rc, bool flip);
+    Bitmap GetFrameBuffer(Rectangle rc, bool flip);
 
     void ClearStencil();
 }

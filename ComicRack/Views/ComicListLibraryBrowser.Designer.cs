@@ -459,7 +459,7 @@ namespace cYo.Projects.ComicRack.Viewer.Views
 			this.favView.ItemContextMenuStrip = this.contextMenuFavorites;
 			this.favView.ItemViewMode = cYo.Common.Windows.Forms.ItemViewMode.Tile;
 			this.favView.Location = new System.Drawing.Point(0, 6);
-			this.favView.Multiselect = false;
+			this.favView.MultiSelect = false;
 			this.favView.Name = "favView";
 			this.favView.Size = new System.Drawing.Size(397, 148);
 			this.favView.SortColumn = null;

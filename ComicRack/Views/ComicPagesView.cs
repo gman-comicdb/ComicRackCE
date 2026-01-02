@@ -83,7 +83,7 @@ public partial class ComicPagesView : SubView, IDisplayWorkspace, IRefreshDispla
         SubView.TranslateColumns(pagesView.ItemView.Columns);
         foreach (ItemViewColumn column in pagesView.ItemView.Columns.Cast<ItemViewColumn>())
         {
-            column.TooltipText = ((ComicListField)column.Tag).Description;
+            column.ToolTipText = ((ComicListField)column.Tag).Description;
         }
         pagesView.ItemView.ItemActivate += ItemView_ItemActivate;
     }

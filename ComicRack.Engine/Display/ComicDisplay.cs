@@ -81,7 +81,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
 
     public bool TwoPageDisplay => PageLayout != PageLayoutMode.Single;
 
-    public bool SupressContextMenu { get; set; }
+    public bool SuppressContextMenu { get; set; }
 
     public bool FullScreen
     {
@@ -1025,7 +1025,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         }
     }
 
-    public void ToogleRealisticPages()
+    public void ToggleRealisticPages()
     {
         RealisticPages = !RealisticPages;
     }
@@ -1102,7 +1102,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         }
     }
 
-    public bool GetInfoOverays(InfoOverlays overlays)
+    public bool GetInfoOverlays(InfoOverlays overlays)
     {
         return VisibleInfoOverlays.HasFlag(overlays);
     }
@@ -1356,7 +1356,7 @@ public class ComicDisplay : DisposableObject, IComicDisplay, IComicDisplayConfig
         if (Control.MouseButtons == MouseButtons.Right)
         {
             keyboardMap.HandleKey((e.Delta > 0) ? CommandKey.Tab : (CommandKey.Tab | CommandKey.Shift));
-            SupressContextMenu = true;
+            SuppressContextMenu = true;
         }
         else
         {

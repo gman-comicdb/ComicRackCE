@@ -447,7 +447,7 @@ public class Settings : ICacheSettings, IComicUpdateSettings, ISharesSettings, I
 
     [Browsable(false)]
     [DefaultValue(false)]
-    public bool RemoveFilesfromDatabase { get; set; }
+    public bool RemoveFilesFromDatabase { get; set; }
 
     [Browsable(false)]
     [DefaultValue(TabLayouts.None)]

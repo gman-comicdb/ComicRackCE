@@ -280,7 +280,7 @@ public class ItemView : ScrollControl
 
     private List<GroupHeaderInformation> displayedGroups = new();
 
-    private volatile bool multiselect = true;
+    private volatile bool multiSelect = true;
 
     private volatile bool hideSelection = true;
 
@@ -400,11 +400,11 @@ public class ItemView : ScrollControl
 
     private bool doubleGroupClick;
 
-    private IViewableItem currentInplaceEditItem;
+    private IViewableItem currentInPlaceEditItem;
 
-    private int currentInplaceEditSubItem;
+    private int currentInPlaceEditSubItem;
 
-    private Control currentInplaceEditControl;
+    private Control currentInPlaceEditControl;
 
     private IContainer components;
 
@@ -468,14 +468,14 @@ public class ItemView : ScrollControl
 
     [Category("Behavior")]
     [DefaultValue(true)]
-    public bool Multiselect
+    public bool MultiSelect
     {
-        get => multiselect;
+        get => multiSelect;
         set
         {
-            if (multiselect != value)
+            if (multiSelect != value)
             {
-                multiselect = value;
+                multiSelect = value;
                 SafeInvalidate();
             }
         }
@@ -1198,7 +1198,7 @@ public class ItemView : ScrollControl
 
     public string SortColumnsKey
     {
-        get => CovnertColumnsToKey(SortColumns);
+        get => ConvertColumnsToKey(SortColumns);
         set => SortColumns = ConvertKeyToColumns(value).ToArray();
     }
 
@@ -1227,7 +1227,7 @@ public class ItemView : ScrollControl
 
     public string GroupColumnsKey
     {
-        get => CovnertColumnsToKey(GroupColumns);
+        get => ConvertColumnsToKey(GroupColumns);
         set => GroupColumns = ConvertKeyToColumns(value).ToArray();
     }
 
@@ -1274,7 +1274,7 @@ public class ItemView : ScrollControl
 
     public string StackColumnsKey
     {
-        get => CovnertColumnsToKey(StackColumns);
+        get => ConvertColumnsToKey(StackColumns);
         set => StackColumns = ConvertKeyToColumns(value).ToArray();
     }
 
@@ -1401,9 +1401,9 @@ public class ItemView : ScrollControl
 
     public ContextMenuStrip AutoViewContextMenuStrip => autoViewContextMenuStrip;
 
-    public IViewableItem InplaceEditItem => currentInplaceEditItem;
+    public IViewableItem InPlaceEditItem => currentInPlaceEditItem;
 
-    public int InplaceEditSubItem => currentInplaceEditSubItem;
+    public int InPlaceEditSubItem => currentInPlaceEditSubItem;
     #endregion
 
     public event EventHandler<StackEventArgs> ProcessStack;
@@ -1467,7 +1467,7 @@ public class ItemView : ScrollControl
         return displayedGroups.Lock().FirstOrDefault(g => g.Caption == caption)?.ItemCount ?? 0;
     }
 
-    public string CovnertColumnsToKey(IEnumerable<IColumn> cols)
+    public string ConvertColumnsToKey(IEnumerable<IColumn> cols)
     {
         if (cols == null || !cols.Any())
         {
@@ -1545,12 +1545,12 @@ public class ItemView : ScrollControl
 
     public void SetItemState(IViewableItem item, ItemViewStates state)
     {
-        SetItemState(item, state, Multiselect);
+        SetItemState(item, state, MultiSelect);
     }
 
     public void SelectAll(bool selectionState)
     {
-        if (!Multiselect)
+        if (!MultiSelect)
         {
             return;
         }
@@ -1586,7 +1586,7 @@ public class ItemView : ScrollControl
 
     public void InvertSelection()
     {
-        if (!Multiselect)
+        if (!MultiSelect)
         {
             return;
         }
@@ -1821,9 +1821,9 @@ public class ItemView : ScrollControl
         }
     }
 
-    public void AutoFitHeaders(bool withAutosize)
+    public void AutoFitHeaders(bool withAutoSize)
     {
-        if (withAutosize)
+        if (withAutoSize)
         {
             AutoSizeHeaders(all: false);
         }
@@ -1988,7 +1988,7 @@ public class ItemView : ScrollControl
         position = PointToClient(position);
         UpdateHotItemState(Control.MouseButtons, position.X, position.Y);
         UpdateSelection(position.X, position.Y);
-        ExitEdit(currentInplaceEditControl);
+        ExitEdit(currentInPlaceEditControl);
     }
 
     private void ItemsChanged(object sender, SmartListChangedEventArgs<IViewableItem> e)
@@ -3325,7 +3325,7 @@ public class ItemView : ScrollControl
         {
             using (new WaitCursor())
             {
-                AutoFitHeaders(withAutosize: true);
+                AutoFitHeaders(withAutoSize: true);
             }
         });
         toolStripItemCollection.Add(new ToolStripSeparator());
@@ -3469,7 +3469,7 @@ public class ItemView : ScrollControl
         }
     }
 
-    protected virtual void OnDoubleClickColumnHeaderSeperator(IColumn column, Point point)
+    protected virtual void OnDoubleClickColumnHeaderSeparator(IColumn column, Point point)
     {
         AutoSizeHeader(column);
     }
@@ -3534,7 +3534,7 @@ public class ItemView : ScrollControl
         bool flag4 = flag || flag2;
         if (item == null)
         {
-            if (multiselect)
+            if (multiSelect)
             {
                 if (!flag4)
                 {
@@ -3552,15 +3552,15 @@ public class ItemView : ScrollControl
             {
                 anchorItem = item;
             }
-            if (!flag || !multiselect)
+            if (!flag || !multiSelect)
             {
                 stateInfo.Clear(ItemViewStates.Selected);
             }
-            if (flag2 && multiselect)
+            if (flag2 && multiSelect)
             {
                 SelectFromAnchorItem(stateInfo, item, overideAnchor: true);
             }
-            else if (flag && multiselect)
+            else if (flag && multiSelect)
             {
                 stateInfo.Flip(item, ItemViewStates.Selected);
             }
@@ -3686,7 +3686,7 @@ public class ItemView : ScrollControl
         int num = ColumnHeaderSeparatorHitTest(point.X, point.Y);
         if (num != -1)
         {
-            OnDoubleClickColumnHeaderSeperator(columns[num], point);
+            OnDoubleClickColumnHeaderSeparator(columns[num], point);
         }
         else
         {
@@ -3827,7 +3827,7 @@ public class ItemView : ScrollControl
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        string text = (hotHeader == null || !HeaderToolTips) ? string.Empty : hotHeader.TooltipText;
+        string text = (hotHeader == null || !HeaderToolTips) ? string.Empty : hotHeader.ToolTipText;
         if (text != toolTip.GetToolTip(this))
         {
             toolTip.SetToolTip(this, text);
@@ -3876,7 +3876,7 @@ public class ItemView : ScrollControl
         {
             location = PointToClient(Cursor.Position);
         }
-        if (InplaceEditItem != null)
+        if (InPlaceEditItem != null)
         {
             ContextMenuStrip = null;
         }
@@ -4000,9 +4000,9 @@ public class ItemView : ScrollControl
         {
             return false;
         }
-        currentInplaceEditItem = editItem;
-        currentInplaceEditSubItem = editSubItem;
-        currentInplaceEditControl = editControl;
+        currentInPlaceEditItem = editItem;
+        currentInPlaceEditSubItem = editSubItem;
+        currentInPlaceEditControl = editControl;
         base.Controls.Add(editControl);
         editControl.Bounds = itemBounds;
         MoveEditControl(editControl);
@@ -4052,9 +4052,9 @@ public class ItemView : ScrollControl
             base.Controls.Remove(c);
             c.Dispose();
             Focus();
-            currentInplaceEditItem = null;
-            currentInplaceEditSubItem = -1;
-            currentInplaceEditControl = null;
+            currentInPlaceEditItem = null;
+            currentInPlaceEditSubItem = -1;
+            currentInPlaceEditControl = null;
             UpdateContextMenu(Point.Empty);
         }
     }
@@ -4085,25 +4085,25 @@ public class ItemView : ScrollControl
         {
             case Keys.Down:
                 {
-                    IViewableItem relativeItem = GetRelativeItem(currentInplaceEditItem, 0, 1);
-                    if (relativeItem != currentInplaceEditItem)
+                    IViewableItem relativeItem = GetRelativeItem(currentInPlaceEditItem, 0, 1);
+                    if (relativeItem != currentInPlaceEditItem)
                     {
                         ExitEdit(c);
                         SetItemState(relativeItem, ItemViewStates.Selected | ItemViewStates.Focused, multiSelect: false);
-                        EnsureItemVisible(relativeItem, currentInplaceEditSubItem);
-                        EditItem(relativeItem, currentInplaceEditSubItem);
+                        EnsureItemVisible(relativeItem, currentInPlaceEditSubItem);
+                        EditItem(relativeItem, currentInPlaceEditSubItem);
                     }
                     break;
                 }
             case Keys.Up:
                 {
-                    IViewableItem relativeItem = GetRelativeItem(currentInplaceEditItem, 0, -1);
-                    if (relativeItem != currentInplaceEditItem)
+                    IViewableItem relativeItem = GetRelativeItem(currentInPlaceEditItem, 0, -1);
+                    if (relativeItem != currentInPlaceEditItem)
                     {
                         ExitEdit(c);
                         SetItemState(relativeItem, ItemViewStates.Selected | ItemViewStates.Focused, multiSelect: false);
-                        EnsureItemVisible(relativeItem, currentInplaceEditSubItem);
-                        EditItem(relativeItem, currentInplaceEditSubItem);
+                        EnsureItemVisible(relativeItem, currentInPlaceEditSubItem);
+                        EditItem(relativeItem, currentInPlaceEditSubItem);
                     }
                     break;
                 }
@@ -4124,8 +4124,8 @@ public class ItemView : ScrollControl
                         }
                         num = (e.KeyCode != Keys.Left) ? 1 : (-1);
                     }
-                    IViewableItem viewableItem = currentInplaceEditItem;
-                    int nextEditSubItem = GetNextEditSubItem(viewableItem, currentInplaceEditSubItem + num, num);
+                    IViewableItem viewableItem = currentInPlaceEditItem;
+                    int nextEditSubItem = GetNextEditSubItem(viewableItem, currentInPlaceEditSubItem + num, num);
                     if (nextEditSubItem != -1)
                     {
                         ExitEdit(c);
@@ -4287,14 +4287,14 @@ public class ItemView : ScrollControl
                     stateInfo.Clear(ItemViewStates.Selected);
                     stateInfo.Set(viewableItem, ItemViewStates.Selected, on: true);
                 }
-                if (e.Shift && multiselect)
+                if (e.Shift && multiSelect)
                 {
                     SelectFromAnchorItem(stateInfo, viewableItem);
                 }
                 e.Handled = true;
                 break;
             case Keys.Space:
-                if (!multiselect)
+                if (!multiSelect)
                 {
                     stateInfo.Clear(ItemViewStates.Selected);
                 }

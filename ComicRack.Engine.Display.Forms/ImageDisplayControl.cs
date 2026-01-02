@@ -1282,7 +1282,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     public event EventHandler UpdateDisplayConfig;
 
-    public event EventHandler<RenderEventArgs> RendeImageOverlay;
+    public event EventHandler<RenderEventArgs> RenderedImageOverlay;
 
     public event EventHandler<GestureEventArgs> PreviewGesture;
 
@@ -1878,7 +1878,7 @@ public class ImageDisplayControl : ContainerControl, IMouseHWheel, IPanableContr
 
     protected virtual void OnRenderImageOverlay(RenderEventArgs e)
     {
-        RendeImageOverlay?.Invoke(this, e);
+        RenderedImageOverlay?.Invoke(this, e);
     }
 
     protected virtual bool IsMouseOk(Point point)

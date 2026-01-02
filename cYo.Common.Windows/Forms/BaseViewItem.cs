@@ -42,7 +42,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
         }
     }
 
-    public string TooltipText
+    public string ToolTipText
     {
         get => tooltipText;
         set
@@ -50,7 +50,7 @@ public abstract class BaseViewItem : IBaseViewItem, INotifyPropertyChanged
             if (!(tooltipText == value))
             {
                 tooltipText = value;
-                OnPropertyChanged("TooltipText");
+                OnPropertyChanged("ToolTipText");
             }
         }
     }

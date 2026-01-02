@@ -752,7 +752,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         SubView.TranslateColumns(itemView.Columns);
         foreach (ItemViewColumn column in itemView.Columns.Cast<ItemViewColumn>())
         {
-            column.TooltipText = ((ComicListField)column.Tag).Description;
+            column.ToolTipText = ((ComicListField)column.Tag).Description;
             column.Width = FormUtility.ScaleDpiX(column.Width);
         }
         ThumbnailConfig = new ThumbnailConfig();
@@ -1492,7 +1492,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         }
         foreach (ItemViewColumn value in dictionary.Values)
         {
-            value.TooltipText = ((ComicListField)value.Tag).Description;
+            value.ToolTipText = ((ComicListField)value.Tag).Description;
             itemView.Columns.Add(value);
         }
     }
@@ -1537,7 +1537,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
         //Add the remaining columns to the interface
         foreach (ItemViewColumn value in dictionary.Values)
         {
-            value.TooltipText = ((ComicListField)value.Tag).Description;
+            value.ToolTipText = ((ComicListField)value.Tag).Description;
             itemView.Columns.Add(value);
         }
 
@@ -2631,7 +2631,7 @@ public partial class ComicBrowserControl : SubView, IComicBrowser, IGetBookList,
 
     private bool CanRemoveBooks()
     {
-        return itemView.InplaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null
+        return itemView.InPlaceEditItem == null && ComicEditMode.CanDeleteComics() && BookList != null
             ? BookList.QueryService<IRemoveBooks>() != null
             : false;
     }
